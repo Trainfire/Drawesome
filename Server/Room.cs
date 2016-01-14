@@ -1,9 +1,9 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Timers;
 using WebSocketSharp;
 using WebSocketSharp.Server;
-using Newtonsoft.Json;
+using Json;
 using Protocol;
 
 namespace Server
@@ -92,7 +92,7 @@ namespace Server
 
         public override void Update(MessageEventArgs e)
         {
-            var message = JsonConvert.DeserializeObject<Message>(e.Data);
+            var message = JsonParser.Deserialize<Message>(e.Data);
 
             Console.WriteLine(message.Type);
 

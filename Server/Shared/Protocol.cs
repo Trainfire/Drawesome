@@ -1,8 +1,5 @@
-﻿using System;
-
-#if !UNITY_5
-using Newtonsoft.Json;
-#endif
+using System;
+using Json;
 
 namespace Protocol
 {
@@ -31,7 +28,7 @@ namespace Protocol
 #if !UNITY_5
         public T Deserialise<T>(string json)
         {
-            return JsonConvert.DeserializeObject<T>(json);
+            return JsonParser.Deserialize<T>(json);
         }
 #endif
     }

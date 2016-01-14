@@ -1,9 +1,6 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
-
-#if !UNITY_EDITOR
-using Newtonsoft.Json;
-#endif
+using Json;
 
 namespace Shared
 {
@@ -40,7 +37,7 @@ namespace Shared
 
         public T DeserializeMessage<T>(MessageEvent messageEvent)
         {
-            T data = JsonConvert.DeserializeObject<T>(messageEvent.Json);
+            T data = JsonParser.Deserialize<T>(messageEvent.Json);
             return data;
         }
 

@@ -1,9 +1,9 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using WebSocketSharp;
 using WebSocketSharp.Server;
-using Newtonsoft.Json;
+using Json;
 using Protocol;
 
 namespace Server
@@ -12,7 +12,7 @@ namespace Server
     {
         protected override void OnMessage(MessageEventArgs e)
         {
-            var message = JsonConvert.DeserializeObject<Message>(e.Data);
+            var message = JsonParser.Deserialize<Message>(e.Data);
 
             Console.WriteLine("Recieved message of type: " + message.Type);
             Console.WriteLine("Data: " + e.Data);
