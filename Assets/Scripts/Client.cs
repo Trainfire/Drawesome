@@ -17,13 +17,17 @@ public class Client : Singleton<Client>
 
     public void Connect()
     {
-        webSocket.Connect();
         webSocket.OnMessage += OnMessage;
+        webSocket.OnOpen += OnOpen;
+        webSocket.OnClose += OnClose;
+        webSocket.Connect();
     }
 
     public void Disconnect()
     {
         webSocket.Close(CloseStatusCode.Normal);
+        webSocket.OnClose -= OnClose;
+        webSocket.OnOpen -= OnOpen;
         webSocket.OnMessage -= OnMessage;
     }
 
@@ -44,6 +48,17 @@ public class Client : Singleton<Client>
     {
         Debug.LogFormat("{0} : Send message...", DateTime.Now);
         webSocket.Send(json);
+    }
+
+    void OnClose(object sender, CloseEventArgs e)
+    {
+        Debug.LogFormat("Connection closed ({0})", e.Reason);
+        webSocket.OnOpen -= OnOpen;
+    }
+
+    void OnOpen(object sender, EventArgs e)
+    {
+        Debug.Log("Opened Connection");
     }
 
     void OnMessage(object sender, MessageEventArgs e)
