@@ -21,6 +21,8 @@ public class Client : Singleton<Client>
         webSocket.OnOpen += OnOpen;
         webSocket.OnClose += OnClose;
         webSocket.Connect();
+
+        // TODO: Send PlayerJoin message here, passing in the player's name.
     }
 
     public void Disconnect()

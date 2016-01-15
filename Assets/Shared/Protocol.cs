@@ -38,7 +38,29 @@ namespace Protocol
 #endif
     }
 
-    // Data
+    [Serializable]
+    public class Player
+    {
+        public string Name { get; private set; }
+
+        public Player()
+        {
+
+        }
+
+        public Player(string name)
+        {
+            Name = name;
+        }
+
+        public void SetName(string name)
+        {
+            Name = name;
+        }
+    }
+
+    #region Messages
+
     [System.Serializable]
     public class PlayerReadyMessage : Message
     {
@@ -50,4 +72,6 @@ namespace Protocol
             IsReady = isReady;
         }
     }
+
+    #endregion
 }
