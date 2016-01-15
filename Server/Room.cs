@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.Timers;
 using WebSocketSharp;
 using WebSocketSharp.Server;
-using Json;
 using Protocol;
+using Newtonsoft.Json;
 
 namespace Server
 {
@@ -20,27 +20,32 @@ namespace Server
         List<RoomState> States;
         int CurrentStateIndex = 0;
 
-        protected override void OnOpen()
+        public Room()
         {
-            base.OnOpen();
-
             States = new List<RoomState>();
             States.Add(new Setup());
             States.Add(new DrawingPhase());
 
             CurrentState = States[0];
             CurrentState.OnEnd += ChangeState;
-            CurrentState.Begin();
+            CurrentState.BeginState();
+        }
+
+        protected override void OnOpen()
+        {
+            base.OnOpen();
         }
 
         protected override void OnMessage(MessageEventArgs e)
         {
-            CurrentState.Update(e);
+            CurrentState.OnRecieveMessage(e);
+            ProtocolHelper.LogMessage(e);
         }
 
         protected override void OnClose(CloseEventArgs e)
         {
             base.OnClose(e);
+            Console.WriteLine("Room Closed");
         }
 
         void ChangeState()
@@ -48,12 +53,21 @@ namespace Server
             // End current state
             CurrentState.OnEnd -= ChangeState;
 
-            // Change to new state
+            // Change to the next state.
             Console.WriteLine("State: " + CurrentStateIndex);
-            CurrentStateIndex += 1;
-            CurrentState = States[CurrentStateIndex];
-            CurrentState.OnEnd += ChangeState;
-            CurrentState.Begin();
+
+            if (CurrentStateIndex == States.Count - 1)
+            {
+                // TODO: Game loop ends here.
+                Console.WriteLine("Game Over!");
+            }
+            else
+            {
+                CurrentStateIndex += 1;
+                CurrentState = States[CurrentStateIndex];
+                CurrentState.OnEnd += ChangeState;
+                CurrentState.BeginState();
+            }
         }
     }
 
@@ -63,90 +77,111 @@ namespace Server
         public event StateChangeHandler OnBegin;
         public event StateChangeHandler OnEnd;
 
-        public virtual void Begin()
+        public virtual void BeginState()
         {
             if (OnBegin != null)
                 OnBegin();
         }
 
-        public virtual void End()
+        public virtual void EndState()
         {
             if (OnEnd != null)
                 OnEnd();
         }
 
-        public virtual void Update(MessageEventArgs e)
+        public virtual void OnRecieveMessage(MessageEventArgs e)
         {
 
         }
     }
 
+    #region States
+
     public class Setup : RoomState
     {
         int playersReady = 0;
 
-        public override void Begin()
+        public override void BeginState()
         {
+            Console.WriteLine("Waiting for all players to join / be ready");
             playersReady = 0;
         }
 
-        public override void Update(MessageEventArgs e)
+        public override void OnRecieveMessage(MessageEventArgs e)
         {
-            var message = JsonParser.Deserialize<Message>(e.Data);
+            var message = JsonConvert.DeserializeObject<Message>(e.Data);
 
-            Console.WriteLine(message.Type);
+            ProtocolHelper.LogMessage(message);
 
             if (message.Type == MessageType.PlayerReady)
             {
                 var data = message.Deserialise<PlayerReadyMessage>(e.Data);
+
+                // If all player's are ready, continue to next state.
                 playersReady += data.IsReady ? 1 : -1;
-                Console.WriteLine("Players Ready: " + playersReady);
+
+                EndState();
             }
 
             if (message.Type == MessageType.ForceStartRound)
             {
-                End();
+                EndState();
             }
         }
 
-        public override void End()
+        public override void EndState()
         {
             Console.WriteLine("End Setup");
-            base.End();
+            base.EndState();
         }
     }
 
     public class DrawingPhase : RoomState
     {
         Timer timer;
-        double DrawingTime = 1;
+        float timeElapsed = 0f;
+        const float DrawingTime = 10; // in seconds
 
-        public override void Begin()
+        public override void BeginState()
         {
-            timer = new Timer(DrawingTime);
-            timer.Interval = 1;
+            Console.WriteLine("Begin Drawing Phase");
+            timer = new Timer(1000);
             timer.Elapsed += OnTimeElapsed;
-            timer.Disposed += OnTimerDisposed;
             timer.Enabled = true;
-            timer.Start();
-        }
-
-        private void OnTimerDisposed(object sender, EventArgs e)
-        {
-            End();
         }
 
         private void OnTimeElapsed(object sender, ElapsedEventArgs e)
         {
-            Console.WriteLine("Time elapsed");
-            timer.Enabled = false;
-            End();
+            timeElapsed += 1f;
+
+            if (timeElapsed > DrawingTime)
+            {
+                timer.Enabled = false;
+                timer.Dispose();
+                EndState();
+            }
+            else
+            {
+                // Send update to client?
+
+            }
+
+            Console.WriteLine("Time Remaining: " + (DrawingTime - timeElapsed));
         }
 
-        public override void End()
+        public override void OnRecieveMessage(MessageEventArgs e)
+        {
+            base.OnRecieveMessage(e);
+
+            // here we would store each player's drawing
+        }
+
+        public override void EndState()
         {
             Console.WriteLine("End Drawing Phase");
-            base.End();
+            base.EndState();
         }
     }
+
+    #endregion
 }
