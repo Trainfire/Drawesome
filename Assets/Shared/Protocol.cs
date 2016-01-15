@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 
 #if !UNITY_5
 using Newtonsoft.Json;
@@ -16,6 +16,7 @@ namespace Protocol
 
     public class Message
     {
+        public string LogMessage;
         public MessageType Type;
 
         public Message()
@@ -23,8 +24,9 @@ namespace Protocol
 
         }
 
-        public Message(MessageType type)
+        public Message(MessageType type, string logMessage = "")
         {
+            LogMessage = logMessage;
             Type = type;
         }
 

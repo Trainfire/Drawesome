@@ -51,13 +51,19 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\Assets\Shared\Enums.cs">
+      <Link>Enums.cs</Link>
+    </Compile>
+    <Compile Include="..\Assets\Shared\Protocol.cs">
+      <Link>Protocol.cs</Link>
+    </Compile>
+    <Compile Include="..\Assets\Shared\ProtocolHelper.cs">
+      <Link>ProtocolHelper.cs</Link>
+    </Compile>
     <Compile Include="Chat.cs" />
-    <Compile Include="Shared\Enums.cs" />
-    <Compile Include="Shared\ProtocolHelper.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Room.cs" />
-    <Compile Include="Shared\Protocol.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
