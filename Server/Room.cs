@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Timers;
+using System.Linq;
 using WebSocketSharp;
 using WebSocketSharp.Server;
 using Protocol;
@@ -17,6 +18,9 @@ namespace Server
     {
         RoomState CurrentState { get; set; }
 
+        List<Player> players = new List<Player>();
+
+        MessageHandler messageHandler = new MessageHandler();
         List<RoomState> States;
         int CurrentStateIndex = 0;
 
@@ -29,6 +33,9 @@ namespace Server
             CurrentState = States[0];
             CurrentState.OnEnd += ChangeState;
             CurrentState.BeginState();
+
+            messageHandler.OnPlayerConnected += OnPlayerConnected;
+            messageHandler.OnPlayerReady += OnPlayerReady;
         }
 
         protected override void OnOpen()
@@ -40,6 +47,7 @@ namespace Server
         {
             CurrentState.OnRecieveMessage(e);
             ProtocolHelper.LogMessage(e);
+            messageHandler.HandleMessage(e.Data);
         }
 
         protected override void OnClose(CloseEventArgs e)
@@ -68,6 +76,48 @@ namespace Server
                 CurrentState.OnEnd += ChangeState;
                 CurrentState.BeginState();
             }
+        }
+
+        void SendMessage(Message message)
+        {
+            var json = JsonConvert.SerializeObject(message);
+            Send(json);
+        }
+
+        void AddPlayer(Player player)
+        {
+            if (!players.Contains(player))
+            {
+                Console.WriteLine("Add {0} to player pool.", player.Name);
+                players.Add(player);
+            }
+            else
+            {
+                Console.WriteLine("Cannot add {0} to player pool as they already exist.", player.Name);
+            }
+        }
+
+        void RemovePlayer(WebSocket webSocket)
+        {
+            Player foundPlayer = null;
+            players.Find(x => x.Socket == webSocket);
+            if (foundPlayer != null)
+            {
+                players.Remove(foundPlayer);
+                Console.WriteLine("{0} was removed from the game.", foundPlayer.Name);
+            }
+        }
+
+        void OnPlayerConnected(PlayerConnectMessage message)
+        {
+            Console.WriteLine("Player {0} connected.", message.PlayerName);
+            AddPlayer(new Player(message.PlayerName));
+
+        }
+
+        void OnPlayerReady(PlayerReadyMessage message)
+        {
+            Console.WriteLine("Player {0} is ready.", message.IsReady);
         }
     }
 

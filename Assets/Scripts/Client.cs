@@ -5,24 +5,33 @@ using Protocol;
 
 public class Client : Singleton<Client>
 {
+    public string PlayerName { get; private set; }
+
     const string URI = "ws://127.0.0.1:8181/room";
 
     WebSocket webSocket;
+    MessageHandler messageHandler = new MessageHandler();
 
     protected override void Awake()
     {
         base.Awake();
         webSocket = new WebSocket(URI);
+
+        messageHandler.OnGeneric += (message) =>
+        {
+            Debug.Log("Recieved Generic Message: " + message.LogMessage);
+        };
     }
 
-    public void Connect()
+    public void Connect(string playerName)
     {
+        // TODO: Send PlayerJoin message here, passing in the player's name.
+        PlayerName = playerName;
+
         webSocket.OnMessage += OnMessage;
         webSocket.OnOpen += OnOpen;
         webSocket.OnClose += OnClose;
         webSocket.Connect();
-
-        // TODO: Send PlayerJoin message here, passing in the player's name.
     }
 
     public void Disconnect()
@@ -48,7 +57,7 @@ public class Client : Singleton<Client>
 
     void SendJson(string json)
     {
-        Debug.LogFormat("{0} : Send message...", DateTime.Now);
+        Debug.LogFormat("{0} : Send message: {1}", DateTime.Now, json);
         webSocket.Send(json);
     }
 
@@ -60,12 +69,17 @@ public class Client : Singleton<Client>
 
     void OnOpen(object sender, EventArgs e)
     {
-        Debug.Log("Opened Connection");
+        var message = new PlayerConnectMessage(PlayerName);
+        Debug.LogFormat("Connect with name: " + PlayerName);
+        var json = JsonUtility.ToJson(message);
+        Debug.Log(json);
+        webSocket.Send(json);
     }
 
     void OnMessage(object sender, MessageEventArgs e)
     {
         Debug.Log("Recieved message: " + e.Data);
+
     }
 
     void OnApplicationQuit()

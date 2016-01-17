@@ -9,6 +9,7 @@ public class EchoTest : MonoBehaviour
     public bool IsReady;
 
     Action guiState;
+    string playerName = "";
 
     void OnGUI()
     {
@@ -29,9 +30,11 @@ public class EchoTest : MonoBehaviour
 
     void OnConnected()
     {
+        playerName = GUILayout.TextField(playerName, GUILayout.Width(400f));
+
         if (GUILayout.Button("Connect"))
         {
-            Client.Instance.Connect();
+            Client.Instance.Connect(playerName);
         }
     }
 

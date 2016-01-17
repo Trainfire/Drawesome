@@ -6,14 +6,6 @@ using Newtonsoft.Json;
 
 namespace Protocol
 {
-    [Serializable]
-    public enum MessageType
-    {
-        None,
-        PlayerReady,
-        ForceStartRound,
-    }
-
     public class Message
     {
         public string LogMessage;
@@ -36,6 +28,15 @@ namespace Protocol
             return JsonConvert.DeserializeObject<T>(json);
         }
 #endif
+
+        public string AsJson()
+        {
+#if UNITY_5
+            return UnityEngine.JsonUtility.ToJson(this);
+#else
+            return JsonConvert.SerializeObject(this);
+#endif
+        }
     }
 
     [Serializable]
@@ -59,9 +60,8 @@ namespace Protocol
         }
     }
 
-    #region Messages
+#region Messages
 
-    [System.Serializable]
     public class PlayerReadyMessage : Message
     {
         public bool IsReady;
@@ -73,5 +73,16 @@ namespace Protocol
         }
     }
 
-    #endregion
+    public class PlayerConnectMessage : Message
+    {
+        public string PlayerName;
+
+        public PlayerConnectMessage(string playerName)
+        {
+            Type = MessageType.PlayerConnect;
+            PlayerName = playerName;
+        }
+    }
+
+#endregion
 }

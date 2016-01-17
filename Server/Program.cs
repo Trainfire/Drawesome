@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using WebSocketSharp;
 using WebSocketSharp.Server;
 using Server;
@@ -10,7 +10,7 @@ namespace DrawesomeServer
         static void Main(string[] args)
         {
             var server = new WebSocketServer(8181);
-            server.Log.Level = LogLevel.Trace;
+            server.Log.Level = LogLevel.Info;
 
             server.AddWebSocketService<Room>("/room");
 

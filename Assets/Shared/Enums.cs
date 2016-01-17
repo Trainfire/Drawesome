@@ -1,3 +1,5 @@
+using System;
+
 namespace Protocol
 {
     public enum GameState
@@ -5,5 +7,15 @@ namespace Protocol
         None,
         Setup,
         DrawingPhase,
+    }
+
+    [Serializable]
+    public enum MessageType
+    {
+        None,
+        PlayerConnect,
+        PlayerReady,
+        ForceStartRound,
+        Generic,
     }
 }
