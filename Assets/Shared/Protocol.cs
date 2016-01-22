@@ -102,5 +102,10 @@ namespace Protocol
         
     }
 
+    public class PlayerSendChatMessage : MessageHandler
+    {
+        public string ID;
+    }
+
 #endregion
 }

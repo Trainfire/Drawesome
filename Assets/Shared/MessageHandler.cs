@@ -4,6 +4,7 @@ namespace Protocol
 {
     public class MessageHandler
     {
+        // Add an action for every type of message here.
         public Action<Message> OnGeneric;
         public Action<PlayerConnectMessage> OnPlayerConnected;
         public Action<PlayerReadyMessage> OnPlayerReady;
@@ -13,6 +14,7 @@ namespace Protocol
         {
             var message = Deserialize<Message>(json);
 
+            // Massive messy switch. IDK.
             switch (message.Type)
             {
                 case MessageType.None:

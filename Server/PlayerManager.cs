@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using Fleck;
 using Protocol;
-using System.Threading.Tasks;
 
 namespace Server
 {

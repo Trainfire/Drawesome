@@ -13,10 +13,11 @@ namespace Protocol
     public enum MessageType
     {
         None,
+        Generic,
         PlayerConnect,
         ValidatePlayer,
         PlayerReady,
         ForceStartRound,
-        Generic,
+        SendChatFromPlayer,
     }
 }
