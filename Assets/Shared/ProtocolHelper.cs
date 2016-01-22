@@ -1,8 +1,8 @@
 using System;
-using WebSocketSharp;
 
 #if !UNITY_5
 using Newtonsoft.Json;
+using Fleck;
 #endif
 
 namespace Protocol
@@ -11,14 +11,14 @@ namespace Protocol
     {
         public static bool EnableLogging = true;
 
-        public static void LogMessage(MessageEventArgs e)
+        public static void LogMessage(string message)
         {
 #if !UNITY_5
             if (!EnableLogging)
                 return;
 
-            var message = JsonConvert.DeserializeObject<Message>(e.Data);
-            Console.WriteLine(string.Format("{0}, Type: {1}, Log: {2}", DateTime.Now, message.Type, message.LogMessage));
+            var obj = JsonConvert.DeserializeObject<Message>(message);
+            Console.WriteLine(string.Format("{0}, Type: {1}, Log: {2}", DateTime.Now, obj.Type, obj.LogMessage));
 #endif
         }
 
@@ -32,10 +32,37 @@ namespace Protocol
         }
 
 #if !UNITY_5
-        public static void Send(Message message)
+        public static void Send(IWebSocketConnection socket, Message message)
         {
-
+            var json = JsonConvert.SerializeObject(message);
+            socket.Send(json);
         }
 #endif
+
+        public static Message GetMessage(string json)
+        {
+            return GetMessage<Message>(json);
+        }
+
+        public static T GetMessage<T>(string json) where T : Message
+        {
+            T message = null;
+
+#if !UNITY_5
+            message = JsonConvert.DeserializeObject<T>(json);
+#else
+            message = UnityEngine.JsonUtility.FromJson<T>(json);
+#endif
+
+            if (message != null)
+            {
+                return message;
+            }
+            else
+            {
+                Console.WriteLine("Failed to deserialize JSON into Message...");
+                return null;
+            }
+        }
     }
 }

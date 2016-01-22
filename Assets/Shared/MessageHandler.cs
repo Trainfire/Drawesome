@@ -7,6 +7,7 @@ namespace Protocol
         public Action<Message> OnGeneric;
         public Action<PlayerConnectMessage> OnPlayerConnected;
         public Action<PlayerReadyMessage> OnPlayerReady;
+        public Action<ValidatePlayer> OnValidatePlayer;
 
         public void HandleMessage(string json)
         {
@@ -25,6 +26,10 @@ namespace Protocol
                 case MessageType.PlayerReady:
                     if (OnPlayerReady != null)
                         OnPlayerReady(Deserialize<PlayerReadyMessage>(json));
+                    break;
+                case MessageType.ValidatePlayer:
+                    if (OnValidatePlayer != null)
+                        OnValidatePlayer(Deserialize<ValidatePlayer>(json));
                     break;
                 case MessageType.ForceStartRound:
                     break;

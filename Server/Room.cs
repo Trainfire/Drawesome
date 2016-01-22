@@ -2,8 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Timers;
 using System.Linq;
-using WebSocketSharp;
-using WebSocketSharp.Server;
+using Fleck;
 using Protocol;
 using Newtonsoft.Json;
 
@@ -14,7 +13,7 @@ namespace Server
         public const double DrawingPhaseTimer = 5000;
     }
 
-    public class Room : WebSocketBehavior
+    public class Room : WebSocketBehaviour
     {
         RoomState CurrentState { get; set; }
 
@@ -38,22 +37,25 @@ namespace Server
             messageHandler.OnPlayerReady += OnPlayerReady;
         }
 
-        protected override void OnOpen()
+        public override void OnOpen(IWebSocketConnection socket)
         {
-            base.OnOpen();
+            base.OnOpen(socket);
+            Console.WriteLine("Player connected");
         }
 
-        protected override void OnMessage(MessageEventArgs e)
+        public override void OnMessage(string message)
         {
-            CurrentState.OnRecieveMessage(e);
-            ProtocolHelper.LogMessage(e);
-            messageHandler.HandleMessage(e.Data);
+            base.OnMessage(message);
+
+            CurrentState.OnMessage(message);
+            ProtocolHelper.LogMessage(message);
+            messageHandler.HandleMessage(message);
         }
 
-        protected override void OnClose(CloseEventArgs e)
+        public override void OnClose(IWebSocketConnection socket)
         {
-            base.OnClose(e);
-            Console.WriteLine("Room Closed");
+            base.OnClose(socket);
+            Console.WriteLine("Player {0} disconnected.", "PlayerName");
         }
 
         void ChangeState()
@@ -80,15 +82,14 @@ namespace Server
 
         void SendMessage(Message message)
         {
-            var json = JsonConvert.SerializeObject(message);
-            Send(json);
+
         }
 
         void AddPlayer(Player player)
         {
             if (!players.Contains(player))
             {
-                Console.WriteLine("Add {0} to player pool.", player.Name);
+                Console.WriteLine("Add {0} to player pool with GUID {1}.", player.Name, player.ID);
                 players.Add(player);
             }
             else
@@ -97,21 +98,10 @@ namespace Server
             }
         }
 
-        void RemovePlayer(WebSocket webSocket)
-        {
-            Player foundPlayer = null;
-            players.Find(x => x.Socket == webSocket);
-            if (foundPlayer != null)
-            {
-                players.Remove(foundPlayer);
-                Console.WriteLine("{0} was removed from the game.", foundPlayer.Name);
-            }
-        }
-
         void OnPlayerConnected(PlayerConnectMessage message)
         {
             Console.WriteLine("Player {0} connected.", message.PlayerName);
-            AddPlayer(new Player(message.PlayerName));
+            //AddPlayer(new Player(message.PlayerName));
 
         }
 
@@ -121,7 +111,7 @@ namespace Server
         }
     }
 
-    public abstract class RoomState : WebSocketBehavior
+    public abstract class RoomState : WebSocketBehaviour
     {
         public delegate void StateChangeHandler();
         public event StateChangeHandler OnBegin;
@@ -138,11 +128,6 @@ namespace Server
             if (OnEnd != null)
                 OnEnd();
         }
-
-        public virtual void OnRecieveMessage(MessageEventArgs e)
-        {
-
-        }
     }
 
     #region States
@@ -157,15 +142,15 @@ namespace Server
             playersReady = 0;
         }
 
-        public override void OnRecieveMessage(MessageEventArgs e)
+        public override void OnMessage(string m)
         {
-            var message = JsonConvert.DeserializeObject<Message>(e.Data);
+            var message = JsonConvert.DeserializeObject<Message>(m);
 
             ProtocolHelper.LogMessage(message);
 
             if (message.Type == MessageType.PlayerReady)
             {
-                var data = message.Deserialise<PlayerReadyMessage>(e.Data);
+                var data = message.Deserialise<PlayerReadyMessage>(m);
 
                 // If all player's are ready, continue to next state.
                 playersReady += data.IsReady ? 1 : -1;
@@ -219,10 +204,8 @@ namespace Server
             Console.WriteLine("Time Remaining: " + (DrawingTime - timeElapsed));
         }
 
-        public override void OnRecieveMessage(MessageEventArgs e)
+        public override void OnMessage(string m)
         {
-            base.OnRecieveMessage(e);
-
             // here we would store each player's drawing
         }
 

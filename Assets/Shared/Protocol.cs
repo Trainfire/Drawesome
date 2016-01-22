@@ -75,13 +75,31 @@ namespace Protocol
 
     public class PlayerConnectMessage : Message
     {
+        public string ID;
         public string PlayerName;
 
-        public PlayerConnectMessage(string playerName)
+        public PlayerConnectMessage(string id, string playerName)
         {
             Type = MessageType.PlayerConnect;
             PlayerName = playerName;
+            ID = id;
         }
+    }
+
+    public class ValidatePlayer : Message
+    {
+        public string ID;
+
+        public ValidatePlayer(string guid)
+        {
+            Type = MessageType.ValidatePlayer;
+            ID = guid;
+        }
+    }
+
+    public class PlayerDisconnectMessage : Message
+    {
+        
     }
 
 #endregion

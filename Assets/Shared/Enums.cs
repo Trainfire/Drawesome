@@ -14,6 +14,7 @@ namespace Protocol
     {
         None,
         PlayerConnect,
+        ValidatePlayer,
         PlayerReady,
         ForceStartRound,
         Generic,

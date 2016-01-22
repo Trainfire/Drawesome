@@ -5,6 +5,7 @@ using Protocol;
 
 public class Client : Singleton<Client>
 {
+    public string ID { get; private set; }
     public string PlayerName { get; private set; }
 
     const string URI = "ws://127.0.0.1:8181/room";
@@ -21,6 +22,8 @@ public class Client : Singleton<Client>
         {
             Debug.Log("Recieved Generic Message: " + message.LogMessage);
         };
+
+        messageHandler.OnValidatePlayer += OnValidatePlayer;
     }
 
     public void Connect(string playerName)
@@ -69,17 +72,26 @@ public class Client : Singleton<Client>
 
     void OnOpen(object sender, EventArgs e)
     {
-        var message = new PlayerConnectMessage(PlayerName);
-        Debug.LogFormat("Connect with name: " + PlayerName);
-        var json = JsonUtility.ToJson(message);
-        Debug.Log(json);
-        webSocket.Send(json);
+        //var message = new PlayerConnectMessage(ID, PlayerName);
+        //Debug.LogFormat("Connect with name: " + PlayerName);
+        //var json = JsonUtility.ToJson(message);
+        //Debug.Log(json);
+        //webSocket.Send(json);
     }
 
     void OnMessage(object sender, MessageEventArgs e)
     {
-        Debug.Log("Recieved message: " + e.Data);
+        Debug.LogFormat("Recieved message: {0}", e.Data);
+        messageHandler.HandleMessage(e.Data);
+    }
 
+    void OnValidatePlayer(ValidatePlayer message)
+    {
+        Debug.Log("OnValidatePlayer");
+        ID = message.ID;
+        var playerConnectMessage = new PlayerConnectMessage(ID, PlayerName);
+        var json = JsonUtility.ToJson(playerConnectMessage);
+        webSocket.Send(json);
     }
 
     void OnApplicationQuit()
