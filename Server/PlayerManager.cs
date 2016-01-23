@@ -16,12 +16,14 @@ namespace Server
 
             // Assign a unique ID to the player and send it back to the client.
             var player = AddPlayer(socket);
-            ProtocolHelper.Send(socket, new ValidatePlayer(player.ID));
+            Send(new ValidatePlayer(player.ID), player);
+            SendToAll(new Message(MessageType.Generic, "hOi!"), player);
         }
 
         public override void OnMessage(string m)
         {
-            // Validates a player's request to change name. Usually sent on a first-time connection to the server after server-side validation.
+            // Validates a player's request to change name. 
+            // Usually sent on a first-time connection to the server after server-side validation.
             var playerConnectMessage = JsonHelper.FromJson<PlayerConnectMessage>(m);
             if (playerConnectMessage != null)
             {
@@ -74,11 +76,22 @@ namespace Server
             return player;
         }
 
-        /// <summary>
-        /// Attemps to find a player with the associated socket. Returns null if not found.
-        /// </summary>
-        /// <param name="socket"></param>
-        /// <returns></returns>
+        public void Send(Message message, Player player)
+        {
+            player.SendMessage(message);
+        }
+
+        public void SendToAll(Message message)
+        {
+            Players.ForEach(x => x.SendMessage(message));
+        }
+
+        public void SendToAll(Message message, Player exception)
+        {
+            var players = Players.Where(x => x != exception).ToList();
+            players.ForEach(x => x.SendMessage(message));
+        }
+
         Player GetPlayerFromSocket(IWebSocketConnection socket)
         {
             return Players.FirstOrDefault(x => x.Socket == socket);
