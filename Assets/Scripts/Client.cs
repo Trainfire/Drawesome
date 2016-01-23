@@ -24,6 +24,7 @@ public class Client : Singleton<Client>
         };
 
         messageHandler.OnValidatePlayer += OnValidatePlayer;
+        messageHandler.OnServerUpdate += OnServerUpdate;
     }
 
     public void Connect(string playerName)
@@ -72,11 +73,7 @@ public class Client : Singleton<Client>
 
     void OnOpen(object sender, EventArgs e)
     {
-        //var message = new PlayerConnectMessage(ID, PlayerName);
-        //Debug.LogFormat("Connect with name: " + PlayerName);
-        //var json = JsonUtility.ToJson(message);
-        //Debug.Log(json);
-        //webSocket.Send(json);
+
     }
 
     void OnMessage(object sender, MessageEventArgs e)
@@ -92,6 +89,11 @@ public class Client : Singleton<Client>
         var playerConnectMessage = new PlayerConnectMessage(ID, PlayerName);
         var json = JsonUtility.ToJson(playerConnectMessage);
         webSocket.Send(json);
+    }
+
+    void OnServerUpdate(ServerUpdate update)
+    {
+        Debug.LogFormat("Recieved Server Update with {0} players.", update.Players.Count);
     }
 
     void OnApplicationQuit()

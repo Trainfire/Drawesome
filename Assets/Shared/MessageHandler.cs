@@ -9,6 +9,7 @@ namespace Protocol
         public Action<PlayerConnectMessage> OnPlayerConnected;
         public Action<PlayerReadyMessage> OnPlayerReady;
         public Action<ValidatePlayer> OnValidatePlayer;
+        public Action<ServerUpdate> OnServerUpdate;
 
         public void HandleMessage(string json)
         {
@@ -33,7 +34,9 @@ namespace Protocol
                     if (OnValidatePlayer != null)
                         OnValidatePlayer(Deserialize<ValidatePlayer>(json));
                     break;
-                case MessageType.ForceStartRound:
+                case MessageType.ServerUpdate:
+                    if (OnServerUpdate != null)
+                        OnServerUpdate(Deserialize<ServerUpdate>(json));
                     break;
                 default:
                     break;
@@ -42,13 +45,7 @@ namespace Protocol
 
         T Deserialize<T>(string json) where T : Message
         {
-            T data = null;
-#if UNITY_5
-            data = UnityEngine.JsonUtility.FromJson<T>(json);
-#else
-            data = Newtonsoft.Json.JsonConvert.DeserializeObject<T>(json);
-#endif
-            return data;
+            return JsonHelper.FromJson<T>(json);
         }
     }
 }

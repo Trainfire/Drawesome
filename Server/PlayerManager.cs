@@ -17,7 +17,6 @@ namespace Server
             // Assign a unique ID to the player and send it back to the client.
             var player = AddPlayer(socket);
             Send(new ValidatePlayer(player.ID), player);
-            SendToAll(new Message(MessageType.Generic, "hOi!"), player);
         }
 
         public override void OnMessage(string m)
@@ -34,10 +33,12 @@ namespace Server
                     {
                         player.Name = playerConnectMessage.PlayerName;
                         Logger.WriteLine("Player {0} connected.", player.Name);
-                        return;
+                        break;
                     }
                 }
             }
+
+            Players.ForEach(x => x.Update(this));
         }
 
         public override void OnClose(IWebSocketConnection socket)

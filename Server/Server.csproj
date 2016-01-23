@@ -52,19 +52,25 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="..\Assets\Shared\Enums.cs">
-      <Link>Enums.cs</Link>
+      <Link>Protocol\Enums.cs</Link>
+    </Compile>
+    <Compile Include="..\Assets\Shared\IPlayer.cs">
+      <Link>Protocol\IPlayer.cs</Link>
     </Compile>
     <Compile Include="..\Assets\Shared\JsonHelper.cs">
-      <Link>JsonHelper.cs</Link>
+      <Link>Shared\JsonHelper.cs</Link>
+    </Compile>
+    <Compile Include="..\Assets\Shared\Message.cs">
+      <Link>Protocol\Message.cs</Link>
     </Compile>
     <Compile Include="..\Assets\Shared\MessageHandler.cs">
-      <Link>MessageHandler.cs</Link>
+      <Link>Protocol\MessageHandler.cs</Link>
     </Compile>
     <Compile Include="..\Assets\Shared\Protocol.cs">
-      <Link>Protocol.cs</Link>
+      <Link>Protocol\Protocol.cs</Link>
     </Compile>
     <Compile Include="..\Assets\Shared\ProtocolHelper.cs">
-      <Link>ProtocolHelper.cs</Link>
+      <Link>Protocol\ProtocolHelper.cs</Link>
     </Compile>
     <Compile Include="Logger.cs" />
     <Compile Include="Player.cs" />

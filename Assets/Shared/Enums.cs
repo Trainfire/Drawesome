@@ -19,5 +19,6 @@ namespace Protocol
         PlayerReady,
         ForceStartRound,
         SendChatFromPlayer,
+        ServerUpdate,
     }
 }

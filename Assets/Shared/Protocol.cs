@@ -1,59 +1,8 @@
 using System;
-
-#if !UNITY_5
-using Newtonsoft.Json;
-#endif
+using System.Collections.Generic;
 
 namespace Protocol
 {
-    public class Message
-    {
-        public string LogMessage;
-        public MessageType Type;
-
-        public Message()
-        {
-
-        }
-
-        public Message(MessageType type, string logMessage = "")
-        {
-            LogMessage = logMessage;
-            Type = type;
-        }
-
-        public T Deserialise<T>(string json)
-        {
-            return JsonHelper.FromJson<T>(json);
-        }
-
-        public string AsJson()
-        {
-            return JsonHelper.ToJson(this);
-        }
-    }
-
-    [Serializable]
-    public class Player
-    {
-        public string Name { get; private set; }
-
-        public Player()
-        {
-
-        }
-
-        public Player(string name)
-        {
-            Name = name;
-        }
-
-        public void SetName(string name)
-        {
-            Name = name;
-        }
-    }
-
 #region Messages
 
     public class PlayerReadyMessage : Message
@@ -91,14 +40,19 @@ namespace Protocol
         }
     }
 
-    public class PlayerDisconnectMessage : Message
+    public class ServerUpdate : Message
     {
-        
-    }
+        public List<IPlayer> Players;
 
-    public class PlayerSendChatMessage : MessageHandler
-    {
-        public string ID;
+        public ServerUpdate()
+        {
+
+        }
+
+        public ServerUpdate(List<IPlayer> players)
+        {
+            Players = players;
+        }
     }
 
 #endregion
