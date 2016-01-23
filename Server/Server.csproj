@@ -54,6 +54,9 @@
     <Compile Include="..\Assets\Shared\Enums.cs">
       <Link>Enums.cs</Link>
     </Compile>
+    <Compile Include="..\Assets\Shared\JsonHelper.cs">
+      <Link>JsonHelper.cs</Link>
+    </Compile>
     <Compile Include="..\Assets\Shared\MessageHandler.cs">
       <Link>MessageHandler.cs</Link>
     </Compile>

@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.Collections.Generic;
 using Fleck;
 using Protocol;
@@ -7,7 +8,7 @@ namespace Server
 {
     class PlayerManager : WebSocketBehaviour
     {
-        public Dictionary<IWebSocketConnection, Player> Players { get; private set; }
+        public List<Player> Players { get; private set; }
 
         public override void OnOpen(IWebSocketConnection socket)
         {
@@ -21,15 +22,15 @@ namespace Server
         public override void OnMessage(string m)
         {
             // Validates a player's request to change name. Usually sent on a first-time connection to the server after server-side validation.
-            var message = Newtonsoft.Json.JsonConvert.DeserializeObject<PlayerConnectMessage>(m);
-            if (message != null)
+            var playerConnectMessage = JsonHelper.FromJson<PlayerConnectMessage>(m);
+            if (playerConnectMessage != null)
             {
-                Logger.WriteLine(message.ID);
-                foreach (var player in Players.Values)
+                Logger.WriteLine(playerConnectMessage.ID);
+                foreach (var player in Players)
                 {
-                    if (player.ID == message.ID)
+                    if (player.ID == playerConnectMessage.ID)
                     {
-                        player.Name = message.PlayerName;
+                        player.Name = playerConnectMessage.PlayerName;
                         Logger.WriteLine("Player {0} connected.", player.Name);
                         return;
                     }
@@ -41,10 +42,10 @@ namespace Server
         {
             base.OnClose(socket);
 
-            if (Players.ContainsKey(socket))
+            var player = Players.Find(x => x.Socket == socket);
+            if (player != null)
             {
-                var player = Players[socket];
-                Players.Remove(socket);
+                Players.Remove(player);
                 Logger.WriteLine("Player {0} disconnected", player.Name);
             }
         }
@@ -52,26 +53,35 @@ namespace Server
         Player AddPlayer(IWebSocketConnection socket)
         {
             if (Players == null)
-                Players = new Dictionary<IWebSocketConnection, Player>();
+                Players = new List<Player>();
 
-            Player player = null;
+            Player player = GetPlayerFromSocket(socket);
 
-            if (!Players.ContainsKey(socket))
+            if (player == null)
             {
                 Logger.WriteLine("A new player connected.");
 
                 player = new Player("N/A", socket);
                 player.ID = Guid.NewGuid().ToString();
 
-                Players.Add(socket, player);
+                Players.Add(player);
             }
             else
             {
-                Logger.WriteLine("Player already exists...");
-                player = Players[socket];
+                Logger.WriteLine("Player {0} already exists...", player.Name);
             }
 
             return player;
+        }
+
+        /// <summary>
+        /// Attemps to find a player with the associated socket. Returns null if not found.
+        /// </summary>
+        /// <param name="socket"></param>
+        /// <returns></returns>
+        Player GetPlayerFromSocket(IWebSocketConnection socket)
+        {
+            return Players.FirstOrDefault(x => x.Socket == socket);
         }
     }
 }
