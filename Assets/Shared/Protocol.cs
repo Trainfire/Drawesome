@@ -22,20 +22,14 @@ namespace Protocol
             Type = type;
         }
 
-#if !UNITY_5
         public T Deserialise<T>(string json)
         {
-            return JsonConvert.DeserializeObject<T>(json);
+            return JsonHelper.FromJson<T>(json);
         }
-#endif
 
         public string AsJson()
         {
-#if UNITY_5
-            return UnityEngine.JsonUtility.ToJson(this);
-#else
-            return JsonConvert.SerializeObject(this);
-#endif
+            return JsonHelper.ToJson(this);
         }
     }
 

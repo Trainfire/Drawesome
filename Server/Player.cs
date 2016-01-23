@@ -1,4 +1,5 @@
 using Fleck;
+using Protocol;
 
 namespace Server
 {
@@ -15,9 +16,9 @@ namespace Server
             Socket = socket;
         }
 
-        public void AssignSocket(IWebSocketConnection socket)
+        public void SendMessage(Message message)
         {
-            Socket = socket;
+            Socket.Send(message.AsJson());
         }
     }
 }
