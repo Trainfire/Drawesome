@@ -46,13 +46,7 @@ namespace Protocol
 
         public static T GetMessage<T>(string json) where T : Message
         {
-            T message = null;
-
-#if !UNITY_5
-            message = JsonConvert.DeserializeObject<T>(json);
-#else
-            message = UnityEngine.JsonUtility.FromJson<T>(json);
-#endif
+            T message = JsonHelper.FromJson<T>(json);
 
             if (message != null)
             {
