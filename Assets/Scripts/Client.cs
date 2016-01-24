@@ -2,11 +2,14 @@ using UnityEngine;
 using System;
 using WebSocketSharp;
 using Protocol;
+using System.Collections.Generic;
 
 public class Client : Singleton<Client>
 {
     public string ID { get; private set; }
     public string PlayerName { get; private set; }
+
+    public List<ProtocolPlayer> Players;
 
     const string URI = "ws://127.0.0.1:8181/room";
 
@@ -119,6 +122,16 @@ public class Client : Singleton<Client>
     void OnServerUpdate(ServerUpdate update)
     {
         Debug.LogFormat("Recieved Server Update with {0} players.", update.Players.Count);
+        Players = update.Players;
+
+        string names = "";
+
+        for (int i = 0; i < Players.Count; i++)
+        {
+            names += i != Players.Count - 1 ? Players[i].Name + ", " : Players[i].Name;
+        }
+
+        Debug.LogFormat("Connected players: {0}", names);
     }
 
     #endregion
