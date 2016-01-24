@@ -1,13 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using Newtonsoft.Json;
 
 namespace Protocol
 {
-    public interface IPlayer
+    public class ProtocolPlayer
     {
-        string ID { get; set; }
-        string Name { get; set; }
+        public string ID { get; set; }
+        public string Name { get; set; }
     }
 }

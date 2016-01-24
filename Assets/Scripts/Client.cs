@@ -2,6 +2,7 @@ using UnityEngine;
 using System;
 using WebSocketSharp;
 using Protocol;
+using Newtonsoft.Json;
 
 public class Client : Singleton<Client>
 {

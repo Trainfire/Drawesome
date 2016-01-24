@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Newtonsoft.Json;
 
 namespace Protocol
 {
@@ -42,15 +43,16 @@ namespace Protocol
 
     public class ServerUpdate : Message
     {
-        public List<IPlayer> Players;
+        public List<ProtocolPlayer> Players = new List<ProtocolPlayer>();
 
         public ServerUpdate()
         {
-
+            Type = MessageType.ServerUpdate;
         }
 
-        public ServerUpdate(List<IPlayer> players)
+        public ServerUpdate(List<ProtocolPlayer> players)
         {
+            Type = MessageType.ServerUpdate;
             Players = players;
         }
     }

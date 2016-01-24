@@ -26,19 +26,20 @@ namespace Server
             var playerConnectMessage = JsonHelper.FromJson<PlayerConnectMessage>(m);
             if (playerConnectMessage != null)
             {
-                Logger.WriteLine(playerConnectMessage.ID);
                 foreach (var player in Players)
                 {
                     if (player.ID == playerConnectMessage.ID)
                     {
                         player.Name = playerConnectMessage.PlayerName;
                         Logger.WriteLine("Player {0} connected.", player.Name);
+
+                        // Send update to Player
+                        UpdateAllClients();
+
                         break;
                     }
                 }
             }
-
-            Players.ForEach(x => x.Update(this));
         }
 
         public override void OnClose(IWebSocketConnection socket)
@@ -62,7 +63,7 @@ namespace Server
 
             if (player == null)
             {
-                Logger.WriteLine("A new player connected.");
+                //Logger.WriteLine("A new player connected.");
 
                 player = new Player("N/A", socket);
                 player.ID = Guid.NewGuid().ToString();
@@ -91,6 +92,26 @@ namespace Server
         {
             var players = Players.Where(x => x != exception).ToList();
             players.ForEach(x => x.SendMessage(message));
+        }
+
+        /// <summary>
+        /// Sends a Server Update to all Clients.
+        /// </summary>
+        public void UpdateAllClients()
+        {
+            List<ProtocolPlayer> protocolPlayers = new List<ProtocolPlayer>();
+
+            foreach (var player in Players)
+            {
+                var protocolPlayer = new ProtocolPlayer();
+                protocolPlayer.ID = player.ID;
+                protocolPlayer.Name = player.Name;
+                protocolPlayers.Add(protocolPlayer);
+            }
+
+            var serverUpdate = new ServerUpdate(protocolPlayers);
+
+            Players.ForEach(x => x.SendMessage(serverUpdate));
         }
 
         Player GetPlayerFromSocket(IWebSocketConnection socket)
