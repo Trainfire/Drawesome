@@ -7,8 +7,8 @@ namespace Server
 {
     class Player : ProtocolPlayer
     {
-        public string ID { get; set; }
-        public string Name { get; set; }
+        public override string ID { get; set; }
+        public override string Name { get; set; }
         public IWebSocketConnection Socket { get; private set; }
 
         public Player(string playerName, IWebSocketConnection socket)

@@ -23,7 +23,8 @@ namespace Server
         {
             // Validates a player's request to change name. 
             // Usually sent on a first-time connection to the server after server-side validation.
-            var playerConnectMessage = JsonHelper.FromJson<PlayerConnectMessage>(m);
+            var playerConnectMessage = JsonHelper.FromJson<PlayerFirstConnectMessage>(m);
+            Player matchingPlayer = null;
             if (playerConnectMessage != null)
             {
                 foreach (var player in Players)
@@ -32,13 +33,16 @@ namespace Server
                     {
                         player.Name = playerConnectMessage.PlayerName;
                         Logger.WriteLine("Player {0} connected.", player.Name);
-
-                        // Send the latest player state to all clients.
-                        SendUpdateToAllClients();
-
+                        matchingPlayer = player;
                         break;
                     }
                 }
+
+                // Send the latest player state to all clients.
+                SendUpdateToAllClients();
+
+                // Send Player Joined message
+                SendToAll(new PlayerJoined(matchingPlayer), matchingPlayer);
             }
         }
 
@@ -51,6 +55,8 @@ namespace Server
             {
                 Players.Remove(player);
                 Logger.WriteLine("Player {0} disconnected", player.Name);
+
+                SendToAll(new PlayerLeft(player));
             }
         }
 

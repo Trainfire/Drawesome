@@ -98,7 +98,7 @@ namespace Server
             }
         }
 
-        void OnPlayerConnected(PlayerConnectMessage message)
+        void OnPlayerConnected(PlayerFirstConnectMessage message)
         {
             Console.WriteLine("Player {0} connected.", message.PlayerName);
             //AddPlayer(new Player(message.PlayerName));

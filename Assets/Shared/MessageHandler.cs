@@ -6,10 +6,13 @@ namespace Protocol
     {
         // Add an action for every type of message here.
         public Action<Message> OnGeneric;
-        public Action<PlayerConnectMessage> OnPlayerConnected;
+        public Action<PlayerFirstConnectMessage> OnPlayerConnected;
+        public Action<PlayerJoined> OnPlayerJoined;
+        public Action<PlayerLeft> OnPlayerLeft;
         public Action<PlayerReadyMessage> OnPlayerReady;
         public Action<ValidatePlayer> OnValidatePlayer;
         public Action<ServerUpdate> OnServerUpdate;
+        public Action<PlayerAction> OnPlayerAction;
 
         public void HandleMessage(string json)
         {
@@ -18,13 +21,21 @@ namespace Protocol
             // Massive messy switch. IDK.
             switch (message.Type)
             {
-                case MessageType.None:
+                case MessageType.Generic:
                     if (OnGeneric != null)
                         OnGeneric(message);
                     break;
                 case MessageType.PlayerConnect:
                     if (OnPlayerConnected != null)
-                        OnPlayerConnected(Deserialize<PlayerConnectMessage>(json));
+                        OnPlayerConnected(Deserialize<PlayerFirstConnectMessage>(json));
+                    break;
+                case MessageType.PlayerJoined:
+                    if (OnPlayerJoined != null)
+                        OnPlayerJoined(Deserialize<PlayerJoined>(json));
+                    break;
+                case MessageType.PlayerLeft:
+                    if (OnPlayerLeft != null)
+                        OnPlayerLeft(Deserialize<PlayerLeft>(json));
                     break;
                 case MessageType.PlayerReady:
                     if (OnPlayerReady != null)
@@ -37,6 +48,10 @@ namespace Protocol
                 case MessageType.ServerUpdate:
                     if (OnServerUpdate != null)
                         OnServerUpdate(Deserialize<ServerUpdate>(json));
+                    break;
+                case MessageType.PlayerAction:
+                    if (OnPlayerAction != null)
+                        OnPlayerAction(Deserialize<PlayerAction>(json));
                     break;
                 default:
                     break;

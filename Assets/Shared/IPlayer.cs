@@ -5,7 +5,7 @@ namespace Protocol
 {
     public class ProtocolPlayer
     {
-        public string ID { get; set; }
-        public string Name { get; set; }
+        public virtual string ID { get; set; }
+        public virtual string Name { get; set; }
     }
 }

@@ -2,7 +2,6 @@ using UnityEngine;
 using System;
 using WebSocketSharp;
 using Protocol;
-using Newtonsoft.Json;
 
 public class Client : Singleton<Client>
 {
@@ -19,13 +18,11 @@ public class Client : Singleton<Client>
         base.Awake();
         webSocket = new WebSocket(URI);
 
-        messageHandler.OnGeneric += (message) =>
-        {
-            Debug.Log("Recieved Generic Message: " + message.LogMessage);
-        };
-
+        messageHandler.OnGeneric += OnGeneric;
         messageHandler.OnValidatePlayer += OnValidatePlayer;
         messageHandler.OnServerUpdate += OnServerUpdate;
+        messageHandler.OnPlayerJoined += OnPlayerJoined;
+        messageHandler.OnPlayerLeft += OnPlayerLeft;
     }
 
     public void Connect(string playerName)
@@ -83,20 +80,6 @@ public class Client : Singleton<Client>
         messageHandler.HandleMessage(e.Data);
     }
 
-    void OnValidatePlayer(ValidatePlayer message)
-    {
-        Debug.Log("OnValidatePlayer");
-        ID = message.ID;
-        var playerConnectMessage = new PlayerConnectMessage(ID, PlayerName);
-        var json = JsonUtility.ToJson(playerConnectMessage);
-        webSocket.Send(json);
-    }
-
-    void OnServerUpdate(ServerUpdate update)
-    {
-        Debug.LogFormat("Recieved Server Update with {0} players.", update.Players.Count);
-    }
-
     void OnApplicationQuit()
     {
         Disconnect();
@@ -106,4 +89,37 @@ public class Client : Singleton<Client>
     {
         return webSocket.ReadyState == WebSocketState.Open ? true : false;
     }
+
+    #region Message Handlers
+
+    void OnGeneric(Message message)
+    {
+        Debug.Log(message.LogMessage);
+    }
+
+    void OnPlayerJoined(PlayerJoined message)
+    {
+        Debug.LogFormat("Player {0} joined the game.", message.Player.Name);
+    }
+
+    void OnPlayerLeft(PlayerLeft message)
+    {
+        Debug.LogFormat("Player {0} left the game.", message.Player.Name);
+    }
+
+    void OnValidatePlayer(ValidatePlayer message)
+    {
+        Debug.Log("OnValidatePlayer");
+        ID = message.ID;
+        var playerConnectMessage = new PlayerFirstConnectMessage(ID, PlayerName);
+        var json = JsonUtility.ToJson(playerConnectMessage);
+        webSocket.Send(json);
+    }
+
+    void OnServerUpdate(ServerUpdate update)
+    {
+        Debug.LogFormat("Recieved Server Update with {0} players.", update.Players.Count);
+    }
+
+    #endregion
 }

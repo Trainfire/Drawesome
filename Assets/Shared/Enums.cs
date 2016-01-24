@@ -8,17 +8,4 @@ namespace Protocol
         Setup,
         DrawingPhase,
     }
-
-    [Serializable]
-    public enum MessageType
-    {
-        None,
-        Generic,
-        PlayerConnect,
-        ValidatePlayer,
-        PlayerReady,
-        ForceStartRound,
-        SendChatFromPlayer,
-        ServerUpdate,
-    }
 }
