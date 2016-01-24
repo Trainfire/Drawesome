@@ -33,8 +33,8 @@ namespace Server
                         player.Name = playerConnectMessage.PlayerName;
                         Logger.WriteLine("Player {0} connected.", player.Name);
 
-                        // Send update to Player
-                        UpdateAllClients();
+                        // Send the latest player state to all clients.
+                        SendUpdateToAllClients();
 
                         break;
                     }
@@ -97,7 +97,7 @@ namespace Server
         /// <summary>
         /// Sends a Server Update to all Clients.
         /// </summary>
-        public void UpdateAllClients()
+        public void SendUpdateToAllClients()
         {
             List<ProtocolPlayer> protocolPlayers = new List<ProtocolPlayer>();
 
