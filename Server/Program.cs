@@ -15,6 +15,7 @@ namespace Server
                 socket.OnClose += () => room.OnClose(socket);
                 socket.OnError += (ex) => room.OnError(ex);
                 socket.OnMessage += (str) => room.OnMessage(str);
+                socket.OnBinary += (bytes) => room.OnBinary(bytes);
             });
 
             Console.WriteLine("Press Enter to stop the server...");

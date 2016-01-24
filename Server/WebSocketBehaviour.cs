@@ -27,6 +27,11 @@ namespace Server
             
         }
 
+        public virtual void OnBinary(byte[] bytes)
+        {
+
+        }
+
         public virtual void OnError(Exception socket)
         {
 
