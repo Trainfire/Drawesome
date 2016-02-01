@@ -34,7 +34,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Fleck, Version=0.13.0.57, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>packages\Fleck.0.13.0.57\lib\net40\Fleck.dll</HintPath>
+      <HintPath>.\packages\Fleck.0.13.0.57\lib\net40\Fleck.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=8.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
@@ -69,12 +69,14 @@
     <Compile Include="..\Assets\Shared\ProtocolHelper.cs">
       <Link>Protocol\ProtocolHelper.cs</Link>
     </Compile>
+    <Compile Include="..\Client\Assets\Shared\ProtocolPlayer.cs">
+      <Link>Protocol\ProtocolPlayer.cs</Link>
+    </Compile>
     <Compile Include="Logger.cs" />
     <Compile Include="Player.cs" />
     <Compile Include="PlayerManager.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Protocol\ProtocolPlayer.cs" />
     <Compile Include="Room.cs" />
     <Compile Include="WebSocketBehaviour.cs" />
   </ItemGroup>
