@@ -54,9 +54,6 @@
     <Compile Include="..\Assets\Shared\Enums.cs">
       <Link>Protocol\Enums.cs</Link>
     </Compile>
-    <Compile Include="..\Assets\Shared\IPlayer.cs">
-      <Link>Protocol\IPlayer.cs</Link>
-    </Compile>
     <Compile Include="..\Assets\Shared\JsonHelper.cs">
       <Link>Shared\JsonHelper.cs</Link>
     </Compile>
@@ -77,6 +74,7 @@
     <Compile Include="PlayerManager.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Protocol\ProtocolPlayer.cs" />
     <Compile Include="Room.cs" />
     <Compile Include="WebSocketBehaviour.cs" />
   </ItemGroup>
