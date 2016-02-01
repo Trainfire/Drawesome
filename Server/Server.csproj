@@ -51,22 +51,22 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="..\Assets\Shared\Enums.cs">
+    <Compile Include="..\Client\Assets\Shared\Enums.cs">
       <Link>Protocol\Enums.cs</Link>
     </Compile>
-    <Compile Include="..\Assets\Shared\JsonHelper.cs">
-      <Link>Shared\JsonHelper.cs</Link>
+    <Compile Include="..\Client\Assets\Shared\JsonHelper.cs">
+      <Link>Protocol\JsonHelper.cs</Link>
     </Compile>
-    <Compile Include="..\Assets\Shared\Message.cs">
+    <Compile Include="..\Client\Assets\Shared\Message.cs">
       <Link>Protocol\Message.cs</Link>
     </Compile>
-    <Compile Include="..\Assets\Shared\MessageHandler.cs">
+    <Compile Include="..\Client\Assets\Shared\MessageHandler.cs">
       <Link>Protocol\MessageHandler.cs</Link>
     </Compile>
-    <Compile Include="..\Assets\Shared\Protocol.cs">
+    <Compile Include="..\Client\Assets\Shared\Protocol.cs">
       <Link>Protocol\Protocol.cs</Link>
     </Compile>
-    <Compile Include="..\Assets\Shared\ProtocolHelper.cs">
+    <Compile Include="..\Client\Assets\Shared\ProtocolHelper.cs">
       <Link>Protocol\ProtocolHelper.cs</Link>
     </Compile>
     <Compile Include="..\Client\Assets\Shared\ProtocolPlayer.cs">
