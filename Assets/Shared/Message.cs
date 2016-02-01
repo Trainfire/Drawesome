@@ -1,4 +1,4 @@
-﻿namespace Protocol
+namespace Protocol
 {
     public class Message
     {
