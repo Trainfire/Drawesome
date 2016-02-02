@@ -8,13 +8,16 @@ namespace Server
 {
     class PlayerManager : WebSocketBehaviour
     {
+        public event EventHandler<Player> PlayerConnected;
+        public event EventHandler<Player> PlayerDisconnected;
+
         public List<Player> Players { get; private set; }
 
         public override void OnOpen(IWebSocketConnection socket)
         {
             base.OnOpen(socket);
 
-            // Assign a unique ID to the player and send it back to the client.
+            // Respond to a join request by assigning a unique ID to the connection and sending it back to the client.
             var player = AddPlayer(socket);
             Send(new ValidatePlayer(player.ID), player);
         }
@@ -41,8 +44,12 @@ namespace Server
                 // Send the latest player state to all clients.
                 SendUpdateToAllClients();
 
-                // Send Player Joined message
+                // Send Player Joined message.
                 SendToAll(new PlayerJoined(matchingPlayer), matchingPlayer);
+
+                // Trigger event.
+                if (PlayerConnected != null)
+                    PlayerConnected(this, matchingPlayer);
             }
         }
 
@@ -50,6 +57,7 @@ namespace Server
         {
             base.OnClose(socket);
 
+            // Remove disconnected player from manager.
             var player = Players.Find(x => x.Socket == socket);
             if (player != null)
             {
@@ -57,6 +65,9 @@ namespace Server
                 Logger.WriteLine("Player {0} disconnected", player.Name);
 
                 SendToAll(new PlayerLeft(player));
+
+                if (PlayerDisconnected != null)
+                    PlayerDisconnected(this, player);
             }
         }
 
@@ -69,8 +80,6 @@ namespace Server
 
             if (player == null)
             {
-                //Logger.WriteLine("A new player connected.");
-
                 player = new Player("N/A", socket);
                 player.ID = Guid.NewGuid().ToString();
 
