@@ -13,7 +13,7 @@ namespace Server
         public const double DrawingPhaseTimer = 5000;
     }
 
-    public class Room : WebSocketBehaviour
+    public class RoomOld : WebSocketBehaviour
     {
         RoomState CurrentState { get; set; }
 
@@ -23,7 +23,7 @@ namespace Server
         List<RoomState> States;
         int CurrentStateIndex = 0;
 
-        public Room()
+        public RoomOld()
         {
             States = new List<RoomState>();
             States.Add(new Setup());
