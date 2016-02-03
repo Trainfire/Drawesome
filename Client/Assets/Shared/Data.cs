@@ -3,14 +3,15 @@ using Newtonsoft.Json;
 
 namespace Protocol
 {
-    public class ProtocolPlayer
+    [Serializable]
+    public class PlayerData
     {
-        public virtual string ID { get; set; }
-        public virtual string Name { get; set; }
+        public string ID;
+        public string Name;
     }
 
     public class RoomData
     {
-        public Guid ID { get; set; }
+        public string ID { get; set; }
     }
 }

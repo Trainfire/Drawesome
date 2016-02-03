@@ -51,6 +51,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\Client\Assets\Shared\Data.cs">
+      <Link>Protocol\Data.cs</Link>
+    </Compile>
     <Compile Include="..\Client\Assets\Shared\Enums.cs">
       <Link>Protocol\Enums.cs</Link>
     </Compile>
@@ -69,12 +72,9 @@
     <Compile Include="..\Client\Assets\Shared\ProtocolHelper.cs">
       <Link>Protocol\ProtocolHelper.cs</Link>
     </Compile>
-    <Compile Include="..\Client\Assets\Shared\ProtocolPlayer.cs">
-      <Link>Protocol\ProtocolPlayer.cs</Link>
-    </Compile>
     <Compile Include="Logger.cs" />
     <Compile Include="Player.cs" />
-    <Compile Include="PlayerManager.cs" />
+    <Compile Include="ClientConnectionsHandler.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Room.cs" />

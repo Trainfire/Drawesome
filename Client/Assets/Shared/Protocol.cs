@@ -38,13 +38,13 @@ namespace Protocol
         public class RequestConnection : Message
         {
             public string ID;
-            public string PlayerName;
+            public string Name;
 
-            public RequestConnection(string id, string playerName)
+            public RequestConnection(string id, string name)
             {
                 Type = MessageType.ClientConnectionRequest;
-                PlayerName = playerName;
                 ID = id;
+                Name = name;
             }
         }
 
@@ -62,12 +62,12 @@ namespace Protocol
 
         public class RequestRoomList : Message
         {
-            public string PlayerID;
+            public PlayerData Player;
 
-            public RequestRoomList(string playerId)
+            public RequestRoomList(PlayerData player)
             {
                 Type = MessageType.ClientRequestRoomList;
-                PlayerID = playerId;
+                Player = player;
             }
         }
     }
@@ -78,10 +78,10 @@ namespace Protocol
         {
             public string ID;
 
-            public ConnectionSuccess(string guid)
+            public ConnectionSuccess(string id)
             {
                 Type = MessageType.ServerConnectionSuccess;
-                ID = guid;
+                ID = id;
             }
         }
 
@@ -110,14 +110,14 @@ namespace Protocol
 
     public class ServerUpdate : Message
     {
-        public List<ProtocolPlayer> Players = new List<ProtocolPlayer>();
+        public List<PlayerData> Players = new List<PlayerData>();
 
         public ServerUpdate()
         {
             Type = MessageType.ServerUpdate;
         }
 
-        public ServerUpdate(List<ProtocolPlayer> players)
+        public ServerUpdate(List<PlayerData> players)
         {
             Type = MessageType.ServerUpdate;
             Players = players;

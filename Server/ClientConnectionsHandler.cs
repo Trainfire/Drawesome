@@ -32,7 +32,7 @@ namespace Server
 
             // Respond to a join request by assigning a unique ID to the connection and sending it back to the client.
             var player = AddPlayer(socket);
-            Send(new ServerMessage.ConnectionSuccess(player.ID), player);
+            Send(new ServerMessage.ConnectionSuccess(player.Data.ID), player);
         }
 
         public override void OnMessage(string m)
@@ -46,10 +46,10 @@ namespace Server
             {
                 foreach (var player in Players)
                 {
-                    if (player.ID == clientConnectionRequest.ID)
+                    if (player.Data.ID == clientConnectionRequest.ID)
                     {
-                        player.Name = clientConnectionRequest.PlayerName;
-                        Logger.WriteLine("Player {0} connected.", player.Name);
+                        player.Data.Name = clientConnectionRequest.Name;
+                        Logger.WriteLine("Player {0} connected.", player.Data.Name);
                         matchingPlayer = player;
                         break;
                     }
@@ -70,9 +70,9 @@ namespace Server
             if (message.Type == MessageType.ClientRequestRoomList)
             {
                 var roomListMessage = JsonHelper.FromJson<ClientMessage.RequestRoomList>(m);
-                Console.WriteLine("Recieved a request from {0} for a list a rooms.", roomListMessage.PlayerID);
+                Console.WriteLine("Recieved a request from {0} for a list a rooms.", roomListMessage.Player.ID);
 
-                var target = Players.Find(x => x.ID == roomListMessage.PlayerID);
+                var target = Players.Find(x => x.Data.ID == roomListMessage.Player.ID);
 
                 var protocolRooms = Rooms.Select(x => x.Data).ToList();
                 target.SendMessage(new ServerMessage.RoomList(protocolRooms));
@@ -89,7 +89,7 @@ namespace Server
             {
                 Players.Remove(player);
 
-                Logger.WriteLine("Player {0} disconnected", player.Name);
+                Logger.WriteLine("Player {0} disconnected", player.Data.Name);
 
                 SendToAll(new ServerMessage.NotifyPlayerAction(PlayerAction.Disconnected));
 
@@ -108,13 +108,13 @@ namespace Server
             if (player == null)
             {
                 player = new Player("N/A", socket);
-                player.ID = Guid.NewGuid().ToString();
+                player.Data.ID = Guid.NewGuid().ToString();
 
                 Players.Add(player);
             }
             else
             {
-                Logger.WriteLine("Player {0} already exists...", player.Name);
+                Logger.WriteLine("Player {0} already exists...", player.Data.Name);
             }
 
             return player;
@@ -141,15 +141,7 @@ namespace Server
         /// </summary>
         public void SendUpdateToAllClients()
         {
-            List<ProtocolPlayer> protocolPlayers = new List<ProtocolPlayer>();
-
-            foreach (var player in Players)
-            {
-                var protocolPlayer = new ProtocolPlayer();
-                protocolPlayer.ID = player.ID;
-                protocolPlayer.Name = player.Name;
-                protocolPlayers.Add(protocolPlayer);
-            }
+            List<PlayerData> protocolPlayers = Players.Select(x => x.Data).ToList();
 
             var serverUpdate = new ServerUpdate(protocolPlayers);
 

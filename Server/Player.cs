@@ -25,18 +25,17 @@ namespace Server
         }
     }
 
-    class Player : ProtocolPlayer
+    class Player
     {
         public event EventHandler<PlayerConnectionClosed> ConnectionClosed;
-
-        public override string ID { get; set; }
-        public override string Name { get; set; }
+        public PlayerData Data { get; set; }
         public IWebSocketConnection Socket { get; private set; }
 
         public Player(string playerName, IWebSocketConnection socket)
         {
-            Name = playerName;
-            ID = Guid.NewGuid().ToString();
+            Data = new PlayerData();
+            Data.Name = playerName;
+            Data.ID = Guid.NewGuid().ToString();
             Socket = socket;
             
             socket.OnClose += () =>
@@ -60,7 +59,7 @@ namespace Server
 
         public void Update(ClientConnectionsHandler manager)
         {
-            Console.WriteLine("Send update to " + Name);
+            Console.WriteLine("Send update to " + Data.Name);
         }
     }
 }

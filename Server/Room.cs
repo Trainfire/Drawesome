@@ -15,14 +15,14 @@ namespace Server
         public Room()
         {
             Data = new RoomData();
-            Data.ID = Guid.NewGuid();
+            Data.ID = Guid.NewGuid().ToString();
         }
 
         public Room(Player owner)
         {
             // TODO: TESTING!!!
             Data = new RoomData();
-            Data.ID = Guid.Empty;
+            Data.ID = Guid.Empty.ToString();
 
             Players = new List<Player>();
             Owner = owner;
@@ -47,7 +47,7 @@ namespace Server
             SendMessage(joiningPlayer, "You joined the room {0}", Data.ID);
 
             // Send message to all other players
-            SendMessageToAll("{0} joined the room", joiningPlayer.Name);
+            SendMessageToAll("{0} joined the room", joiningPlayer.Data.Name);
         }
 
         void OnPlayerConnectionClosed(object sender, PlayerConnectionClosed e)
@@ -65,7 +65,7 @@ namespace Server
                     SendMessageToAll("{0} left.", e.Player);
                     break;
                 case PlayerCloseReason.Kicked:
-                    SendMessageToAll("{0} was kicked by {1}.", e.Player, Owner.Name);
+                    SendMessageToAll("{0} was kicked by {1}.", e.Player, Owner.Data.Name);
                     break;
                 default:
                     break;
@@ -76,7 +76,7 @@ namespace Server
             {
                 Owner = Players[0];
                 SendMessage(Owner, "You are now the room owner");
-                SendMessageToAll("{0} is now the room owner", Owner.Name);
+                SendMessageToAll("{0} is now the room owner", Owner.Data.Name);
             }
         }
 
