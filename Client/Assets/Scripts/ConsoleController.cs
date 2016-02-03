@@ -5,8 +5,6 @@ using System;
 
 public class ConsoleController
 {
-    public Action<string> Log;
-
     public delegate void Command(string[] args);
 
     Dictionary<string, Command> Commands = new Dictionary<string, Command>();
@@ -50,12 +48,12 @@ public class ConsoleController
     {
         if (Commands.ContainsKey(command))
         {
-            Debug.LogFormat("Execute command {0} with following arguments: ", command);
+            Logger.Log("Execute command {0} with following arguments: ", command);
             Commands[command](args);
         }
         else
         {
-            Debug.LogErrorFormat("Invalid command '{0}'", command);
+            Logger.LogErrorFormat("Invalid command '{0}'", command);
         }
     }
 
@@ -66,16 +64,7 @@ public class ConsoleController
 
     void PrintError()
     {
-        Debug.LogErrorFormat("Incorrect number of arguments");
-    }
-
-    void LogCommand(string message, params object[] args)
-    {
-        if (Log != null)
-        {
-            var formattedMessage = string.Format(message, args);
-            Log(formattedMessage);
-        }
+        Logger.LogErrorFormat("Incorrect number of arguments");
     }
 
     void CreateRoom(string[] args)
@@ -106,7 +95,7 @@ public class ConsoleController
         }
         else
         {
-            LogCommand("Request rooms");
+            Logger.Log("Request rooms");
             Client.Instance.RequestRooms();
         }
     }
@@ -119,7 +108,7 @@ public class ConsoleController
         }
         else
         {
-            LogCommand("Connect with name {0}", args[0]);
+            Logger.Log("Connect with name {0}", args[0]);
             Client.Instance.Connect(args[0]);
         }
     }
@@ -132,7 +121,7 @@ public class ConsoleController
         }
         else
         {
-            LogCommand("Join {0}", args[0]);
+            Logger.Log("Join {0}", args[0]);
             Client.Instance.JoinRoom(args[0]);
         }
     }

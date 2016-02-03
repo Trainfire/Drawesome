@@ -30,9 +30,21 @@ public class ConsoleView : MonoBehaviour
         InputField.text = "";
         LogView.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, 0f);
 
-        Console.Log += (str) =>
+        Logger.OnLog += (str, type) =>
         {
-            LogText.text += "\r\n " + str;
+            switch (type)
+            {
+                case Logger.LogType.Normal:
+                    LogText.text += "\r\n " + str;
+                    break;
+                case Logger.LogType.Warning:
+                    break;
+                case Logger.LogType.Error:
+                    LogText.text += "\r\n<color=#f00>" + str + "</color>";
+                    break;
+                default:
+                    break;
+            }
         };
     }
 
@@ -57,7 +69,7 @@ public class ConsoleView : MonoBehaviour
 
     IEnumerator Toggle()
     {
-        Debug.Log("Toggle");
+        Logger.Log("Toggle");
 
         float time = 0f;
 
