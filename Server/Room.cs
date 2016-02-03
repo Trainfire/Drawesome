@@ -12,11 +12,16 @@ namespace Server
         List<Player> Players { get; set; }
         Player Owner { get; set; }
 
+        /// <summary>
+        /// We'll limit GUID size to 4 characters for now to make joining games easier for development purposes.
+        /// </summary>
+        const int GuidSize = 4;
+
         public Room(Player owner, string password = "")
         {
             // TODO: TESTING!!!
             Data = new RoomData();
-            Data.ID = Guid.Empty.ToString();
+            Data.ID = Guid.NewGuid().ToString().Substring(0, GuidSize);
             Data.Password = password;
 
             Players = new List<Player>();
