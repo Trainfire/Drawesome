@@ -53,6 +53,11 @@ public class Client : Singleton<Client>
         SendMessage(new ClientMessage.JoinRoom(Data, roomId));
     }
 
+    public void LeaveRoom()
+    {
+        SendMessage(new ClientMessage.LeaveRoom(Data));
+    }
+
     public void RequestRooms()
     {
         SendMessage(new ClientMessage.RequestRoomList(Data));

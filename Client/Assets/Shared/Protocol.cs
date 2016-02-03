@@ -15,6 +15,7 @@ namespace Protocol
         ServerSendRoomList,
         ServerNotifyPlayerAction,
         ClientJoinRoom,
+        ClientLeaveRoom,
     }
 
     public class Log : Message
@@ -59,6 +60,17 @@ namespace Protocol
                 Type = MessageType.ClientJoinRoom;
                 Player = player;
                 RoomId = roomId;
+            }
+        }
+
+        public class LeaveRoom : Message
+        {
+            public PlayerData Player;
+            
+            public LeaveRoom(PlayerData player)
+            {
+                Type = MessageType.ClientLeaveRoom;
+                Player = player;
             }
         }
 

@@ -11,6 +11,8 @@ public class UserInterface : MonoBehaviour
 
     void OnGUI()
     {
+        GUILayout.BeginVertical();
+
         GUILayout.BeginHorizontal();
 
         if (!Client.Instance.IsConnected())
@@ -24,6 +26,8 @@ public class UserInterface : MonoBehaviour
         guiState();
 
         GUILayout.EndHorizontal();
+
+        GUILayout.EndVertical();
     }
 
     void OnDisconnected()
@@ -38,6 +42,9 @@ public class UserInterface : MonoBehaviour
 
     void OnConnected()
     {
+        // Top row
+        GUILayout.BeginHorizontal();
+
         if (GUILayout.Button("Disconnect"))
         {
             Client.Instance.Disconnect();
@@ -45,5 +52,20 @@ public class UserInterface : MonoBehaviour
 
         if (GUILayout.Button("Request Rooms"))
             Client.Instance.RequestRooms();
+
+        GUILayout.EndHorizontal();
+
+        GUILayout.BeginVertical();
+
+        foreach (var room in Client.Instance.Rooms)
+        {
+            if (GUILayout.Button("Join room " + room.ID))
+                Client.Instance.JoinRoom(room.ID);
+        }
+
+        GUILayout.EndVertical();
+
+        if (GUILayout.Button("Leave Room"))
+            Client.Instance.LeaveRoom();
     }
 }

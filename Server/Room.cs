@@ -46,6 +46,17 @@ namespace Server
             // Add callbacks
             joiningPlayer.ConnectionClosed += OnPlayerConnectionClosed;
 
+            // Remove player if they leave
+            joiningPlayer.Socket.OnMessage += (message) =>
+            {
+                // TODO: Trash
+                var obj = JsonHelper.FromJson<Message>(message);
+                if (obj.Type == MessageType.ClientLeaveRoom)
+                {
+                    OnPlayerConnectionClosed(this, new PlayerConnectionClosed(joiningPlayer, PlayerCloseReason.Left));
+                }
+            };
+
             // Send message to joining player
             SendMessage(joiningPlayer, "You joined the room {0}", Data.ID);
 
