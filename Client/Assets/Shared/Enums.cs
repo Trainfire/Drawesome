@@ -12,4 +12,13 @@ namespace Protocol
         Joined = 4,
         Left = 5,
     }
+
+    [Serializable]
+    public enum RoomError
+    {
+        None,
+        InvalidPassword,
+        RoomFull,
+        RoomDoesNotExist
+    }
 }

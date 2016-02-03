@@ -12,26 +12,37 @@ namespace Server
         List<Player> Players { get; set; }
         Player Owner { get; set; }
 
-        public Room()
-        {
-            Data = new RoomData();
-            Data.ID = Guid.NewGuid().ToString().Remove(4);
-            Players = new List<Player>();
-        }
-
-        public Room(Player owner)
+        public Room(Player owner, string password = "")
         {
             // TODO: TESTING!!!
             Data = new RoomData();
             Data.ID = Guid.Empty.ToString();
+            Data.Password = password;
 
             Players = new List<Player>();
             Owner = owner;
-            Join(owner);
+
+            if (string.IsNullOrEmpty(password))
+            {
+                Console.WriteLine("Creating room for {0}", Owner.Data.Name);
+            }
+            else
+            {
+                Console.WriteLine("Creating room for {0} with password {1}", Owner.Data.Name, password);
+            }
+
+            Join(Owner);
         }
 
-        public void Join(Player joiningPlayer)
+        public void Join(Player joiningPlayer, string password = "")
         {
+            // Check validity of password and notify player if incorrect
+            if (password != Data.Password)
+            {
+                joiningPlayer.SendMessage(new ServerMessage.RoomJoinError(RoomError.InvalidPassword));
+                return;
+            }
+
             if (Players.Contains(joiningPlayer))
             {
                 // TODO: Handle player rejoining room after disconnection?
@@ -59,8 +70,6 @@ namespace Server
 
             // Send message to joining player
             SendMessage(joiningPlayer, "You joined the room {0}", Data.ID);
-
-            // Send message to all other players
             SendMessageToAll("{0} joined the room", joiningPlayer.Data.Name);
         }
 

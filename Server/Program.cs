@@ -8,6 +8,7 @@ namespace Server
     class Program
     {
         static List<WebSocketBehaviour> Handlers { get; set; }
+        static List<Room> Rooms { get; set; }
 
         static void Main(string[] args)
         {
@@ -20,7 +21,15 @@ namespace Server
                 socket.OnOpen += () => Handlers.ForEach(x => x.OnOpen(socket));
                 socket.OnClose += () => Handlers.ForEach(x => x.OnClose(socket));
                 socket.OnError += (ex) => Handlers.ForEach(x => x.OnError(ex));
-                socket.OnMessage += (str) => Handlers.ForEach(x => x.OnMessage(str));
+                socket.OnMessage += (str) =>
+                {
+                    //Handlers.ForEach(x => x.OnMessage(str));
+                    foreach (var handle in Handlers)
+                    {
+                        Console.WriteLine("Handle message: " + str);
+                        handle.OnMessage(str);
+                    }
+                };
                 socket.OnBinary += (bytes) => Handlers.ForEach(x => x.OnBinary(bytes));
             });
 

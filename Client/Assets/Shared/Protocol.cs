@@ -16,6 +16,8 @@ namespace Protocol
         ServerNotifyPlayerAction,
         ClientJoinRoom,
         ClientLeaveRoom,
+        ClientCreateRoom,
+        ServerRoomJoinError,
     }
 
     public class Log : Message
@@ -47,6 +49,19 @@ namespace Protocol
                 Type = MessageType.ClientConnectionRequest;
                 ID = id;
                 Name = name;
+            }
+        }
+
+        public class CreateRoom : Message
+        {
+            public PlayerData Player;
+            public string Password;
+
+            public CreateRoom(PlayerData player, string password)
+            {
+                Type = MessageType.ClientCreateRoom;
+                Player = player;
+                Password = password;
             }
         }
 
@@ -118,6 +133,17 @@ namespace Protocol
             {
                 Type = MessageType.ServerNotifyPlayerAction;
                 Action = action;
+            }
+        }
+
+        public class RoomJoinError : Message
+        {
+            public RoomError Error;
+
+            public RoomJoinError(RoomError error)
+            {
+                Type = MessageType.ServerRoomJoinError;
+                Error = error;
             }
         }
     }

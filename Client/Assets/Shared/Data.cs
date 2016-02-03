@@ -13,5 +13,6 @@ namespace Protocol
     public class RoomData
     {
         public string ID { get; set; }
+        public string Password { get; set; }
     }
 }

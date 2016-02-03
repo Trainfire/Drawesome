@@ -48,6 +48,11 @@ public class Client : Singleton<Client>
         webSocket.OnMessage -= OnMessage;
     }
 
+    public void CreateRoom(string password = "")
+    {
+        SendMessage(new ClientMessage.CreateRoom(Data, password));
+    }
+
     public void JoinRoom(string roomId)
     {
         SendMessage(new ClientMessage.JoinRoom(Data, roomId));
@@ -131,6 +136,7 @@ public class Client : Singleton<Client>
     {
         Data = new PlayerData();
         Data.ID = message.ID;
+        Data.Name = PlayerName;
         Debug.Log("Recieved ID: " + Data.ID);
         var playerConnectMessage = new ClientMessage.RequestConnection(Data.ID.ToString(), PlayerName);
         var json = JsonUtility.ToJson(playerConnectMessage);

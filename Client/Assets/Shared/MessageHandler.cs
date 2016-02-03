@@ -9,6 +9,7 @@ namespace Protocol
         public Action<ServerMessage.ConnectionSuccess> OnServerCompleteConnectionRequest;
         public Action<ServerMessage.RoomList> OnRecieveRoomList;
         public Action<ServerUpdate> OnServerUpdate;
+        public Action<ServerMessage.RoomJoinError> OnRoomError;
 
         public void HandleMessage(string json)
         {
@@ -32,6 +33,10 @@ namespace Protocol
                 case MessageType.ServerSendRoomList:
                     if (OnRecieveRoomList != null)
                         OnRecieveRoomList(Deserialize<ServerMessage.RoomList>(json));
+                    break;
+                case MessageType.ServerRoomJoinError:
+                    if (OnRoomError != null)
+                        OnRoomError(Deserialize<ServerMessage.RoomJoinError>(json));
                     break;
                 default:
                     break;
