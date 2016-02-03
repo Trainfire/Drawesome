@@ -35,12 +35,12 @@ public class ConsoleView : MonoBehaviour
             switch (type)
             {
                 case Logger.LogType.Normal:
-                    LogText.text += "\r\n " + str;
+                    LogText.text += str + "\r\n";
                     break;
                 case Logger.LogType.Warning:
                     break;
                 case Logger.LogType.Error:
-                    LogText.text += "\r\n<color=#f00>" + str + "</color>";
+                    LogText.text += "<color=#f00>" + str + "</color>\r\n";
                     break;
                 default:
                     break;
@@ -54,17 +54,22 @@ public class ConsoleView : MonoBehaviour
         {
             Console.SubmitInput(InputField.text);
             InputField.text = "";
-
-            // Hack to keep focus on inputfield after submitting a command. Classic Unity.
-            EventSystem.current.SetSelectedGameObject(InputField.gameObject, null);
-            InputField.OnPointerClick(new PointerEventData(EventSystem.current));
+            Focus();
         }
 
         if (Input.GetKeyUp(KeyCode.Tab) || Input.GetKeyUp(KeyCode.F1))
         {
             StopAllCoroutines();
             StartCoroutine(Toggle());
+            Focus();
         }
+    }
+
+    void Focus()
+    {
+        // Hack to keep focus on inputfield after submitting a command. Classic Unity.
+        EventSystem.current.SetSelectedGameObject(InputField.gameObject, null);
+        InputField.OnPointerClick(new PointerEventData(EventSystem.current));
     }
 
     IEnumerator Toggle()
