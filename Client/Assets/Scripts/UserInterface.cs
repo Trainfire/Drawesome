@@ -8,6 +8,7 @@ public class UserInterface : MonoBehaviour
 {
     Action guiState;
     string playerName = "";
+    string password = "";
 
     void OnGUI()
     {
@@ -67,5 +68,10 @@ public class UserInterface : MonoBehaviour
 
         if (GUILayout.Button("Leave Room"))
             Client.Instance.LeaveRoom();
+
+        password = GUILayout.TextField(password, GUILayout.Width(400f));
+
+        if (GUILayout.Button("Create Room"))
+            Client.Instance.CreateRoom(password);
     }
 }
