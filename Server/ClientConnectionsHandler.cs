@@ -17,11 +17,6 @@ namespace Server
         public ClientConnectionsHandler()
         {
             Rooms = new List<Room>();
-
-            for (int i = 0; i < 10; i++)
-            {
-                Rooms.Add(new Room());
-            }
         }
 
         public override void OnOpen(IWebSocketConnection socket)
@@ -80,7 +75,6 @@ namespace Server
             }
 
             // TODO: Trash
-            var requestJoin = JsonHelper.FromJson<Message>(m);
             if (message.Type == MessageType.ClientJoinRoom)
             {
                 var joinRoom = JsonHelper.FromJson<ClientMessage.JoinRoom>(m);
@@ -90,6 +84,17 @@ namespace Server
                 var joiningPlayer = Players.Find(x => x.Data.ID == joinRoom.Player.ID);
 
                 targetRoom.Join(joiningPlayer);
+            }
+
+            // TODO: Trash
+            if (message.Type == MessageType.ClientCreateRoom)
+            {
+                var createRoom = JsonHelper.FromJson<ClientMessage.CreateRoom>(m);
+                Console.WriteLine("Create room for {0} with password {1}", createRoom.Player.Name, createRoom.Password);
+
+                var creator = Players.Find(x => x.Data.ID == createRoom.Player.ID);
+                var room = new Room(creator, createRoom.Password);
+                Rooms.Add(room);
             }
         }
 
