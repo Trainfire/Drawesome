@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.EventSystems;
 using System.Collections;
 
 public class ConsoleView : MonoBehaviour
@@ -41,6 +42,10 @@ public class ConsoleView : MonoBehaviour
         {
             Console.SubmitInput(InputField.text);
             InputField.text = "";
+
+            // Hack to keep focus on inputfield after submitting a command. Classic Unity.
+            EventSystem.current.SetSelectedGameObject(InputField.gameObject, null);
+            InputField.OnPointerClick(new PointerEventData(EventSystem.current));
         }
 
         if (Input.GetKeyUp(KeyCode.Tab) || Input.GetKeyUp(KeyCode.F1))
