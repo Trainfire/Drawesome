@@ -73,6 +73,7 @@
     <Compile Include="Assets\Scripts\Client.cs" />
     <Compile Include="Assets\Scripts\DrawingCanvas.cs" />
     <Compile Include="Assets\Scripts\Singleton.cs" />
+    <Compile Include="Assets\Scripts\UserInterface.cs" />
     <Compile Include="Assets\Shared\Data.cs" />
     <Compile Include="Assets\Shared\Enums.cs" />
     <Compile Include="Assets\Shared\JsonHelper.cs" />

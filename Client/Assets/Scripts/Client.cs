@@ -6,10 +6,10 @@ using System.Collections.Generic;
 
 public class Client : Singleton<Client>
 {
-    public string ID { get; private set; }
+    public PlayerData Data { get; private set; }
     public string PlayerName { get; private set; }
 
-    public List<ProtocolPlayer> Players;
+    public List<PlayerData> Players;
 
     const string URI = "ws://127.0.0.1:8181/room";
 
@@ -48,7 +48,7 @@ public class Client : Singleton<Client>
 
     public void RequestRooms()
     {
-        SendMessage(new ClientMessage.RequestRoomList(ID));
+        SendMessage(new ClientMessage.RequestRoomList(Data));
     }
 
     public void SendMessage(Message message)
@@ -114,10 +114,12 @@ public class Client : Singleton<Client>
 
     void OnServerCompleteConnectionRequest(ServerMessage.ConnectionSuccess message)
     {
-        ID = message.ID;
-        Debug.Log("Recieved ID: " + ID);
-        var playerConnectMessage = new ClientMessage.RequestConnection(ID, PlayerName);
+        Data = new PlayerData();
+        Data.ID = message.ID;
+        Debug.Log("Recieved ID: " + Data.ID);
+        var playerConnectMessage = new ClientMessage.RequestConnection(Data.ID.ToString(), PlayerName);
         var json = JsonUtility.ToJson(playerConnectMessage);
+        Debug.Log(json);
         webSocket.Send(json);
     }
 
