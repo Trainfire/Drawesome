@@ -15,6 +15,8 @@ public class ConsoleController
     {
         RegisterCommand("/join", Join);
         RegisterCommand("/connect", Connect);
+        RegisterCommand("/requestrooms", RequestRooms);
+        RegisterCommand("/createroom", CreateRoom);
     }
 
     public void SubmitInput(string input)
@@ -73,6 +75,39 @@ public class ConsoleController
         {
             var formattedMessage = string.Format(message, args);
             Log(formattedMessage);
+        }
+    }
+
+    void CreateRoom(string[] args)
+    {
+        if (args.Length > 1)
+        {
+            PrintError();
+        }
+        else
+        {
+            // Check if password was provided. Kinda shitty? Eh!
+            if (args.Length == 0)
+            {
+                Client.Instance.CreateRoom();
+            }
+            else
+            {
+                Client.Instance.CreateRoom(args[0]);
+            }
+        }
+    }
+
+    void RequestRooms(string[] args)
+    {
+        if (args.Length > 0)
+        {
+            PrintError();
+        }
+        else
+        {
+            LogCommand("Request rooms");
+            Client.Instance.RequestRooms();
         }
     }
 
