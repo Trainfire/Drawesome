@@ -2,10 +2,14 @@ using System;
 
 namespace Protocol
 {
-    public enum GameState
+    [Serializable]
+    public enum PlayerAction
     {
-        None,
-        Setup,
-        DrawingPhase,
+        None = 0,
+        Connected = 1,
+        Disconnected = 2,
+        Kicked = 3,
+        Joined = 4,
+        Left = 5,
     }
 }

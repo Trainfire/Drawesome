@@ -6,10 +6,13 @@ using Protocol;
 
 namespace Server
 {
-    class PlayerManager : WebSocketBehaviour
+    class ClientConnectionsHandler : WebSocketBehaviour
     {
         public event EventHandler<Player> PlayerConnected;
         public event EventHandler<Player> PlayerDisconnected;
+        public event EventHandler<Player> PlayerCreateRoom;
+        public event EventHandler<Player> PlayerJoinRoom;
+        public event EventHandler<Player> PlayerLeaveRoom;
 
         public List<Player> Players { get; private set; }
 
@@ -19,22 +22,21 @@ namespace Server
 
             // Respond to a join request by assigning a unique ID to the connection and sending it back to the client.
             var player = AddPlayer(socket);
-            Send(new ValidatePlayer(player.ID), player);
+            Send(new ServerMessage.ApproveClientConnection(player.ID), player);
         }
 
         public override void OnMessage(string m)
         {
-            // Validates a player's request to change name. 
-            // Usually sent on a first-time connection to the server after server-side validation.
-            var playerConnectMessage = JsonHelper.FromJson<PlayerFirstConnectMessage>(m);
+            // Allow the connected client to assign their name.
+            var clientConnectionRequest = JsonHelper.FromJson<ClientMessage.RequestConnection>(m);
             Player matchingPlayer = null;
-            if (playerConnectMessage != null)
+            if (clientConnectionRequest != null)
             {
                 foreach (var player in Players)
                 {
-                    if (player.ID == playerConnectMessage.ID)
+                    if (player.ID == clientConnectionRequest.ID)
                     {
-                        player.Name = playerConnectMessage.PlayerName;
+                        player.Name = clientConnectionRequest.PlayerName;
                         Logger.WriteLine("Player {0} connected.", player.Name);
                         matchingPlayer = player;
                         break;
@@ -45,7 +47,7 @@ namespace Server
                 SendUpdateToAllClients();
 
                 // Send Player Joined message.
-                SendToAll(new PlayerJoined(matchingPlayer), matchingPlayer);
+                SendToAll(new ServerMessage.NotifyPlayerAction(PlayerAction.Connected));
 
                 // Trigger event.
                 if (PlayerConnected != null)
@@ -62,9 +64,10 @@ namespace Server
             if (player != null)
             {
                 Players.Remove(player);
+
                 Logger.WriteLine("Player {0} disconnected", player.Name);
 
-                SendToAll(new PlayerLeft(player));
+                SendToAll(new ServerMessage.NotifyPlayerAction(PlayerAction.Disconnected));
 
                 if (PlayerDisconnected != null)
                     PlayerDisconnected(this, player);

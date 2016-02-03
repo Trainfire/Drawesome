@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Newtonsoft.Json;
 
 namespace Protocol
@@ -7,5 +7,10 @@ namespace Protocol
     {
         public virtual string ID { get; set; }
         public virtual string Name { get; set; }
+    }
+
+    public class ProtocolRoom
+    {
+        public virtual string ID { get; set; }
     }
 }

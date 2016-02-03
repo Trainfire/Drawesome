@@ -22,10 +22,8 @@ public class Client : Singleton<Client>
         webSocket = new WebSocket(URI);
 
         messageHandler.OnGeneric += OnGeneric;
-        messageHandler.OnValidatePlayer += OnValidatePlayer;
+        messageHandler.OnServerCompleteConnectionRequest += OnServerCompleteConnectionRequest;
         messageHandler.OnServerUpdate += OnServerUpdate;
-        messageHandler.OnPlayerJoined += OnPlayerJoined;
-        messageHandler.OnPlayerLeft += OnPlayerLeft;
     }
 
     public void Connect(string playerName)
@@ -100,21 +98,11 @@ public class Client : Singleton<Client>
         Debug.Log(message.LogMessage);
     }
 
-    void OnPlayerJoined(PlayerJoined message)
+    void OnServerCompleteConnectionRequest(ServerMessage.ApproveClientConnection message)
     {
-        Debug.LogFormat("Player {0} joined the game.", message.Player.Name);
-    }
-
-    void OnPlayerLeft(PlayerLeft message)
-    {
-        Debug.LogFormat("Player {0} left the game.", message.Player.Name);
-    }
-
-    void OnValidatePlayer(ValidatePlayer message)
-    {
-        Debug.Log("OnValidatePlayer");
         ID = message.ID;
-        var playerConnectMessage = new PlayerFirstConnectMessage(ID, PlayerName);
+        Debug.Log("Recieved ID: " + ID);
+        var playerConnectMessage = new ClientMessage.RequestConnection(ID, PlayerName);
         var json = JsonUtility.ToJson(playerConnectMessage);
         webSocket.Send(json);
     }

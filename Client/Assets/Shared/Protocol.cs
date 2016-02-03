@@ -1,95 +1,112 @@
 using System;
 using System.Collections.Generic;
-using Newtonsoft.Json;
 
 namespace Protocol
 {
-    #region Messages
-
     [Serializable]
     public enum MessageType
     {
-        None = 0,
-        Generic = 1,
-        PlayerConnect = 2,
-        PlayerJoined = 3,
-        PlayerLeft = 4,
-        ValidatePlayer = 5,
-        PlayerReady = 6,
-        ForceStartRound = 7,
-        SendChatFromPlayer = 8,
-        ServerUpdate = 9,
-        PlayerAction = 10,
+        None,
+        Log,
+        ClientConnectionRequest,
+        ServerCompleteConnectionRequest,
+        ServerUpdate,
+        ClientRequestRoomList,
+        ServerSendRoomList,
+        ServerNotifyPlayerAction,
     }
 
-    public class PlayerReadyMessage : Message
+    public class Log : Message
     {
-        public bool IsReady;
+        public string Message { get; private set; }
 
-        public PlayerReadyMessage(bool isReady)
+        public Log(string message)
         {
-            Type = MessageType.PlayerReady;
-            IsReady = isReady;
+            Type = MessageType.Log;
+            Message = message;
+        }
+
+        public Log(string message, params object[] args)
+        {
+            Type = MessageType.Log;
+            Message = string.Format(message, args);
         }
     }
 
-    public class PlayerFirstConnectMessage : Message
+    public class ClientMessage
     {
-        public string ID;
-        public string PlayerName;
-
-        public PlayerFirstConnectMessage(string id, string playerName)
+        public class RequestConnection : Message
         {
-            Type = MessageType.PlayerConnect;
-            PlayerName = playerName;
-            ID = id;
+            public string ID;
+            public string PlayerName;
+
+            public RequestConnection(string id, string playerName)
+            {
+                Type = MessageType.ClientConnectionRequest;
+                PlayerName = playerName;
+                ID = id;
+            }
+        }
+
+        public class JoinRoom : Message
+        {
+            public Guid PlayerID { get; private set; }
+            public Guid RoomID { get; private set; }
+
+            public JoinRoom(Guid playerId, Guid roomId)
+            {
+                PlayerID = playerId;
+                RoomID = roomId;
+            }
+        }
+
+        public class RequestRoomList : Message
+        {
+            public string PlayerID { get; private set; }
+
+            public RequestRoomList(string playerId)
+            {
+                Type = MessageType.ClientRequestRoomList;
+                PlayerID = playerId;
+            }
         }
     }
 
-    public class PlayerLeft : Message
+    public class ServerMessage
     {
-        public ProtocolPlayer Player = new ProtocolPlayer();
-
-        public PlayerLeft(ProtocolPlayer player)
+        public class ApproveClientConnection : Message
         {
-            Type = MessageType.PlayerLeft;
-            Player.ID = player.ID;
-            Player.Name = player.Name;
+            public string ID;
+
+            public ApproveClientConnection(string guid)
+            {
+                Type = MessageType.ServerCompleteConnectionRequest;
+                ID = guid;
+            }
         }
-    }
 
-    public class PlayerJoined : Message
-    {
-        public ProtocolPlayer Player = new ProtocolPlayer();
-
-        public PlayerJoined(ProtocolPlayer player)
+        public class GetRoomList : Message
         {
-            Type = MessageType.PlayerJoined;
-            Player.ID = player.ID;
-            Player.Name = player.Name;
+            public string TargetPlayerID { get; private set; }
+            public List<ProtocolRoom> Rooms { get; private set; }
+
+            public GetRoomList(string targetPlayerId, List<ProtocolRoom> rooms)
+            {
+                Type = MessageType.ServerSendRoomList;
+                TargetPlayerID = targetPlayerId;
+                Rooms = rooms;
+            }
         }
-    }
 
-    public class PlayerAction : Message
-    {
-        public ProtocolPlayer Player = new ProtocolPlayer();
-
-        public PlayerAction(ProtocolPlayer player)
+        public class NotifyPlayerAction : Message
         {
-            Type = MessageType.PlayerAction;
-            Player.ID = player.ID;
-            Player.Name = player.Name;
-        }
-    }
+            public PlayerAction Action;
 
-    public class ValidatePlayer : Message
-    {
-        public string ID;
-
-        public ValidatePlayer(string guid)
-        {
-            Type = MessageType.ValidatePlayer;
-            ID = guid;
+            public NotifyPlayerAction(PlayerAction action)
+            {
+                Type = MessageType.ServerNotifyPlayerAction;
+                Action = action;
+            }
         }
     }
 
@@ -108,6 +125,4 @@ namespace Protocol
             Players = players;
         }
     }
-
-#endregion
 }

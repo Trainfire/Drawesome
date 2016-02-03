@@ -44,16 +44,5 @@ public class EchoTest : MonoBehaviour
         {
             Client.Instance.Disconnect();
         }
-
-        if (GUILayout.Button("Send Ready Message"))
-        {
-            IsReady = !IsReady;
-            Client.Instance.SendMessage(MessageType.PlayerReady);
-        }
-
-        if (GUILayout.Button("Start"))
-        {
-            Client.Instance.SendMessage(MessageType.ForceStartRound);
-        }
     }
 }
