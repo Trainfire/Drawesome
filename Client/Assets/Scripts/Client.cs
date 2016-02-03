@@ -24,6 +24,7 @@ public class Client : Singleton<Client>
         messageHandler.OnGeneric += OnGeneric;
         messageHandler.OnServerCompleteConnectionRequest += OnServerCompleteConnectionRequest;
         messageHandler.OnServerUpdate += OnServerUpdate;
+        messageHandler.OnRecieveRoomList += OnRecieveRoomList;
     }
 
     public void Connect(string playerName)
@@ -43,6 +44,11 @@ public class Client : Singleton<Client>
         webSocket.OnClose -= OnClose;
         webSocket.OnOpen -= OnOpen;
         webSocket.OnMessage -= OnMessage;
+    }
+
+    public void RequestRooms()
+    {
+        SendMessage(new ClientMessage.RequestRoomList(ID));
     }
 
     public void SendMessage(Message message)
@@ -98,7 +104,15 @@ public class Client : Singleton<Client>
         Debug.Log(message.LogMessage);
     }
 
-    void OnServerCompleteConnectionRequest(ServerMessage.ApproveClientConnection message)
+    void OnRecieveRoomList(ServerMessage.RoomList message)
+    {
+        foreach (var room in message.Rooms)
+        {
+            Debug.LogFormat("Recieved room with ID {0}", room.ID);
+        }
+    }
+
+    void OnServerCompleteConnectionRequest(ServerMessage.ConnectionSuccess message)
     {
         ID = message.ID;
         Debug.Log("Recieved ID: " + ID);

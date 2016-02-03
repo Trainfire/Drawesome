@@ -6,7 +6,8 @@ namespace Protocol
     {
         // Add an action for every type of message here.
         public Action<Message> OnGeneric;
-        public Action<ServerMessage.ApproveClientConnection> OnServerCompleteConnectionRequest;
+        public Action<ServerMessage.ConnectionSuccess> OnServerCompleteConnectionRequest;
+        public Action<ServerMessage.RoomList> OnRecieveRoomList;
         public Action<ServerUpdate> OnServerUpdate;
 
         public void HandleMessage(string json)
@@ -20,13 +21,17 @@ namespace Protocol
                     if (OnGeneric != null)
                         OnGeneric(message);
                     break;
-                case MessageType.ServerCompleteConnectionRequest:
+                case MessageType.ServerConnectionSuccess:
                     if (OnServerCompleteConnectionRequest != null)
-                        OnServerCompleteConnectionRequest(Deserialize<ServerMessage.ApproveClientConnection>(json));
+                        OnServerCompleteConnectionRequest(Deserialize<ServerMessage.ConnectionSuccess>(json));
                     break;
                 case MessageType.ServerUpdate:
                     if (OnServerUpdate != null)
                         OnServerUpdate(Deserialize<ServerUpdate>(json));
+                    break;
+                case MessageType.ServerSendRoomList:
+                    if (OnRecieveRoomList != null)
+                        OnRecieveRoomList(Deserialize<ServerMessage.RoomList>(json));
                     break;
                 default:
                     break;

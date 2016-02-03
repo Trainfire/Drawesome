@@ -17,18 +17,18 @@ public class EchoTest : MonoBehaviour
 
         if (!Client.Instance.IsConnected())
         {
-            guiState = OnConnected;
+            guiState = OnDisconnected;
         }
 
         if (Client.Instance.IsConnected())
-            guiState = OnDisconnected;
+            guiState = OnConnected;
 
         guiState();
 
         GUILayout.EndHorizontal();
     }
 
-    void OnConnected()
+    void OnDisconnected()
     {
         playerName = GUILayout.TextField(playerName, GUILayout.Width(400f));
 
@@ -38,11 +38,14 @@ public class EchoTest : MonoBehaviour
         }
     }
 
-    void OnDisconnected()
+    void OnConnected()
     {
         if (GUILayout.Button("Disconnect"))
         {
             Client.Instance.Disconnect();
         }
+
+        if (GUILayout.Button("Request Rooms"))
+            Client.Instance.RequestRooms();
     }
 }

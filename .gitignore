@@ -33,3 +33,6 @@ sysinfo.txt
 Icon?
 ehthumbs.db
 [Tt]humbs.db
+*.dll
+*.exe
+*.pdb

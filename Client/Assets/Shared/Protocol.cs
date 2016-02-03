@@ -9,7 +9,7 @@ namespace Protocol
         None,
         Log,
         ClientConnectionRequest,
-        ServerCompleteConnectionRequest,
+        ServerConnectionSuccess,
         ServerUpdate,
         ClientRequestRoomList,
         ServerSendRoomList,
@@ -62,7 +62,7 @@ namespace Protocol
 
         public class RequestRoomList : Message
         {
-            public string PlayerID { get; private set; }
+            public string PlayerID;
 
             public RequestRoomList(string playerId)
             {
@@ -74,26 +74,24 @@ namespace Protocol
 
     public class ServerMessage
     {
-        public class ApproveClientConnection : Message
+        public class ConnectionSuccess : Message
         {
             public string ID;
 
-            public ApproveClientConnection(string guid)
+            public ConnectionSuccess(string guid)
             {
-                Type = MessageType.ServerCompleteConnectionRequest;
+                Type = MessageType.ServerConnectionSuccess;
                 ID = guid;
             }
         }
 
-        public class GetRoomList : Message
+        public class RoomList : Message
         {
-            public string TargetPlayerID { get; private set; }
-            public List<ProtocolRoom> Rooms { get; private set; }
+            public List<RoomData> Rooms { get; private set; }
 
-            public GetRoomList(string targetPlayerId, List<ProtocolRoom> rooms)
+            public RoomList(List<RoomData> rooms)
             {
                 Type = MessageType.ServerSendRoomList;
-                TargetPlayerID = targetPlayerId;
                 Rooms = rooms;
             }
         }

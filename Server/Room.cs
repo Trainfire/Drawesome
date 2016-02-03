@@ -7,15 +7,22 @@ namespace Server
 {
     class Room : WebSocketBehaviour
     {
-        public Guid ID { get; private set; }
+        public RoomData Data { get; set; }
 
         List<Player> Players { get; set; }
         Player Owner { get; set; }
 
+        public Room()
+        {
+            Data = new RoomData();
+            Data.ID = Guid.NewGuid();
+        }
+
         public Room(Player owner)
         {
             // TODO: TESTING!!!
-            ID = Guid.Empty;
+            Data = new RoomData();
+            Data.ID = Guid.Empty;
 
             Players = new List<Player>();
             Owner = owner;
@@ -37,7 +44,7 @@ namespace Server
             joiningPlayer.ConnectionClosed += OnPlayerConnectionClosed;
 
             // Send message to joining player
-            SendMessage(joiningPlayer, "You joined the room {0}", ID);
+            SendMessage(joiningPlayer, "You joined the room {0}", Data.ID);
 
             // Send message to all other players
             SendMessageToAll("{0} joined the room", joiningPlayer.Name);

@@ -10,23 +10,35 @@ namespace Server
     {
         public event EventHandler<Player> PlayerConnected;
         public event EventHandler<Player> PlayerDisconnected;
-        public event EventHandler<Player> PlayerCreateRoom;
-        public event EventHandler<Player> PlayerJoinRoom;
-        public event EventHandler<Player> PlayerLeaveRoom;
 
         public List<Player> Players { get; private set; }
+        public List<Room> Rooms { get; private set; }
+
+        public ClientConnectionsHandler()
+        {
+            Rooms = new List<Room>();
+
+            for (int i = 0; i < 10; i++)
+            {
+                Rooms.Add(new Room());
+            }
+        }
 
         public override void OnOpen(IWebSocketConnection socket)
         {
             base.OnOpen(socket);
 
+            Logger.WriteLine("A connection was opened");
+
             // Respond to a join request by assigning a unique ID to the connection and sending it back to the client.
             var player = AddPlayer(socket);
-            Send(new ServerMessage.ApproveClientConnection(player.ID), player);
+            Send(new ServerMessage.ConnectionSuccess(player.ID), player);
         }
 
         public override void OnMessage(string m)
         {
+            Logger.WriteLine("A message was recieved.");
+
             // Allow the connected client to assign their name.
             var clientConnectionRequest = JsonHelper.FromJson<ClientMessage.RequestConnection>(m);
             Player matchingPlayer = null;
@@ -52,6 +64,18 @@ namespace Server
                 // Trigger event.
                 if (PlayerConnected != null)
                     PlayerConnected(this, matchingPlayer);
+            }
+
+            var message = JsonHelper.FromJson<Message>(m);
+            if (message.Type == MessageType.ClientRequestRoomList)
+            {
+                var roomListMessage = JsonHelper.FromJson<ClientMessage.RequestRoomList>(m);
+                Console.WriteLine("Recieved a request from {0} for a list a rooms.", roomListMessage.PlayerID);
+
+                var target = Players.Find(x => x.ID == roomListMessage.PlayerID);
+
+                var protocolRooms = Rooms.Select(x => x.Data).ToList();
+                target.SendMessage(new ServerMessage.RoomList(protocolRooms));
             }
         }
 

@@ -9,8 +9,8 @@ namespace Protocol
         public virtual string Name { get; set; }
     }
 
-    public class ProtocolRoom
+    public class RoomData
     {
-        public virtual string ID { get; set; }
+        public Guid ID { get; set; }
     }
 }
