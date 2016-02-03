@@ -14,6 +14,7 @@ namespace Protocol
         ClientRequestRoomList,
         ServerSendRoomList,
         ServerNotifyPlayerAction,
+        ClientJoinRoom,
     }
 
     public class Log : Message
@@ -50,13 +51,14 @@ namespace Protocol
 
         public class JoinRoom : Message
         {
-            public Guid PlayerID { get; private set; }
-            public Guid RoomID { get; private set; }
+            public PlayerData Player;
+            public string RoomId;
 
-            public JoinRoom(Guid playerId, Guid roomId)
+            public JoinRoom(PlayerData player, string roomId)
             {
-                PlayerID = playerId;
-                RoomID = roomId;
+                Type = MessageType.ClientJoinRoom;
+                Player = player;
+                RoomId = roomId;
             }
         }
 

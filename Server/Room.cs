@@ -15,7 +15,8 @@ namespace Server
         public Room()
         {
             Data = new RoomData();
-            Data.ID = Guid.NewGuid().ToString();
+            Data.ID = Guid.NewGuid().ToString().Remove(4);
+            Players = new List<Player>();
         }
 
         public Room(Player owner)
@@ -39,6 +40,8 @@ namespace Server
             {
                 Players.Add(joiningPlayer);
             }
+
+            Console.WriteLine("Player {0} joined room {1}", joiningPlayer.Data.Name, Data.ID);
 
             // Add callbacks
             joiningPlayer.ConnectionClosed += OnPlayerConnectionClosed;
@@ -78,6 +81,8 @@ namespace Server
                 SendMessage(Owner, "You are now the room owner");
                 SendMessageToAll("{0} is now the room owner", Owner.Data.Name);
             }
+
+            Console.WriteLine("{0} left the room. ({1})", e.Player.Data.Name, e.CloseReason);
         }
 
         #region Messaging

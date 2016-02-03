@@ -66,6 +66,7 @@ namespace Server
                     PlayerConnected(this, matchingPlayer);
             }
 
+            // TODO: Trash
             var message = JsonHelper.FromJson<Message>(m);
             if (message.Type == MessageType.ClientRequestRoomList)
             {
@@ -76,6 +77,19 @@ namespace Server
 
                 var protocolRooms = Rooms.Select(x => x.Data).ToList();
                 target.SendMessage(new ServerMessage.RoomList(protocolRooms));
+            }
+
+            // TODO: Trash
+            var requestJoin = JsonHelper.FromJson<Message>(m);
+            if (message.Type == MessageType.ClientJoinRoom)
+            {
+                var joinRoom = JsonHelper.FromJson<ClientMessage.JoinRoom>(m);
+                Console.WriteLine("Recieved a request from {0} to join room {1}.", joinRoom.Player.ID, joinRoom.RoomId);
+
+                var targetRoom = Rooms.Find(x => x.Data.ID == joinRoom.RoomId);
+                var joiningPlayer = Players.Find(x => x.Data.ID == joinRoom.Player.ID);
+
+                targetRoom.Join(joiningPlayer);
             }
         }
 

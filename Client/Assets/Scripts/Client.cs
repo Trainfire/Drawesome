@@ -8,6 +8,7 @@ public class Client : Singleton<Client>
 {
     public PlayerData Data { get; private set; }
     public string PlayerName { get; private set; }
+    public List<RoomData> Rooms { get; private set; }
 
     public List<PlayerData> Players;
 
@@ -20,6 +21,7 @@ public class Client : Singleton<Client>
     {
         base.Awake();
         webSocket = new WebSocket(URI);
+        Rooms = new List<RoomData>();
 
         messageHandler.OnGeneric += OnGeneric;
         messageHandler.OnServerCompleteConnectionRequest += OnServerCompleteConnectionRequest;
@@ -44,6 +46,11 @@ public class Client : Singleton<Client>
         webSocket.OnClose -= OnClose;
         webSocket.OnOpen -= OnOpen;
         webSocket.OnMessage -= OnMessage;
+    }
+
+    public void JoinRoom(string roomId)
+    {
+        SendMessage(new ClientMessage.JoinRoom(Data, roomId));
     }
 
     public void RequestRooms()
@@ -106,9 +113,12 @@ public class Client : Singleton<Client>
 
     void OnRecieveRoomList(ServerMessage.RoomList message)
     {
+        Rooms = new List<RoomData>();
+
         foreach (var room in message.Rooms)
         {
             Debug.LogFormat("Recieved room with ID {0}", room.ID);
+            Rooms.Add(room);
         }
     }
 
