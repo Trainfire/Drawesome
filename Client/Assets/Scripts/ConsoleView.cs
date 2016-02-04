@@ -12,6 +12,8 @@ public class ConsoleView : MonoBehaviour
 
     ConsoleController Console { get; set; }
 
+    string log = "";
+
     const float LogHeight = 250f;
     const float LogToggleTime = 0.2f;
     AnimationCurve LogAnimCurve = AnimationCurve.EaseInOut(0f, 0f, 1f, 1f);
@@ -32,7 +34,7 @@ public class ConsoleView : MonoBehaviour
         LogView.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, 0f);
 
         // Add callback for all Unity Debug Log events.
-        Application.RegisterLogCallbackThreaded(OnLogMessageRecieved);
+        Application.logMessageReceivedThreaded += OnLogMessageRecieved;
     }
 
     void OnLogMessageRecieved(string condition, string stackTrace, LogType type)
@@ -40,21 +42,26 @@ public class ConsoleView : MonoBehaviour
         switch (type)
         {
             case LogType.Error:
-                LogText.text += "<color=#f00>Error: " + condition + "</color>\r\n";
+                log += "<color=#f00>Error: " + condition + "</color>\r\n";
                 break;
             case LogType.Assert:
-                LogText.text += "<color=#f00>Assert: " + condition + "</color>\r\n";
+                log += "<color=#f00>Assert: " + condition + "</color>\r\n";
                 break;
             case LogType.Warning:
                 break;
             case LogType.Log:
-                LogText.text += condition + "\r\n";
+                log += condition + "\r\n";
                 break;
             case LogType.Exception:
                 break;
             default:
                 break;
         }
+    }
+
+    void Update()
+    {
+        LogText.text = log;
     }
 
     void LateUpdate()
