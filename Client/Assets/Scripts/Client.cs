@@ -120,6 +120,7 @@ public class Client : Singleton<Client>
     {
         // Determine if message is about self.
         string owner = message.Player.ID == Data.ID ? "You" : message.Player.Name;
+        bool isAboutSelf = message.Player.ID == Data.ID;
 
         switch (message.Action)
         {
@@ -140,7 +141,14 @@ public class Client : Singleton<Client>
                 Debug.LogFormat("{0} left.", owner);
                 break;
             case PlayerAction.PromotedToOwner:
-                Debug.LogFormat("{0} is now the room owner.", owner);
+                if (isAboutSelf)
+                {
+                    Debug.LogFormat("{0} are now the room owner.", owner);
+                }
+                else
+                {
+                    Debug.LogFormat("{0} is now the room owner.", owner);
+                }
                 break;
             default:
                 break;
