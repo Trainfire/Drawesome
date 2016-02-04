@@ -6,7 +6,8 @@ using System.Collections.Generic;
 
 public class Client : Singleton<Client>
 {
-    public PlayerData Data { get; private set; }
+    public PlayerData PlayerData { get; private set; }
+
     public string PlayerName { get; private set; }
     public List<RoomData> Rooms { get; private set; }
 
@@ -51,27 +52,27 @@ public class Client : Singleton<Client>
 
     public void CreateRoom(string password = "")
     {
-        SendMessage(new ClientMessage.CreateRoom(Data, password));
+        SendMessage(new ClientMessage.CreateRoom(PlayerData, password));
     }
 
     public void JoinRoom(string roomId)
     {
-        SendMessage(new ClientMessage.JoinRoom(Data, roomId));
+        SendMessage(new ClientMessage.JoinRoom(PlayerData, roomId));
     }
 
     public void LeaveRoom()
     {
-        SendMessage(new ClientMessage.LeaveRoom(Data));
+        SendMessage(new ClientMessage.LeaveRoom(PlayerData));
     }
 
     public void RequestRooms()
     {
-        SendMessage(new ClientMessage.RequestRoomList(Data));
+        SendMessage(new ClientMessage.RequestRoomList(PlayerData));
     }
 
     public void Say(string message)
     {
-        SendMessage(new SharedMessage.Chat(Data, message));
+        SendMessage(new SharedMessage.Chat(PlayerData, message));
     }
 
     public void SendMessage(Message message)
@@ -125,8 +126,8 @@ public class Client : Singleton<Client>
     void OnServerNotifyPlayerAction(ServerMessage.NotifyPlayerAction message)
     {
         // Determine if message is about self.
-        string owner = message.Player.ID == Data.ID ? "You" : message.Player.Name;
-        bool isAboutSelf = message.Player.ID == Data.ID;
+        string owner = message.Player.ID == PlayerData.ID ? "You" : message.Player.Name;
+        bool isAboutSelf = message.Player.ID == PlayerData.ID;
 
         switch (message.Action)
         {
@@ -174,11 +175,11 @@ public class Client : Singleton<Client>
 
     void OnServerCompleteConnectionRequest(ServerMessage.ConnectionSuccess message)
     {
-        Data = new PlayerData();
-        Data.ID = message.ID;
-        Data.Name = PlayerName;
-        Debug.Log("Recieved ID: " + Data.ID);
-        var playerConnectMessage = new ClientMessage.RequestConnection(Data.ID.ToString(), PlayerName);
+        PlayerData = new PlayerData();
+        PlayerData.ID = message.ID;
+        PlayerData.Name = PlayerName;
+        Debug.Log("Recieved ID: " + PlayerData.ID);
+        var playerConnectMessage = new ClientMessage.RequestConnection(PlayerData.ID.ToString(), PlayerName);
         var json = JsonUtility.ToJson(playerConnectMessage);
         webSocket.Send(json);
     }
@@ -200,7 +201,7 @@ public class Client : Singleton<Client>
 
     void OnChat(SharedMessage.Chat chat)
     {
-        if (chat.Player.ID != Data.ID)
+        if (chat.Player.ID != PlayerData.ID)
             Debug.LogFormat("{0}: {1}", chat.Player.Name, chat.Message);
     }
 
