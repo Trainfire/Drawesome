@@ -83,8 +83,6 @@ public class ConsoleView : MonoBehaviour
 
     IEnumerator Toggle()
     {
-        Debug.Log("Toggle");
-
         float time = 0f;
 
         if (ConsoleState == State.Closed)
