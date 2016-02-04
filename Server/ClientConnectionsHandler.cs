@@ -64,10 +64,10 @@ namespace Server
 
             if (message.Type == MessageType.ClientRequestRoomList)
             {
-                var roomListMessage = JsonHelper.FromJson<ClientMessage.RequestRoomList>(m);
-                Console.WriteLine("Recieved a request from {0} for a list a rooms.", roomListMessage.Player.ID);
+                var data = JsonHelper.FromJson<ClientMessage.RequestRoomList>(m);
+                Console.WriteLine("Recieved a request from {0} for a list a rooms.", data.Player.ID);
 
-                var target = Players.Find(x => x.Data.ID == roomListMessage.Player.ID);
+                var target = Players.Find(x => x.Data.ID == data.Player.ID);
 
                 var protocolRooms = Rooms.Select(x => x.Data).ToList();
                 target.SendMessage(new ServerMessage.RoomList(protocolRooms));
@@ -75,22 +75,38 @@ namespace Server
 
             if (message.Type == MessageType.ClientJoinRoom)
             {
-                var joinRoom = JsonHelper.FromJson<ClientMessage.JoinRoom>(m);
-                Console.WriteLine("Recieved a request from {0} to join room {1}.", joinRoom.Player.ID, joinRoom.RoomId);
+                var data = JsonHelper.FromJson<ClientMessage.JoinRoom>(m);
+                Console.WriteLine("Recieved a request from {0} to join room {1}.", data.Player.ID, data.RoomId);
 
-                var targetRoom = Rooms.Find(x => x.Data.ID == joinRoom.RoomId);
-                var joiningPlayer = Players.Find(x => x.Data.ID == joinRoom.Player.ID);
+                var targetRoom = Rooms.Find(x => x.Data.ID == data.RoomId);
+                var joiningPlayer = Players.Find(x => x.Data.ID == data.Player.ID);
 
                 targetRoom.Join(joiningPlayer);
             }
 
+            if (message.Type == MessageType.ClientLeaveRoom)
+            {
+                var data = JsonHelper.FromJson<ClientMessage.LeaveRoom>(m);
+                var containingRoom = Rooms.Find(x => x.HasPlayer(data.Player));
+
+                if (containingRoom != null)
+                {
+                    Console.WriteLine("Remove {0} from room", data.Player.Name);
+                    containingRoom.Leave(data.Player);
+                }
+                else
+                {
+                    Console.WriteLine("Cannot remove {0} from room as they are not in that room", data.Player.Name);
+                }
+            }
+
             if (message.Type == MessageType.ClientCreateRoom)
             {
-                var createRoom = JsonHelper.FromJson<ClientMessage.CreateRoom>(m);
-                Console.WriteLine("Create room for {0} with password {1}", createRoom.Player.Name, createRoom.Password);
+                var data = JsonHelper.FromJson<ClientMessage.CreateRoom>(m);
+                Console.WriteLine("Create room for {0} with password {1}", data.Player.Name, data.Password);
 
-                var creator = Players.Find(x => x.Data.ID == createRoom.Player.ID);
-                var room = new Room(creator, createRoom.Password);
+                var creator = Players.Find(x => x.Data.ID == data.Player.ID);
+                var room = new Room(creator, data.Password);
 
                 room.OnEmpty += OnRoomEmpty;
 
@@ -101,6 +117,7 @@ namespace Server
         void OnRoomEmpty(object sender, Room e)
         {
             Console.WriteLine("Closing room {0} as it is empty", e.Data.ID);
+            e.OnEmpty -= OnRoomEmpty;
             Rooms.Remove(e);
         }
 

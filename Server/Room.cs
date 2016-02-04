@@ -64,19 +64,20 @@ namespace Server
             // Add callbacks
             joiningPlayer.ConnectionClosed += OnPlayerConnectionClosed;
 
-            // Remove player if they leave
-            joiningPlayer.Socket.OnMessage += (message) =>
-            {
-                // TODO: Trash
-                var obj = JsonHelper.FromJson<Message>(message);
-                if (obj.Type == MessageType.ClientLeaveRoom)
-                {
-                    OnPlayerConnectionClosed(this, new PlayerConnectionClosed(joiningPlayer, PlayerCloseReason.Left));
-                }
-            };
-
             // Send message to joining player
             EchoActionToAll(joiningPlayer.Data, PlayerAction.Joined);
+        }
+
+        public void Leave(PlayerData leavingPlayer)
+        {
+            Console.WriteLine("Leave. Players current: {0}", Players.Count);
+            var player = Players.Find(x => x.Data.ID == leavingPlayer.ID);
+            OnPlayerConnectionClosed(this, new PlayerConnectionClosed(player, PlayerCloseReason.Left));
+        }
+
+        public bool HasPlayer(PlayerData player)
+        {
+            return Players.Exists(x => x.Data.ID == player.ID);
         }
 
         void OnPlayerConnectionClosed(object sender, PlayerConnectionClosed e)

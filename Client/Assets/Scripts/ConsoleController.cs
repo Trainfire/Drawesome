@@ -15,6 +15,7 @@ public class ConsoleController
         RegisterCommand("/connect", Connect);
         RegisterCommand("/requestrooms", RequestRooms);
         RegisterCommand("/createroom", CreateRoom);
+        RegisterCommand("/leave", LeaveRoom);
     }
 
     public void SubmitInput(string input)
@@ -126,6 +127,11 @@ public class ConsoleController
             Debug.LogFormat("Join {0}", args[0]);
             Client.Instance.JoinRoom(args[0]);
         }
+    }
+
+    void LeaveRoom(string[] args)
+    {
+        Client.Instance.LeaveRoom();
     }
 
     #endregion
