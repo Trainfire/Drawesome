@@ -23,7 +23,7 @@ public class Client : Singleton<Client>
         webSocket = new WebSocket(URI);
         Rooms = new List<RoomData>();
 
-        messageHandler.OnGeneric += OnGeneric;
+        messageHandler.OnServerNotifyPlayerAction += OnServerNotifyPlayerAction;
         messageHandler.OnServerCompleteConnectionRequest += OnServerCompleteConnectionRequest;
         messageHandler.OnServerUpdate += OnServerUpdate;
         messageHandler.OnRecieveRoomList += OnRecieveRoomList;
@@ -83,7 +83,7 @@ public class Client : Singleton<Client>
 
     void SendJson(string json)
     {
-        Debug.LogFormat("{0} : Send message: {1}", DateTime.Now, json);
+        //Debug.LogFormat("{0} : Send message: {1}", DateTime.Now, json);
         webSocket.Send(json);
     }
 
@@ -100,7 +100,7 @@ public class Client : Singleton<Client>
 
     void OnMessage(object sender, MessageEventArgs e)
     {
-        Debug.LogFormat("Recieved message: {0}", e.Data);
+        //Debug.LogFormat("Recieved message: {0}", e.Data);
         messageHandler.HandleMessage(e.Data);
     }
 
@@ -116,9 +116,35 @@ public class Client : Singleton<Client>
 
     #region Message Handlers
 
-    void OnGeneric(Message message)
+    void OnServerNotifyPlayerAction(ServerMessage.NotifyPlayerAction message)
     {
-        Debug.Log(message.LogMessage);
+        // Determine if message is about self.
+        string owner = message.Player.ID == Data.ID ? "You" : message.Player.Name;
+
+        switch (message.Action)
+        {
+            case PlayerAction.None:
+                break;
+            case PlayerAction.Connected:
+                Debug.LogFormat("{0} connected.", owner);
+                break;
+            case PlayerAction.Disconnected:
+                Debug.LogFormat("{0} disconnected.", owner);
+                break;
+            case PlayerAction.Kicked:
+                break;
+            case PlayerAction.Joined:
+                Debug.LogFormat("{0} joined the room.", owner);
+                break;
+            case PlayerAction.Left:
+                Debug.LogFormat("{0} left.", owner);
+                break;
+            case PlayerAction.PromotedToOwner:
+                Debug.LogFormat("{0} is now the room owner.", owner);
+                break;
+            default:
+                break;
+        }
     }
 
     void OnRecieveRoomList(ServerMessage.RoomList message)
@@ -140,7 +166,6 @@ public class Client : Singleton<Client>
         Debug.Log("Recieved ID: " + Data.ID);
         var playerConnectMessage = new ClientMessage.RequestConnection(Data.ID.ToString(), PlayerName);
         var json = JsonUtility.ToJson(playerConnectMessage);
-        Debug.Log(json);
         webSocket.Send(json);
     }
 

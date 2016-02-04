@@ -57,6 +57,17 @@ namespace Server
             Socket.Send(message.AsJson());
         }
 
+        /// <summary>
+        /// Sends a message to the player about a particular action.
+        /// </summary>
+        /// <param name="actor">The player that committed the action.</param>
+        /// <param name="action">The type of action.</param>
+        public void SendAction(PlayerData actor, PlayerAction action)
+        {
+            var message = new ServerMessage.NotifyPlayerAction(actor, action);
+            Socket.Send(message.AsJson());
+        }
+
         public void Update(ClientConnectionsHandler manager)
         {
             Console.WriteLine("Send update to " + Data.Name);

@@ -32,13 +32,14 @@ namespace Server
 
         public override void OnMessage(string m)
         {
-            Logger.WriteLine("A message was recieved.");
+            var message = JsonHelper.FromJson<Message>(m);
 
-            // Allow the connected client to assign their name.
-            var clientConnectionRequest = JsonHelper.FromJson<ClientMessage.RequestConnection>(m);
-            Player matchingPlayer = null;
-            if (clientConnectionRequest != null)
+            Logger.WriteLine("A message was recieved. Type: {0}", message.Type);
+
+            if (message.Type == MessageType.ClientConnectionRequest)
             {
+                var clientConnectionRequest = JsonHelper.FromJson<ClientMessage.RequestConnection>(m);
+                Player matchingPlayer = null;
                 foreach (var player in Players)
                 {
                     if (player.Data.ID == clientConnectionRequest.ID)
@@ -54,15 +55,13 @@ namespace Server
                 SendUpdateToAllClients();
 
                 // Send Player Joined message.
-                SendToAll(new ServerMessage.NotifyPlayerAction(PlayerAction.Connected));
+                SendToAll(new ServerMessage.NotifyPlayerAction(matchingPlayer.Data, PlayerAction.Connected));
 
                 // Trigger event.
                 if (PlayerConnected != null)
                     PlayerConnected(this, matchingPlayer);
             }
 
-            // TODO: Trash
-            var message = JsonHelper.FromJson<Message>(m);
             if (message.Type == MessageType.ClientRequestRoomList)
             {
                 var roomListMessage = JsonHelper.FromJson<ClientMessage.RequestRoomList>(m);
@@ -74,7 +73,6 @@ namespace Server
                 target.SendMessage(new ServerMessage.RoomList(protocolRooms));
             }
 
-            // TODO: Trash
             if (message.Type == MessageType.ClientJoinRoom)
             {
                 var joinRoom = JsonHelper.FromJson<ClientMessage.JoinRoom>(m);
@@ -110,7 +108,7 @@ namespace Server
 
                 Logger.WriteLine("Player {0} disconnected", player.Data.Name);
 
-                SendToAll(new ServerMessage.NotifyPlayerAction(PlayerAction.Disconnected));
+                SendToAll(new ServerMessage.NotifyPlayerAction(player.Data, PlayerAction.Disconnected));
 
                 if (PlayerDisconnected != null)
                     PlayerDisconnected(this, player);

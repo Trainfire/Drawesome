@@ -5,11 +5,11 @@ namespace Protocol
     public class MessageHandler
     {
         // Add an action for every type of message here.
-        public Action<Message> OnGeneric;
         public Action<ServerMessage.ConnectionSuccess> OnServerCompleteConnectionRequest;
         public Action<ServerMessage.RoomList> OnRecieveRoomList;
         public Action<ServerUpdate> OnServerUpdate;
         public Action<ServerMessage.RoomJoinError> OnRoomError;
+        public Action<ServerMessage.NotifyPlayerAction> OnServerNotifyPlayerAction;
 
         public void HandleMessage(string json)
         {
@@ -18,9 +18,9 @@ namespace Protocol
             // Massive messy switch. IDK.
             switch (message.Type)
             {
-                case MessageType.Log:
-                    if (OnGeneric != null)
-                        OnGeneric(message);
+                case MessageType.ServerNotifyPlayerAction:
+                    if (OnServerNotifyPlayerAction != null)
+                        OnServerNotifyPlayerAction(Deserialize<ServerMessage.NotifyPlayerAction>(json));
                     break;
                 case MessageType.ServerConnectionSuccess:
                     if (OnServerCompleteConnectionRequest != null)

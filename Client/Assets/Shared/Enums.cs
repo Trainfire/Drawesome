@@ -11,6 +11,7 @@ namespace Protocol
         Kicked = 3,
         Joined = 4,
         Left = 5,
+        PromotedToOwner = 6,
     }
 
     [Serializable]

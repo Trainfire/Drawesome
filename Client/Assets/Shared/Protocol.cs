@@ -22,18 +22,12 @@ namespace Protocol
 
     public class Log : Message
     {
-        public string Message { get; private set; }
+        public string Message;
 
         public Log(string message)
         {
             Type = MessageType.Log;
             Message = message;
-        }
-
-        public Log(string message, params object[] args)
-        {
-            Type = MessageType.Log;
-            Message = string.Format(message, args);
         }
     }
 
@@ -127,11 +121,13 @@ namespace Protocol
 
         public class NotifyPlayerAction : Message
         {
+            public PlayerData Player;
             public PlayerAction Action;
 
-            public NotifyPlayerAction(PlayerAction action)
+            public NotifyPlayerAction(PlayerData player, PlayerAction action)
             {
                 Type = MessageType.ServerNotifyPlayerAction;
+                Player = player;
                 Action = action;
             }
         }

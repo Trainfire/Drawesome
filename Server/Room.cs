@@ -74,8 +74,7 @@ namespace Server
             };
 
             // Send message to joining player
-            SendMessage(joiningPlayer, "You joined the room {0}", Data.ID);
-            SendMessageToAll("{0} joined the room", joiningPlayer.Data.Name);
+            EchoActionToAll(joiningPlayer.Data, PlayerAction.Joined);
         }
 
         void OnPlayerConnectionClosed(object sender, PlayerConnectionClosed e)
@@ -87,13 +86,13 @@ namespace Server
             switch (e.CloseReason)
             {
                 case PlayerCloseReason.Disconnected:
-                    SendMessageToAll("{0} disconnected.", e.Player);
+                    EchoActionToAll(e.Player.Data, PlayerAction.Disconnected);
                     break;
                 case PlayerCloseReason.Left:
-                    SendMessageToAll("{0} left.", e.Player);
+                    EchoActionToAll(e.Player.Data, PlayerAction.Left);
                     break;
                 case PlayerCloseReason.Kicked:
-                    SendMessageToAll("{0} was kicked by {1}.", e.Player, Owner.Data.Name);
+                    EchoActionToAll(e.Player.Data, PlayerAction.Kicked);
                     break;
                 default:
                     break;
@@ -103,8 +102,7 @@ namespace Server
             if (Players.Count != 0)
             {
                 Owner = Players[0];
-                SendMessage(Owner, "You are now the room owner");
-                SendMessageToAll("{0} is now the room owner", Owner.Data.Name);
+                EchoActionToAll(Owner.Data, PlayerAction.PromotedToOwner);
             }
 
             Console.WriteLine("{0} left the room. ({1})", e.Player.Data.Name, e.CloseReason);
@@ -112,32 +110,14 @@ namespace Server
 
         #region Messaging
 
-        void SendMessage(Player player, string message, params object[] args)
+        /// <summary>
+        /// Helper function.
+        /// </summary>
+        /// <param name="actor"></param>
+        /// <param name="action"></param>
+        void EchoActionToAll(PlayerData actor, PlayerAction action)
         {
-            Console.WriteLine("Sending message: {0}", message);
-            player.SendMessage(new Log(message, args));
-        }
-
-        void SendMessage(Message message, Player player)
-        {
-            player.SendMessage(message);
-        }
-
-        void SendMessageToAll(string message, params object[] args)
-        {
-            Console.WriteLine("Sending message: {0}", message);
-            Players.ForEach(x => x.SendMessage(new Log(message, args)));
-        }
-
-        void SendMessageToAll(Message message)
-        {
-            Players.ForEach(x => x.SendMessage(message));
-        }
-
-        void SendMessageToAll(Message message, Player exception)
-        {
-            var allowedPlayers = Players.Where(x => x != exception).ToList();
-            allowedPlayers.ForEach(x => x.SendMessage(message));
+            Players.ForEach(x => x.SendAction(actor, action));
         }
 
         #endregion
