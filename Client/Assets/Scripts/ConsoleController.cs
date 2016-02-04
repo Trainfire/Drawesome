@@ -16,6 +16,7 @@ public class ConsoleController
         RegisterCommand("/requestrooms", RequestRooms);
         RegisterCommand("/createroom", CreateRoom);
         RegisterCommand("/leave", LeaveRoom);
+        RegisterCommand("/disconnect", Disconnect);
     }
 
     public void SubmitInput(string input)
@@ -101,6 +102,11 @@ public class ConsoleController
             Debug.Log("Request rooms");
             Client.Instance.RequestRooms();
         }
+    }
+
+    void Disconnect(string[] args)
+    {
+        Client.Instance.Disconnect();
     }
 
     void Connect(string[] args)
