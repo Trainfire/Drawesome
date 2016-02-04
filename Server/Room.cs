@@ -10,8 +10,8 @@ namespace Server
         public event EventHandler<Room> OnEmpty;
 
         public RoomData Data { get; set; }
+        public List<Player> Players { get; private set; }
 
-        List<Player> Players { get; set; }
         Player Owner { get; set; }
 
         /// <summary>
@@ -63,6 +63,17 @@ namespace Server
 
             // Add callbacks
             joiningPlayer.ConnectionClosed += OnPlayerConnectionClosed;
+
+            joiningPlayer.Socket.OnMessage += (message) =>
+            {
+                var obj = JsonHelper.FromJson<Message>(message);
+
+                if (obj.Type == MessageType.Chat)
+                {
+                    var data = JsonHelper.FromJson<SharedMessage.Chat>(message);
+                    EchoChatToAll(joiningPlayer.Data, data.Message);
+                }
+            };
 
             // Send message to joining player
             EchoActionToAll(joiningPlayer.Data, PlayerAction.Joined);
@@ -126,6 +137,12 @@ namespace Server
         void EchoActionToAll(PlayerData actor, PlayerAction action)
         {
             Players.ForEach(x => x.SendAction(actor, action));
+        }
+
+        void EchoChatToAll(PlayerData source, string message)
+        {
+            Console.WriteLine("{0}: {1}", source.Name, message);
+            Players.ForEach(x => x.SendMessage(new SharedMessage.Chat(source, message)));
         }
 
         #endregion

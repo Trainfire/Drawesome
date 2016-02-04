@@ -18,6 +18,7 @@ namespace Protocol
         ClientLeaveRoom,
         ClientCreateRoom,
         ServerRoomJoinError,
+        Chat,
     }
 
     public class Log : Message
@@ -28,6 +29,22 @@ namespace Protocol
         {
             Type = MessageType.Log;
             Message = message;
+        }
+    }
+
+    public class SharedMessage
+    {
+        public class Chat : Message
+        {
+            public PlayerData Player;
+            public string Message;
+
+            public Chat(PlayerData player, string message)
+            {
+                Type = MessageType.Chat;
+                Player = player;
+                Message = message;
+            }
         }
     }
 

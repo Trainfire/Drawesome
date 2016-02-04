@@ -17,6 +17,7 @@ public class ConsoleController
         RegisterCommand("/createroom", CreateRoom);
         RegisterCommand("/leave", LeaveRoom);
         RegisterCommand("/disconnect", Disconnect);
+        RegisterCommand("/say", Say);
     }
 
     public void SubmitInput(string input)
@@ -102,6 +103,21 @@ public class ConsoleController
             Debug.Log("Request rooms");
             Client.Instance.RequestRooms();
         }
+    }
+
+    void Say(string[] args)
+    {
+        // lmao hack.
+        string str = "";
+
+        foreach (var arg in args)
+        {
+            str += arg + " ";
+        }
+
+        str.TrimEnd(' ');
+
+        Client.Instance.Say(str);
     }
 
     void Disconnect(string[] args)

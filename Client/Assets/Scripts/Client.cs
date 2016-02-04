@@ -27,6 +27,7 @@ public class Client : Singleton<Client>
         messageHandler.OnServerCompleteConnectionRequest += OnServerCompleteConnectionRequest;
         messageHandler.OnServerUpdate += OnServerUpdate;
         messageHandler.OnRecieveRoomList += OnRecieveRoomList;
+        messageHandler.OnChat += OnChat;
     }
 
     public void Connect(string playerName)
@@ -66,6 +67,11 @@ public class Client : Singleton<Client>
     public void RequestRooms()
     {
         SendMessage(new ClientMessage.RequestRoomList(Data));
+    }
+
+    public void Say(string message)
+    {
+        SendMessage(new SharedMessage.Chat(Data, message));
     }
 
     public void SendMessage(Message message)
@@ -190,6 +196,12 @@ public class Client : Singleton<Client>
         }
 
         Debug.LogFormat("Connected players: {0}", names);
+    }
+
+    void OnChat(SharedMessage.Chat chat)
+    {
+        if (chat.Player.ID != Data.ID)
+            Debug.LogFormat("{0}: {1}", chat.Player.Name, chat.Message);
     }
 
     #endregion

@@ -10,6 +10,7 @@ namespace Protocol
         public Action<ServerUpdate> OnServerUpdate;
         public Action<ServerMessage.RoomJoinError> OnRoomError;
         public Action<ServerMessage.NotifyPlayerAction> OnServerNotifyPlayerAction;
+        public Action<SharedMessage.Chat> OnChat;
 
         public void HandleMessage(string json)
         {
@@ -37,6 +38,10 @@ namespace Protocol
                 case MessageType.ServerRoomJoinError:
                     if (OnRoomError != null)
                         OnRoomError(Deserialize<ServerMessage.RoomJoinError>(json));
+                    break;
+                case MessageType.Chat:
+                    if (OnChat != null)
+                        OnChat(Deserialize<SharedMessage.Chat>(json));
                     break;
                 default:
                     break;
