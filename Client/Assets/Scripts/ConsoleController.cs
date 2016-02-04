@@ -67,6 +67,8 @@ public class ConsoleController
         Debug.LogErrorFormat("Incorrect number of arguments");
     }
 
+    #region Commands
+
     void CreateRoom(string[] args)
     {
         if (args.Length > 1)
@@ -125,4 +127,6 @@ public class ConsoleController
             Client.Instance.JoinRoom(args[0]);
         }
     }
+
+    #endregion
 }

@@ -40,9 +40,10 @@ public class ConsoleView : MonoBehaviour
         switch (type)
         {
             case LogType.Error:
-                LogText.text += "<color=#f00>" + condition + "</color>\r\n";
+                LogText.text += "<color=#f00>Error: " + condition + "</color>\r\n";
                 break;
             case LogType.Assert:
+                LogText.text += "<color=#f00>Assert: " + condition + "</color>\r\n";
                 break;
             case LogType.Warning:
                 break;
