@@ -48,12 +48,12 @@ public class ConsoleController
     {
         if (Commands.ContainsKey(command))
         {
-            Logger.Log("Execute command {0} with following arguments: ", command);
+            Debug.LogFormat("Execute command {0} with following arguments: ", command);
             Commands[command](args);
         }
         else
         {
-            Logger.LogErrorFormat("Invalid command '{0}'", command);
+            Debug.LogErrorFormat("Invalid command '{0}'", command);
         }
     }
 
@@ -64,7 +64,7 @@ public class ConsoleController
 
     void PrintError()
     {
-        Logger.LogErrorFormat("Incorrect number of arguments");
+        Debug.LogErrorFormat("Incorrect number of arguments");
     }
 
     void CreateRoom(string[] args)
@@ -95,7 +95,7 @@ public class ConsoleController
         }
         else
         {
-            Logger.Log("Request rooms");
+            Debug.Log("Request rooms");
             Client.Instance.RequestRooms();
         }
     }
@@ -108,7 +108,7 @@ public class ConsoleController
         }
         else
         {
-            Logger.Log("Connect with name {0}", args[0]);
+            Debug.LogFormat("Connect with name {0}", args[0]);
             Client.Instance.Connect(args[0]);
         }
     }
@@ -121,7 +121,7 @@ public class ConsoleController
         }
         else
         {
-            Logger.Log("Join {0}", args[0]);
+            Debug.LogFormat("Join {0}", args[0]);
             Client.Instance.JoinRoom(args[0]);
         }
     }

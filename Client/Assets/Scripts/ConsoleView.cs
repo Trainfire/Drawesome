@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using System.Collections;
+using System;
 
 public class ConsoleView : MonoBehaviour
 {
@@ -30,22 +31,29 @@ public class ConsoleView : MonoBehaviour
         InputField.text = "";
         LogView.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, 0f);
 
-        Logger.OnLog += (str, type) =>
+        // Add callback for all Unity Debug Log events.
+        Application.RegisterLogCallbackThreaded(OnLogMessageRecieved);
+    }
+
+    void OnLogMessageRecieved(string condition, string stackTrace, LogType type)
+    {
+        switch (type)
         {
-            switch (type)
-            {
-                case Logger.LogType.Normal:
-                    LogText.text += str + "\r\n";
-                    break;
-                case Logger.LogType.Warning:
-                    break;
-                case Logger.LogType.Error:
-                    LogText.text += "<color=#f00>" + str + "</color>\r\n";
-                    break;
-                default:
-                    break;
-            }
-        };
+            case LogType.Error:
+                LogText.text += "<color=#f00>" + condition + "</color>\r\n";
+                break;
+            case LogType.Assert:
+                break;
+            case LogType.Warning:
+                break;
+            case LogType.Log:
+                LogText.text += condition + "\r\n";
+                break;
+            case LogType.Exception:
+                break;
+            default:
+                break;
+        }
     }
 
     void LateUpdate()
@@ -74,7 +82,7 @@ public class ConsoleView : MonoBehaviour
 
     IEnumerator Toggle()
     {
-        Logger.Log("Toggle");
+        Debug.Log("Toggle");
 
         float time = 0f;
 
@@ -107,5 +115,4 @@ public class ConsoleView : MonoBehaviour
             LogView.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, 0f);
         }
     }
-
 }
