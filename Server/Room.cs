@@ -7,6 +7,8 @@ namespace Server
 {
     class Room : WebSocketBehaviour
     {
+        public event EventHandler<Room> OnEmpty;
+
         public RoomData Data { get; set; }
 
         List<Player> Players { get; set; }
@@ -103,6 +105,11 @@ namespace Server
             {
                 Owner = Players[0];
                 EchoActionToAll(Owner.Data, PlayerAction.PromotedToOwner);
+            }
+            else
+            {
+                // Remove room
+                OnEmpty(this, this);
             }
 
             Console.WriteLine("{0} left the room. ({1})", e.Player.Data.Name, e.CloseReason);

@@ -84,7 +84,6 @@ namespace Server
                 targetRoom.Join(joiningPlayer);
             }
 
-            // TODO: Trash
             if (message.Type == MessageType.ClientCreateRoom)
             {
                 var createRoom = JsonHelper.FromJson<ClientMessage.CreateRoom>(m);
@@ -92,8 +91,17 @@ namespace Server
 
                 var creator = Players.Find(x => x.Data.ID == createRoom.Player.ID);
                 var room = new Room(creator, createRoom.Password);
+
+                room.OnEmpty += OnRoomEmpty;
+
                 Rooms.Add(room);
             }
+        }
+
+        void OnRoomEmpty(object sender, Room e)
+        {
+            Console.WriteLine("Closing room {0} as it is empty", e.Data.ID);
+            Rooms.Remove(e);
         }
 
         public override void OnClose(IWebSocketConnection socket)
