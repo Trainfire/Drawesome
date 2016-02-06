@@ -78,10 +78,21 @@ namespace Server
                 var data = JsonHelper.FromJson<ClientMessage.JoinRoom>(m);
                 Console.WriteLine("Recieved a request from {0} to join room {1}.", data.Player.ID, data.RoomId);
 
+                var roomHasPlayer = Rooms.Find(x => x.HasPlayer(data.Player));
+                if (roomHasPlayer != null)
+                    roomHasPlayer.Leave(data.Player);
+
                 var targetRoom = Rooms.Find(x => x.Data.ID == data.RoomId);
                 var joiningPlayer = Players.Find(x => x.Data.ID == data.Player.ID);
 
-                targetRoom.Join(joiningPlayer, data.Password);
+                if (targetRoom != null)
+                {
+                    targetRoom.Join(joiningPlayer, data.Password);
+                }
+                else
+                {
+                    joiningPlayer.SendRoomError(RoomError.RoomDoesNotExist);
+                }
             }
 
             if (message.Type == MessageType.ClientLeaveRoom)
@@ -104,6 +115,10 @@ namespace Server
             {
                 var data = JsonHelper.FromJson<ClientMessage.CreateRoom>(m);
                 Console.WriteLine("Create room for {0} with password {1}", data.Player.Name, data.Password);
+
+                var playerCurrentRoom = FindRoomContainingPlayer(data.Player);
+                if (playerCurrentRoom != null)
+                    playerCurrentRoom.Leave(data.Player);
 
                 var creator = Players.Find(x => x.Data.ID == data.Player.ID);
                 var room = new Room(creator, data.Password);
@@ -193,6 +208,11 @@ namespace Server
         Player GetPlayerFromSocket(IWebSocketConnection socket)
         {
             return Players.FirstOrDefault(x => x.Socket == socket);
+        }
+
+        Room FindRoomContainingPlayer(PlayerData player)
+        {
+            return Rooms.Find(x => x.HasPlayer(player));
         }
     }
 }
