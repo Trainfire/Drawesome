@@ -7,6 +7,7 @@ using System.Collections.Generic;
 public class Client : Singleton<Client>
 {
     public PlayerData PlayerData { get; private set; }
+    public RoomData RoomData { get; private set; }
 
     public string PlayerName { get; private set; }
     public List<RoomData> Rooms { get; private set; }
@@ -30,6 +31,13 @@ public class Client : Singleton<Client>
         messageHandler.OnRecieveRoomList += OnRecieveRoomList;
         messageHandler.OnChat += OnChat;
         messageHandler.OnServerNotifyRoomError += OnRoomNotification;
+        messageHandler.OnRoomUpdate += OnRoomUpdate;
+    }
+
+    void OnRoomUpdate(ServerMessage.RoomUpdate message)
+    {
+        Debug.LogFormat("Recieved data for room {0}. Players: {1}", message.RoomData.ID);
+        RoomData = message.RoomData;
     }
 
     public void Connect(string playerName)

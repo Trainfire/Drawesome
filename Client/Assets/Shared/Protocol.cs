@@ -19,6 +19,7 @@ namespace Protocol
         ClientCreateRoom,
         ServerNotifyRoomError,
         Chat,
+        ServerRoomUpdate,
     }
 
     public class Log : Message
@@ -157,6 +158,17 @@ namespace Protocol
             {
                 Type = MessageType.ServerNotifyRoomError;
                 Notice = notice;
+            }
+        }
+
+        public class RoomUpdate : Message
+        {
+            public RoomData RoomData;
+
+            public RoomUpdate(RoomData roomData)
+            {
+                Type = MessageType.ServerRoomUpdate;
+                RoomData = roomData;
             }
         }
     }

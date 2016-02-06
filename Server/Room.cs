@@ -135,7 +135,12 @@ namespace Server
         void EchoActionToAll(PlayerData actor, PlayerAction action)
         {
             Log("{0} ({1})", actor.Name, action);
-            Players.ForEach(x => x.SendAction(actor, action));
+
+            foreach (var player in Players)
+            {
+                player.SendAction(actor, action);
+                player.SendMessage(new ServerMessage.RoomUpdate(Data));
+            }
         }
 
         void EchoChatToAll(SharedMessage.Chat message)

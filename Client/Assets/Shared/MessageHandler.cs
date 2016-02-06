@@ -4,6 +4,8 @@ namespace Protocol
 {
     public class MessageHandler
     {
+        public delegate void MessageEvent<T>(T message);
+
         // Add an action for every type of message here.
         public Action<ServerMessage.ConnectionSuccess> OnServerCompleteConnectionRequest;
         public Action<ServerMessage.RoomList> OnRecieveRoomList;
@@ -11,6 +13,7 @@ namespace Protocol
         public Action<ServerMessage.NotifyRoomError> OnServerNotifyRoomError;
         public Action<ServerMessage.NotifyPlayerAction> OnServerNotifyPlayerAction;
         public Action<SharedMessage.Chat> OnChat;
+        public event MessageEvent<ServerMessage.RoomUpdate> OnRoomUpdate;
 
         public void HandleMessage(string json)
         {
@@ -42,6 +45,10 @@ namespace Protocol
                 case MessageType.Chat:
                     if (OnChat != null)
                         OnChat(Deserialize<SharedMessage.Chat>(json));
+                    break;
+                case MessageType.ServerRoomUpdate:
+                    if (OnRoomUpdate != null)
+                        OnRoomUpdate(Deserialize<ServerMessage.RoomUpdate>(json));
                     break;
                 default:
                     break;
