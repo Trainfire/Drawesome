@@ -168,10 +168,15 @@ public class ConsoleController
         {
             PrintError(command);
         }
-        else
+        else if (args.Length == 1)
         {
             Debug.LogFormat("Join {0}", args[0]);
             Client.Instance.JoinRoom(args[0]);
+        }
+        else if (args.Length == 2)
+        {
+            Debug.LogFormat("Join {0} with password '{1}'", args[0], args[1]);
+            Client.Instance.JoinRoom(args[0], args[1]);
         }
     }
 

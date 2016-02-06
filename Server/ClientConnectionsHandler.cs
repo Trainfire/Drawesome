@@ -81,7 +81,7 @@ namespace Server
                 var targetRoom = Rooms.Find(x => x.Data.ID == data.RoomId);
                 var joiningPlayer = Players.Find(x => x.Data.ID == data.Player.ID);
 
-                targetRoom.Join(joiningPlayer);
+                targetRoom.Join(joiningPlayer, data.Password);
             }
 
             if (message.Type == MessageType.ClientLeaveRoom)

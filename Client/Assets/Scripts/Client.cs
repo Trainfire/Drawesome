@@ -65,10 +65,10 @@ public class Client : Singleton<Client>
         SendMessage(new ClientMessage.CreateRoom(PlayerData, password));
     }
 
-    public void JoinRoom(string roomId)
+    public void JoinRoom(string roomId, string password = "")
     {
         Debug.LogFormat("Attempt to join room {0}", roomId);
-        SendMessage(new ClientMessage.JoinRoom(PlayerData, roomId));
+        SendMessage(new ClientMessage.JoinRoom(PlayerData, roomId, password));
     }
 
     public void LeaveRoom()
@@ -216,9 +216,9 @@ public class Client : Singleton<Client>
     {
         string names = "";
 
-        for (int i = 0; i < Players.Count; i++)
+        for (int i = 0; i < players.Count; i++)
         {
-            names += i != Players.Count - 1 ? Players[i].Name + ", " : Players[i].Name;
+            names += i != players.Count - 1 ? players[i].Name + ", " : players[i].Name;
         }
 
         return names;

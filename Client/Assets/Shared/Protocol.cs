@@ -81,12 +81,14 @@ namespace Protocol
         {
             public PlayerData Player;
             public string RoomId;
+            public string Password;
 
-            public JoinRoom(PlayerData player, string roomId)
+            public JoinRoom(PlayerData player, string roomId, string password = "")
             {
                 Type = MessageType.ClientJoinRoom;
                 Player = player;
                 RoomId = roomId;
+                Password = password;
             }
         }
 

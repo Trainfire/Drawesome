@@ -46,8 +46,7 @@ namespace Server
         {
             Console.WriteLine("Player {0} joined room {1}", joiningPlayer.Data.Name, Data.ID);
 
-            // Check validity of password and notify player if incorrect
-            if (password != Data.Password)
+            if (joiningPlayer.Data.ID != Owner.Data.ID && password != Data.Password)
             {
                 Log("Player {0} provided incorrect password {1}. (Is {2})", joiningPlayer.Data.Name, password, Data.Password);
                 joiningPlayer.SendRoomError(RoomError.InvalidPassword);
