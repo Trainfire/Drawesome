@@ -27,7 +27,9 @@ namespace Server
 
     class Player
     {
-        public event EventHandler<PlayerConnectionClosed> ConnectionClosed;
+        public event EventHandler<PlayerConnectionClosed> OnConnectionClosed;
+        public event EventHandler<SharedMessage.Chat> OnChat;
+
         public PlayerData Data { get; set; }
         public IWebSocketConnection Socket { get; private set; }
 
@@ -40,15 +42,21 @@ namespace Server
             
             socket.OnClose += () =>
             {
-                if (ConnectionClosed != null)
-                    ConnectionClosed(this, new PlayerConnectionClosed(this, PlayerCloseReason.Disconnected));
+                if (OnConnectionClosed != null)
+                    OnConnectionClosed(this, new PlayerConnectionClosed(this, PlayerCloseReason.Disconnected));
             };
 
             socket.OnMessage += (message) =>
             {
-                // TODO: Handle player leaving room here
-                //if (ConnectionClosed != null)
-                //    ConnectionClosed(this, new PlayerConnectionClosed(this, PlayerCloseReason.Left));
+                if (OnChat != null)
+                {
+                    var obj = JsonHelper.FromJson<Message>(message);
+                    if (obj.Type == MessageType.Chat)
+                    {
+                        var data = JsonHelper.FromJson<SharedMessage.Chat>(message);
+                        OnChat(this, data);
+                    }
+                }
             };
         }
 

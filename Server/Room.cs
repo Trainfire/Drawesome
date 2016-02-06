@@ -62,18 +62,8 @@ namespace Server
             Console.WriteLine("Player {0} joined room {1}", joiningPlayer.Data.Name, Data.ID);
 
             // Add callbacks
-            joiningPlayer.ConnectionClosed += OnPlayerConnectionClosed;
-
-            joiningPlayer.Socket.OnMessage += (message) =>
-            {
-                var obj = JsonHelper.FromJson<Message>(message);
-
-                if (obj.Type == MessageType.Chat)
-                {
-                    var data = JsonHelper.FromJson<SharedMessage.Chat>(message);
-                    EchoChatToAll(joiningPlayer.Data, data.Message);
-                }
-            };
+            joiningPlayer.OnConnectionClosed += OnPlayerConnectionClosed;
+            joiningPlayer.OnChat += OnPlayerChat;
 
             // Send message to joining player
             EchoActionToAll(joiningPlayer.Data, PlayerAction.Joined);
@@ -81,7 +71,6 @@ namespace Server
 
         public void Leave(PlayerData leavingPlayer)
         {
-            Console.WriteLine("Leave. Players current: {0}", Players.Count);
             var player = Players.Find(x => x.Data.ID == leavingPlayer.ID);
             OnPlayerConnectionClosed(this, new PlayerConnectionClosed(player, PlayerCloseReason.Left));
         }
@@ -91,10 +80,19 @@ namespace Server
             return Players.Exists(x => x.Data.ID == player.ID);
         }
 
+        void OnPlayerChat(object sender, SharedMessage.Chat message)
+        {
+            var player = sender as Player;
+            EchoChatToAll(message);
+        }
+
         void OnPlayerConnectionClosed(object sender, PlayerConnectionClosed e)
         {
             Players.Remove(e.Player);
-            e.Player.ConnectionClosed -= OnPlayerConnectionClosed;
+
+            // Remove callbacks
+            e.Player.OnConnectionClosed -= OnPlayerConnectionClosed;
+            e.Player.OnChat -= OnPlayerChat;
 
             // Inform players
             switch (e.CloseReason)
@@ -139,10 +137,10 @@ namespace Server
             Players.ForEach(x => x.SendAction(actor, action));
         }
 
-        void EchoChatToAll(PlayerData source, string message)
+        void EchoChatToAll(SharedMessage.Chat message)
         {
-            Console.WriteLine("{0}: {1}", source.Name, message);
-            Players.ForEach(x => x.SendMessage(new SharedMessage.Chat(source, message)));
+            Console.WriteLine("{0}: {1}", message.Player.Name, message);
+            Players.ForEach(x => x.SendMessage(message));
         }
 
         #endregion
