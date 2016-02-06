@@ -71,6 +71,8 @@ namespace Server
 
                 // Send message to joining player
                 EchoActionToAll(joiningPlayer.Data, PlayerAction.Joined);
+
+                SendUpdateToAll();
             }
         }
 
@@ -125,6 +127,7 @@ namespace Server
                 {
                     Owner = Players[0];
                     EchoActionToAll(Owner.Data, PlayerAction.PromotedToOwner);
+                    SendUpdateToAll();
                 }
             }
             else
@@ -140,18 +143,18 @@ namespace Server
         void EchoActionToAll(PlayerData actor, PlayerAction action)
         {
             Log("{0} ({1})", actor.Name, action);
-
-            foreach (var player in Players)
-            {
-                player.SendAction(actor, action);
-                player.SendMessage(new ServerMessage.RoomUpdate(Data));
-            }
+            Players.ForEach(x => x.SendAction(actor, action));
         }
 
         void EchoChatToAll(SharedMessage.Chat message)
         {
             Log("{0}: {1}", message.Player.Name, message);
             Players.ForEach(x => x.SendMessage(message));
+        }
+
+        void SendUpdateToAll()
+        {
+            Players.ForEach(x => x.SendMessage(new ServerMessage.RoomUpdate(Data)));
         }
 
         #endregion
