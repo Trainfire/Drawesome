@@ -201,8 +201,7 @@ public class Client : Singleton<Client>
 
     void OnChat(SharedMessage.Chat chat)
     {
-        if (chat.Player.ID != PlayerData.ID)
-            Debug.LogFormat("{0}: {1}", chat.Player.Name, chat.Message);
+        Debug.LogFormat("{0}: {1}", chat.Player.Name, chat.Message);
     }
 
     #endregion
