@@ -36,7 +36,7 @@ public class Client : Singleton<Client>
 
     void OnRoomUpdate(ServerMessage.RoomUpdate message)
     {
-        Debug.LogFormat("Recieved data for room {0}. Players: {1}", message.RoomData.ID);
+        Debug.LogFormat("Recieved data for room {0}", message.RoomData.ID);
         RoomData = message.RoomData;
     }
 
