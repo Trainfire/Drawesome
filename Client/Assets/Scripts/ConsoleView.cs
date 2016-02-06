@@ -60,7 +60,7 @@ public class ConsoleView : MonoBehaviour
         }
 
         // Scroll to bottom
-        LogScrollView.normalizedPosition = Vector2.zero;
+        LogScrollView.normalizedPosition = new Vector2(LogScrollView.normalizedPosition.x, 0);
     }
 
     void Update()
