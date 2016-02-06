@@ -20,6 +20,7 @@ namespace Protocol
         None,
         InvalidPassword,
         RoomFull,
-        RoomDoesNotExist
+        RoomDoesNotExist,
+        AlreadyInRoom,
     }
 }

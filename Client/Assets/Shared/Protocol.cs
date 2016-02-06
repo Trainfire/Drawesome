@@ -17,7 +17,7 @@ namespace Protocol
         ClientJoinRoom,
         ClientLeaveRoom,
         ClientCreateRoom,
-        ServerRoomJoinError,
+        ServerNotifyRoomError,
         Chat,
     }
 
@@ -149,14 +149,14 @@ namespace Protocol
             }
         }
 
-        public class RoomJoinError : Message
+        public class NotifyRoomError : Message
         {
-            public RoomError Error;
+            public RoomError Notice;
 
-            public RoomJoinError(RoomError error)
+            public NotifyRoomError(RoomError notice)
             {
-                Type = MessageType.ServerRoomJoinError;
-                Error = error;
+                Type = MessageType.ServerNotifyRoomError;
+                Notice = notice;
             }
         }
     }

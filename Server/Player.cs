@@ -76,6 +76,12 @@ namespace Server
             Socket.Send(message.AsJson());
         }
 
+        public void SendRoomError(RoomError roomError)
+        {
+            var message = new ServerMessage.NotifyRoomError(roomError);
+            Socket.Send(message.AsJson());
+        }
+
         public void Update(ClientConnectionsHandler manager)
         {
             Console.WriteLine("Send update to " + Data.Name);

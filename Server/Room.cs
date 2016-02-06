@@ -43,30 +43,33 @@ namespace Server
 
         public void Join(Player joiningPlayer, string password = "")
         {
+            Console.WriteLine("Player {0} joined room {1}", joiningPlayer.Data.Name, Data.ID);
+
             // Check validity of password and notify player if incorrect
             if (password != Data.Password)
             {
-                joiningPlayer.SendMessage(new ServerMessage.RoomJoinError(RoomError.InvalidPassword));
+                Log("Player {0} provided incorrect password {1}. (Is {2})", joiningPlayer.Data.Name, password, Data.Password);
+                joiningPlayer.SendRoomError(RoomError.InvalidPassword);
                 return;
             }
 
             if (Players.Contains(joiningPlayer))
             {
                 // TODO: Handle player rejoining room after disconnection?
+                Log("Already contains player {0}", joiningPlayer.Data.Name);
+                joiningPlayer.SendRoomError(RoomError.AlreadyInRoom);
             }
             else
             {
                 Players.Add(joiningPlayer);
+
+                // Add callbacks
+                joiningPlayer.OnConnectionClosed += OnPlayerConnectionClosed;
+                joiningPlayer.OnChat += OnPlayerChat;
+
+                // Send message to joining player
+                EchoActionToAll(joiningPlayer.Data, PlayerAction.Joined);
             }
-
-            Console.WriteLine("Player {0} joined room {1}", joiningPlayer.Data.Name, Data.ID);
-
-            // Add callbacks
-            joiningPlayer.OnConnectionClosed += OnPlayerConnectionClosed;
-            joiningPlayer.OnChat += OnPlayerChat;
-
-            // Send message to joining player
-            EchoActionToAll(joiningPlayer.Data, PlayerAction.Joined);
         }
 
         public void Leave(PlayerData leavingPlayer)
@@ -88,8 +91,6 @@ namespace Server
 
         void OnPlayerConnectionClosed(object sender, PlayerConnectionClosed e)
         {
-            Players.Remove(e.Player);
-
             // Remove callbacks
             e.Player.OnConnectionClosed -= OnPlayerConnectionClosed;
             e.Player.OnChat -= OnPlayerChat;
@@ -110,40 +111,46 @@ namespace Server
                     break;
             }
 
+            Players.Remove(e.Player);
+
             // Assign a new owner
             if (Players.Count != 0)
             {
-                Owner = Players[0];
-                EchoActionToAll(Owner.Data, PlayerAction.PromotedToOwner);
+                if (Owner != Players[0])
+                {
+                    Owner = Players[0];
+                    EchoActionToAll(Owner.Data, PlayerAction.PromotedToOwner);
+                }
             }
             else
             {
                 // Remove room
-                OnEmpty(this, this);
+                if (OnEmpty != null)
+                    OnEmpty(this, this);
             }
-
-            Console.WriteLine("{0} left the room. ({1})", e.Player.Data.Name, e.CloseReason);
         }
 
         #region Messaging
 
-        /// <summary>
-        /// Helper function.
-        /// </summary>
-        /// <param name="actor"></param>
-        /// <param name="action"></param>
         void EchoActionToAll(PlayerData actor, PlayerAction action)
         {
+            Log("{0} ({1})", actor.Name, action);
             Players.ForEach(x => x.SendAction(actor, action));
         }
 
         void EchoChatToAll(SharedMessage.Chat message)
         {
-            Console.WriteLine("{0}: {1}", message.Player.Name, message);
+            Log("{0}: {1}", message.Player.Name, message);
             Players.ForEach(x => x.SendMessage(message));
         }
 
         #endregion
+
+        void Log(string message, params object[] args)
+        {
+            var str = string.Format(message, args);
+            Console.WriteLine("Room {0} : {1}", Data.ID, str);
+        }
 
     }
 }

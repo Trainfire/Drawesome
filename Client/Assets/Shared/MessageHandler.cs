@@ -8,7 +8,7 @@ namespace Protocol
         public Action<ServerMessage.ConnectionSuccess> OnServerCompleteConnectionRequest;
         public Action<ServerMessage.RoomList> OnRecieveRoomList;
         public Action<ServerUpdate> OnServerUpdate;
-        public Action<ServerMessage.RoomJoinError> OnRoomError;
+        public Action<ServerMessage.NotifyRoomError> OnServerNotifyRoomError;
         public Action<ServerMessage.NotifyPlayerAction> OnServerNotifyPlayerAction;
         public Action<SharedMessage.Chat> OnChat;
 
@@ -35,9 +35,9 @@ namespace Protocol
                     if (OnRecieveRoomList != null)
                         OnRecieveRoomList(Deserialize<ServerMessage.RoomList>(json));
                     break;
-                case MessageType.ServerRoomJoinError:
-                    if (OnRoomError != null)
-                        OnRoomError(Deserialize<ServerMessage.RoomJoinError>(json));
+                case MessageType.ServerNotifyRoomError:
+                    if (OnServerNotifyRoomError != null)
+                        OnServerNotifyRoomError(Deserialize<ServerMessage.NotifyRoomError>(json));
                     break;
                 case MessageType.Chat:
                     if (OnChat != null)

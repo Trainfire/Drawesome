@@ -29,6 +29,7 @@ public class Client : Singleton<Client>
         messageHandler.OnServerUpdate += OnServerUpdate;
         messageHandler.OnRecieveRoomList += OnRecieveRoomList;
         messageHandler.OnChat += OnChat;
+        messageHandler.OnServerNotifyRoomError += OnRoomNotification;
     }
 
     public void Connect(string playerName)
@@ -57,6 +58,7 @@ public class Client : Singleton<Client>
 
     public void JoinRoom(string roomId)
     {
+        Debug.LogFormat("Attempt to join room {0}", roomId);
         SendMessage(new ClientMessage.JoinRoom(PlayerData, roomId));
     }
 
@@ -202,6 +204,11 @@ public class Client : Singleton<Client>
     void OnChat(SharedMessage.Chat chat)
     {
         Debug.LogFormat("{0}: {1}", chat.Player.Name, chat.Message);
+    }
+
+    void OnRoomNotification(ServerMessage.NotifyRoomError notification)
+    {
+        Debug.LogFormat("Room Notification: {0}", notification.Notice);
     }
 
     #endregion
