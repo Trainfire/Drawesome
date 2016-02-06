@@ -7,12 +7,12 @@ namespace Protocol
         public delegate void MessageEvent<T>(T message);
 
         // Add an action for every type of message here.
-        public Action<ServerMessage.ConnectionSuccess> OnServerCompleteConnectionRequest;
-        public Action<ServerMessage.RoomList> OnRecieveRoomList;
-        public Action<ServerUpdate> OnServerUpdate;
-        public Action<ServerMessage.NotifyRoomError> OnServerNotifyRoomError;
-        public Action<ServerMessage.NotifyPlayerAction> OnServerNotifyPlayerAction;
-        public Action<SharedMessage.Chat> OnChat;
+        public event MessageEvent<ServerMessage.ConnectionSuccess> OnServerCompleteConnectionRequest;
+        public event MessageEvent<ServerMessage.RoomList> OnRecieveRoomList;
+        public event MessageEvent<ServerUpdate> OnServerUpdate;
+        public event MessageEvent<ServerMessage.NotifyRoomError> OnServerNotifyRoomError;
+        public event MessageEvent<ServerMessage.NotifyPlayerAction> OnServerNotifyPlayerAction;
+        public event MessageEvent<SharedMessage.Chat> OnChat;
         public event MessageEvent<ServerMessage.RoomUpdate> OnRoomUpdate;
 
         public void HandleMessage(string json)
