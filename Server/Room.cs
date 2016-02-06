@@ -25,6 +25,7 @@ namespace Server
             Data = new RoomData();
             Data.ID = Guid.NewGuid().ToString().Substring(0, GuidSize);
             Data.Password = password;
+            Data.Players = new List<PlayerData>();
 
             Players = new List<Player>();
             Owner = owner;
@@ -62,6 +63,7 @@ namespace Server
             else
             {
                 Players.Add(joiningPlayer);
+                Data.Players.Add(joiningPlayer.Data);
 
                 // Add callbacks
                 joiningPlayer.OnConnectionClosed += OnPlayerConnectionClosed;
@@ -112,6 +114,9 @@ namespace Server
             }
 
             Players.Remove(e.Player);
+
+            var data = Data.Players.Find(x => x.ID == e.Player.Data.ID);
+            Data.Players.Remove(data);
 
             // Assign a new owner
             if (Players.Count != 0)

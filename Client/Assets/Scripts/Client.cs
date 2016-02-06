@@ -37,6 +37,7 @@ public class Client : Singleton<Client>
     void OnRoomUpdate(ServerMessage.RoomUpdate message)
     {
         Debug.LogFormat("Recieved data for room {0}", message.RoomData.ID);
+        Debug.LogFormat("Current Players: {0}", GetPlayerList(message.RoomData.Players));
         RoomData = message.RoomData;
     }
 
@@ -198,15 +199,7 @@ public class Client : Singleton<Client>
     {
         Debug.LogFormat("Recieved Server Update with {0} players.", update.Players.Count);
         Players = update.Players;
-
-        string names = "";
-
-        for (int i = 0; i < Players.Count; i++)
-        {
-            names += i != Players.Count - 1 ? Players[i].Name + ", " : Players[i].Name;
-        }
-
-        Debug.LogFormat("Connected players: {0}", names);
+        Debug.LogFormat("Connected players: {0}", GetPlayerList(Players));
     }
 
     void OnChat(SharedMessage.Chat chat)
@@ -217,6 +210,18 @@ public class Client : Singleton<Client>
     void OnRoomNotification(ServerMessage.NotifyRoomError notification)
     {
         Debug.LogFormat("Room Notification: {0}", notification.Notice);
+    }
+
+    string GetPlayerList(List<PlayerData> players)
+    {
+        string names = "";
+
+        for (int i = 0; i < Players.Count; i++)
+        {
+            names += i != Players.Count - 1 ? Players[i].Name + ", " : Players[i].Name;
+        }
+
+        return names;
     }
 
     #endregion

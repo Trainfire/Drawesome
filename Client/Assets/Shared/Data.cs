@@ -1,5 +1,5 @@
 using System;
-using Newtonsoft.Json;
+using System.Collections.Generic;
 
 namespace Protocol
 {
@@ -14,5 +14,6 @@ namespace Protocol
     {
         public string ID { get; set; }
         public string Password { get; set; }
+        public List<PlayerData> Players { get; set; }
     }
 }
