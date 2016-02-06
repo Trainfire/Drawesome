@@ -9,6 +9,7 @@ public class ConsoleView : MonoBehaviour
     public InputField InputField;
     public RectTransform LogView;
     public Text LogText;
+    public ScrollRect LogScrollView;
 
     ConsoleController Console { get; set; }
 
@@ -57,6 +58,9 @@ public class ConsoleView : MonoBehaviour
             default:
                 break;
         }
+
+        // Scroll to bottom
+        LogScrollView.normalizedPosition = Vector2.zero;
     }
 
     void Update()
