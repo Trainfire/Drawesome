@@ -58,14 +58,14 @@ public class ConsoleView : MonoBehaviour
             default:
                 break;
         }
-
-        // Scroll to bottom
-        LogScrollView.normalizedPosition = new Vector2(LogScrollView.normalizedPosition.x, 0);
     }
 
     void Update()
     {
         LogText.text = log;
+
+        // Scroll to bottom
+        LogScrollView.normalizedPosition = new Vector2(LogScrollView.normalizedPosition.x, 0);
     }
 
     void LateUpdate()
