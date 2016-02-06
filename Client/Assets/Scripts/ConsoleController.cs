@@ -1,23 +1,39 @@
 using UnityEngine;
-using System.Collections;
 using System.Collections.Generic;
-using System;
+using System.Linq;
 
 public class ConsoleController
 {
-    public delegate void Command(string[] args);
+    delegate void CommandDelegate(ConsoleCommand command, string[] args);
 
-    Dictionary<string, Command> Commands = new Dictionary<string, Command>();
+    List<ConsoleCommand> Commands = new List<ConsoleCommand>();
+
+    const string Token = "/";
+
+    class ConsoleCommand
+    {
+        public string Command { get; private set; }
+        public CommandDelegate Action { get; private set; }
+        public string Help { get; private set; }
+
+        public ConsoleCommand(string command, CommandDelegate action, string help = "")
+        {
+            Command = command;
+            Action = action;
+            Help = help;
+        }
+    }
 
     public ConsoleController()
     {
-        RegisterCommand("/join", Join);
-        RegisterCommand("/connect", Connect);
-        RegisterCommand("/requestrooms", RequestRooms);
-        RegisterCommand("/createroom", CreateRoom);
-        RegisterCommand("/leave", LeaveRoom);
-        RegisterCommand("/disconnect", Disconnect);
-        RegisterCommand("/say", Say);
+        RegisterCommand(new ConsoleCommand("help", Help));
+        RegisterCommand(new ConsoleCommand("join", Join, "[RoomID] (Joins a room with the specified ID)"));
+        RegisterCommand(new ConsoleCommand("connect", Connect, "[Name]"));
+        RegisterCommand(new ConsoleCommand("requestrooms", RequestRooms, "[RoomID] (Returns a list of rooms on the server)"));
+        RegisterCommand(new ConsoleCommand("create", CreateRoom, "[Password] (Creates a room with an optional password)"));
+        RegisterCommand(new ConsoleCommand("leave", LeaveRoom, "(Disconnects you from the room you are currently in)"));
+        RegisterCommand(new ConsoleCommand("disconnect", Disconnect));
+        RegisterCommand(new ConsoleCommand("say", Say, "[Message] (Sends a message to all players in the same room)"));
     }
 
     public void SubmitInput(string input)
@@ -27,56 +43,64 @@ public class ConsoleController
 
     void ParseInput(string input)
     {
+        if (input.StartsWith(Token))
+            input = input.Remove(0, Token.Length);
+
+        // Remove trailing whitespace
+        input = input.Trim(' ');
+
+        // Split input using space as delimiter
         string[] args = input.Split(' ');
 
-        string command = "";
-        List<string> commandArgs = new List<string>();
+        string parsedCommand = "";
+        List<string> parsedArgs = new List<string>();
 
         for (int i = 0; i < args.Length; i++)
         {
             if (i == 0)
             {
-                command = args[i];
+                parsedCommand = args[i];
             }
             else
             {
-                commandArgs.Add(args[i]);
+                parsedArgs.Add(args[i]);
             }
         }
 
-        Execute(command, commandArgs.ToArray());
-    }
-
-    void Execute(string command, string[] args)
-    {
-        if (Commands.ContainsKey(command))
+        // find matching command here
+        var command = Commands.Find(x => x.Command == parsedCommand);
+        if (command != null)
         {
-            Debug.LogFormat("Execute command {0} with following arguments: ", command);
-            Commands[command](args);
+            Execute(command, parsedArgs.ToArray());
         }
         else
         {
-            Debug.LogErrorFormat("Invalid command '{0}'", command);
+           Debug.LogErrorFormat("Invalid command '{0}'", parsedCommand);
         }
     }
 
-    void RegisterCommand(string command, Command handler)
+    void Execute(ConsoleCommand consoleCommand, string[] args)
     {
-        Commands.Add(command, handler);
+        consoleCommand.Action(consoleCommand, args);
     }
 
-    void PrintError()
+    void RegisterCommand(ConsoleCommand action)
     {
-        Debug.LogErrorFormat("Incorrect number of arguments");
+        Commands.Add(action);
+    }
+
+    void PrintError(ConsoleCommand consoleCommand)
+    {
+        Debug.LogErrorFormat("Incorrect number of arguments for {0}. Requires {1}", consoleCommand.Command, consoleCommand.Help);
     }
 
     #region Commands
 
-    void CreateRoom(string[] args)
+    void CreateRoom(ConsoleCommand command, string[] args)
     {
         if (args.Length > 1)
         {
-            PrintError();
+            PrintError(command);
         }
         else
         {
@@ -92,11 +116,11 @@ public class ConsoleController
         }
     }
 
-    void RequestRooms(string[] args)
+    void RequestRooms(ConsoleCommand command, string[] args)
     {
         if (args.Length > 0)
         {
-            PrintError();
+            PrintError(command);
         }
         else
         {
@@ -105,7 +129,7 @@ public class ConsoleController
         }
     }
 
-    void Say(string[] args)
+    void Say(ConsoleCommand command, string[] args)
     {
         // lmao hack.
         string str = "";
@@ -120,16 +144,16 @@ public class ConsoleController
         Client.Instance.Say(str);
     }
 
-    void Disconnect(string[] args)
+    void Disconnect(ConsoleCommand command, string[] args)
     {
         Client.Instance.Disconnect();
     }
 
-    void Connect(string[] args)
+    void Connect(ConsoleCommand command, string[] args)
     {
         if (args.Length < 1) 
         {
-            PrintError();
+            PrintError(command);
         }
         else
         {
@@ -138,11 +162,11 @@ public class ConsoleController
         }
     }
 
-    void Join(string[] args)
+    void Join(ConsoleCommand command, string[] args)
     {
         if (args.Length < 1)
         {
-            PrintError();
+            PrintError(command);
         }
         else
         {
@@ -151,9 +175,19 @@ public class ConsoleController
         }
     }
 
-    void LeaveRoom(string[] args)
+    void LeaveRoom(ConsoleCommand command, string[] args)
     {
         Client.Instance.LeaveRoom();
+    }
+
+    void Help(ConsoleCommand command, string[] args)
+    {
+        Debug.LogFormat("Available Commands:");
+
+        foreach (var c in Commands)
+        {
+            Debug.LogFormat("\t{0} {1}", c.Command, c.Help);
+        }
     }
 
     #endregion
