@@ -3,12 +3,22 @@ using System.Collections;
 
 public class UiMenu : MonoBehaviour
 {
-    public virtual void OnHide()
+    public virtual void Hide()
+    {
+        OnHide();
+    }
+
+    public virtual void Show()
+    {
+        OnShow();
+    }
+
+    protected virtual void OnHide()
     {
         gameObject.SetActive(false);
     }
 
-    public virtual void OnShow()
+    protected virtual void OnShow()
     {
         gameObject.SetActive(true);
     }

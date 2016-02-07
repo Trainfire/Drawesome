@@ -21,7 +21,7 @@ public class Client : Singleton<Client>
     const string URI = "ws://127.0.0.1:8181/room";
 
     WebSocket webSocket;
-    MessageHandler messageHandler = new MessageHandler();
+    public MessageHandler MessageHandler { get; private set; }
 
     protected override void Awake()
     {
@@ -29,13 +29,14 @@ public class Client : Singleton<Client>
         webSocket = new WebSocket(URI);
         Rooms = new List<RoomData>();
 
-        messageHandler.OnServerNotifyPlayerAction += OnServerNotifyPlayerAction;
-        messageHandler.OnServerCompleteConnectionRequest += OnServerCompleteConnectionRequest;
-        messageHandler.OnServerUpdate += OnServerUpdate;
-        messageHandler.OnRecieveRoomList += OnRecieveRoomList;
-        messageHandler.OnChat += OnChat;
-        messageHandler.OnServerNotifyRoomError += OnRoomNotification;
-        messageHandler.OnRoomUpdate += OnRoomUpdate;
+        MessageHandler = new MessageHandler();
+        MessageHandler.OnServerNotifyPlayerAction += OnServerNotifyPlayerAction;
+        MessageHandler.OnServerCompleteConnectionRequest += OnServerCompleteConnectionRequest;
+        MessageHandler.OnServerUpdate += OnServerUpdate;
+        MessageHandler.OnRecieveRoomList += OnRecieveRoomList;
+        MessageHandler.OnChat += OnChat;
+        MessageHandler.OnServerNotifyRoomError += OnRoomNotification;
+        MessageHandler.OnRoomUpdate += OnRoomUpdate;
     }
 
     void OnRoomUpdate(ServerMessage.RoomUpdate message)
@@ -129,7 +130,7 @@ public class Client : Singleton<Client>
     void OnMessage(object sender, MessageEventArgs e)
     {
         //Debug.LogFormat("Recieved message: {0}", e.Data);
-        messageHandler.HandleMessage(e.Data);
+        MessageHandler.HandleMessage(e.Data);
     }
 
     void OnApplicationQuit()
