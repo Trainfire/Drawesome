@@ -153,44 +153,8 @@ public class Client : Singleton<Client>
 
     void OnServerNotifyPlayerAction(ServerMessage.NotifyPlayerAction message)
     {
-        // Determine if message is about self.
-        string owner = message.Player.ID == PlayerData.ID ? "You" : message.Player.Name;
-        bool isAboutSelf = message.Player.ID == PlayerData.ID;
-
-        switch (message.Action)
-        {
-            case PlayerAction.None:
-                break;
-            case PlayerAction.Connected:
-                Debug.LogFormat("{0} connected.", owner);
-                break;
-            case PlayerAction.Disconnected:
-                Debug.LogFormat("{0} disconnected.", owner);
-                break;
-            case PlayerAction.Kicked:
-                break;
-            case PlayerAction.Joined:
-                Debug.LogFormat("{0} joined the room.", owner);
-                break;
-            case PlayerAction.Left:
-                Debug.LogFormat("{0} left.", owner);
-                break;
-            case PlayerAction.PromotedToOwner:
-                if (isAboutSelf)
-                {
-                    Debug.LogFormat("{0} are now the room owner.", owner);
-                }
-                else
-                {
-                    Debug.LogFormat("{0} is now the room owner.", owner);
-                }
-                break;
-            default:
-                break;
-        }
-
-        if (isAboutSelf && message.Action == PlayerAction.Left && OnLeave != null)
-            OnLeave(this, null);
+        var str = StringFormatter.FormatPlayerAction(message, PlayerData);
+        Debug.Log(str);
     }
 
     void OnRecieveRoomList(ServerMessage.RoomList message)

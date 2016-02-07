@@ -18,14 +18,25 @@ public class UiChat : MonoBehaviour
     void Start()
     {
         Client.Instance.MessageHandler.OnChat += OnChat;
+        Client.Instance.MessageHandler.OnServerNotifyPlayerAction += OnServerNotifyPlayerAction;
 
         Send.onClick.AddListener(() => OnSend());
     }
 
+    void OnServerNotifyPlayerAction(ServerMessage.NotifyPlayerAction message)
+    {
+        AddMessage(StringFormatter.FormatPlayerAction(message, Client.Instance.PlayerData));
+    }
+
     void OnChat(SharedMessage.Chat message)
     {
+        AddMessage("{0}: {1}", message.Player.Name, message.Message);
+    }
+
+    void AddMessage(string message, params object[] args)
+    {
         var instance = UiUtility.AddChild<Text>(MessagesContainer, MessagePrototype);
-        instance.text = string.Format("{0}: {1}", message.Player.Name, message.Message);
+        instance.text = string.Format(message, args);
         instance.enabled = true;
 
         ScrollRect.normalizedPosition = new Vector2(ScrollRect.normalizedPosition.x, 0);
