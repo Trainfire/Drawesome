@@ -1,77 +1,37 @@
 using UnityEngine;
-using System.Collections;
 using System;
-using WebSocketSharp;
-using Protocol;
 
 public class UserInterface : MonoBehaviour
 {
-    Action guiState;
-    string playerName = "";
-    string password = "";
+    public UiLogin ViewLogin;
+    public UiBrowser ViewBrowser;
 
-    void OnGUI()
+    UiMenu viewCurrent;
+
+    void Start()
     {
-        GUILayout.BeginVertical();
+        viewCurrent = ViewLogin;
+        ViewLogin.OnShow();
 
-        GUILayout.BeginHorizontal();
+        ViewBrowser.gameObject.SetActive(false);
 
-        if (!Client.Instance.IsConnected())
-        {
-            guiState = OnDisconnected;
-        }
-
-        if (Client.Instance.IsConnected())
-            guiState = OnConnected;
-
-        guiState();
-
-        GUILayout.EndHorizontal();
-
-        GUILayout.EndVertical();
+        Client.Instance.OnConnect += OnConnect;
+        Client.Instance.OnDisconnect += OnDisconnect;
     }
 
-    void OnDisconnected()
+    private void OnDisconnect(object sender, EventArgs e)
     {
-        playerName = GUILayout.TextField(playerName, GUILayout.Width(400f));
-
-        if (GUILayout.Button("Connect"))
-        {
-            Client.Instance.Connect(playerName);
-        }
+        ChangeMenu(ViewLogin);
     }
 
-    void OnConnected()
+    void OnConnect(object sender, EventArgs e)
     {
-        // Top row
-        GUILayout.BeginHorizontal();
+        ChangeMenu(ViewBrowser);
+    }
 
-        if (GUILayout.Button("Disconnect"))
-        {
-            Client.Instance.Disconnect();
-        }
-
-        if (GUILayout.Button("Request Rooms"))
-            Client.Instance.RequestRooms();
-
-        GUILayout.EndHorizontal();
-
-        GUILayout.BeginVertical();
-
-        foreach (var room in Client.Instance.Rooms)
-        {
-            if (GUILayout.Button("Join room " + room.ID))
-                Client.Instance.JoinRoom(room.ID);
-        }
-
-        GUILayout.EndVertical();
-
-        if (GUILayout.Button("Leave Room"))
-            Client.Instance.LeaveRoom();
-
-        password = GUILayout.TextField(password, GUILayout.Width(400f));
-
-        if (GUILayout.Button("Create Room"))
-            Client.Instance.CreateRoom(password);
+    void ChangeMenu(UiMenu newMenu)
+    {
+        viewCurrent.OnHide();
+        newMenu.OnShow();
     }
 }

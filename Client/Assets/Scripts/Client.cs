@@ -1,11 +1,15 @@
 using UnityEngine;
 using System;
+using System.Collections;
 using WebSocketSharp;
 using Protocol;
 using System.Collections.Generic;
 
 public class Client : Singleton<Client>
 {
+    public event EventHandler OnConnect;
+    public event EventHandler OnDisconnect;
+
     public PlayerData PlayerData { get; private set; }
     public RoomData RoomData { get; private set; }
 
@@ -50,6 +54,9 @@ public class Client : Singleton<Client>
         webSocket.OnOpen += OnOpen;
         webSocket.OnClose += OnClose;
         webSocket.Connect();
+
+        if (OnConnect != null)
+            OnConnect(this, null);
     }
 
     public void Disconnect()
@@ -58,6 +65,9 @@ public class Client : Singleton<Client>
         webSocket.OnClose -= OnClose;
         webSocket.OnOpen -= OnOpen;
         webSocket.OnMessage -= OnMessage;
+
+        if (OnDisconnect != null)
+            OnDisconnect(this, null);
     }
 
     public void CreateRoom(string password = "")

@@ -1,0 +1,169 @@
+fileFormatVersion: 2
+guid: 7ded3bc7a0a677243a764a216d9c1099
+timeCreated: 1454857556
+licenseType: Free
+TextureImporter:
+  fileIDToRecycleName:
+    21300000: BoxRounded_0
+    21300002: BoxRounded_1
+    21300004: BoxRounded_2
+    21300006: BoxRounded_3
+    21300008: BoxRounded_4
+    21300010: BoxRounded_5
+    21300012: BoxRounded_6
+    21300014: BoxRounded_7
+    21300016: BoxRounded_8
+  serializedVersion: 2
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 1
+    linearTexture: 0
+    correctGamma: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+  isReadable: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 0
+  cubemapConvolution: 0
+  cubemapConvolutionSteps: 7
+  cubemapConvolutionExponent: 1.5
+  seamlessCubemap: 0
+  textureFormat: -1
+  maxTextureSize: 2048
+  textureSettings:
+    filterMode: -1
+    aniso: 16
+    mipBias: -1
+    wrapMode: 1
+  nPOTScale: 0
+  lightmap: 0
+  rGBM: 0
+  compressionQuality: 50
+  allowsAlphaSplitting: 0
+  spriteMode: 3
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spriteBorder: {x: 8, y: 8, z: 8, w: 8}
+  spritePixelsToUnits: 100
+  alphaIsTransparency: 1
+  textureType: 8
+  buildTargetSettings: []
+  spriteSheet:
+    sprites:
+    - name: BoxRounded_0
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 18.666668
+        width: 9.333333
+        height: 9.333333
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+    - name: BoxRounded_1
+      rect:
+        serializedVersion: 2
+        x: 9
+        y: 18.666668
+        width: 9.333333
+        height: 9.333333
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+    - name: BoxRounded_2
+      rect:
+        serializedVersion: 2
+        x: 18
+        y: 18.666668
+        width: 9.333333
+        height: 9.333333
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+    - name: BoxRounded_3
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 9.666667
+        width: 9.333333
+        height: 9.333333
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+    - name: BoxRounded_4
+      rect:
+        serializedVersion: 2
+        x: 9
+        y: 9.666667
+        width: 9.333333
+        height: 9.333333
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+    - name: BoxRounded_5
+      rect:
+        serializedVersion: 2
+        x: 18
+        y: 9.666667
+        width: 9.333333
+        height: 9.333333
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+    - name: BoxRounded_6
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 0.666667
+        width: 9.333333
+        height: 9.333333
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+    - name: BoxRounded_7
+      rect:
+        serializedVersion: 2
+        x: 9
+        y: 0.666667
+        width: 9.333333
+        height: 9.333333
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+    - name: BoxRounded_8
+      rect:
+        serializedVersion: 2
+        x: 18
+        y: 0.666667
+        width: 9.333333
+        height: 9.333333
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+    outline:
+    - - {x: 0, y: 0}
+      - {x: 0, y: 28}
+      - {x: 28, y: 28}
+      - {x: 28, y: 0}
+  spritePackingTag: 
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
