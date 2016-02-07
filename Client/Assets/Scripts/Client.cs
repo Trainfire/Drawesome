@@ -13,16 +13,15 @@ public class Client : Singleton<Client>
 
     public PlayerData PlayerData { get; private set; }
     public RoomData RoomData { get; private set; }
-
     public string PlayerName { get; private set; }
     public List<RoomData> Rooms { get; private set; }
-
     public List<PlayerData> Players;
+    public MessageHandler MessageHandler { get; private set; }
 
     const string URI = "ws://127.0.0.1:8181/room";
 
     WebSocket webSocket;
-    public MessageHandler MessageHandler { get; private set; }
+    Queue<string> messageQueue = new Queue<string>();
 
     protected override void Awake()
     {
@@ -131,7 +130,13 @@ public class Client : Singleton<Client>
     void OnMessage(object sender, MessageEventArgs e)
     {
         //Debug.LogFormat("Recieved message: {0}", e.Data);
-        MessageHandler.HandleMessage(e.Data);
+        messageQueue.Enqueue(e.Data);
+    }
+
+    void Update()
+    {
+        if (messageQueue.Count != 0)
+            MessageHandler.HandleMessage(messageQueue.Dequeue());
     }
 
     void OnApplicationQuit()
