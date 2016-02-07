@@ -39,7 +39,7 @@ public class UiBrowser : UiMenu
 
     void OnRecieveRoomList(ServerMessage.RoomList message)
     {
-        browserItems.ForEach(x => Destroy(x));
+        browserItems.ForEach(x => Destroy(x.gameObject));
         browserItems.Clear();
 
         foreach (var room in message.Rooms)
