@@ -8,6 +8,7 @@ public class UiChat : MonoBehaviour
     public RectTransform MessagesContainer;
     public InputField Input;
     public Button Send;
+    public ScrollRect ScrollRect;
 
     bool shouldPostChat = false;
     SharedMessage.Chat cachedChat;
@@ -46,5 +47,7 @@ public class UiChat : MonoBehaviour
             instance.enabled = true;
             shouldPostChat = false;
         }
+
+        ScrollRect.normalizedPosition = new Vector2(ScrollRect.normalizedPosition.x, 0);
     }
 }
