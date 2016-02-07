@@ -4,6 +4,7 @@ using System.Collections;
 
 public class UiBrowser : UiMenu
 {
+    public Button Join;
     public Button Create;
     public Button Refresh;
 

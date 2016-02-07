@@ -12,7 +12,6 @@ public class UserInterface : MonoBehaviour
     List<UiMenu> views = new List<UiMenu>();
 
     UiMenu viewCurrent;
-    UiMenu viewNext;
 
     bool isChangingMenu = false;
 
@@ -50,33 +49,16 @@ public class UserInterface : MonoBehaviour
         ChangeMenu(ViewLogin);
     }
 
-    void ChangeMenu(UiMenu newMenu)
+    void ChangeMenu(UiMenu viewNext)
     {
-        isChangingMenu = true;
-        viewNext = newMenu;
-    }
-
-    void Update()
-    {
-        // We have to update the menu this way.
-        // The events that trigger a menu change happen outside the main thread.
-        // As a result, we need to store the menu change temporarily, then change to it when Update is called.
-        // Otherwise, Unity will throw a wobbly.
-        if (isChangingMenu)
+        foreach (var view in views)
         {
-            Log("Change menu to {0}", viewNext.GetType().ToString());
-
-            foreach (var view in views)
-            {
-                if (view != viewNext)
-                    view.Hide();
-            }
-
-            viewNext.Show();
-            viewCurrent = viewNext;
-
-            isChangingMenu = false;
+            if (view != viewNext)
+                view.Hide();
         }
+
+        viewNext.Show();
+        viewCurrent = viewNext;
     }
 
     void Log(string message, params object[] args)
