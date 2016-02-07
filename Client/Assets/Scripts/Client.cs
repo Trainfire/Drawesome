@@ -155,6 +155,10 @@ public class Client : Singleton<Client>
     {
         var str = StringFormatter.FormatPlayerAction(message, PlayerData);
         Debug.Log(str);
+
+        // Fire event if client has left.
+        if (message.Player.ID == PlayerData.ID)
+            OnLeave(this, null);
     }
 
     void OnRecieveRoomList(ServerMessage.RoomList message)
