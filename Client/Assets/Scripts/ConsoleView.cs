@@ -6,6 +6,7 @@ using System;
 
 public class ConsoleView : MonoBehaviour
 {
+    public GameObject View;
     public InputField InputField;
     public RectTransform LogView;
     public Text LogText;
@@ -36,6 +37,8 @@ public class ConsoleView : MonoBehaviour
 
         // Add callback for all Unity Debug Log events.
         Application.logMessageReceivedThreaded += OnLogMessageRecieved;
+
+        View.SetActive(false);
     }
 
     void OnLogMessageRecieved(string condition, string stackTrace, LogType type)
@@ -100,6 +103,8 @@ public class ConsoleView : MonoBehaviour
         {
             ConsoleState = State.Open;
 
+            View.SetActive(true);
+
             while (time < LogToggleTime)
             {
                 LogView.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, Mathf.Lerp(0f, LogHeight, LogAnimCurve.Evaluate(time / LogToggleTime)));
@@ -120,6 +125,8 @@ public class ConsoleView : MonoBehaviour
                 time += Time.deltaTime;
                 yield return 0;
             }
+
+            View.SetActive(false);
 
             // Set to closed
             LogView.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, 0f);
