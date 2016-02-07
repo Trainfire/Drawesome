@@ -1,7 +1,7 @@
 using UnityEngine;
 using System;
 using System.Collections.Generic;
-using System.Linq;
+using Protocol;
 
 public class UserInterface : MonoBehaviour
 {
@@ -27,6 +27,12 @@ public class UserInterface : MonoBehaviour
         Client.Instance.MessageHandler.OnServerCompleteConnectionRequest += OnServerCompleteConnectionRequest;
         Client.Instance.OnDisconnect += OnDisconnect;
         Client.Instance.MessageHandler.OnRoomUpdate += OnRoomUpdate;
+        Client.Instance.OnLeave += OnLeave;
+    }
+
+    void OnLeave(object sender, EventArgs e)
+    {
+        ChangeMenu(ViewBrowser);
     }
 
     void OnServerCompleteConnectionRequest(Protocol.ServerMessage.ConnectionSuccess message)

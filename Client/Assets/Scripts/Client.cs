@@ -9,6 +9,7 @@ public class Client : Singleton<Client>
 {
     public event EventHandler OnConnect;
     public event EventHandler OnDisconnect;
+    public event EventHandler OnLeave;
 
     public PlayerData PlayerData { get; private set; }
     public RoomData RoomData { get; private set; }
@@ -182,6 +183,9 @@ public class Client : Singleton<Client>
             default:
                 break;
         }
+
+        if (isAboutSelf && message.Action == PlayerAction.Left && OnLeave != null)
+            OnLeave(this, null);
     }
 
     void OnRecieveRoomList(ServerMessage.RoomList message)
