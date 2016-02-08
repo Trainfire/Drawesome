@@ -72,12 +72,16 @@
     <Compile Include="..\Client\Assets\Shared\ProtocolHelper.cs">
       <Link>Protocol\ProtocolHelper.cs</Link>
     </Compile>
+    <Compile Include="Drawesome\Drawesome.cs" />
+    <Compile Include="Game\Game.cs" />
+    <Compile Include="Game\State.cs" />
     <Compile Include="Logger.cs" />
     <Compile Include="Player.cs" />
     <Compile Include="ClientConnectionsHandler.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Room.cs" />
+    <Compile Include="StringFormatter.cs" />
     <Compile Include="WebSocketBehaviour.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -5,7 +5,7 @@ using Protocol;
 
 namespace Server
 {
-    class Room : WebSocketBehaviour
+    public class Room : WebSocketBehaviour
     {
         public event EventHandler<Room> OnEmpty;
 

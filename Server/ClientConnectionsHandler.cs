@@ -6,7 +6,7 @@ using Protocol;
 
 namespace Server
 {
-    class ClientConnectionsHandler : WebSocketBehaviour
+    public class ClientConnectionsHandler : WebSocketBehaviour
     {
         public event EventHandler<Player> PlayerConnected;
         public event EventHandler<Player> PlayerDisconnected;

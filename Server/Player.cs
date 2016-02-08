@@ -13,7 +13,7 @@ namespace Server
         Kicked,
     }
 
-    struct PlayerConnectionClosed
+    public struct PlayerConnectionClosed
     {
         public Player Player { get; private set; }
         public PlayerCloseReason CloseReason { get; private set; }
@@ -25,10 +25,11 @@ namespace Server
         }
     }
 
-    class Player
+    public class Player
     {
         public event EventHandler<PlayerConnectionClosed> OnConnectionClosed;
         public event EventHandler<SharedMessage.Chat> OnChat;
+        public event EventHandler<Message> OnMessage;
 
         public PlayerData Data { get; set; }
         public IWebSocketConnection Socket { get; private set; }
@@ -56,6 +57,12 @@ namespace Server
                         var data = JsonHelper.FromJson<SharedMessage.Chat>(message);
                         OnChat(this, data);
                     }
+                }
+
+                if (OnMessage != null)
+                {
+                    var obj = JsonHelper.FromJson<Message>(message);
+                    OnMessage(this, obj);
                 }
             };
         }
