@@ -39,6 +39,10 @@ namespace Server.Game
             currentState.OnEnd -= OnStateEnd;
 
             var nextState = States.Peek();
+
+            // Notify clients of state change
+            Players.ForEach(x => x.SendMessage(new DrawesomeMessage.StateChange(nextState.Type)));
+
             nextState.OnEnd += OnStateEnd;
             nextState.Begin();
         }

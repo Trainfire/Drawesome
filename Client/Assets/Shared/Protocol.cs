@@ -33,6 +33,19 @@ namespace Protocol
         }
     }
 
+    public class DrawesomeMessage
+    {
+        public class StateChange : Message
+        {
+            public GameState GameState;
+
+            public StateChange(GameState gameState)
+            {
+                GameState = gameState;
+            }
+        }
+    }
+
     public class SharedMessage
     {
         public class Chat : Message

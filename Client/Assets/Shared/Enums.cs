@@ -23,4 +23,11 @@ namespace Protocol
         RoomDoesNotExist,
         AlreadyInRoom,
     }
+
+    [Serializable]
+    public enum GameState
+    {
+        Drawing,
+        Answering,
+    }
 }

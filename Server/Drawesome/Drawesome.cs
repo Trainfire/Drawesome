@@ -19,6 +19,8 @@ namespace Server.Drawesome
 
     public class Drawing : State
     {
+        public override GameState Type { get { return GameState.Drawing; } }
+
         public Drawing()
         {
 
@@ -37,6 +39,8 @@ namespace Server.Drawesome
 
     public class Answering : State
     {
+        public override GameState Type { get { return GameState.Answering; } }
+
         public Answering()
         {
 

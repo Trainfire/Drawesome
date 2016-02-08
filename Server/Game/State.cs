@@ -7,6 +7,8 @@ namespace Server.Game
     {
         public event EventHandler OnEnd;
 
+        public abstract GameState Type { get; }
+
         public void Begin()
         {
             OnBegin();
