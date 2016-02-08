@@ -30,4 +30,25 @@ namespace Protocol
         Drawing,
         Answering,
     }
+
+    [Serializable]
+    public enum MessageType
+    {
+        None = 0,
+        Log = 1,
+        Chat = 2,
+
+        ClientConnectionRequest = 100,
+        ClientRequestRoomList = 101,
+        ClientJoinRoom = 102,
+        ClientLeaveRoom = 103,
+        ClientCreateRoom = 104,
+
+        ServerUpdate = 200,
+        ServerNotifyRoomError = 201,
+        ServerRoomUpdate = 202,
+        ServerSendRoomList = 203,
+        ServerNotifyPlayerAction = 204,
+        ServerConnectionSuccess = 205,
+    }
 }

@@ -3,25 +3,6 @@ using System.Collections.Generic;
 
 namespace Protocol
 {
-    [Serializable]
-    public enum MessageType
-    {
-        None,
-        Log,
-        ClientConnectionRequest,
-        ServerConnectionSuccess,
-        ServerUpdate,
-        ClientRequestRoomList,
-        ServerSendRoomList,
-        ServerNotifyPlayerAction,
-        ClientJoinRoom,
-        ClientLeaveRoom,
-        ClientCreateRoom,
-        ServerNotifyRoomError,
-        Chat,
-        ServerRoomUpdate,
-    }
-
     public class Log : Message
     {
         public string Message;
