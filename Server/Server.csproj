@@ -51,6 +51,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\Client\Assets\Shared\ClientMessage.cs">
+      <Link>Protocol\ClientMessage.cs</Link>
+    </Compile>
     <Compile Include="..\Client\Assets\Shared\Data.cs">
       <Link>Protocol\Data.cs</Link>
     </Compile>
@@ -71,6 +74,9 @@
     </Compile>
     <Compile Include="..\Client\Assets\Shared\ProtocolHelper.cs">
       <Link>Protocol\ProtocolHelper.cs</Link>
+    </Compile>
+    <Compile Include="..\Client\Assets\Shared\ServerMessage.cs">
+      <Link>Protocol\ServerMessage.cs</Link>
     </Compile>
     <Compile Include="Drawesome\Drawesome.cs" />
     <Compile Include="Game\Game.cs" />
