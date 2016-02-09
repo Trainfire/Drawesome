@@ -23,16 +23,38 @@ namespace Protocol
         public byte[] Image { get; set; }
     }
 
-    public class GuessData
+    public class AnswerData
     {
         public PlayerData Author { get; set; }
-        public string Guess { get; set; }
+        public string Answer { get; set; }
+
+        public AnswerData(PlayerData author, string answer)
+        {
+            Author = author;
+            Answer = answer;
+        }
     }
 
     public class ChoiceData
     {
+        public PlayerData Chooser { get; set; }
+        public AnswerData ChosenAnswer { get; set; }
+
+        public ChoiceData(PlayerData chooser, AnswerData answer)
+        {
+            Chooser = chooser;
+            ChosenAnswer = answer;
+        }
+    }
+
+    public class OptionsData
+    {
+        public List<AnswerData> Options { get; set; }
+    }
+
+    public class ResultData
+    {
         public List<PlayerData> Players { get; set; }
         public int Likes { get; set; }
-        public GuessData Guess { get; set; }
     }
 }

@@ -79,7 +79,9 @@
       <Link>Protocol\ServerMessage.cs</Link>
     </Compile>
     <Compile Include="Drawesome\Drawesome.cs" />
+    <Compile Include="Game\GameData.cs" />
     <Compile Include="Game\Game.cs" />
+    <Compile Include="Game\GameTimer.cs" />
     <Compile Include="Game\State.cs" />
     <Compile Include="Logger.cs" />
     <Compile Include="Player.cs" />

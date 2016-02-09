@@ -83,23 +83,25 @@ namespace Protocol
                 }
             }
 
-            public class SubmitGuess : Message
+            public class SubmitAnswer : Message
             {
-                public GuessData GuessData { get; private set; }
+                public AnswerData Answer { get; private set; }
 
-                public SubmitGuess(GuessData guessData)
+                public SubmitAnswer(AnswerData answer)
                 {
-                    Type = MessageType.GameClientSubmitChoice;
-                    GuessData = guessData;
+                    Type = MessageType.GameClientSubmitAnswer;
+                    Answer = answer;
                 }
             }
 
             public class SubmitChoice : Message
             {
-                public GuessData Choice { get; private set; }
+                public PlayerData Player { get; set; }
+                public AnswerData Choice { get; set; }
 
-                public SubmitChoice(GuessData choice)
+                public SubmitChoice(PlayerData player, AnswerData choice)
                 {
+                    Player = player;
                     Choice = choice;
                 }
             }

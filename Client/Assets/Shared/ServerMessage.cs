@@ -90,33 +90,53 @@ namespace Protocol
                 }
             }
 
-            public class ShowGuesses : Message
+            public class ShowOptions : Message
             {
-                public List<GuessData> Guesses;
+                public List<AnswerData> Answers;
 
-                public ShowGuesses(List<GuessData> guesses)
+                public ShowOptions(List<AnswerData> answers)
                 {
-                    Guesses = guesses;
+                    Answers = answers;
                 }
             }
 
             public class ShowChoice : Message
             {
-                public ChoiceData Choice;
+                public ResultData Choice;
 
-                public ShowChoice(ChoiceData choice)
+                public ShowChoice(ResultData choice)
                 {
                     Choice = choice;
                 }
             }
 
-            public class ShowLikes : Message
+            public class ShowChosenPlayerOptions : Message
             {
-                public List<ChoiceData> Choices;
+                public List<ResultData> Choices;
 
-                public ShowLikes(List<ChoiceData> choices)
+                public ShowChosenPlayerOptions(List<ResultData> choices)
                 {
                     Choices = choices;
+                }
+            }
+
+            public class ShowLikes : Message
+            {
+                public List<ResultData> Choices;
+
+                public ShowLikes(List<ResultData> choices)
+                {
+                    Choices = choices;
+                }
+            }
+
+            public class PlayerAction : Message
+            {
+                public PlayerData Actor { get; private set; }
+
+                public PlayerAction(PlayerData actor)
+                {
+                    Actor = actor;
                 }
             }
         }

@@ -26,6 +26,9 @@ namespace Server.Game
 
         }
 
+        /// <summary>
+        /// Ends this state and informs the GameManager.
+        /// </summary>
         protected void EndState()
         {
             if (OnEnd != null)

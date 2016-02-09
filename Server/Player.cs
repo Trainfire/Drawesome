@@ -1,6 +1,6 @@
 using Fleck;
 using Protocol;
-using System.Linq;
+using System.Collections.Generic;
 using System;
 
 namespace Server
@@ -92,6 +92,18 @@ namespace Server
         public void SendRoomError(RoomError roomError)
         {
             var message = new ServerMessage.NotifyRoomError(roomError);
+            Socket.Send(message.AsJson());
+        }
+
+        public void SendOptions(List<AnswerData> options)
+        {
+            var message = new ServerMessage.Game.ShowOptions(options);
+            Socket.Send(message.AsJson());
+        }
+
+        public void NotifyPlayerGameAction(PlayerData actor)
+        {
+            var message = new ServerMessage.Game.PlayerAction(actor);
             Socket.Send(message.AsJson());
         }
 
