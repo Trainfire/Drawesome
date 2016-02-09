@@ -4,52 +4,58 @@ using Protocol;
 
 namespace Server.Game
 {
-    public abstract class Game
+    /// <summary>
+    /// Each Game has associated GameData. GameData will be passed between different states of the game and updated throughout.
+    /// </summary>
+    /// <typeparam name="TData">The GameData associated with this Game.</typeparam>
+    public abstract class Game<TData> where TData : GameData
     {
-        protected Queue<State> States { get; private set; }
-        protected List<Player> Players { get; private set; }
+        protected TData GameData { get; set; }
+        protected State<TData> CurrentState { get; private set; }
 
-        public Game(List<Player> players)
+        Dictionary<GameState, State<TData>> States { get; set; }
+
+        public Game()
         {
-            States = new Queue<State>();
-            Players = players;
-            Players.ForEach(x => x.OnMessage += OnPlayerMessage);
+            States = new Dictionary<GameState, State<TData>>();
+            GameData = default(TData);
+            GameData.Players.ForEach(x => x.OnMessageString += OnPlayerMessage);
         }
 
-        public void Start()
+        protected virtual void OnPlayerMessage(object sender, string e)
         {
-            if (States.Count != 0)
-                MoveToNextState();
+            if (CurrentState != null)
+                CurrentState.OnMessage(e);
         }
 
-        protected virtual void OnPlayerMessage(object sender, Message e)
+        protected void SetState(GameState state, GameData gameData)
         {
-            if(States.Count != 0)
-                States.Peek().OnMessage(e);
-        }
+            if (CurrentState != null)
+                CurrentState.OnEnd -= EndState;
 
-        protected void AddState(State state)
-        {
-            States.Enqueue(state);
-        }
-
-        protected void MoveToNextState()
-        {
-            var currentState = States.Dequeue();
-            currentState.OnEnd -= OnStateEnd;
-
-            var nextState = States.Peek();
+            CurrentState = States[state];
 
             // Notify clients of state change
-            Players.ForEach(x => x.SendMessage(new DrawesomeMessage.StateChange(nextState.Type)));
+            GameData.Players.ForEach(x => x.SendMessage(new ServerMessage.Game.StateChange(CurrentState.Type)));
 
-            nextState.OnEnd += OnStateEnd;
-            nextState.Begin();
+            CurrentState.OnEnd += EndState;
+            CurrentState.Begin(GameData);
         }
 
-        void OnStateEnd(object sender, EventArgs e)
+        protected TState AddState<TState>(GameState stateType, TState stateInstance) where TState : State<TData>
         {
-            MoveToNextState();
+            if (!States.ContainsKey(stateType) && !States.ContainsValue(stateInstance))
+                States.Add(stateType, stateInstance);
+
+            return stateInstance;
         }
+
+        void EndState(object sender, TData gameData)
+        {
+            // Pass the latest copy of gamedata from the ending state back into the game manager.
+            OnEndState(GameData);
+        }
+
+        protected abstract void OnEndState(TData gameData);
     }
 }

@@ -12,6 +12,8 @@ namespace Protocol
         Joined = 4,
         Left = 5,
         PromotedToOwner = 6,
+        Ready = 7,
+        Unready = 8,
     }
 
     [Serializable]
@@ -27,8 +29,12 @@ namespace Protocol
     [Serializable]
     public enum GameState
     {
+        RoundBegin,
         Drawing,
         Answering,
+        ShowChoices,
+        MakeChoices,
+        RoundEnd,
     }
 
     [Serializable]
@@ -50,5 +56,13 @@ namespace Protocol
         ServerSendRoomList = 203,
         ServerNotifyPlayerAction = 204,
         ServerConnectionSuccess = 205,
+
+        GameStateChange = 300,
+
+        GameClientSubmitDrawing = 301,
+        GameClientSubmitAnswer = 302,
+        GameClientSubmitChoice = 303,
+
+        GameServerShowChoices = 350,
     }
 }

@@ -67,5 +67,44 @@ namespace Protocol
                 Player = player;
             }
         }
+
+        #region Game
+
+        public class Game
+        {
+            public class SendImage : Message
+            {
+                public DrawingData DrawingData { get; private set; }
+
+                public SendImage(DrawingData drawingData)
+                {
+                    Type = MessageType.GameClientSubmitDrawing;
+                    DrawingData = drawingData;
+                }
+            }
+
+            public class SubmitGuess : Message
+            {
+                public GuessData GuessData { get; private set; }
+
+                public SubmitGuess(GuessData guessData)
+                {
+                    Type = MessageType.GameClientSubmitChoice;
+                    GuessData = guessData;
+                }
+            }
+
+            public class SubmitChoice : Message
+            {
+                public GuessData Choice { get; private set; }
+
+                public SubmitChoice(GuessData choice)
+                {
+                    Choice = choice;
+                }
+            }
+        }
+
+        #endregion
     }
 }

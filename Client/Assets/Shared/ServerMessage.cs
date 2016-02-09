@@ -62,5 +62,65 @@ namespace Protocol
                 RoomData = roomData;
             }
         }
+
+        #region Game
+
+        public class Game
+        {
+            public class StateChange : Message
+            {
+                public GameState GameState;
+
+                public StateChange(GameState gameState)
+                {
+                    Type = MessageType.GameStateChange;
+                    GameState = gameState;
+                }
+            }
+
+            public class ShowImage : Message
+            {
+                public PlayerData Player;
+                public byte[] Image;
+
+                public ShowImage(PlayerData player, byte[] image)
+                {
+                    Player = player;
+                    Image = image;
+                }
+            }
+
+            public class ShowGuesses : Message
+            {
+                public List<GuessData> Guesses;
+
+                public ShowGuesses(List<GuessData> guesses)
+                {
+                    Guesses = guesses;
+                }
+            }
+
+            public class ShowChoice : Message
+            {
+                public ChoiceData Choice;
+
+                public ShowChoice(ChoiceData choice)
+                {
+                    Choice = choice;
+                }
+            }
+
+            public class ShowLikes : Message
+            {
+                public List<ChoiceData> Choices;
+
+                public ShowLikes(List<ChoiceData> choices)
+                {
+                    Choices = choices;
+                }
+            }
+        }
+
+        #endregion
     }
 }

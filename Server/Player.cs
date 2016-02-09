@@ -30,6 +30,7 @@ namespace Server
         public event EventHandler<PlayerConnectionClosed> OnConnectionClosed;
         public event EventHandler<SharedMessage.Chat> OnChat;
         public event EventHandler<Message> OnMessage;
+        public event EventHandler<string> OnMessageString;
 
         public PlayerData Data { get; set; }
         public IWebSocketConnection Socket { get; private set; }
@@ -63,6 +64,11 @@ namespace Server
                 {
                     var obj = JsonHelper.FromJson<Message>(message);
                     OnMessage(this, obj);
+                }
+
+                if (OnMessageString != null)
+                {
+                    OnMessageString(this, message);
                 }
             };
         }

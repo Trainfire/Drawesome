@@ -3,14 +3,16 @@ using Protocol;
 
 namespace Server.Game
 {
-    public abstract class State
+    public abstract class State<T> where T : GameData
     {
-        public event EventHandler OnEnd;
+        public event EventHandler<T> OnEnd;
 
         public abstract GameState Type { get; }
+        public T GameData { get; protected set; }
 
-        public void Begin()
+        public void Begin(T gameData)
         {
+            GameData = gameData;
             OnBegin();
         }
 
@@ -19,7 +21,7 @@ namespace Server.Game
 
         }
 
-        public virtual void OnMessage(Message message)
+        public virtual void OnMessage(string json)
         {
 
         }
@@ -27,7 +29,7 @@ namespace Server.Game
         protected void EndState()
         {
             if (OnEnd != null)
-                OnEnd(this, null);
+                OnEnd(this, GameData);
         }
     }
 }
