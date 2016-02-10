@@ -93,7 +93,6 @@
     <Compile Include="Assets\Shared\Enums.cs" />
     <Compile Include="Assets\Shared\JsonHelper.cs" />
     <Compile Include="Assets\Shared\Message.cs" />
-    <Compile Include="Assets\Shared\MessageHandler.cs" />
     <Compile Include="Assets\Shared\Protocol.cs" />
     <Compile Include="Assets\Shared\ProtocolHelper.cs" />
     <Compile Include="Assets\Shared\ServerMessage.cs" />
