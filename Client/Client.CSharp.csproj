@@ -78,6 +78,7 @@
     <Compile Include="Assets\Scripts\GameObjectEx.cs" />
     <Compile Include="Assets\Scripts\MessageHandler.cs" />
     <Compile Include="Assets\Scripts\Messenger.cs" />
+    <Compile Include="Assets\Scripts\Settings.cs" />
     <Compile Include="Assets\Scripts\Singleton.cs" />
     <Compile Include="Assets\Scripts\UI\UiBrowser.cs" />
     <Compile Include="Assets\Scripts\UI\UiBrowserItem.cs" />

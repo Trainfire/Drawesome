@@ -20,7 +20,7 @@ public class Connection : MonoBehaviour
     void Awake()
     {
         Data = new PlayerData();
-        Socket = new WebSocket(Client.URI);
+        Socket = new WebSocket(Settings.HostUrl);
         MessageQueue = new Queue<MessageEventArgs>();
     }
 
