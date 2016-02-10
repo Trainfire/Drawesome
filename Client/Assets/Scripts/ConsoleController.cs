@@ -8,7 +8,7 @@ public class ConsoleController
 
     List<ConsoleCommand> Commands = new List<ConsoleCommand>();
 
-    const string Token = "/";
+    const string Token = "";
 
     class ConsoleCommand
     {
@@ -34,7 +34,14 @@ public class ConsoleController
         RegisterCommand(new ConsoleCommand("leave", LeaveRoom, "(Disconnects you from the room you are currently in)"));
         RegisterCommand(new ConsoleCommand("disconnect", Disconnect));
         RegisterCommand(new ConsoleCommand("say", Say, "[Message] (Sends a message to all players in the same room)"));
-        RegisterCommand(new ConsoleCommand("startgame", StartGame, "(Starts the game if you're the room owner)"));
+
+        // Game
+        RegisterCommand(new ConsoleCommand("start", StartGame, "(Starts the game if you're the room owner)"));
+        RegisterCommand(new ConsoleCommand("sendimage", SendImage));
+        RegisterCommand(new ConsoleCommand("submitanswer", SubmitAnswer));
+        RegisterCommand(new ConsoleCommand("submitchoice", SubmitChoice));
+        RegisterCommand(new ConsoleCommand("like", SubmitLike));
+        RegisterCommand(new ConsoleCommand("skip", Skip));
     }
 
     public void SubmitInput(string input)
@@ -96,6 +103,8 @@ public class ConsoleController
     }
 
     #region Commands
+
+    #region General
 
     void CreateRoom(ConsoleCommand command, string[] args)
     {
@@ -196,10 +205,62 @@ public class ConsoleController
         }
     }
 
+    #endregion
+
+    #region Game
+
     void StartGame(ConsoleCommand command, string[] args)
     {
         Client.Instance.Messenger.StartGame();
     }
+
+    void SendImage(ConsoleCommand command, string[] args)
+    {
+        Client.Instance.Messenger.SendImage(new byte[0]);
+    }
+
+    void SubmitAnswer(ConsoleCommand command, string[] args)
+    {
+        if (args.Length < 1)
+        {
+            PrintError(command);
+        }
+        else
+        {
+            Client.Instance.Messenger.SubmitAnswer(args[0]);
+        }
+    }
+
+    void SubmitChoice(ConsoleCommand command, string[] args)
+    {
+        if (args.Length < 1)
+        {
+            PrintError(command);
+        }
+        else
+        {
+            Client.Instance.Messenger.SubmitChoice(args[0]);
+        }
+    }
+
+    void SubmitLike(ConsoleCommand command, string[] args)
+    {
+        if (args.Length < 1)
+        {
+            PrintError(command);
+        }
+        else
+        {
+            Client.Instance.Messenger.SkipPhase();
+        }
+    }
+
+    void Skip(ConsoleCommand command, string[] args)
+    {
+        Client.Instance.Messenger.SkipPhase();
+    }
+
+    #endregion
 
     #endregion
 }
