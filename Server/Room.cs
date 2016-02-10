@@ -7,7 +7,7 @@ using Server.Drawesome;
 
 namespace Server
 {
-    public class Room : WebSocketBehaviour
+    public class Room
     {
         public event EventHandler<Room> OnEmpty;
 

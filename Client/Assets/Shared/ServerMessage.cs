@@ -9,7 +9,7 @@ namespace Protocol
     {
         public class ConnectionSuccess : Message
         {
-            public string ID;
+            public readonly string ID;
 
             public ConnectionSuccess(string id)
             {

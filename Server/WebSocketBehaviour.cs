@@ -10,8 +10,6 @@ namespace Server
 {
     public class WebSocketBehaviour
     {
-        public MessageHandler MessageHandler { get; private set; }
-
         public virtual void OnOpen(IWebSocketConnection socket)
         {
 
