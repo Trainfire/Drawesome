@@ -25,7 +25,7 @@ public class UiChat : MonoBehaviour
 
     void OnServerNotifyPlayerAction(ServerMessage.NotifyPlayerAction message)
     {
-        AddMessage(StringFormatter.FormatPlayerAction(message, Client.Instance.PlayerData));
+        AddMessage(StringFormatter.FormatPlayerAction(message, Client.Instance.Connection.Data));
     }
 
     void OnChat(SharedMessage.Chat message)
@@ -44,7 +44,7 @@ public class UiChat : MonoBehaviour
 
     void OnSend()
     {
-        Client.Instance.Say(Input.text);
+        Client.Instance.Messenger.Say(Input.text);
         Input.text = "";
     }
 }

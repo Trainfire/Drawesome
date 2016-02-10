@@ -24,14 +24,20 @@ public class UserInterface : MonoBehaviour
         ChangeMenu(ViewLogin);
 
         Client.Instance.MessageHandler.OnServerCompleteConnectionRequest += OnServerCompleteConnectionRequest;
-        Client.Instance.OnDisconnect += OnDisconnect;
+        Client.Instance.Connection.ConnectionClosed += Socket_OnClose;
+        Client.Instance.MessageHandler.OnServerNotifyPlayerAction += MessageHandler_OnServerNotifyPlayerAction;
         Client.Instance.MessageHandler.OnRoomUpdate += OnRoomUpdate;
-        Client.Instance.OnLeave += OnLeave;
     }
 
-    void OnLeave(object sender, EventArgs e)
+    void MessageHandler_OnServerNotifyPlayerAction(ServerMessage.NotifyPlayerAction message)
     {
-        ChangeMenu(ViewBrowser);
+        if (message.Player.ID == Client.Instance.Connection.Data.ID)
+            ChangeMenu(ViewBrowser);
+    }
+
+    private void Socket_OnClose(object sender, WebSocketSharp.CloseEventArgs e)
+    {
+        throw new NotImplementedException();
     }
 
     void OnServerCompleteConnectionRequest(Protocol.ServerMessage.ConnectionSuccess message)

@@ -32,7 +32,7 @@ public class UiBrowser : UiMenu
     {
         Client.Instance.MessageHandler.OnRecieveRoomList += OnRecieveRoomList;
 
-        Create.onClick.AddListener(() => Client.Instance.CreateRoom());
+        Create.onClick.AddListener(() => Client.Instance.Messenger.CreateRoom());
         Refresh.onClick.AddListener(() => OnRefresh());
         Join.onClick.AddListener(() => OnJoin());
     }
@@ -72,7 +72,7 @@ public class UiBrowser : UiMenu
     void OnJoin()
     {
         if (selectedRoom != null)
-            Client.Instance.JoinRoom(selectedRoom.ID);
+            Client.Instance.Messenger.JoinRoom(selectedRoom.ID);
     }
 
     void Update()
@@ -83,6 +83,6 @@ public class UiBrowser : UiMenu
     void OnRefresh()
     {
         refreshTimeStamp = Time.realtimeSinceStartup;
-        Client.Instance.RequestRooms();
+        Client.Instance.Messenger.RequestRooms();
     }
 }

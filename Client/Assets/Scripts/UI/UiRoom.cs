@@ -11,18 +11,16 @@ public class UiRoom : UiMenu
 
     void Start()
     {
-        Leave.onClick.AddListener(() => Client.Instance.LeaveRoom());
+        Leave.onClick.AddListener(() => Client.Instance.Messenger.LeaveRoom());
+        Client.Instance.MessageHandler.OnRoomUpdate += MessageHandler_OnRoomUpdate;
     }
 
-    void Update()
+    void MessageHandler_OnRoomUpdate(ServerMessage.RoomUpdate message)
     {
-        if (Client.Instance.IsConnected() && Client.Instance.RoomData != null)
-        {
-            var roomData = Client.Instance.RoomData;
+        var roomData = message.RoomData;
 
-            RoomId.text = string.Format("Room: {0}", roomData.ID);
-            RoomPassword.text = string.Format("Password: {0}", roomData.Password);
-            RoomPassword.enabled = !string.IsNullOrEmpty(roomData.Password);
-        }
+        RoomId.text = string.Format("Room: {0}", roomData.ID);
+        RoomPassword.text = string.Format("Password: {0}", roomData.Password);
+        RoomPassword.enabled = !string.IsNullOrEmpty(roomData.Password);
     }
 }

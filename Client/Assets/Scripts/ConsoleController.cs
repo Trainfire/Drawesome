@@ -107,11 +107,11 @@ public class ConsoleController
             // Check if password was provided. Kinda shitty? Eh!
             if (args.Length == 0)
             {
-                Client.Instance.CreateRoom();
+                Client.Instance.Messenger.CreateRoom();
             }
             else
             {
-                Client.Instance.CreateRoom(args[0]);
+                Client.Instance.Messenger.CreateRoom(args[0]);
             }
         }
     }
@@ -125,7 +125,7 @@ public class ConsoleController
         else
         {
             Debug.Log("Request rooms");
-            Client.Instance.RequestRooms();
+            Client.Instance.Messenger.RequestRooms();
         }
     }
 
@@ -141,12 +141,12 @@ public class ConsoleController
 
         str.TrimEnd(' ');
 
-        Client.Instance.Say(str);
+        Client.Instance.Messenger.Say(str);
     }
 
     void Disconnect(ConsoleCommand command, string[] args)
     {
-        Client.Instance.Disconnect();
+        Client.Instance.Connection.Disconnect();
     }
 
     void Connect(ConsoleCommand command, string[] args)
@@ -158,7 +158,7 @@ public class ConsoleController
         else
         {
             Debug.LogFormat("Connect with name {0}", args[0]);
-            Client.Instance.Connect(args[0]);
+            Client.Instance.Connection.Connect(args[0]);
         }
     }
 
@@ -171,18 +171,18 @@ public class ConsoleController
         else if (args.Length == 1)
         {
             Debug.LogFormat("Join {0}", args[0]);
-            Client.Instance.JoinRoom(args[0]);
+            Client.Instance.Messenger.JoinRoom(args[0]);
         }
         else if (args.Length == 2)
         {
             Debug.LogFormat("Join {0} with password '{1}'", args[0], args[1]);
-            Client.Instance.JoinRoom(args[0], args[1]);
+            Client.Instance.Messenger.JoinRoom(args[0], args[1]);
         }
     }
 
     void LeaveRoom(ConsoleCommand command, string[] args)
     {
-        Client.Instance.LeaveRoom();
+        Client.Instance.Messenger.LeaveRoom();
     }
 
     void Help(ConsoleCommand command, string[] args)

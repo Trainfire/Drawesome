@@ -8,6 +8,6 @@ public class UiLogin : UiMenu
 
     void Start()
     {
-        Login.onClick.AddListener(() => Client.Instance.Connect(InputName.text));
+        Login.onClick.AddListener(() => Client.Instance.Connection.Connect(InputName.text));
     }
 }

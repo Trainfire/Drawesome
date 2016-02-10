@@ -69,13 +69,15 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Assets\Example\EchoTest.cs" />
     <Compile Include="Assets\Scripts\App.cs" />
     <Compile Include="Assets\Scripts\Client.cs" />
+    <Compile Include="Assets\Scripts\Connection.cs" />
     <Compile Include="Assets\Scripts\ConsoleController.cs" />
     <Compile Include="Assets\Scripts\ConsoleView.cs" />
     <Compile Include="Assets\Scripts\DrawingCanvas.cs" />
     <Compile Include="Assets\Scripts\GameObjectEx.cs" />
+    <Compile Include="Assets\Scripts\MessageHandler.cs" />
+    <Compile Include="Assets\Scripts\Messenger.cs" />
     <Compile Include="Assets\Scripts\Singleton.cs" />
     <Compile Include="Assets\Scripts\UI\UiBrowser.cs" />
     <Compile Include="Assets\Scripts\UI\UiBrowserItem.cs" />
