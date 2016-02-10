@@ -6,6 +6,7 @@ namespace Protocol
 {
     public class Message
     {
+        public string Name { get; set; }
         public string LogMessage { get; protected set; }
 
         [JsonConverter(typeof(StringEnumConverter))]
@@ -14,6 +15,7 @@ namespace Protocol
         public Message()
         {
             Type = MessageType.None;
+            Name = GetType().ToString();
         }
 
         public Message(MessageType type, string logMessage = "")
@@ -31,6 +33,16 @@ namespace Protocol
         {
             var json = JsonHelper.ToJson(this);
             return json;
+        }
+
+        public static bool IsType<T>(string json, Action<T> OnMatchingTypes = null) where T : Message
+        {
+            var obj = JsonHelper.FromJson<T>(json);
+
+            if (obj != null && obj.Name == typeof(T).FullName && OnMatchingTypes != null)
+                OnMatchingTypes(obj);
+
+            return obj.Name == typeof(T).FullName;
         }
     }
 }

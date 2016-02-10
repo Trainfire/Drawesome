@@ -96,11 +96,13 @@ public class MessageHandler
     /// <param name="args"></param>
     void FireEvent<T>(MessageEvent<T> messageEvent, string json) where T : Message
     {
-        T obj = JsonHelper.FromJson<T>(json);
-        if (messageEvent != null)
-            messageEvent(obj);
+        Message.IsType<T>(json, (data) =>
+        {
+            if (messageEvent != null)
+                messageEvent(data);
 
-        if (OnAny != null)
-            OnAny(obj);
+            if (OnAny != null)
+                OnAny(data);
+        });
     }
 }

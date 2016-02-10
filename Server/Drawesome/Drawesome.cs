@@ -188,9 +188,9 @@ namespace Server.Drawesome
         {
             var message = JsonHelper.FromJson<Message>(json);
 
-            if (message.Type == MessageType.GameClientSubmitAnswer)
+            Message.IsType<ClientMessage.Game.SubmitAnswer>(json, (data) =>
             {
-                var data = JsonHelper.FromJson<ClientMessage.Game.SubmitAnswer>(json);
+                Console.WriteLine("{0} submitted '{1}'", player.Name, data.Answer);
 
                 // Add answer here
                 GameData.SubmittedAnswers.Add(new AnswerData(player, data.Answer));
@@ -200,7 +200,10 @@ namespace Server.Drawesome
 
                 if (GameData.SubmittedAnswers.Count == GameData.Players.Count)
                     EndState();
-            }
+            });
+
+            var isSubmitChoice = Message.IsType<ClientMessage.Game.SubmitChoice>(json);
+            Console.WriteLine("Is message SubmitChoice? {0}", isSubmitChoice);
         }
     }
 
