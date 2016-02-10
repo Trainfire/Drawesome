@@ -21,6 +21,12 @@ namespace Protocol
     {
         public PlayerData Creator { get; set; }
         public byte[] Image { get; set; }
+
+        public DrawingData(PlayerData creator, byte[] image)
+        {
+            Creator = creator;
+            Image = image;
+        }
     }
 
     public class AnswerData

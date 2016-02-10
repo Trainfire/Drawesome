@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Protocol;
+using System.Linq;
 
 namespace Protocol
 {
@@ -73,60 +74,69 @@ namespace Protocol
 
                 public StateChange(GameState gameState)
                 {
-                    Type = MessageType.GameStateChange;
+                    Type = MessageType.GameServerStateChange;
                     GameState = gameState;
                 }
             }
 
-            public class ShowImage : Message
+            public class SendImage : Message
             {
-                public PlayerData Player;
                 public byte[] Image;
 
-                public ShowImage(PlayerData player, byte[] image)
+                public SendImage(byte[] image)
                 {
-                    Player = player;
+                    Type = MessageType.GameServerSendImage;
                     Image = image;
                 }
             }
 
-            public class ShowOptions : Message
+            public class SendPrompt : Message
             {
-                public List<AnswerData> Answers;
+                public string Prompt { get; private set; }
 
-                public ShowOptions(List<AnswerData> answers)
+                public SendPrompt(string prompt)
                 {
-                    Answers = answers;
+                    Type = MessageType.GameServerSendPrompt;
+                    Prompt = prompt;
                 }
             }
 
-            public class ShowChoice : Message
+            public class SendChoices : Message
             {
-                public ResultData Choice;
+                public List<string> Choices;
 
-                public ShowChoice(ResultData choice)
+                public SendChoices(List<AnswerData> answers)
                 {
-                    Choice = choice;
+                    Type = MessageType.GameServerSendChoices;
+                    Choices = answers.Select(x => x.Answer).ToList();
                 }
             }
 
-            public class ShowChosenPlayerOptions : Message
+            public class SendResult : Message
             {
-                public List<ResultData> Choices;
+                public PlayerData Author { get; private set; }
+                public List<PlayerData> Players { get; private set; }
+                public string Answer { get; private set; }
+                public uint Points { get; private set; }
 
-                public ShowChosenPlayerOptions(List<ResultData> choices)
+                public SendResult(PlayerData author, List<PlayerData> players, string answer, uint points)
                 {
-                    Choices = choices;
+                    Type = MessageType.GameServerSendResult;
+                    Author = author;
+                    Players = players;
+                    Answer = answer;
+                    Points = points;
                 }
-            }
 
-            public class ShowLikes : Message
-            {
-                public List<ResultData> Choices;
-
-                public ShowLikes(List<ResultData> choices)
+                public SendResult(KeyValuePair<AnswerData, ResultData> kvp)
                 {
-                    Choices = choices;
+                    Type = MessageType.GameServerSendResult;
+                    Author = kvp.Key.Author;
+                    Answer = kvp.Key.Answer;
+                    Players = kvp.Value.Players;
+
+                    // TODO
+                    Points = 0;
                 }
             }
 

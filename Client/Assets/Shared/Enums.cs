@@ -32,8 +32,8 @@ namespace Protocol
         RoundBegin,
         Drawing,
         Answering,
-        ShowChoices,
-        MakeChoices,
+        Choosing,
+        Results,
         RoundEnd,
     }
 
@@ -57,12 +57,15 @@ namespace Protocol
         ServerNotifyPlayerAction = 204,
         ServerConnectionSuccess = 205,
 
-        GameStateChange = 300,
+        GameClientSendImage = 300,
+        GameClientSubmitAnswer = 301,
+        GameClientSubmitChoice = 302,
+        GameClientSubmitLike = 303,
 
-        GameClientSubmitDrawing = 301,
-        GameClientSubmitAnswer = 302,
-        GameClientSubmitChoice = 303,
-
-        GameServerShowChoices = 350,
+        GameServerStateChange,
+        GameServerSendImage,
+        GameServerSendPrompt,
+        GameServerSendChoices,
+        GameServerSendResult,
     }
 }

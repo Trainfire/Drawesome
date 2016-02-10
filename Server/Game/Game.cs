@@ -13,6 +13,8 @@ namespace Server.Game
         protected TData GameData { get; set; }
         protected State<TData> CurrentState { get; private set; }
 
+        protected abstract string Name { get; }
+
         Dictionary<GameState, State<TData>> States { get; set; }
 
         public Game()
@@ -22,10 +24,12 @@ namespace Server.Game
             GameData.Players.ForEach(x => x.OnMessageString += OnPlayerMessage);
         }
 
+        public abstract void Start();
+
         protected virtual void OnPlayerMessage(object sender, string e)
         {
             if (CurrentState != null)
-                CurrentState.OnMessage(e);
+                CurrentState.OnPlayerMessage((PlayerData)sender, e);
         }
 
         protected void SetState(GameState state, GameData gameData)
@@ -34,6 +38,8 @@ namespace Server.Game
                 CurrentState.OnEnd -= EndState;
 
             CurrentState = States[state];
+
+            Log("{0}: {1}", "Change state to", state);
 
             // Notify clients of state change
             GameData.Players.ForEach(x => x.SendMessage(new ServerMessage.Game.StateChange(CurrentState.Type)));
@@ -48,6 +54,12 @@ namespace Server.Game
                 States.Add(stateType, stateInstance);
 
             return stateInstance;
+        }
+
+        protected void Log(string message, params object[] args)
+        {
+            var str = string.Format(message, args);
+            Console.WriteLine("{0}: {1}", Name, str);
         }
 
         void EndState(object sender, TData gameData)

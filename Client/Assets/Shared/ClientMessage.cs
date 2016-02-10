@@ -74,20 +74,20 @@ namespace Protocol
         {
             public class SendImage : Message
             {
-                public DrawingData DrawingData { get; private set; }
+                public byte[] Image { get; private set; }
 
-                public SendImage(DrawingData drawingData)
+                public SendImage(byte[] image)
                 {
-                    Type = MessageType.GameClientSubmitDrawing;
-                    DrawingData = drawingData;
+                    Type = MessageType.GameClientSendImage;
+                    Image = image;
                 }
             }
 
             public class SubmitAnswer : Message
             {
-                public AnswerData Answer { get; private set; }
+                public string Answer { get; private set; }
 
-                public SubmitAnswer(AnswerData answer)
+                public SubmitAnswer(string answer)
                 {
                     Type = MessageType.GameClientSubmitAnswer;
                     Answer = answer;
@@ -96,13 +96,23 @@ namespace Protocol
 
             public class SubmitChoice : Message
             {
-                public PlayerData Player { get; set; }
-                public AnswerData Choice { get; set; }
+                public string Choice { get; set; }
 
-                public SubmitChoice(PlayerData player, AnswerData choice)
+                public SubmitChoice(string choice)
                 {
-                    Player = player;
+                    Type = MessageType.GameClientSubmitChoice;
                     Choice = choice;
+                }
+            }
+
+            public class LikeAnswer : Message
+            {
+                public string Answer { get; set; }
+
+                public LikeAnswer(string answer)
+                {
+                    Type = MessageType.GameClientSubmitLike;
+                    Answer = answer;
                 }
             }
         }

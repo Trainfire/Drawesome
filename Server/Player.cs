@@ -95,9 +95,9 @@ namespace Server
             Socket.Send(message.AsJson());
         }
 
-        public void SendOptions(List<AnswerData> options)
+        public void SendChoices(List<AnswerData> answers)
         {
-            var message = new ServerMessage.Game.ShowOptions(options);
+            var message = new ServerMessage.Game.SendChoices(answers);
             Socket.Send(message.AsJson());
         }
 

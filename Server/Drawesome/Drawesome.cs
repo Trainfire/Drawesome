@@ -16,6 +16,7 @@ namespace Server.Drawesome
         public Dictionary<AnswerData, ResultData> ChosenAnswers { get; set; }
     }
 
+    /// TODO: Load settings from JSON in Server folder
     public class DrawesomeSettings
     {
         public const float DrawTime = 60f;
@@ -26,12 +27,20 @@ namespace Server.Drawesome
     {
         DrawesomeGameData Data { get; set; }
 
+        protected override string Name { get { return "Drawesome"; } }
+
         public Drawesome()
         {
-            AddState(GameState.Drawing, new DrawingState());
-            AddState(GameState.Answering, new AnsweringState());
-            AddState(GameState.MakeChoices, new MakeChoiceState());
-            AddState(GameState.ShowChoices, new ShowResultsState());
+            AddState(GameState.Drawing, new StateDrawingPhase());
+            AddState(GameState.Answering, new StateAnsweringPhase());
+            AddState(GameState.Results, new StateChoosingPhase());
+            AddState(GameState.Choosing, new StateResultsPhase());
+            AddState(GameState.RoundEnd, new StateRoundEnd());
+        }
+
+        public override void Start()
+        {
+            SetState(GameState.RoundBegin, new DrawesomeGameData());
         }
 
         protected override void OnEndState(DrawesomeGameData gameData)
@@ -44,18 +53,35 @@ namespace Server.Drawesome
             }
             else
             {
-
+                SetState(GameState.RoundEnd, gameData);
             }
         }
     }
 
     #region States
 
-    public class DrawingState : State<DrawesomeGameData>
+    public class StateRoundBegin : State<DrawesomeGameData>
+    {
+        public override GameState Type { get { return GameState.RoundBegin; } }
+
+        protected override void OnBegin()
+        {
+            base.OnBegin();
+            var timer = new GameTimer(10f);
+            timer.Finish += Timer_Finish;
+        }
+
+        void Timer_Finish(object sender, EventArgs e)
+        {
+            EndState();
+        }
+    }
+
+    public class StateDrawingPhase : State<DrawesomeGameData>
     {
         public override GameState Type { get { return GameState.Drawing; } }
 
-        public DrawingState()
+        public StateDrawingPhase()
         {
             
         }
@@ -79,19 +105,19 @@ namespace Server.Drawesome
             EndState();
         }
 
-        public override void OnMessage(string json)
+        public override void OnPlayerMessage(PlayerData player, string json)
         {
             var message = JsonHelper.FromJson<Message>(json);
 
-            if (message.Type == MessageType.GameClientSubmitDrawing)
+            if (message.Type == MessageType.GameClientSendImage)
             {
                 var data = JsonHelper.FromJson<ClientMessage.Game.SendImage>(json);
 
                 // Update GameData
-                GameData.Drawings.Enqueue(data.DrawingData);
+                GameData.Drawings.Enqueue(new DrawingData(player, data.Image));
 
                 // Tell all clients that player has submitted drawing
-                GameData.Players.ForEach(x => x.NotifyPlayerGameAction(data.DrawingData.Creator));
+                GameData.Players.ForEach(x => x.NotifyPlayerGameAction(player));
 
                 if (GameData.Drawings.Count == GameData.Players.Count)
                     EndState();
@@ -99,11 +125,11 @@ namespace Server.Drawesome
         }
     }
 
-    public class AnsweringState : State<DrawesomeGameData>
+    public class StateAnsweringPhase : State<DrawesomeGameData>
     {
         public override GameState Type { get { return GameState.Answering; } }
 
-        public AnsweringState()
+        public StateAnsweringPhase()
         {
 
         }
@@ -125,7 +151,7 @@ namespace Server.Drawesome
             throw new NotImplementedException();
         }
 
-        public override void OnMessage(string json)
+        public override void OnPlayerMessage(PlayerData player, string json)
         {
             var message = JsonHelper.FromJson<Message>(json);
 
@@ -134,10 +160,10 @@ namespace Server.Drawesome
                 var data = JsonHelper.FromJson<ClientMessage.Game.SubmitAnswer>(json);
 
                 // Add answer here
-                GameData.SubmittedAnswers.Add(data.Answer);
+                GameData.SubmittedAnswers.Add(new AnswerData(player, data.Answer));
 
                 // Tell all clients that player has submitted answer
-                GameData.Players.ForEach(x => x.NotifyPlayerGameAction(data.Answer.Author));
+                GameData.Players.ForEach(x => x.NotifyPlayerGameAction(player));
 
                 if (GameData.SubmittedAnswers.Count == GameData.Players.Count)
                     EndState();
@@ -145,11 +171,11 @@ namespace Server.Drawesome
         }
     }
 
-    public class MakeChoiceState : State<DrawesomeGameData>
+    public class StateChoosingPhase : State<DrawesomeGameData>
     {
-        public override GameState Type { get { return GameState.Answering; } }
+        public override GameState Type { get { return GameState.Choosing; } }
 
-        public MakeChoiceState()
+        public StateChoosingPhase()
         {
 
         }
@@ -159,7 +185,7 @@ namespace Server.Drawesome
             base.OnBegin();
 
             // Send options to each player
-            GameData.Players.ForEach(x => x.SendOptions(GameData.SubmittedAnswers));
+            GameData.Players.ForEach(x => x.SendChoices(GameData.SubmittedAnswers));
 
             // Add answers here
             foreach (var answer in GameData.SubmittedAnswers)
@@ -168,7 +194,7 @@ namespace Server.Drawesome
             }
         }
 
-        public override void OnMessage(string json)
+        public override void OnPlayerMessage(PlayerData player, string json)
         {
             var message = JsonHelper.FromJson<Message>(json);
 
@@ -177,24 +203,35 @@ namespace Server.Drawesome
                 var data = JsonHelper.FromJson<ClientMessage.Game.SubmitChoice>(json);
 
                 // Add answer
-                GameData.ChosenAnswers[data.Choice].Players.Add(data.Player);
+                var answer = GameData.SubmittedAnswers.Find(x => x.Answer == data.Choice);
+                GameData.ChosenAnswers[answer].Players.Add(player);
 
                 // Tell all clients of choice
-                GameData.Players.ForEach(x => x.NotifyPlayerGameAction(data.Player));
+                GameData.Players.ForEach(x => x.NotifyPlayerGameAction(player));
 
+                // End state if all players have chosen
                 if (GameData.ChosenAnswers.Count == GameData.Players.Count)
                     EndState();
+            }
+
+            if (message.Type == MessageType.GameClientSubmitLike)
+            {
+                var data = JsonHelper.FromJson<ClientMessage.Game.LikeAnswer>(json);
+
+                // Add like
+                var answer = GameData.SubmittedAnswers.Find(x => x.Answer == data.Answer);
+                GameData.ChosenAnswers[answer].Likes++;
             }
         }
     }
 
-    public class ShowResultsState : State<DrawesomeGameData>
+    public class StateResultsPhase : State<DrawesomeGameData>
     {
-        public override GameState Type { get { return GameState.Answering; } }
+        public override GameState Type { get { return GameState.Results; } }
 
-        Queue<ResultData> Results { get; set; }
+        Queue<KeyValuePair<AnswerData, ResultData>> Results { get; set; }
 
-        public ShowResultsState()
+        public StateResultsPhase()
         {
 
         }
@@ -204,22 +241,22 @@ namespace Server.Drawesome
             base.OnBegin();
 
             // Sort chosen answers here...
-            Results = new Queue<ResultData>();
+            Results = new Queue<KeyValuePair<AnswerData, ResultData>>();
 
             var sortedAnswers = GameData.ChosenAnswers.OrderBy(x => x.Value.Players.Count);
             foreach (var answer in sortedAnswers)
             {
-                Results.Enqueue(answer.Value);
+                Results.Enqueue(new KeyValuePair<AnswerData, ResultData>(answer.Key, answer.Value));
             }
 
-            ShowNextChoice();
+            ShowNextResult();
         }
 
-        void ShowNextChoice()
+        void ShowNextResult()
         {
             // Send choice to client and remove from queue
-            var choice = Results.Dequeue();
-            GameData.Players.ForEach(x => x.SendMessage(new ServerMessage.Game.ShowChoice(choice)));
+            var result = Results.Dequeue();
+            GameData.Players.ForEach(x => x.SendMessage(new ServerMessage.Game.SendResult(result)));
 
             // Start timer
             var timer = new GameTimer(5f);
@@ -230,7 +267,7 @@ namespace Server.Drawesome
         {
             if (Results.Count != 0)
             {
-                ShowNextChoice();
+                ShowNextResult();
             }
             else
             {
@@ -239,7 +276,7 @@ namespace Server.Drawesome
         }
     }
 
-    public class RoundEnd : State<DrawesomeGameData>
+    public class StateRoundEnd : State<DrawesomeGameData>
     {
         public override GameState Type { get { return GameState.RoundEnd; } }
     }
