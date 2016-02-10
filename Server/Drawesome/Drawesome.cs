@@ -14,6 +14,13 @@ namespace Server.Drawesome
         public Queue<DrawingData> Drawings { get; set; }
         public List<AnswerData> SubmittedAnswers { get; set; }
         public Dictionary<AnswerData, ResultData> ChosenAnswers { get; set; }
+
+        public DrawesomeGameData()
+        {
+            Drawings = new Queue<DrawingData>();
+            SubmittedAnswers = new List<AnswerData>();
+            ChosenAnswers = new Dictionary<AnswerData, ResultData>();
+        }
     }
 
     /// TODO: Load settings from JSON in Server folder
@@ -23,14 +30,15 @@ namespace Server.Drawesome
         public const float AnsweringTime = 30f;
     }
 
-    public class Drawesome : Game<DrawesomeGameData>
+    public class DrawesomeGame : Game<DrawesomeGameData>
     {
         DrawesomeGameData Data { get; set; }
 
         protected override string Name { get { return "Drawesome"; } }
 
-        public Drawesome()
+        public DrawesomeGame()
         {
+            AddState(GameState.RoundBegin, new StateRoundBegin());
             AddState(GameState.Drawing, new StateDrawingPhase());
             AddState(GameState.Answering, new StateAnsweringPhase());
             AddState(GameState.Results, new StateChoosingPhase());
@@ -38,8 +46,10 @@ namespace Server.Drawesome
             AddState(GameState.RoundEnd, new StateRoundEnd());
         }
 
-        public override void Start()
+        public override void Start(List<Player> players)
         {
+            base.Start(players);
+            Log("Started");
             SetState(GameState.RoundBegin, new DrawesomeGameData());
         }
 
@@ -56,6 +66,11 @@ namespace Server.Drawesome
                 SetState(GameState.RoundEnd, gameData);
             }
         }
+
+        protected override bool IsGameOver()
+        {
+            return CurrentState.Type == GameState.RoundEnd;
+        }
     }
 
     #region States
@@ -67,7 +82,7 @@ namespace Server.Drawesome
         protected override void OnBegin()
         {
             base.OnBegin();
-            var timer = new GameTimer(10f);
+            var timer = new GameTimer(5f);
             timer.Finish += Timer_Finish;
         }
 
@@ -89,7 +104,7 @@ namespace Server.Drawesome
         protected override void OnBegin()
         {
             // TODO: Use const
-            var timer = new GameTimer(DrawesomeSettings.DrawTime);
+            var timer = new GameTimer("Drawing Timer", DrawesomeSettings.DrawTime);
             timer.Tick += OnTimerTick;
             timer.Finish += OnTimerFinish;
         }

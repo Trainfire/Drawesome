@@ -8,7 +8,7 @@ namespace Server.Game
     /// Each Game has associated GameData. GameData will be passed between different states of the game and updated throughout.
     /// </summary>
     /// <typeparam name="TData">The GameData associated with this Game.</typeparam>
-    public abstract class Game<TData> where TData : GameData
+    public abstract class Game<TData> where TData : GameData, new()
     {
         protected TData GameData { get; set; }
         protected State<TData> CurrentState { get; private set; }
@@ -19,23 +19,41 @@ namespace Server.Game
 
         public Game()
         {
+            Log("Initialised");
             States = new Dictionary<GameState, State<TData>>();
-            GameData = default(TData);
+        }
+
+        public virtual void Start(List<Player> players)
+        {
+            GameData = new TData();
+            GameData.Players = new List<Player>();
+            GameData.Players = players;
             GameData.Players.ForEach(x => x.OnMessageString += OnPlayerMessage);
         }
 
-        public abstract void Start();
+        protected virtual void OnGameOver()
+        {
+            Log("Game Over!");
+        }
 
         protected virtual void OnPlayerMessage(object sender, string e)
         {
+            var player = sender as Player;
             if (CurrentState != null)
-                CurrentState.OnPlayerMessage((PlayerData)sender, e);
+                CurrentState.OnPlayerMessage(player.Data, e);
         }
 
         protected void SetState(GameState state, GameData gameData)
         {
             if (CurrentState != null)
                 CurrentState.OnEnd -= EndState;
+
+            if (!States.ContainsKey(state))
+            {
+                // TODO: Flag as fatal error
+                Log("State {0} does not exist.", state.ToString());
+                return;
+            }
 
             CurrentState = States[state];
 
@@ -64,10 +82,18 @@ namespace Server.Game
 
         void EndState(object sender, TData gameData)
         {
-            // Pass the latest copy of gamedata from the ending state back into the game manager.
-            OnEndState(GameData);
+            if (!IsGameOver())
+            {
+                // Pass the latest copy of gamedata from the ending state back into the game manager.
+                OnEndState(GameData);
+            }
+            else
+            {
+                OnGameOver();
+            }
         }
 
         protected abstract void OnEndState(TData gameData);
+        protected abstract bool IsGameOver();
     }
 }

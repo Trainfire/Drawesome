@@ -3,7 +3,7 @@ using Protocol;
 
 namespace Server.Game
 {
-    public abstract class State<T> where T : GameData
+    public abstract class State<T> where T : GameData, new()
     {
         public event EventHandler<T> OnEnd;
 

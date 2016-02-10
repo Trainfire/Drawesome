@@ -2,6 +2,8 @@ using System;
 using System.Linq;
 using System.Collections.Generic;
 using Protocol;
+using Server.Game;
+using Server.Drawesome;
 
 namespace Server
 {
@@ -13,6 +15,7 @@ namespace Server
         public List<Player> Players { get; private set; }
 
         Player Owner { get; set; }
+        DrawesomeGame Game { get; set; }
 
         /// <summary>
         /// We'll limit GUID size to 4 characters for now to make joining games easier for development purposes.
@@ -40,6 +43,9 @@ namespace Server
             }
 
             Join(Owner);
+
+            Game = new DrawesomeGame();
+            Game.Start(Players);
         }
 
         public void Join(Player joiningPlayer, string password = "")
