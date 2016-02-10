@@ -45,7 +45,6 @@ namespace Server
             Join(Owner);
 
             Game = new DrawesomeGame();
-            Game.Start(Players);
         }
 
         public void Join(Player joiningPlayer, string password = "")
@@ -73,6 +72,7 @@ namespace Server
                 // Add callbacks
                 joiningPlayer.OnConnectionClosed += OnPlayerConnectionClosed;
                 joiningPlayer.OnChat += OnPlayerChat;
+                joiningPlayer.OnStartGame += OnPlayerStartGame;
 
                 // Send message to joining player
                 EchoActionToAll(joiningPlayer.Data, PlayerAction.Joined);
@@ -90,6 +90,17 @@ namespace Server
         public bool HasPlayer(PlayerData player)
         {
             return Players.Exists(x => x.Data.ID == player.ID);
+        }
+
+        #region Handle Player Messages
+
+        void OnPlayerStartGame(object sender, ClientMessage.StartGame e)
+        {
+            if (e.Player.ID == Owner.Data.ID)
+            {
+                Log("{0} has started the game", Owner.Data.Name);
+                Game.Start(Players);
+            }
         }
 
         void OnPlayerChat(object sender, SharedMessage.Chat message)
@@ -142,6 +153,8 @@ namespace Server
                     OnEmpty(this, this);
             }
         }
+
+        #endregion
 
         #region Messaging
 

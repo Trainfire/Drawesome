@@ -49,6 +49,7 @@ namespace Protocol
         ClientJoinRoom = 102,
         ClientLeaveRoom = 103,
         ClientCreateRoom = 104,
+        ClientStartGame = 105,
 
         ServerUpdate = 200,
         ServerNotifyRoomError = 201,

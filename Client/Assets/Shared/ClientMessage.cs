@@ -57,6 +57,17 @@ namespace Protocol
             }
         }
 
+        public class StartGame : Message
+        {
+            public PlayerData Player { get; private set; }
+
+            public StartGame(PlayerData player)
+            {
+                Type = MessageType.ClientStartGame;
+                Player = player;
+            }
+        }
+
         public class RequestRoomList : Message
         {
             public PlayerData Player;

@@ -29,6 +29,7 @@ namespace Server
     {
         public event EventHandler<PlayerConnectionClosed> OnConnectionClosed;
         public event EventHandler<SharedMessage.Chat> OnChat;
+        public event EventHandler<ClientMessage.StartGame> OnStartGame;
         public event EventHandler<Message> OnMessage;
         public event EventHandler<string> OnMessageString;
 
@@ -50,26 +51,25 @@ namespace Server
 
             socket.OnMessage += (message) =>
             {
-                if (OnChat != null)
+                var obj = JsonHelper.FromJson<Message>(message);
+
+                if (obj.Type == MessageType.Chat && OnChat != null)
                 {
-                    var obj = JsonHelper.FromJson<Message>(message);
-                    if (obj.Type == MessageType.Chat)
-                    {
-                        var data = JsonHelper.FromJson<SharedMessage.Chat>(message);
-                        OnChat(this, data);
-                    }
+                    var data = JsonHelper.FromJson<SharedMessage.Chat>(message);
+                    OnChat(this, data);
+                }
+
+                if (obj.Type == MessageType.ClientStartGame && OnStartGame != null)
+                {
+                    var data = JsonHelper.FromJson<ClientMessage.StartGame>(message);
+                    OnStartGame(this, data);
                 }
 
                 if (OnMessage != null)
-                {
-                    var obj = JsonHelper.FromJson<Message>(message);
                     OnMessage(this, obj);
-                }
 
                 if (OnMessageString != null)
-                {
                     OnMessageString(this, message);
-                }
             };
         }
 
