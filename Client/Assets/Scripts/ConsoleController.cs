@@ -34,6 +34,7 @@ public class ConsoleController
         RegisterCommand(new ConsoleCommand("leave", LeaveRoom, "(Disconnects you from the room you are currently in)"));
         RegisterCommand(new ConsoleCommand("disconnect", Disconnect));
         RegisterCommand(new ConsoleCommand("say", Say, "[Message] (Sends a message to all players in the same room)"));
+        RegisterCommand(new ConsoleCommand("startgame", StartGame, "(Starts the game if you're the room owner)"));
     }
 
     public void SubmitInput(string input)
@@ -193,6 +194,11 @@ public class ConsoleController
         {
             Debug.LogFormat("\t{0} {1}", c.Command, c.Help);
         }
+    }
+
+    void StartGame(ConsoleCommand command, string[] args)
+    {
+        Client.Instance.Messenger.StartGame();
     }
 
     #endregion

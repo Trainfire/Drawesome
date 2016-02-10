@@ -35,4 +35,9 @@ public class Messenger
     {
         Connection.SendMessage(new SharedMessage.Chat(Connection.Data, message));
     }
+
+    public void StartGame()
+    {
+        Connection.SendMessage(new ClientMessage.StartGame(Connection.Data));
+    }
 }
