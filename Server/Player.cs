@@ -2,6 +2,7 @@ using Fleck;
 using Protocol;
 using System.Collections.Generic;
 using System;
+using System.Linq;
 
 namespace Server
 {
@@ -97,7 +98,7 @@ namespace Server
 
         public void SendChoices(List<AnswerData> answers)
         {
-            var message = new ServerMessage.Game.SendChoices(answers);
+            var message = new ServerMessage.Game.SendChoices(answers.Select(x => x.Answer).ToList());
             Socket.Send(message.AsJson());
         }
 

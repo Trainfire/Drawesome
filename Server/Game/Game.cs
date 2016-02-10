@@ -39,6 +39,12 @@ namespace Server.Game
         protected virtual void OnPlayerMessage(object sender, string e)
         {
             var player = sender as Player;
+
+            // Skip current state
+            var obj = JsonHelper.FromJson<Message>(e);
+            if (obj.Type == MessageType.GameClientSkipPhase)
+                SkipState();
+
             if (CurrentState != null)
                 CurrentState.OnPlayerMessage(player.Data, e);
         }
@@ -78,6 +84,12 @@ namespace Server.Game
         {
             var str = string.Format(message, args);
             Console.WriteLine("{0}: {1}", Name, str);
+        }
+
+        void SkipState()
+        {
+            if (CurrentState != null)
+                CurrentState.SkipState();
         }
 
         void EndState(object sender, TData gameData)

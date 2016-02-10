@@ -36,8 +36,37 @@ public class Messenger
         Connection.SendMessage(new SharedMessage.Chat(Connection.Data, message));
     }
 
+    #region Game
+
     public void StartGame()
     {
         Connection.SendMessage(new ClientMessage.StartGame(Connection.Data));
     }
+
+    public void SendImage(byte[] image)
+    {
+        Connection.SendMessage(new ClientMessage.Game.SendImage(image));
+    }
+
+    public void SubmitAnswer(string answer)
+    {
+        Connection.SendMessage(new ClientMessage.Game.SubmitAnswer(answer));
+    }
+
+    public void SubmitChoice(string choice)
+    {
+        Connection.SendMessage(new ClientMessage.Game.SubmitChoice(choice));
+    }
+
+    public void SubmitLike(string answer)
+    {
+        Connection.SendMessage(new ClientMessage.Game.LikeAnswer(answer));
+    }
+
+    public void SkipPhase()
+    {
+        Connection.SendMessage(new ClientMessage.Game.SkipPhase());
+    }
+
+    #endregion
 }

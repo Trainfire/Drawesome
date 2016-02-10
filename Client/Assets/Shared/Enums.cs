@@ -62,6 +62,7 @@ namespace Protocol
         GameClientSubmitAnswer = 301,
         GameClientSubmitChoice = 302,
         GameClientSubmitLike = 303,
+        GameClientSkipPhase = 304,
 
         GameServerStateChange,
         GameServerSendImage,

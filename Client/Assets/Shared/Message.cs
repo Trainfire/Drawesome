@@ -1,5 +1,6 @@
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
+using System;
 
 namespace Protocol
 {
@@ -28,7 +29,8 @@ namespace Protocol
 
         public string AsJson()
         {
-            return JsonHelper.ToJson(this);
+            var json = JsonHelper.ToJson(this);
+            return json;
         }
     }
 }

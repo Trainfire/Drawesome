@@ -28,6 +28,7 @@ namespace Server.Drawesome
     {
         public const float DrawTime = 60f;
         public const float AnsweringTime = 30f;
+        public const float ChoosingTime = 15f;
     }
 
     public class DrawesomeGame : Game<DrawesomeGameData>
@@ -41,8 +42,8 @@ namespace Server.Drawesome
             AddState(GameState.RoundBegin, new StateRoundBegin());
             AddState(GameState.Drawing, new StateDrawingPhase());
             AddState(GameState.Answering, new StateAnsweringPhase());
-            AddState(GameState.Results, new StateChoosingPhase());
-            AddState(GameState.Choosing, new StateResultsPhase());
+            AddState(GameState.Choosing, new StateChoosingPhase());
+            AddState(GameState.Results, new StateResultsPhase());
             AddState(GameState.RoundEnd, new StateRoundEnd());
         }
 
@@ -50,26 +51,75 @@ namespace Server.Drawesome
         {
             base.Start(players);
             Log("Started");
-            SetState(GameState.RoundBegin, new DrawesomeGameData());
+
+            Data = new DrawesomeGameData();
+            Data.Drawings = new Queue<DrawingData>(players.Count);
+            SetState(GameState.RoundBegin, Data);
         }
 
         protected override void OnEndState(DrawesomeGameData gameData)
         {
             // Loop game if drawings remain
-            if (gameData.Drawings.Count != 0)
+            switch (CurrentState.Type)
             {
-                gameData.Drawings.Dequeue();
-                SetState(GameState.Answering, gameData);
-            }
-            else
-            {
-                SetState(GameState.RoundEnd, gameData);
+                case GameState.RoundBegin:
+                    SetState(GameState.Drawing, gameData);
+                    break;
+
+                case GameState.Drawing:
+                    SetState(GameState.Answering, gameData);
+                    break;
+
+                case GameState.Answering:
+
+                    Console.WriteLine("Answers");
+                    foreach (var answer in gameData.SubmittedAnswers)
+                    {
+                        Console.WriteLine("\t{0}: {1}", answer.Author.Name, answer.Answer);
+                    }
+
+                    SetState(GameState.Choosing, gameData);
+                    break;
+
+                case GameState.Choosing:
+
+                    Console.WriteLine("Choices");
+                    foreach (var choice in gameData.ChosenAnswers)
+                    {
+                        var players = choice.Value.Players
+                            .Select(x => x.Name)
+                            .Aggregate((current, next) => current + ", " + next);
+
+                        Console.WriteLine("\t{0}: {1}", choice.Key.Answer, players);
+                    }
+
+                    SetState(GameState.Results, gameData);
+                    break;
+
+                case GameState.Results:
+                    SetState(GameState.RoundEnd, gameData);
+                    break;
+
+                case GameState.RoundEnd:
+                    if (gameData.Drawings.Count != 0)
+                    {
+                        gameData.Drawings.Dequeue();
+                        SetState(GameState.Drawing, gameData);
+                    }
+                    else
+                    {
+                        Log("Game Over!");
+                    }
+                    break;
+
+                default:
+                    break;
             }
         }
 
         protected override bool IsGameOver()
         {
-            return CurrentState.Type == GameState.RoundEnd;
+            return false;
         }
     }
 
@@ -82,13 +132,7 @@ namespace Server.Drawesome
         protected override void OnBegin()
         {
             base.OnBegin();
-            var timer = new GameTimer(5f);
-            timer.Finish += Timer_Finish;
-        }
-
-        void Timer_Finish(object sender, EventArgs e)
-        {
-            EndState();
+            SetTimer("Begin Timer", 5f);
         }
     }
 
@@ -103,21 +147,7 @@ namespace Server.Drawesome
 
         protected override void OnBegin()
         {
-            // TODO: Use const
-            var timer = new GameTimer("Drawing Timer", DrawesomeSettings.DrawTime);
-            timer.Tick += OnTimerTick;
-            timer.Finish += OnTimerFinish;
-        }
-
-        void OnTimerTick(object sender, EventArgs e)
-        {
-            // Send new time to client
-        }
-
-        void OnTimerFinish(object sender, EventArgs e)
-        {
-            // End state
-            EndState();
+            SetTimer("Drawing Timer", DrawesomeSettings.DrawTime);
         }
 
         public override void OnPlayerMessage(PlayerData player, string json)
@@ -151,19 +181,7 @@ namespace Server.Drawesome
 
         protected override void OnBegin()
         {
-            var timer = new GameTimer(DrawesomeSettings.AnsweringTime);
-            timer.Tick += OnTimerTick;
-            timer.Finish += OnTimerFinish;
-        }
-
-        void OnTimerFinish(object sender, EventArgs e)
-        {
-            throw new NotImplementedException();
-        }
-
-        void OnTimerTick(object sender, EventArgs e)
-        {
-            throw new NotImplementedException();
+            SetTimer("Answering Timer", DrawesomeSettings.AnsweringTime);
         }
 
         public override void OnPlayerMessage(PlayerData player, string json)
@@ -199,6 +217,8 @@ namespace Server.Drawesome
         {
             base.OnBegin();
 
+            SetTimer("Choosing Timer", DrawesomeSettings.ChoosingTime);
+
             // Send options to each player
             GameData.Players.ForEach(x => x.SendChoices(GameData.SubmittedAnswers));
 
@@ -213,7 +233,7 @@ namespace Server.Drawesome
         {
             var message = JsonHelper.FromJson<Message>(json);
 
-            if (message.Type == MessageType.GameClientSubmitAnswer)
+            if (message.Type == MessageType.GameClientSubmitChoice)
             {
                 var data = JsonHelper.FromJson<ClientMessage.Game.SubmitChoice>(json);
 
@@ -238,6 +258,14 @@ namespace Server.Drawesome
                 GameData.ChosenAnswers[answer].Likes++;
             }
         }
+
+        protected override void OnTimerFinish(object sender, EventArgs e)
+        {
+            // TODO: Add decoys
+            // ...
+
+            base.OnTimerFinish(sender, e);
+        }
     }
 
     public class StateResultsPhase : State<DrawesomeGameData>
@@ -258,7 +286,7 @@ namespace Server.Drawesome
             // Sort chosen answers here...
             Results = new Queue<KeyValuePair<AnswerData, ResultData>>();
 
-            var sortedAnswers = GameData.ChosenAnswers.OrderBy(x => x.Value.Players.Count);
+            var sortedAnswers = GameData.ChosenAnswers.OrderBy(x => x.Value.Players.Count).ToList();
             foreach (var answer in sortedAnswers)
             {
                 Results.Enqueue(new KeyValuePair<AnswerData, ResultData>(answer.Key, answer.Value));
@@ -271,7 +299,8 @@ namespace Server.Drawesome
         {
             // Send choice to client and remove from queue
             var result = Results.Dequeue();
-            GameData.Players.ForEach(x => x.SendMessage(new ServerMessage.Game.SendResult(result)));
+            var message = new ServerMessage.Game.SendResult(result.Key.Author, result.Value.Players, result.Key.Answer, 0);
+            GameData.Players.ForEach(x => x.SendMessage(message));
 
             // Start timer
             var timer = new GameTimer(5f);

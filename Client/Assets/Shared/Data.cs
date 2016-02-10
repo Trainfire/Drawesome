@@ -62,5 +62,10 @@ namespace Protocol
     {
         public List<PlayerData> Players { get; set; }
         public int Likes { get; set; }
+
+        public ResultData()
+        {
+            Players = new List<PlayerData>();
+        }
     }
 }

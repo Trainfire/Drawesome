@@ -105,10 +105,10 @@ namespace Protocol
             {
                 public List<string> Choices;
 
-                public SendChoices(List<AnswerData> answers)
+                public SendChoices(List<string> choices)
                 {
                     Type = MessageType.GameServerSendChoices;
-                    Choices = answers.Select(x => x.Answer).ToList();
+                    Choices = choices;
                 }
             }
 
@@ -128,16 +128,16 @@ namespace Protocol
                     Points = points;
                 }
 
-                public SendResult(KeyValuePair<AnswerData, ResultData> kvp)
-                {
-                    Type = MessageType.GameServerSendResult;
-                    Author = kvp.Key.Author;
-                    Answer = kvp.Key.Answer;
-                    Players = kvp.Value.Players;
+                //public SendResult(KeyValuePair<AnswerData, ResultData> kvp)
+                //{
+                //    Type = MessageType.GameServerSendResult;
+                //    Author = kvp.Key.Author;
+                //    Answer = kvp.Key.Answer;
+                //    Players = kvp.Value.Players;
 
-                    // TODO
-                    Points = 0;
-                }
+                //    // TODO
+                //    Points = 0;
+                //}
             }
 
             public class PlayerAction : Message

@@ -126,6 +126,14 @@ namespace Protocol
                     Answer = answer;
                 }
             }
+
+            public class SkipPhase : Message
+            {
+                public SkipPhase()
+                {
+                    Type = MessageType.GameClientSkipPhase;
+                }
+            }
         }
 
         #endregion

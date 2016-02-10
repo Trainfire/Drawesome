@@ -14,6 +14,11 @@ namespace Server.Game
         float ElapsedTime = 0f;
         float Duration = 0f;
 
+        public GameTimer()
+        {
+            Timer = new Timer();
+        }
+
         public GameTimer(string name, float duration) : this(duration)
         {
             Name = name;
@@ -40,11 +45,12 @@ namespace Server.Game
         public void Stop()
         {
             Timer.Stop();
+            Timer.Elapsed -= OnTimerElapsed;
         }
 
         void OnTimerElapsed(object sender, ElapsedEventArgs e)
         {
-            Console.WriteLine("{0}: Tick...", Name);
+            Console.WriteLine("{0}: Time remaining: {1}", Name, Duration - ElapsedTime);
 
             ElapsedTime += 1f;
 
