@@ -80,6 +80,15 @@
     <Compile Include="Assets\Scripts\Messenger.cs" />
     <Compile Include="Assets\Scripts\Settings.cs" />
     <Compile Include="Assets\Scripts\Singleton.cs" />
+    <Compile Include="Assets\Scripts\Stylesheet\ButtonComponent.cs" />
+    <Compile Include="Assets\Scripts\Stylesheet\ButtonData.cs" />
+    <Compile Include="Assets\Scripts\Stylesheet\ColorComponent.cs" />
+    <Compile Include="Assets\Scripts\Stylesheet\ColorData.cs" />
+    <Compile Include="Assets\Scripts\Stylesheet\ElementComponent.cs" />
+    <Compile Include="Assets\Scripts\Stylesheet\ElementData.cs" />
+    <Compile Include="Assets\Scripts\Stylesheet\StylesheetComponent.cs" />
+    <Compile Include="Assets\Scripts\Stylesheet\TextComponent.cs" />
+    <Compile Include="Assets\Scripts\Stylesheet\TextData.cs" />
     <Compile Include="Assets\Scripts\UI\UiBrowser.cs" />
     <Compile Include="Assets\Scripts\UI\UiBrowserItem.cs" />
     <Compile Include="Assets\Scripts\UI\UiChat.cs" />
