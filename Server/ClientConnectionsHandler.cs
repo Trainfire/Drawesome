@@ -30,21 +30,16 @@ namespace Server
             Send(new ServerMessage.ConnectionSuccess(player.Data.ID), player);
         }
 
-        public override void OnMessage(string m)
+        public override void OnMessage(string json)
         {
-            var message = JsonHelper.FromJson<Message>(m);
-
-            Logger.WriteLine("A message was recieved. Type: {0}", message.Type);
-
-            if (message.Type == MessageType.ClientConnectionRequest)
+            Message.IsType<ClientMessage.RequestConnection>(json, (data) =>
             {
-                var clientConnectionRequest = JsonHelper.FromJson<ClientMessage.RequestConnection>(m);
                 Player matchingPlayer = null;
                 foreach (var player in Players)
                 {
-                    if (player.Data.ID == clientConnectionRequest.ID)
+                    if (player.Data.ID == data.ID)
                     {
-                        player.Data.Name = clientConnectionRequest.Name;
+                        player.Data.Name = data.Name;
                         Logger.WriteLine("Player {0} connected.", player.Data.Name);
                         matchingPlayer = player;
                         break;
@@ -60,22 +55,20 @@ namespace Server
                 // Trigger event.
                 if (PlayerConnected != null)
                     PlayerConnected(this, matchingPlayer);
-            }
+            });
 
-            if (message.Type == MessageType.ClientRequestRoomList)
+            Message.IsType<ClientMessage.RequestRoomList>(json, (data) =>
             {
-                var data = JsonHelper.FromJson<ClientMessage.RequestRoomList>(m);
                 Console.WriteLine("Recieved a request from {0} for a list a rooms.", data.Player.ID);
 
                 var target = Players.Find(x => x.Data.ID == data.Player.ID);
 
                 var protocolRooms = Rooms.Select(x => x.Data).ToList();
                 target.SendMessage(new ServerMessage.RoomList(protocolRooms));
-            }
+            });
 
-            if (message.Type == MessageType.ClientJoinRoom)
+            Message.IsType<ClientMessage.JoinRoom>(json, (data) =>
             {
-                var data = JsonHelper.FromJson<ClientMessage.JoinRoom>(m);
                 Console.WriteLine("Recieved a request from {0} to join room {1}.", data.Player.ID, data.RoomId);
 
                 var roomHasPlayer = Rooms.Find(x => x.HasPlayer(data.Player));
@@ -93,11 +86,10 @@ namespace Server
                 {
                     joiningPlayer.SendRoomError(RoomError.RoomDoesNotExist);
                 }
-            }
+            });
 
-            if (message.Type == MessageType.ClientLeaveRoom)
+            Message.IsType<ClientMessage.LeaveRoom>(json, (data) =>
             {
-                var data = JsonHelper.FromJson<ClientMessage.LeaveRoom>(m);
                 var containingRoom = Rooms.Find(x => x.HasPlayer(data.Player));
 
                 if (containingRoom != null)
@@ -109,11 +101,10 @@ namespace Server
                 {
                     Console.WriteLine("Cannot remove {0} from room as they are not in that room", data.Player.Name);
                 }
-            }
+            });
 
-            if (message.Type == MessageType.ClientCreateRoom)
+            Message.IsType<ClientMessage.CreateRoom>(json, (data) =>
             {
-                var data = JsonHelper.FromJson<ClientMessage.CreateRoom>(m);
                 Console.WriteLine("Create room for {0} with password {1}", data.Player.Name, data.Password);
 
                 var playerCurrentRoom = FindRoomContainingPlayer(data.Player);
@@ -126,7 +117,7 @@ namespace Server
                 room.OnEmpty += OnRoomEmpty;
 
                 Rooms.Add(room);
-            }
+            });
         }
 
         void OnRoomEmpty(object sender, Room e)
