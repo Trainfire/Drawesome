@@ -31,6 +31,13 @@ namespace Server.Game
             GameData.Players.ForEach(x => x.OnMessageString += OnPlayerMessage);
         }
 
+        public void End()
+        {
+            Log("Ended");
+            if (CurrentState != null)
+                CurrentState.EndState(false);
+        }
+
         protected virtual void OnGameOver()
         {
             Log("Game Over!");

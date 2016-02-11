@@ -148,7 +148,9 @@ namespace Server
             }
             else
             {
-                // Remove room
+                // Remove room if no players remain
+                Game.End();
+
                 if (OnEmpty != null)
                     OnEmpty(this, this);
             }
