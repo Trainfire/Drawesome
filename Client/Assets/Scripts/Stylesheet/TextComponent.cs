@@ -17,6 +17,9 @@ namespace Stylesheet
             {
                 text.fontSize = TextData.TextSize;
                 text.lineSpacing = TextData.LineSpacing;
+
+                if (TextData.Color != null)
+                    text.color = TextData.Color.Color;
             }
         }
     }
