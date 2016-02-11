@@ -26,6 +26,6 @@ public class Client : Singleton<Client>
     void MessageHandler_OnMessage(Message message)
     {
         if (LogMessages)
-            Debug.LogFormat("{0} - Recieved Message - Type: {1}, Json: {2}", DateTime.Now.ToShortTimeString(), message.Type, message.AsJson());
+            Debug.LogFormat("{0} - Recieved Message - Type: {1}, Json: {2}", DateTime.Now.ToShortTimeString(), message.Identity, message.AsJson());
     }
 }

@@ -12,7 +12,7 @@ namespace Protocol
                 return;
 
             var obj = JsonHelper.FromJson<Message>(message);
-            Console.WriteLine(string.Format("{0}, Type: {1}, Log: {2}", DateTime.Now, obj.Type, obj.LogMessage));
+            Console.WriteLine(string.Format("{0}, Type: {1}, Log: {2}", DateTime.Now, obj.Identity, obj.LogMessage));
         }
 
         public static void LogMessage(Message message)
@@ -20,7 +20,7 @@ namespace Protocol
             if (!EnableLogging)
                 return;
 
-            var log = string.Format("{0}, Type: {1}, Log: {2}", DateTime.Now, message.Type, message.LogMessage);
+            var log = string.Format("{0}, Type: {1}, Log: {2}", DateTime.Now, message.Identity, message.LogMessage);
             Console.WriteLine(log);
         }
     }

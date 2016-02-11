@@ -31,78 +31,37 @@ public class MessageHandler
     {
         if (message.Type == Opcode.Text)
         {
-            var obj = JsonHelper.FromJson<Message>(message.Data);
-            OnJson(obj.Type, message.Data);
-        }
-    }
+            var json = message.Data;
 
-    void OnJson(MessageType messageType, string json)
-    {
-        // Massive messy switch. IDK.
-        switch (messageType)
-        {
-            case MessageType.ServerNotifyPlayerAction:
-                FireEvent(OnServerNotifyPlayerAction, json);
-                break;
-            case MessageType.ServerConnectionSuccess:
-                FireEvent(OnServerCompleteConnectionRequest, json);
-                break;
-            case MessageType.ServerUpdate:
-                FireEvent(OnServerUpdate, json);
-                break;
-            case MessageType.ServerSendRoomList:
-                FireEvent(OnRecieveRoomList, json);
-                break;
-            case MessageType.ServerNotifyRoomError:
-                FireEvent(OnServerNotifyRoomError, json);
-                break;
-            case MessageType.Chat:
-                FireEvent(OnChat, json);
-                break;
-            case MessageType.ServerRoomUpdate:
-                FireEvent(OnRoomUpdate, json);
-                break;
+            #region General
 
-            #region Game
-
-            case MessageType.GameServerStateChange:
-                FireEvent(OnStateChange, json);
-                break;
-            case MessageType.GameServerSendImage:
-                FireEvent(OnRecieveImage, json);
-                break;
-            case MessageType.GameServerSendPrompt:
-                FireEvent(OnRecievePrompt, json);
-                break;
-            case MessageType.GameServerSendChoices:
-                FireEvent(OnRecieveChoices, json);
-                break;
-            case MessageType.GameServerSendResult:
-                FireEvent(OnRecieveResult, json);
-                break;
+            Message.IsType<ServerMessage.NotifyPlayerAction>(json, (data) => FireEvent(OnServerNotifyPlayerAction, data));
+            Message.IsType<ServerMessage.ConnectionSuccess>(json, (data) => FireEvent(OnServerCompleteConnectionRequest, data));
+            Message.IsType<ServerMessage.RoomUpdate>(json, (data) => FireEvent(OnRoomUpdate, data));
+            Message.IsType<ServerMessage.RoomList>(json, (data) => FireEvent(OnRecieveRoomList, data));
+            Message.IsType<ServerMessage.NotifyRoomError>(json, (data) => FireEvent(OnServerNotifyRoomError, data));
+            Message.IsType<SharedMessage.Chat>(json, (data) => FireEvent(OnChat, data));
 
             #endregion
 
-            default:
-                break;
+            #region Game
+
+            Message.IsType<ServerMessage.Game.SendChoices>(json, (data) => FireEvent(OnRecieveChoices, data));
+            Message.IsType<ServerMessage.Game.SendImage>(json, (data) => FireEvent(OnRecieveImage, data));
+            Message.IsType<ServerMessage.Game.SendPrompt>(json, (data) => FireEvent(OnRecievePrompt, data));
+            Message.IsType<ServerMessage.Game.SendResult>(json, (data) => FireEvent(OnRecieveResult, data));
+            Message.IsType<ServerMessage.Game.StateChange>(json, (data) => FireEvent(OnStateChange, data));
+
+            #endregion
         }
     }
 
-    /// <summary>
-    /// Safely fire event.
-    /// </summary>
-    /// <typeparam name="T"></typeparam>
-    /// <param name="messageEvent"></param>
-    /// <param name="args"></param>
-    void FireEvent<T>(MessageEvent<T> messageEvent, string json) where T : Message
+    void FireEvent<T>(MessageEvent<T> messageEvent, T data) where T : Message
     {
-        Message.IsType<T>(json, (data) =>
-        {
-            if (messageEvent != null)
-                messageEvent(data);
+        if (messageEvent != null)
+            messageEvent(data);
 
-            if (OnAny != null)
-                OnAny(data);
-        });
+        if (OnAny != null)
+            OnAny(data);
     }
 }

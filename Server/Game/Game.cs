@@ -41,9 +41,10 @@ namespace Server.Game
             var player = sender as Player;
 
             // Skip current state
-            var obj = JsonHelper.FromJson<Message>(e);
-            if (obj.Type == MessageType.GameClientSkipPhase)
+            Message.IsType<ClientMessage.Game.SkipPhase>(e, (data) =>
+            {
                 SkipState();
+            });
 
             if (CurrentState != null)
                 CurrentState.OnPlayerMessage(player.Data, e);

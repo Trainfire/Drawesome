@@ -39,7 +39,7 @@ namespace Server
                 {
                     if (player.Data.ID == data.ID)
                     {
-                        player.Data.Name = data.Name;
+                        player.Data.Name = data.PlayerName;
                         Logger.WriteLine("Player {0} connected.", player.Data.Name);
                         matchingPlayer = player;
                         break;
@@ -106,6 +106,8 @@ namespace Server
             Message.IsType<ClientMessage.CreateRoom>(json, (data) =>
             {
                 Console.WriteLine("Create room for {0} with password {1}", data.Player.Name, data.Password);
+
+                Console.WriteLine("You shouldn't see this!");
 
                 var playerCurrentRoom = FindRoomContainingPlayer(data.Player);
                 if (playerCurrentRoom != null)

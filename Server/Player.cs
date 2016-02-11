@@ -54,17 +54,17 @@ namespace Server
             {
                 var obj = JsonHelper.FromJson<Message>(message);
 
-                if (obj.Type == MessageType.Chat && OnChat != null)
+                Message.IsType<SharedMessage.Chat>(message, (data) =>
                 {
-                    var data = JsonHelper.FromJson<SharedMessage.Chat>(message);
-                    OnChat(this, data);
-                }
+                    if (OnChat != null)
+                        OnChat(this, data);
+                });
 
-                if (obj.Type == MessageType.ClientStartGame && OnStartGame != null)
+                Message.IsType<ClientMessage.StartGame>(message, (data) =>
                 {
-                    var data = JsonHelper.FromJson<ClientMessage.StartGame>(message);
-                    OnStartGame(this, data);
-                }
+                    if (OnStartGame != null)
+                        OnStartGame(this, data);
+                });
 
                 if (OnMessage != null)
                     OnMessage(this, obj);

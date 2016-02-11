@@ -53,17 +53,15 @@ public class Connection : MonoBehaviour
     {
         var obj = JsonHelper.FromJson<Message>(e.Data);
 
-        if (obj.Type == MessageType.ServerConnectionSuccess)
+        Message.IsType<ServerMessage.ConnectionSuccess>(e.Data, (data) =>
         {
-            var message = JsonHelper.FromJson<ServerMessage.ConnectionSuccess>(e.Data);
-
-            Data.ID = message.ID;
+            Data.ID = data.ID;
             Data.Name = PlayerName;
 
             Debug.Log("Recieved ID: " + Data.ID);
 
             SendMessage(new ClientMessage.RequestConnection(Data.ID, Data.Name));
-        }
+        });
 
         MessageQueue.Enqueue(e);
     }

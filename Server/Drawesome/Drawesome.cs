@@ -152,12 +152,8 @@ namespace Server.Drawesome
 
         public override void OnPlayerMessage(PlayerData player, string json)
         {
-            var message = JsonHelper.FromJson<Message>(json);
-
-            if (message.Type == MessageType.GameClientSendImage)
+            Message.IsType<ClientMessage.Game.SendImage>(json, (data) =>
             {
-                var data = JsonHelper.FromJson<ClientMessage.Game.SendImage>(json);
-
                 // Update GameData
                 GameData.Drawings.Enqueue(new DrawingData(player, data.Image));
 
@@ -166,7 +162,7 @@ namespace Server.Drawesome
 
                 if (GameData.Drawings.Count == GameData.Players.Count)
                     EndState();
-            }
+            });
         }
     }
 
@@ -186,8 +182,6 @@ namespace Server.Drawesome
 
         public override void OnPlayerMessage(PlayerData player, string json)
         {
-            var message = JsonHelper.FromJson<Message>(json);
-
             Message.IsType<ClientMessage.Game.SubmitAnswer>(json, (data) =>
             {
                 Console.WriteLine("{0} submitted '{1}'", player.Name, data.Answer);
@@ -201,9 +195,6 @@ namespace Server.Drawesome
                 if (GameData.SubmittedAnswers.Count == GameData.Players.Count)
                     EndState();
             });
-
-            var isSubmitChoice = Message.IsType<ClientMessage.Game.SubmitChoice>(json);
-            Console.WriteLine("Is message SubmitChoice? {0}", isSubmitChoice);
         }
     }
 
@@ -236,10 +227,8 @@ namespace Server.Drawesome
         {
             var message = JsonHelper.FromJson<Message>(json);
 
-            if (message.Type == MessageType.GameClientSubmitChoice)
+            Message.IsType<ClientMessage.Game.SubmitChoice>(json, (data) =>
             {
-                var data = JsonHelper.FromJson<ClientMessage.Game.SubmitChoice>(json);
-
                 // Add answer
                 var answer = GameData.SubmittedAnswers.Find(x => x.Answer == data.Choice);
                 GameData.ChosenAnswers[answer].Players.Add(player);
@@ -250,16 +239,14 @@ namespace Server.Drawesome
                 // End state if all players have chosen
                 if (GameData.ChosenAnswers.Count == GameData.Players.Count)
                     EndState();
-            }
+            });
 
-            if (message.Type == MessageType.GameClientSubmitLike)
+            Message.IsType<ClientMessage.Game.LikeAnswer>(json, (data) =>
             {
-                var data = JsonHelper.FromJson<ClientMessage.Game.LikeAnswer>(json);
-
                 // Add like
                 var answer = GameData.SubmittedAnswers.Find(x => x.Answer == data.Answer);
                 GameData.ChosenAnswers[answer].Likes++;
-            }
+            });
         }
 
         protected override void OnTimerFinish(object sender, EventArgs e)

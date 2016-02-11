@@ -12,7 +12,6 @@ namespace Protocol
 
             public RequestConnection(string id, string playerName)
             {
-                Type = MessageType.ClientConnectionRequest;
                 ID = id;
                 PlayerName = playerName;
             }
@@ -25,7 +24,6 @@ namespace Protocol
 
             public CreateRoom(PlayerData player, string password)
             {
-                Type = MessageType.ClientCreateRoom;
                 Player = player;
                 Password = password;
             }
@@ -39,7 +37,6 @@ namespace Protocol
 
             public JoinRoom(PlayerData player, string roomId, string password = "")
             {
-                Type = MessageType.ClientJoinRoom;
                 Player = player;
                 RoomId = roomId;
                 Password = password;
@@ -52,7 +49,6 @@ namespace Protocol
 
             public LeaveRoom(PlayerData player)
             {
-                Type = MessageType.ClientLeaveRoom;
                 Player = player;
             }
         }
@@ -63,7 +59,6 @@ namespace Protocol
 
             public StartGame(PlayerData player)
             {
-                Type = MessageType.ClientStartGame;
                 Player = player;
             }
         }
@@ -74,7 +69,6 @@ namespace Protocol
 
             public RequestRoomList(PlayerData player)
             {
-                Type = MessageType.ClientRequestRoomList;
                 Player = player;
             }
         }
@@ -89,7 +83,6 @@ namespace Protocol
 
                 public SendImage(byte[] image)
                 {
-                    Type = MessageType.GameClientSendImage;
                     Image = image;
                 }
             }
@@ -100,7 +93,6 @@ namespace Protocol
 
                 public SubmitAnswer(string answer)
                 {
-                    Type = MessageType.GameClientSubmitAnswer;
                     Answer = answer;
                 }
             }
@@ -111,7 +103,6 @@ namespace Protocol
 
                 public SubmitChoice(string choice)
                 {
-                    Type = MessageType.GameClientSubmitChoice;
                     Choice = choice;
                 }
             }
@@ -122,7 +113,6 @@ namespace Protocol
 
                 public LikeAnswer(string answer)
                 {
-                    Type = MessageType.GameClientSubmitLike;
                     Answer = answer;
                 }
             }
@@ -131,7 +121,7 @@ namespace Protocol
             {
                 public SkipPhase()
                 {
-                    Type = MessageType.GameClientSkipPhase;
+
                 }
             }
         }

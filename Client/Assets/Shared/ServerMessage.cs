@@ -13,7 +13,6 @@ namespace Protocol
 
             public ConnectionSuccess(string id)
             {
-                Type = MessageType.ServerConnectionSuccess;
                 ID = id;
             }
         }
@@ -24,7 +23,6 @@ namespace Protocol
 
             public RoomList(List<RoomData> rooms)
             {
-                Type = MessageType.ServerSendRoomList;
                 Rooms = rooms;
             }
         }
@@ -36,7 +34,6 @@ namespace Protocol
 
             public NotifyPlayerAction(PlayerData player, PlayerAction action)
             {
-                Type = MessageType.ServerNotifyPlayerAction;
                 Player = player;
                 Action = action;
             }
@@ -48,7 +45,6 @@ namespace Protocol
 
             public NotifyRoomError(RoomError notice)
             {
-                Type = MessageType.ServerNotifyRoomError;
                 Notice = notice;
             }
         }
@@ -59,7 +55,6 @@ namespace Protocol
 
             public RoomUpdate(RoomData roomData)
             {
-                Type = MessageType.ServerRoomUpdate;
                 RoomData = roomData;
             }
         }
@@ -74,7 +69,6 @@ namespace Protocol
 
                 public StateChange(GameState gameState)
                 {
-                    Type = MessageType.GameServerStateChange;
                     GameState = gameState;
                 }
             }
@@ -85,7 +79,6 @@ namespace Protocol
 
                 public SendImage(byte[] image)
                 {
-                    Type = MessageType.GameServerSendImage;
                     Image = image;
                 }
             }
@@ -96,7 +89,6 @@ namespace Protocol
 
                 public SendPrompt(string prompt)
                 {
-                    Type = MessageType.GameServerSendPrompt;
                     Prompt = prompt;
                 }
             }
@@ -107,7 +99,6 @@ namespace Protocol
 
                 public SendChoices(List<string> choices)
                 {
-                    Type = MessageType.GameServerSendChoices;
                     Choices = choices;
                 }
             }
@@ -121,23 +112,11 @@ namespace Protocol
 
                 public SendResult(PlayerData author, List<PlayerData> players, string answer, uint points)
                 {
-                    Type = MessageType.GameServerSendResult;
                     Author = author;
                     Players = players;
                     Answer = answer;
                     Points = points;
                 }
-
-                //public SendResult(KeyValuePair<AnswerData, ResultData> kvp)
-                //{
-                //    Type = MessageType.GameServerSendResult;
-                //    Author = kvp.Key.Author;
-                //    Answer = kvp.Key.Answer;
-                //    Players = kvp.Value.Players;
-
-                //    // TODO
-                //    Points = 0;
-                //}
             }
 
             public class PlayerAction : Message

@@ -9,7 +9,6 @@ namespace Protocol
 
         public Log(string message)
         {
-            Type = MessageType.Log;
             Message = message;
         }
     }
@@ -23,7 +22,6 @@ namespace Protocol
 
             public Chat(PlayerData player, string message)
             {
-                Type = MessageType.Chat;
                 Player = player;
                 Message = message;
             }
@@ -36,12 +34,11 @@ namespace Protocol
 
         public ServerUpdate()
         {
-            Type = MessageType.ServerUpdate;
+
         }
 
         public ServerUpdate(List<PlayerData> players)
         {
-            Type = MessageType.ServerUpdate;
             Players = players;
         }
     }

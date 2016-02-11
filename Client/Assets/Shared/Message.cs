@@ -6,22 +6,17 @@ namespace Protocol
 {
     public class Message
     {
-        public string Name { get; set; }
+        public string Identity { get; set; }
         public string LogMessage { get; protected set; }
-
-        [JsonConverter(typeof(StringEnumConverter))]
-        public MessageType Type;
 
         public Message()
         {
-            Type = MessageType.None;
-            Name = GetType().ToString();
+            Identity = GetType().ToString();
         }
 
-        public Message(MessageType type, string logMessage = "")
+        public Message(string logMessage)
         {
             LogMessage = logMessage;
-            Type = type;
         }
 
         public T Deserialise<T>(string json)
@@ -35,14 +30,14 @@ namespace Protocol
             return json;
         }
 
-        public static bool IsType<T>(string json, Action<T> OnMatchingTypes = null) where T : Message
+        public static bool IsType<T>(string json, Action<T> OnTrue = null) where T : Message
         {
             var obj = JsonHelper.FromJson<T>(json);
 
-            if (obj != null && obj.Name == typeof(T).FullName && OnMatchingTypes != null)
-                OnMatchingTypes(obj);
+            if (obj != null && obj.Identity == typeof(T).FullName && OnTrue != null)
+                OnTrue(obj);
 
-            return obj.Name == typeof(T).FullName;
+            return obj.Identity == typeof(T).FullName;
         }
     }
 }
