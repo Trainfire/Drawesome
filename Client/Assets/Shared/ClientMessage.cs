@@ -8,13 +8,13 @@ namespace Protocol
         public class RequestConnection : Message
         {
             public string ID;
-            public string Name;
+            public string PlayerName;
 
-            public RequestConnection(string id, string name)
+            public RequestConnection(string id, string playerName)
             {
                 Type = MessageType.ClientConnectionRequest;
                 ID = id;
-                Name = name;
+                PlayerName = playerName;
             }
         }
 
