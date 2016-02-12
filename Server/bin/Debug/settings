@@ -1,6 +1,6 @@
 {
   "ServerSettings": {
-    "HostUrl": "ws://0.0.0.0:8080"
+    "HostUrl": "ws://0.0.0.0:8181"
   },
   "DrawesomeSettings": {
     "RoundBeginTime": 5.0,
