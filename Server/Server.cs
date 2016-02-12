@@ -5,6 +5,7 @@ namespace Server
 {
     public class Server
     {
+        ConnectionsHandler ConnectionsHandler { get; set; }
         WebSocketServer SocketServer { get; set; }
         Settings Settings { get; set; }
 
@@ -20,7 +21,9 @@ namespace Server
 
             SocketServer.Start(socket =>
             {
-
+                socket.OnOpen += () => ConnectionsHandler.OnOpen(socket);
+                socket.OnClose += () => ConnectionsHandler.OnClose(socket);
+                socket.OnMessage += (data) => ConnectionsHandler.OnMessage(data);
             });
         }
 

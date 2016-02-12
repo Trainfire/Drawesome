@@ -6,7 +6,7 @@ using Protocol;
 
 namespace Server
 {
-    public class ClientConnectionsHandler : WebSocketBehaviour
+    public class ConnectionsHandler : WebSocketBehaviour
     {
         public event EventHandler<Player> PlayerConnected;
         public event EventHandler<Player> PlayerDisconnected;
@@ -14,7 +14,7 @@ namespace Server
         public List<Player> Players { get; private set; }
         public List<Room> Rooms { get; private set; }
 
-        public ClientConnectionsHandler()
+        public ConnectionsHandler()
         {
             Rooms = new List<Room>();
         }

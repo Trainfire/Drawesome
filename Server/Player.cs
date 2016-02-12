@@ -108,7 +108,7 @@ namespace Server
             Socket.Send(message.AsJson());
         }
 
-        public void Update(ClientConnectionsHandler manager)
+        public void Update(ConnectionsHandler manager)
         {
             Console.WriteLine("Send update to " + Data.Name);
         }
