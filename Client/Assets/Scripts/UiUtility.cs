@@ -14,7 +14,8 @@ public static class UiUtility
     {
         var instance = GameObject.Instantiate<T>(prototype);
         instance.transform.SetParent(parent.transform);
-        instance.transform.localScale = Vector2.one;
+        instance.transform.localScale = Vector3.one;
+        instance.transform.localPosition = Vector3.zero;
 
         if (enable)
             instance.gameObject.SetActive(true);

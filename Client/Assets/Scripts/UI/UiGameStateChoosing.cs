@@ -1,22 +1,44 @@
 using UnityEngine;
-using System.Linq;
+using UnityEngine.UI;
+using System.Collections.Generic;
+using System;
 
 public class UiGameStateChoosing : UiGameState
 {
-    bool hasShownChoices = false;
+    public event Action<UiChoosingItem> OnChoiceSelected;
 
-    protected override void OnBegin()
+    public UiChoosingItem ChoicePrototype;
+    public List<RectTransform> SpawnPositions = new List<RectTransform>();
+
+    List<UiChoosingItem> Views = new List<UiChoosingItem>();
+
+    void Awake()
     {
-        base.OnBegin();
+        ChoicePrototype.gameObject.SetActive(false);
     }
 
-    void Update()
+    public void ShowChoices(List<string> choices)
     {
-        if (!hasShownChoices)
+        for (int i = 0; i < choices.Count; i++)
         {
-            var choices = Controller.Choices.Aggregate((current, next) => current + ", " + next);
-            Debug.LogFormat("Display: {0}", choices);
-            hasShownChoices = true;
+            Debug.LogFormat("Show choice: {0}", choices[i]);
+
+            var instance = UiUtility.AddChild(SpawnPositions[i], ChoicePrototype, true);
+
+            instance.Text.text = choices[i];
+
+            instance.Button.onClick.AddListener(() =>
+            {
+                if (OnChoiceSelected != null)
+                    OnChoiceSelected(instance);
+            });
+
+            Views.Add(instance);
         }
+    }
+
+    protected override void OnEnd()
+    {
+        Views.ForEach(x => Destroy(x.gameObject));
     }
 }
