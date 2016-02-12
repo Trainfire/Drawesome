@@ -105,6 +105,7 @@
     <Compile Include="Assets\Scripts\Editor\DrawingCanvasEditor.cs" />
     <Compile Include="Assets\Scripts\Editor\EditorCreateStylesheetAsset.cs" />
     <Compile Include="Assets\Scripts\Editor\EditorScriptableObjectUtility.cs" />
+    <Compile Include="Assets\Scripts\Editor\FixColourData.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\SyntaxTree\UnityVS\2015\UnityVS.CSharp.targets" />
 </Project>
