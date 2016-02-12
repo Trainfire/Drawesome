@@ -100,8 +100,8 @@
     <Compile Include="Assets\Scripts\UI\UiGameStateChoosing.cs" />
     <Compile Include="Assets\Scripts\UI\UiGameStateDrawing.cs" />
     <Compile Include="Assets\Scripts\UI\UiGameStateResults.cs" />
+    <Compile Include="Assets\Scripts\UI\UiGameStateRoundBegin.cs" />
     <Compile Include="Assets\Scripts\UI\UiGameStateRoundEnd.cs" />
-    <Compile Include="Assets\Scripts\UI\UiGameStateRoundStart.cs" />
     <Compile Include="Assets\Scripts\UI\UiLogin.cs" />
     <Compile Include="Assets\Scripts\UI\UiMenu.cs" />
     <Compile Include="Assets\Scripts\UI\UiRoom.cs" />
