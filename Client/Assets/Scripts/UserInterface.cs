@@ -3,49 +3,48 @@ using System;
 using System.Collections.Generic;
 using Protocol;
 
-public class UserInterface : MonoBehaviour
+public class UserInterface : Base
 {
+    /// <summary>
+    /// Views
+    /// </summary>
     public UiLogin ViewLogin;
     public UiBrowser ViewBrowser;
     public UiRoom ViewRoom;
 
     List<UiBase> views = new List<UiBase>();
 
-    UiBase viewCurrent;
-
-    bool isChangingMenu = false;
-
-    void Start()
+    public override void Initialise(Client client)
     {
+        base.Initialise(client);
+
         views.Add(ViewLogin);
         views.Add(ViewBrowser);
         views.Add(ViewRoom);
 
+        // Inject dependencies
+        views.ForEach(x => x.Initialise(client));
+
         ChangeMenu(ViewLogin);
 
-        Client.Instance.MessageHandler.OnServerCompleteConnectionRequest += OnServerCompleteConnectionRequest;
-        Client.Instance.Connection.ConnectionClosed += Socket_OnClose;
-        Client.Instance.MessageHandler.OnServerNotifyPlayerAction += MessageHandler_OnServerNotifyPlayerAction;
-        Client.Instance.MessageHandler.OnRoomUpdate += OnRoomUpdate;
+        Client.MessageHandler.OnServerCompleteConnectionRequest += OnServerCompleteConnectionRequest;
+        Client.MessageHandler.OnServerNotifyPlayerAction += OnServerNotifyPlayerAction;
+        Client.MessageHandler.OnRoomUpdate += OnRoomUpdate;
     }
 
-    void MessageHandler_OnServerNotifyPlayerAction(ServerMessage.NotifyPlayerAction message)
+    void OnServerNotifyPlayerAction(ServerMessage.NotifyPlayerAction message)
     {
-        if (message.Player.ID == Client.Instance.Connection.Data.ID)
+        // TODO: wtf?!?
+        if (message.Player.ID == Client.Connection.Data.ID)
             ChangeMenu(ViewBrowser);
     }
 
-    private void Socket_OnClose(object sender, WebSocketSharp.CloseEventArgs e)
-    {
-        throw new NotImplementedException();
-    }
-
-    void OnServerCompleteConnectionRequest(Protocol.ServerMessage.ConnectionSuccess message)
+    void OnServerCompleteConnectionRequest(ServerMessage.ConnectionSuccess message)
     {
         ChangeMenu(ViewBrowser);
     }
 
-    void OnRoomUpdate(Protocol.ServerMessage.RoomUpdate message)
+    void OnRoomUpdate(ServerMessage.RoomUpdate message)
     {
         ChangeMenu(ViewRoom);
     }
@@ -64,7 +63,6 @@ public class UserInterface : MonoBehaviour
         }
 
         viewNext.Show();
-        viewCurrent = viewNext;
     }
 
     void Log(string message, params object[] args)

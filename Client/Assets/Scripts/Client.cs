@@ -1,19 +1,18 @@
 using UnityEngine;
 using System;
+using System.Collections.Generic;
 using Protocol;
 
-public class Client : Singleton<Client>
+public class Client : MonoBehaviour
 {
     public bool LogMessages;
 
-    public Connection Connection { get; set; }
+    public Connection Connection { get; private set; }
     public MessageHandler MessageHandler { get; private set; }
     public Messenger Messenger { get; private set; }
 
-    protected override void Awake()
+    public void Initialise()
     {
-        base.Awake();
-
         Connection = gameObject.AddComponent<Connection>();
         MessageHandler = new MessageHandler(Connection);
         Messenger = new Messenger(Connection);

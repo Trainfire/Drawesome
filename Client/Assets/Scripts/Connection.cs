@@ -51,8 +51,6 @@ public class Connection : MonoBehaviour
 
     void OnMessage(object sender, MessageEventArgs e)
     {
-        var obj = JsonHelper.FromJson<Message>(e.Data);
-
         Message.IsType<ServerMessage.ConnectionSuccess>(e.Data, (data) =>
         {
             Data.ID = data.ID;
