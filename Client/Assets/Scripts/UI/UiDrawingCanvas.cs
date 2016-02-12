@@ -112,4 +112,20 @@ public class UiDrawingCanvas : MonoBehaviour
         texture.Apply();
         RawImage.texture = texture;
     }
+
+    public void Recolor(Color color)
+    {
+        Color = color;
+
+        var pixels = Texture.GetPixels();
+
+        for (int i = 0; i < pixels.Length; i++)
+        {
+            if (pixels[i] != Color.white)
+                pixels[i] = Color;
+        }
+
+        Texture.SetPixels(pixels);
+        Texture.Apply();
+    }
 }

@@ -6,6 +6,24 @@ using System.IO;
 [CustomEditor(typeof(UiDrawingCanvas))]
 public class DrawingCanvasEditor : Editor
 {
+    UiDrawingCanvas instance;
+    UiDrawingCanvas Instance
+    {
+        get
+        {
+            if (instance == null)
+                instance = target as UiDrawingCanvas;
+            return instance;
+        }
+    }
+
+    Color Color { get; set; }
+
+    void Start()
+    {
+        Color = Instance.Color;
+    }
+
     public override void OnInspectorGUI()
     {
         base.OnInspectorGUI();
@@ -15,18 +33,26 @@ public class DrawingCanvasEditor : Editor
 
         if (GUILayout.Button("Load"))
             Load();
+
+        Color = EditorGUILayout.ColorField(Color);
+
+        if (GUILayout.Button("Recolor"))
+            Recolor(Color);
     }
 
     void Save()
     {
-        UiDrawingCanvas instance = target as UiDrawingCanvas;
-        File.WriteAllBytes(Application.dataPath + "/picture.png", instance.GetTexture.EncodeToPNG());
+        File.WriteAllBytes(Application.dataPath + "/picture.png", Instance.GetTexture.EncodeToPNG());
     }
 
     void Load()
     {
         var bytes = File.ReadAllBytes(Application.dataPath + "/picture.png");
-        var instance = target as UiDrawingCanvas;
-        instance.SetImage(bytes);
+        Instance.SetImage(bytes);
+    }
+
+    void Recolor(Color color)
+    {
+        Instance.Recolor(color);
     }
 }
