@@ -13,13 +13,13 @@ namespace Server.Drawesome
     {
         public Queue<DrawingData> Drawings { get; set; }
         public List<AnswerData> SubmittedAnswers { get; set; }
-        public Dictionary<AnswerData, ResultData> ChosenAnswers { get; set; }
+        public Dictionary<AnswerData, ChoiceData> ChosenAnswers { get; set; }
 
         public DrawesomeGameData()
         {
             Drawings = new Queue<DrawingData>();
             SubmittedAnswers = new List<AnswerData>();
-            ChosenAnswers = new Dictionary<AnswerData, ResultData>();
+            ChosenAnswers = new Dictionary<AnswerData, ChoiceData>();
         }
     }
 
@@ -219,7 +219,7 @@ namespace Server.Drawesome
             // Add answers here
             foreach (var answer in GameData.SubmittedAnswers)
             {
-                GameData.ChosenAnswers.Add(answer, new ResultData());
+                GameData.ChosenAnswers.Add(answer, new ChoiceData());
             }
         }
 
@@ -262,7 +262,7 @@ namespace Server.Drawesome
     {
         public override GameState Type { get { return GameState.Results; } }
 
-        Queue<KeyValuePair<AnswerData, ResultData>> Results { get; set; }
+        Queue<KeyValuePair<AnswerData, ChoiceData>> ChosenAnswersQueue { get; set; }
 
         public StateResultsPhase()
         {
@@ -274,12 +274,12 @@ namespace Server.Drawesome
             base.OnBegin();
 
             // Sort chosen answers here...
-            Results = new Queue<KeyValuePair<AnswerData, ResultData>>();
+            ChosenAnswersQueue = new Queue<KeyValuePair<AnswerData, ChoiceData>>();
 
             var sortedAnswers = GameData.ChosenAnswers.OrderBy(x => x.Value.Players.Count).ToList();
             foreach (var answer in sortedAnswers)
             {
-                Results.Enqueue(new KeyValuePair<AnswerData, ResultData>(answer.Key, answer.Value));
+                ChosenAnswersQueue.Enqueue(new KeyValuePair<AnswerData, ChoiceData>(answer.Key, answer.Value));
             }
 
             ShowNextResult();
@@ -288,8 +288,9 @@ namespace Server.Drawesome
         void ShowNextResult()
         {
             // Send choice to client and remove from queue
-            var result = Results.Dequeue();
-            var message = new ServerMessage.Game.SendResult(result.Key.Author, result.Value.Players, result.Key.Answer, 0);
+            var chosenAnswer = ChosenAnswersQueue.Dequeue();
+            var result = new ResultData(chosenAnswer.Key.Author, chosenAnswer.Value.Players, chosenAnswer.Key.Answer, 0);
+            var message = new ServerMessage.Game.SendResult(result);
             GameData.Players.ForEach(x => x.SendMessage(message));
 
             // Start timer
@@ -299,7 +300,7 @@ namespace Server.Drawesome
 
         void UpdateQueue(object sender, EventArgs e)
         {
-            if (Results.Count != 0)
+            if (ChosenAnswersQueue.Count != 0)
             {
                 ShowNextResult();
             }
