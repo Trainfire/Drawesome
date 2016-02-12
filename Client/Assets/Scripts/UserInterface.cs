@@ -5,19 +5,18 @@ using Protocol;
 
 public class UserInterface : MonoBehaviour, IClientHandler
 {
-    /// <summary>
-    /// Views
-    /// </summary>
     public UiLogin ViewLogin;
     public UiBrowser ViewBrowser;
     public UiRoom ViewRoom;
 
-    public Client Client { get; set; }
+    Client Client { get; set; }
 
     List<UiBase> views = new List<UiBase>();
 
     public void Initialise(Client client)
     {
+        Client = client;
+
         views.Add(ViewLogin);
         views.Add(ViewBrowser);
         views.Add(ViewRoom);
@@ -27,9 +26,9 @@ public class UserInterface : MonoBehaviour, IClientHandler
 
         ChangeMenu(ViewLogin);
 
-        Client.MessageHandler.OnServerCompleteConnectionRequest += OnServerCompleteConnectionRequest;
-        Client.MessageHandler.OnServerNotifyPlayerAction += OnServerNotifyPlayerAction;
-        Client.MessageHandler.OnRoomUpdate += OnRoomUpdate;
+        client.MessageHandler.OnServerCompleteConnectionRequest += OnServerCompleteConnectionRequest;
+        client.MessageHandler.OnServerNotifyPlayerAction += OnServerNotifyPlayerAction;
+        client.MessageHandler.OnRoomUpdate += OnRoomUpdate;
     }
 
     void OnServerNotifyPlayerAction(ServerMessage.NotifyPlayerAction message)

@@ -47,6 +47,7 @@ public class Game : MonoBehaviour, IClientHandler
         Client.MessageHandler.OnReceivePrompt += OnRecievePrompt;
         Client.MessageHandler.OnRecieveChoices += OnRecieveChoices;
         Client.MessageHandler.OnRecieveResult += OnRecieveResult;
+        Client.MessageHandler.OnRecieveImage += OnRecieveImage;
     }
 
     #region Handlers
@@ -79,6 +80,16 @@ public class Game : MonoBehaviour, IClientHandler
     {
         switch (state)
         {
+            case GameState.Drawing:
+
+                StateViews.Drawing.Submit.onClick.AddListener(() =>
+                {
+                    var drawing = StateViews.Drawing.Canvas.GetEncodedImage;
+                    Client.Messenger.SendImage(drawing);
+                });
+
+                break;
+
             case GameState.Answering:
 
                 StateViews.Answering.Submit.onClick.AddListener(() =>
@@ -119,6 +130,11 @@ public class Game : MonoBehaviour, IClientHandler
     void OnRecieveResult(ServerMessage.Game.SendResult message)
     {
         StateViews.Results.ShowResult(message.Result);
+    }
+
+    void OnRecieveImage(ServerMessage.Game.SendImage message)
+    {
+        StateViews.Answering.Canvas.SetImage(message.Image);
     }
 
     #endregion
