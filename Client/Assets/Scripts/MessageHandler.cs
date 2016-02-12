@@ -21,6 +21,7 @@ public class MessageHandler
     public event MessageEvent<ServerMessage.Game.SendPrompt> OnRecievePrompt;
     public event MessageEvent<ServerMessage.Game.SendResult> OnRecieveResult;
     public event MessageEvent<ServerMessage.Game.StateChange> OnStateChange;
+    public event MessageEvent<ServerMessage.Game.SetTimer> OnSetTimer;
 
     public MessageHandler(Connection connection)
     {
@@ -51,6 +52,7 @@ public class MessageHandler
             Message.IsType<ServerMessage.Game.SendPrompt>(json, (data) => FireEvent(OnRecievePrompt, data));
             Message.IsType<ServerMessage.Game.SendResult>(json, (data) => FireEvent(OnRecieveResult, data));
             Message.IsType<ServerMessage.Game.StateChange>(json, (data) => FireEvent(OnStateChange, data));
+            Message.IsType<ServerMessage.Game.SetTimer>(json, (data) => FireEvent(OnSetTimer, data));
 
             #endregion
         }

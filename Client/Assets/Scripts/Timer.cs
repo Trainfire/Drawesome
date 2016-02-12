@@ -5,8 +5,6 @@ public class Timer : MonoBehaviour
 {
     public UiTimer View;
 
-    float Time { get; set; }
-
     public void Show()
     {
         View.gameObject.SetActive(true);
@@ -15,16 +13,12 @@ public class Timer : MonoBehaviour
     public void Hide()
     {
         View.gameObject.SetActive(false);
+        StopAllCoroutines();
     }
 
     public void SetTime(float time)
     {
-        Time = time;
-    }
-
-    void Update()
-    {
-        View.Fill.fillAmount = 60f / Time;
-        View.Label.text = Time.ToString();
+        View.Fill.fillAmount = 60f / time;
+        View.Label.text = time.ToString("F2");
     }
 }

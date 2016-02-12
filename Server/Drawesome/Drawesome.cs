@@ -147,7 +147,7 @@ namespace Server.Drawesome
 
         protected override void OnBegin()
         {
-            SetTimer("Drawing Timer", DrawesomeSettings.DrawTime);
+            SetTimer("Drawing Timer", DrawesomeSettings.DrawTime, true);
         }
 
         public override void OnPlayerMessage(PlayerData player, string json)
