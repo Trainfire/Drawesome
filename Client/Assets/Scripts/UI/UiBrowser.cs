@@ -28,11 +28,13 @@ public class UiBrowser : UiBase
         browserItems = new List<UiBrowserItem>();
     }
 
-    void Start()
+    public override void Initialise(Client client)
     {
-        Client.Instance.MessageHandler.OnRecieveRoomList += OnRecieveRoomList;
+        base.Initialise(client);
 
-        Create.onClick.AddListener(() => Client.Instance.Messenger.CreateRoom());
+        Client.MessageHandler.OnRecieveRoomList += OnRecieveRoomList;
+
+        Create.onClick.AddListener(() => Client.Messenger.CreateRoom());
         Refresh.onClick.AddListener(() => OnRefresh());
         Join.onClick.AddListener(() => OnJoin());
     }
@@ -72,7 +74,7 @@ public class UiBrowser : UiBase
     void OnJoin()
     {
         if (selectedRoom != null)
-            Client.Instance.Messenger.JoinRoom(selectedRoom.ID);
+            Client.Messenger.JoinRoom(selectedRoom.ID);
     }
 
     void Update()
@@ -83,6 +85,6 @@ public class UiBrowser : UiBase
     void OnRefresh()
     {
         refreshTimeStamp = Time.realtimeSinceStartup;
-        Client.Instance.Messenger.RequestRooms();
+        Client.Messenger.RequestRooms();
     }
 }

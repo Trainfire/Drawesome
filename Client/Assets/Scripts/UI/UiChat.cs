@@ -2,7 +2,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using Protocol;
 
-public class UiChat : MonoBehaviour
+public class UiChat : UiBase
 {
     public Text MessagePrototype;
     public RectTransform MessagesContainer;
@@ -15,17 +15,19 @@ public class UiChat : MonoBehaviour
         MessagePrototype.enabled = false;
     }
 
-    void Start()
+    public override void Initialise(Client client)
     {
-        Client.Instance.MessageHandler.OnChat += OnChat;
-        Client.Instance.MessageHandler.OnServerNotifyPlayerAction += OnServerNotifyPlayerAction;
+        base.Initialise(client);
+
+        Client.MessageHandler.OnChat += OnChat;
+        Client.MessageHandler.OnServerNotifyPlayerAction += OnServerNotifyPlayerAction;
 
         Send.onClick.AddListener(() => OnSend());
     }
 
     void OnServerNotifyPlayerAction(ServerMessage.NotifyPlayerAction message)
     {
-        AddMessage(StringFormatter.FormatPlayerAction(message, Client.Instance.Connection.Data));
+        AddMessage(StringFormatter.FormatPlayerAction(message, Client.Connection.Data));
     }
 
     void OnChat(SharedMessage.Chat message)
@@ -44,7 +46,7 @@ public class UiChat : MonoBehaviour
 
     void OnSend()
     {
-        Client.Instance.Messenger.Say(Input.text);
+        Client.Messenger.Say(Input.text);
         Input.text = "";
     }
 }

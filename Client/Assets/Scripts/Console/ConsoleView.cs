@@ -2,7 +2,6 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using System.Collections;
-using System;
 
 public class ConsoleView : MonoBehaviour
 {
@@ -15,7 +14,6 @@ public class ConsoleView : MonoBehaviour
     ConsoleController Console { get; set; }
 
     string log = "";
-
     const float LogHeight = 250f;
     const float LogToggleTime = 0.2f;
     AnimationCurve LogAnimCurve = AnimationCurve.EaseInOut(0f, 0f, 1f, 1f);
@@ -27,9 +25,9 @@ public class ConsoleView : MonoBehaviour
     }
     State ConsoleState;
 
-    void Awake()
+    public void SetConsole(ConsoleController console)
     {
-        Console = new ConsoleController();
+        Console = console;
 
         LogText.text = "";
         InputField.text = "";

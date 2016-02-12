@@ -9,10 +9,11 @@ public class UiRoom : UiBase
     public Text RoomId;
     public Text RoomPassword;
 
-    void Start()
+    public override void Initialise(Client client)
     {
-        Leave.onClick.AddListener(() => Client.Instance.Messenger.LeaveRoom());
-        Client.Instance.MessageHandler.OnRoomUpdate += MessageHandler_OnRoomUpdate;
+        base.Initialise(client);
+        Leave.onClick.AddListener(() => Client.Messenger.LeaveRoom());
+        Client.MessageHandler.OnRoomUpdate += MessageHandler_OnRoomUpdate;
     }
 
     void MessageHandler_OnRoomUpdate(ServerMessage.RoomUpdate message)

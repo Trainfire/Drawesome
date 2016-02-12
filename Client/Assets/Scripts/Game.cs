@@ -15,21 +15,19 @@ public class GameStateViews
     public UiGameStateRoundEnd RoundEnd;
 }
 
-public class Game : MonoBehaviour
+public class Game : MonoBehaviour, IClientHandler
 {
     public Timer Timer;
-
     public GameStateViews StateViews; 
 
-    // Data
-    public string Prompt { get; private set; }
-    public List<string> Choices { get; private set; }
-
+    Client Client { get; set; }
     Dictionary<GameState, UiGameState> Views { get; set; }
     UiGameState CurrentView { get; set; }
 
-    void Start()
+    public void Initialise(Client client)
     {
+        Client = client;
+
         Views = new Dictionary<GameState, UiGameState>();
 
         Views.Add(GameState.RoundBegin, StateViews.RoundBegin);
@@ -44,11 +42,11 @@ public class Game : MonoBehaviour
             view.Hide();
         }
 
-        Client.Instance.MessageHandler.OnStateChange += ChangeState;
-        Client.Instance.MessageHandler.OnSetTimer += OnSetTimer;
-        Client.Instance.MessageHandler.OnReceivePrompt += OnRecievePrompt;
-        Client.Instance.MessageHandler.OnRecieveChoices += OnRecieveChoices;
-        Client.Instance.MessageHandler.OnRecieveResult += OnRecieveResult;
+        Client.MessageHandler.OnStateChange += ChangeState;
+        Client.MessageHandler.OnSetTimer += OnSetTimer;
+        Client.MessageHandler.OnReceivePrompt += OnRecievePrompt;
+        Client.MessageHandler.OnRecieveChoices += OnRecieveChoices;
+        Client.MessageHandler.OnRecieveResult += OnRecieveResult;
     }
 
     #region Handlers
@@ -86,7 +84,7 @@ public class Game : MonoBehaviour
                 StateViews.Answering.Submit.onClick.AddListener(() =>
                 {
                     var answer = StateViews.Answering.InputField.text;
-                    Client.Instance.Messenger.SubmitAnswer(answer);
+                    Client.Messenger.SubmitAnswer(answer);
                 });
 
                 break;
@@ -95,7 +93,7 @@ public class Game : MonoBehaviour
 
                 StateViews.Choosing.OnChoiceSelected += ((choice) =>
                 {
-                    Client.Instance.Messenger.SubmitChoice(choice.Text.text);
+                    Client.Messenger.SubmitChoice(choice.Text.text);
                 });
 
                 break;
@@ -128,11 +126,11 @@ public class Game : MonoBehaviour
     public void SubmitDrawing(Texture2D texture)
     {
         // TODO: Encode to bytes then send image here
-        Client.Instance.Messenger.SendImage(new byte[0]);
+        Client.Messenger.SendImage(new byte[0]);
     }
 
     public void SubmitAnswer(string answer)
     {
-        Client.Instance.Messenger.SubmitAnswer(answer);
+        Client.Messenger.SubmitAnswer(answer);
     }
 }
