@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using Protocol;
 
-public class UserInterface : Base
+public class UserInterface : MonoBehaviour, IClientHandler
 {
     /// <summary>
     /// Views
@@ -12,12 +12,12 @@ public class UserInterface : Base
     public UiBrowser ViewBrowser;
     public UiRoom ViewRoom;
 
+    public Client Client { get; set; }
+
     List<UiBase> views = new List<UiBase>();
 
-    public override void Initialise(Client client)
+    public void Initialise(Client client)
     {
-        base.Initialise(client);
-
         views.Add(ViewLogin);
         views.Add(ViewBrowser);
         views.Add(ViewRoom);

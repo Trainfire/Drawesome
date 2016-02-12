@@ -76,9 +76,7 @@
     <Compile Include="Assets\Scripts\Console\AppConsole.cs" />
     <Compile Include="Assets\Scripts\Console\ConsoleController.cs" />
     <Compile Include="Assets\Scripts\Console\ConsoleView.cs" />
-    <Compile Include="Assets\Scripts\DrawingCanvas.cs" />
     <Compile Include="Assets\Scripts\Game.cs" />
-    <Compile Include="Assets\Scripts\GameObjectEx.cs" />
     <Compile Include="Assets\Scripts\Interfaces\IClientHandler.cs" />
     <Compile Include="Assets\Scripts\MessageHandler.cs" />
     <Compile Include="Assets\Scripts\Messenger.cs" />
@@ -98,6 +96,7 @@
     <Compile Include="Assets\Scripts\UI\UiBrowserItem.cs" />
     <Compile Include="Assets\Scripts\UI\UiChat.cs" />
     <Compile Include="Assets\Scripts\UI\UiChoosingItem.cs" />
+    <Compile Include="Assets\Scripts\UI\UiDrawingCanvas.cs" />
     <Compile Include="Assets\Scripts\UI\UiGameState.cs" />
     <Compile Include="Assets\Scripts\UI\UiGameStateAnswering.cs" />
     <Compile Include="Assets\Scripts\UI\UiGameStateChoosing.cs" />
@@ -109,6 +108,7 @@
     <Compile Include="Assets\Scripts\UI\UiRoom.cs" />
     <Compile Include="Assets\Scripts\UI\UiTimer.cs" />
     <Compile Include="Assets\Scripts\UserInterface.cs" />
+    <Compile Include="Assets\Scripts\Utility\GameObjectEx.cs" />
     <Compile Include="Assets\Scripts\Utility\UiUtility.cs" />
     <Compile Include="Assets\Shared\ClientMessage.cs" />
     <Compile Include="Assets\Shared\Data.cs" />
