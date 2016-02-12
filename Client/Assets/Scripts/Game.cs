@@ -122,15 +122,4 @@ public class Game : MonoBehaviour, IClientHandler
     }
 
     #endregion
-
-    public void SubmitDrawing(Texture2D texture)
-    {
-        // TODO: Encode to bytes then send image here
-        Client.Messenger.SendImage(new byte[0]);
-    }
-
-    public void SubmitAnswer(string answer)
-    {
-        Client.Messenger.SubmitAnswer(answer);
-    }
 }
