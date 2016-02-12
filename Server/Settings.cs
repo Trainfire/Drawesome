@@ -1,58 +1,66 @@
 using System;
 using System.IO;
-using System.Net;
 using System.Collections.Generic;
 using Newtonsoft.Json;
 
 namespace Server
 {
-    public static class SettingsHelper
+    public class SettingsLoader
     {
-        public static Settings Settings { get; private set; }
+        const string FilePath = "settings";
 
-        public static void Load(string url)
+        public Settings Load()
         {
-            // Load settings here
-            using (var webClient = new System.Net.WebClient())
+            var path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, FilePath);
+
+            if (File.Exists(path))
             {
-                var json = webClient.DownloadString(url);
-                Settings = JsonConvert.DeserializeObject<Settings>(json);
+                var file = File.ReadAllText(path);
+                return JsonConvert.DeserializeObject<Settings>(file);
+            }
+            else
+            {
+                Console.WriteLine("Failed to find ServerSettings. Making default...");
+                return MakeDefault();
             }
         }
 
-        public static void SaveToProjectFolder(Settings settings, string fileName)
+        public Settings MakeDefault()
         {
-            string destPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, fileName);
+            var settings = new Settings();
             var json = JsonConvert.SerializeObject(settings, Formatting.Indented);
-            File.WriteAllText(destPath, json);
+            File.WriteAllText(FilePath, json);
+            return settings;
         }
     }
 
-    /// <summary>
-    /// Server Settings Here (Model)
-    /// </summary>
     public class Settings
     {
-        public class Server
-        {
+        public Server ServerSettings;
+        public Drawesome DrawesomeSettings;
 
+        public Settings()
+        {
+            ServerSettings = new Settings.Server();
+            DrawesomeSettings = new Settings.Drawesome();
         }
 
-        public class Game
+        public class Server
         {
-            public class Drawesome
+            public string HostUrl = "ws://0.0.0.0:8080";
+        }
+
+        public class Drawesome
+        {
+            public float RoundBeginTime = 5f;
+            public float DrawTime = 60f;
+            public float AnsweringTime = 30f;
+            public float ChoosingTime = 30f;
+            public List<string> Prompts = new List<string>()
             {
-                public float RoundBeginTime { get; private set; }
-                public float DrawTime { get; private set; }
-                public float AnsweringTime { get; private set; }
-                public float ChoosingTime { get; private set; }
-                public List<string> Prompts { get; private set; }
-
-                public Drawesome()
-                {
-
-                }
-            }
+                "Prompt 1",
+                "Prompt 2",
+            };
         }
     }
 }
