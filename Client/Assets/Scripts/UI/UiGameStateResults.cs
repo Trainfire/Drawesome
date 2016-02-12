@@ -13,6 +13,7 @@ public class UiGameStateResults : UiGameState
 
     public void ShowResult(ResultData result)
     {
-        
+        Answer.text = result.Answer;
+        Author.text = result.Author.Name;
     }
 }

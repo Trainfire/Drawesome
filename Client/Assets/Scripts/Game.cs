@@ -7,11 +7,12 @@ using System.Linq;
 [Serializable]
 public class GameStateViews
 {
-    public UiGameState RoundBegin;
+    public UiGameStateRoundBegin RoundBegin;
     public UiGameStateDrawing Drawing;
     public UiGameStateAnswering Answering;
     public UiGameStateChoosing Choosing;
     public UiGameStateResults Results;
+    public UiGameStateRoundEnd RoundEnd;
 }
 
 public class Game : MonoBehaviour
@@ -41,6 +42,7 @@ public class Game : MonoBehaviour
         Client.Instance.MessageHandler.OnSetTimer += OnSetTimer;
         Client.Instance.MessageHandler.OnReceivePrompt += OnRecievePrompt;
         Client.Instance.MessageHandler.OnRecieveChoices += OnRecieveChoices;
+        Client.Instance.MessageHandler.OnRecieveResult += OnRecieveResult;
     }
 
     #region Handlers
@@ -108,6 +110,11 @@ public class Game : MonoBehaviour
     void OnRecieveChoices(ServerMessage.Game.SendChoices message)
     {
         StateViews.Choosing.ShowChoices(message.Choices);
+    }
+
+    void OnRecieveResult(ServerMessage.Game.SendResult message)
+    {
+        StateViews.Results.ShowResult(message.Result);
     }
 
     #endregion

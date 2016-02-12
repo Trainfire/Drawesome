@@ -41,31 +41,35 @@ namespace Protocol
         }
     }
 
-    public class ChoiceData
-    {
-        public PlayerData Chooser { get; set; }
-        public AnswerData ChosenAnswer { get; set; }
-
-        public ChoiceData(PlayerData chooser, AnswerData answer)
-        {
-            Chooser = chooser;
-            ChosenAnswer = answer;
-        }
-    }
-
     public class OptionsData
     {
         public List<AnswerData> Options { get; set; }
     }
 
-    public class ResultData
+    public class ChoiceData
     {
         public List<PlayerData> Players { get; set; }
         public int Likes { get; set; }
 
-        public ResultData()
+        public ChoiceData()
         {
             Players = new List<PlayerData>();
+        }
+    }
+
+    public class ResultData
+    {
+        public PlayerData Author { get; private set; }
+        public List<PlayerData> Players { get; private set; }
+        public string Answer { get; private set; }
+        public uint Points { get; private set; }
+
+        public ResultData(PlayerData author, List<PlayerData> players, string answer, uint points)
+        {
+            Author = author;
+            Players = players;
+            Answer = answer;
+            Points = points;
         }
     }
 }

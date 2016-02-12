@@ -94,11 +94,14 @@
     <Compile Include="Assets\Scripts\UI\UiBrowser.cs" />
     <Compile Include="Assets\Scripts\UI\UiBrowserItem.cs" />
     <Compile Include="Assets\Scripts\UI\UiChat.cs" />
+    <Compile Include="Assets\Scripts\UI\UiChoosingItem.cs" />
     <Compile Include="Assets\Scripts\UI\UiGameState.cs" />
     <Compile Include="Assets\Scripts\UI\UiGameStateAnswering.cs" />
     <Compile Include="Assets\Scripts\UI\UiGameStateChoosing.cs" />
     <Compile Include="Assets\Scripts\UI\UiGameStateDrawing.cs" />
     <Compile Include="Assets\Scripts\UI\UiGameStateResults.cs" />
+    <Compile Include="Assets\Scripts\UI\UiGameStateRoundEnd.cs" />
+    <Compile Include="Assets\Scripts\UI\UiGameStateRoundStart.cs" />
     <Compile Include="Assets\Scripts\UI\UiLogin.cs" />
     <Compile Include="Assets\Scripts\UI\UiMenu.cs" />
     <Compile Include="Assets\Scripts\UI\UiRoom.cs" />

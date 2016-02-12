@@ -105,17 +105,11 @@ namespace Protocol
 
             public class SendResult : Message
             {
-                public PlayerData Author { get; private set; }
-                public List<PlayerData> Players { get; private set; }
-                public string Answer { get; private set; }
-                public uint Points { get; private set; }
+                public ResultData Result;
 
-                public SendResult(PlayerData author, List<PlayerData> players, string answer, uint points)
+                public SendResult(ResultData result)
                 {
-                    Author = author;
-                    Players = players;
-                    Answer = answer;
-                    Points = points;
+                    Result = result;
                 }
             }
 
