@@ -3,7 +3,7 @@ using UnityEngine.UI;
 
 public class UiGameStateDrawing : UiGameState
 {
-    public DrawingCanvas Canvas;
+    public UiDrawingCanvas Canvas;
     public Text Prompt;
     public Button Submit;
 

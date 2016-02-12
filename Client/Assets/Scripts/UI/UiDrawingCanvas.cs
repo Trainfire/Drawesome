@@ -1,19 +1,17 @@
-﻿using UnityEngine;
+using UnityEngine;
 using UnityEngine.UI;
-using System.Collections;
+using UnityEngine.EventSystems;
 
 [RequireComponent(typeof(RawImage))]
-public class DrawingCanvas : MonoBehaviour
+public class UiDrawingCanvas : MonoBehaviour
 {
-    public Color Color;
-    public int BrushSize = 16;
+    public Color Color; // TODO: Load from player
+    public int BrushSize = 8; // TODO: Load from settings
+    public bool AllowDrawing = true;
 
-    Texture2D texture;
-    RawImage rawImage;
-    Vector3 lastDrawPosition;
-
-    Vector3 lockPosition = Vector3.zero;
-    bool straightLinesOnly = false;
+    Vector2 MousePosition { get; set; }
+    Texture2D Texture { get; set; }
+    RawImage RawImage { get; set; }
 
     enum StraightLineDirection
     {
@@ -26,81 +24,54 @@ public class DrawingCanvas : MonoBehaviour
     {
         get
         {
-            return rawImage.texture as Texture2D;
+            return RawImage.texture as Texture2D;
         }
     }
 
     void Start()
     {
-        rawImage = GetComponent<RawImage>();
+        RawImage = GetComponent<RawImage>();
+        RawImage.texture = GenerateTexture();
+
+        // Make sure anchor is set to top right, otherwise drawing will be very broken
+        var rect = (RectTransform)transform;
+        rect.pivot = new Vector2(0f, 1f);
+    }
+
+    Texture2D GenerateTexture()
+    {
         var rect = transform as RectTransform;
 
-        // Generate texture.
-        texture = new Texture2D((int)rect.rect.width, (int)rect.rect.height, TextureFormat.RGB24, false);
+        // Generate texture
+        Texture = new Texture2D((int)rect.rect.width, (int)rect.rect.height, TextureFormat.RGB24, false);
 
         // Make a Colours array the size of the texture
-        var colors = new Color[texture.GetPixels().Length];
+        var colors = new Color[Texture.GetPixels().Length];
         for (int i = 0; i < colors.Length; i++)
         {
             colors[i] = Color.white;
         }
 
-        texture.SetPixels(colors);
-        texture.Apply();
+        Texture.SetPixels(colors);
+        Texture.Apply();
 
-        rawImage.texture = texture;
+        return Texture;
     }
 
     void Update()
     {
-        var mousePosition = Input.mousePosition;
-
-        if (Input.GetKeyDown(KeyCode.LeftShift))
-        {
-            straightLinesOnly = true;
-            lockPosition = mousePosition;
-            lockDirection = GetStraightLineDirection();
-        }
-
-        if (Input.GetKeyUp(KeyCode.LeftShift))
-        {
-            straightLinesOnly = false;
-        }
-
-        // Lock mouse position if left-shift modifier is held.
-        var x = straightLinesOnly && lockDirection == StraightLineDirection.Vertical ? lockPosition.x : mousePosition.x;
-        var y = straightLinesOnly && lockDirection == StraightLineDirection.Horizontal ? lockPosition.y : mousePosition.y;
-        mousePosition = new Vector2(x, y);
+        MousePosition = Input.mousePosition;
 
         if (Input.GetMouseButton(0))
         {
-            if (RectTransformUtility.RectangleContainsScreenPoint((RectTransform)transform, mousePosition))
+            if (RectTransformUtility.RectangleContainsScreenPoint((RectTransform)transform, MousePosition))
             {
                 Vector2 result;
-                RectTransformUtility.ScreenPointToLocalPointInRectangle((RectTransform)transform, mousePosition, null, out result);
-                DrawCircle((int)result.x, (int)result.y, BrushSize, Color.black);
-                texture.Apply();
+                RectTransformUtility.ScreenPointToLocalPointInRectangle((RectTransform)transform, MousePosition, null, out result);
+                DrawCircle((int)result.x, (int)result.y, BrushSize, Color);
+                Texture.Apply();
             }
         }
-
-        // Cache mouse position for next frame.
-        lastDrawPosition = mousePosition;
-    }
-
-    StraightLineDirection GetStraightLineDirection()
-    {
-        var direction = (Input.mousePosition - lastDrawPosition).normalized;
-
-        if (Mathf.Abs(direction.x) > 0.5f)
-        {
-            return StraightLineDirection.Horizontal;
-        }
-        else if (Mathf.Abs(direction.y) > 0.5f)
-        {
-            return StraightLineDirection.Vertical;
-        }
-
-        return StraightLineDirection.Horizontal;
     }
 
     void DrawCircle(int cx, int cy, int r, Color color)
@@ -117,20 +88,28 @@ public class DrawingCanvas : MonoBehaviour
                 py = cy + y;
                 ny = cy - y;
 
-                texture.SetPixel(px, py, color);
-                texture.SetPixel(nx, py, color);
+                Texture.SetPixel(px, py, color);
+                Texture.SetPixel(nx, py, color);
 
-                texture.SetPixel(px, ny, color);
-                texture.SetPixel(nx, ny, color);
+                Texture.SetPixel(px, ny, color);
+                Texture.SetPixel(nx, ny, color);
             }
+        }
+    }
+
+    public byte[] GetEncodedImage
+    {
+        get
+        {
+            return Texture.EncodeToPNG();
         }
     }
 
     public void SetImage(byte[] data)
     {
-        var texture = rawImage.texture as Texture2D;
+        var texture = RawImage.texture as Texture2D;
         texture.LoadImage(data);
         texture.Apply();
-        rawImage.texture = texture;
+        RawImage.texture = texture;
     }
 }
