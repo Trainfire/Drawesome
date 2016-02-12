@@ -1,0 +1,15 @@
+{
+  "ServerSettings": {
+    "HostUrl": "ws://0.0.0.0:8080"
+  },
+  "DrawesomeSettings": {
+    "RoundBeginTime": 5.0,
+    "DrawTime": 60.0,
+    "AnsweringTime": 30.0,
+    "ChoosingTime": 30.0,
+    "Prompts": [
+      "Prompt 1",
+      "Prompt 2"
+    ]
+  }
+}
