@@ -12,6 +12,7 @@ namespace Server.Game
         public T GameData { get; protected set; }
 
         GameTimer Timer { get; set; }
+        bool EchoToClients { get; set; }
 
         public void Begin(T gameData)
         {
@@ -48,10 +49,18 @@ namespace Server.Game
             EndState();
         }
 
-        protected void SetTimer(string name, float duration)
+        protected void SetTimer(string name, float duration, bool echoToClients = false)
         {
             Timer = new GameTimer(name, duration);
             Timer.Finish += OnTimerFinish;
+            Timer.Tick += Timer_Tick;
+            EchoToClients = echoToClients;
+        }
+
+        void Timer_Tick(object sender, EventArgs e)
+        {
+            if (EchoToClients)
+                GameData.Players.ForEach(x => x.SetTimer(Timer.Duration - Timer.ElapsedTime));
         }
 
         protected virtual void OnTimerFinish(object sender, EventArgs e)

@@ -108,6 +108,12 @@ namespace Server
             Socket.Send(message.AsJson());
         }
 
+        public void SetTimer(float time)
+        {
+            var message = new ServerMessage.Game.SetTimer(time);
+            Socket.Send(message.AsJson());
+        }
+
         public void Update(ClientConnectionsHandler manager)
         {
             Console.WriteLine("Send update to " + Data.Name);

@@ -43,7 +43,14 @@ public class Game : MonoBehaviour
         Client.Instance.MessageHandler.OnRecievePrompt += MessageHandler_OnRecievePrompt;
         Client.Instance.MessageHandler.OnRecieveChoices += MessageHandler_OnRecieveChoices;
         Client.Instance.MessageHandler.OnRecieveResult += MessageHandler_OnRecieveResult;
+        Client.Instance.MessageHandler.OnSetTimer += MessageHandler_OnSetTimer;
         // Client.Instance.MessageHandler.OnAddTimer += MessageHandler_OnAddTimer;
+    }
+
+    private void MessageHandler_OnSetTimer(ServerMessage.Game.SetTimer message)
+    {
+        Timer.Show();
+        Timer.SetTime(message.Time);
     }
 
     void MessageHandler_OnRecieveResult(ServerMessage.Game.SendResult message)

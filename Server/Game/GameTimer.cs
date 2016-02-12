@@ -11,8 +11,8 @@ namespace Server.Game
         Timer Timer { get; set; }
         string Name { get; set; }
 
-        float ElapsedTime = 0f;
-        float Duration = 0f;
+        public float ElapsedTime { get; set; }
+        public float Duration { get; set; }
 
         public GameTimer()
         {

@@ -128,6 +128,16 @@ namespace Protocol
                     Actor = actor;
                 }
             }
+
+            public class SetTimer : Message
+            {
+                public float Time { get; private set; }
+
+                public SetTimer(float time)
+                {
+                    Time = time;
+                }
+            }
         }
 
         #endregion
