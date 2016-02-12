@@ -3,12 +3,9 @@ using System.Collections;
 
 public class UiGameState : MonoBehaviour
 {
-    protected Game Controller { get; private set; }
-
-    public void Begin(Game controller)
+    public void Begin()
     {
         gameObject.SetActive(true);
-        Controller = controller;
         OnBegin();
     }
 
@@ -24,6 +21,11 @@ public class UiGameState : MonoBehaviour
     }
 
     protected virtual void OnEnd()
+    {
+
+    }
+
+    public virtual void RemoveAllListeners()
     {
 
     }

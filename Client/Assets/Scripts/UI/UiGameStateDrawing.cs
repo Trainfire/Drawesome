@@ -7,18 +7,8 @@ public class UiGameStateDrawing : UiGameState
     public Text Prompt;
     public Button Submit;
 
-    protected override void OnBegin()
+    public void SetPrompt(string prompt)
     {
-        Submit.onClick.AddListener(() => Controller.SubmitDrawing(null));
-    }
-
-    void Update()
-    {
-        Prompt.text = Controller.Prompt;
-    }
-
-    protected override void OnEnd()
-    {
-        Submit.onClick.RemoveAllListeners();
+        Prompt.text = prompt;
     }
 }

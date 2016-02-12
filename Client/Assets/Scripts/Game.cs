@@ -2,6 +2,7 @@ using UnityEngine;
 using System.Collections.Generic;
 using Protocol;
 using System;
+using System.Linq;
 
 [Serializable]
 public class GameStateViews
@@ -28,9 +29,6 @@ public class Game : MonoBehaviour
 
     void Start()
     {
-        Prompt = "";
-        Choices = new List<string>();
-
         Views = new Dictionary<GameState, UiGameState>();
 
         Views.Add(GameState.RoundBegin, StateViews.RoundBegin);
@@ -39,60 +37,80 @@ public class Game : MonoBehaviour
         Views.Add(GameState.Choosing, StateViews.Choosing);
         Views.Add(GameState.Results, StateViews.Results);
 
-        Client.Instance.MessageHandler.OnStateChange += MessageHandler_OnStateChange;
-        Client.Instance.MessageHandler.OnRecievePrompt += MessageHandler_OnRecievePrompt;
-        Client.Instance.MessageHandler.OnRecieveChoices += MessageHandler_OnRecieveChoices;
-        Client.Instance.MessageHandler.OnRecieveResult += MessageHandler_OnRecieveResult;
-        Client.Instance.MessageHandler.OnSetTimer += MessageHandler_OnSetTimer;
-        // Client.Instance.MessageHandler.OnAddTimer += MessageHandler_OnAddTimer;
+        Client.Instance.MessageHandler.OnStateChange += ChangeState;
+        Client.Instance.MessageHandler.OnSetTimer += OnSetTimer;
+        Client.Instance.MessageHandler.OnReceivePrompt += OnRecievePrompt;
+        Client.Instance.MessageHandler.OnRecieveChoices += OnRecieveChoices;
     }
 
-    private void MessageHandler_OnSetTimer(ServerMessage.Game.SetTimer message)
+    #region Handlers
+
+    /// <summary>
+    /// Change the UI currently being shown.
+    /// </summary>
+    /// <param name="message"></param>
+    void ChangeState(ServerMessage.Game.StateChange message)
+    {
+        Timer.Hide();
+
+        if (CurrentView != null)
+        {
+            CurrentView.RemoveAllListeners();
+            CurrentView.End();
+        }
+
+        OnState(message.GameState);
+
+        CurrentView = Views[message.GameState];
+        CurrentView.Begin();
+    }
+
+    /// <summary>
+    /// Add logic for specific states here.
+    /// </summary>
+    /// <param name="state"></param>
+    void OnState(GameState state)
+    {
+        switch (state)
+        {
+            case GameState.Answering:
+
+                StateViews.Answering.Submit.onClick.AddListener(() =>
+                {
+                    var answer = StateViews.Answering.InputField.text;
+                    Client.Instance.Messenger.SubmitAnswer(answer);
+                });
+
+                break;
+
+            case GameState.Choosing:
+
+                StateViews.Choosing.OnChoiceSelected += ((choice) =>
+                {
+                    Client.Instance.Messenger.SubmitChoice(choice.Text.text);
+                });
+
+                break;
+        };
+    }
+
+    void OnSetTimer(ServerMessage.Game.SetTimer message)
     {
         Timer.Show();
         Timer.SetTime(message.Time);
     }
 
-    void MessageHandler_OnRecieveResult(ServerMessage.Game.SendResult message)
+    void OnRecievePrompt(ServerMessage.Game.SendPrompt message)
     {
-        ChangeState(GameState.Results);
+        StateViews.Drawing.SetPrompt(message.Prompt);
     }
 
-    void MessageHandler_OnRecieveChoices(ServerMessage.Game.SendChoices message)
+    void OnRecieveChoices(ServerMessage.Game.SendChoices message)
     {
-        Choices = message.Choices;
-    }
-
-    #region Handlers
-
-    void MessageHandler_OnRecievePrompt(ServerMessage.Game.SendPrompt message)
-    {
-        Prompt = message.Prompt;
-    }
-
-    void MessageHandler_OnStateChange(ServerMessage.Game.StateChange message)
-    {
-        ChangeState(message.GameState);
+        StateViews.Choosing.ShowChoices(message.Choices);
     }
 
     #endregion
-
-    void AddTimer()
-    {
-        Timer.Show();
-    }
-
-    void ChangeState(GameState state)
-    {
-        Timer.Hide();
-
-        // Change UI state here
-        if (CurrentView != null)
-            CurrentView.End();
-
-        CurrentView = Views[state];
-        CurrentView.Begin(this);
-    }
 
     public void SubmitDrawing(Texture2D texture)
     {
