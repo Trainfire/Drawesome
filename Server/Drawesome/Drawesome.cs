@@ -157,6 +157,8 @@ namespace Server.Drawesome
                 // Update GameData
                 GameData.Drawings.Enqueue(new DrawingData(player, data.Image));
 
+                Console.WriteLine("Recieve image from {0} with {1} bytes", player.Name, data.Image.Length);
+
                 // Tell all clients that player has submitted drawing
                 GameData.Players.ForEach(x => x.NotifyPlayerGameAction(player));
 
@@ -178,6 +180,8 @@ namespace Server.Drawesome
         protected override void OnBegin()
         {
             SetTimer("Answering Timer", DrawesomeSettings.AnsweringTime);
+            var drawing = GameData.Drawings.Dequeue();
+            GameData.Players.ForEach(x => x.SendImage(drawing.Image));
         }
 
         public override void OnPlayerMessage(PlayerData player, string json)

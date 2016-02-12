@@ -102,6 +102,12 @@ namespace Server
             Socket.Send(message.AsJson());
         }
 
+        public void SendImage(byte[] image)
+        {
+            var message = new ServerMessage.Game.SendImage(image);
+            Socket.Send(message.AsJson());
+        }
+
         public void NotifyPlayerGameAction(PlayerData actor)
         {
             var message = new ServerMessage.Game.PlayerAction(actor);
