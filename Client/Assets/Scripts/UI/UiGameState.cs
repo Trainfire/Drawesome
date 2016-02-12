@@ -1,17 +1,17 @@
 using UnityEngine;
 using System.Collections;
 
-public class UiGameState : MonoBehaviour
+public class UiGameState : UiBase
 {
     public void Begin()
     {
-        gameObject.SetActive(true);
+        Show();
         OnBegin();
     }
 
     public void End()
     {
-        gameObject.SetActive(false);
+        Hide();
         OnEnd();
     }
 

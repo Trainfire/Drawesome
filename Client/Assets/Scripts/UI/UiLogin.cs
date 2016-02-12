@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-public class UiLogin : UiMenu
+public class UiLogin : UiBase
 {
     public InputField InputName;
     public Button Login;

@@ -37,6 +37,12 @@ public class Game : MonoBehaviour
         Views.Add(GameState.Answering, StateViews.Answering);
         Views.Add(GameState.Choosing, StateViews.Choosing);
         Views.Add(GameState.Results, StateViews.Results);
+        Views.Add(GameState.RoundEnd, StateViews.RoundEnd);
+
+        foreach (var view in Views.Values)
+        {
+            view.Hide();
+        }
 
         Client.Instance.MessageHandler.OnStateChange += ChangeState;
         Client.Instance.MessageHandler.OnSetTimer += OnSetTimer;
