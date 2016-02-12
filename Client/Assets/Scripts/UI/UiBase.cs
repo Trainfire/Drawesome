@@ -1,7 +1,7 @@
 using UnityEngine;
 using System.Collections;
 
-public class UiMenu : MonoBehaviour
+public class UiBase : MonoBehaviour
 {
     public virtual void Hide()
     {

@@ -3,7 +3,7 @@ using UnityEngine.UI;
 using System.Collections;
 using Protocol;
 
-public class UiRoom : UiMenu
+public class UiRoom : UiBase
 {
     public Button Leave;
     public Text RoomId;

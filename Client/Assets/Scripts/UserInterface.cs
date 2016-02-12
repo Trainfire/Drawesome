@@ -9,9 +9,9 @@ public class UserInterface : MonoBehaviour
     public UiBrowser ViewBrowser;
     public UiRoom ViewRoom;
 
-    List<UiMenu> views = new List<UiMenu>();
+    List<UiBase> views = new List<UiBase>();
 
-    UiMenu viewCurrent;
+    UiBase viewCurrent;
 
     bool isChangingMenu = false;
 
@@ -55,7 +55,7 @@ public class UserInterface : MonoBehaviour
         ChangeMenu(ViewLogin);
     }
 
-    void ChangeMenu(UiMenu viewNext)
+    void ChangeMenu(UiBase viewNext)
     {
         foreach (var view in views)
         {

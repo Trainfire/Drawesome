@@ -91,6 +91,7 @@
     <Compile Include="Assets\Scripts\Stylesheet\TextComponent.cs" />
     <Compile Include="Assets\Scripts\Stylesheet\TextData.cs" />
     <Compile Include="Assets\Scripts\Timer.cs" />
+    <Compile Include="Assets\Scripts\UI\UiBase.cs" />
     <Compile Include="Assets\Scripts\UI\UiBrowser.cs" />
     <Compile Include="Assets\Scripts\UI\UiBrowserItem.cs" />
     <Compile Include="Assets\Scripts\UI\UiChat.cs" />
@@ -103,7 +104,6 @@
     <Compile Include="Assets\Scripts\UI\UiGameStateRoundBegin.cs" />
     <Compile Include="Assets\Scripts\UI\UiGameStateRoundEnd.cs" />
     <Compile Include="Assets\Scripts\UI\UiLogin.cs" />
-    <Compile Include="Assets\Scripts\UI\UiMenu.cs" />
     <Compile Include="Assets\Scripts\UI\UiRoom.cs" />
     <Compile Include="Assets\Scripts\UI\UiTimer.cs" />
     <Compile Include="Assets\Scripts\UiUtility.cs" />

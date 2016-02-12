@@ -4,7 +4,7 @@ using Protocol;
 using System.Collections.Generic;
 using System.Linq;
 
-public class UiBrowser : UiMenu
+public class UiBrowser : UiBase
 {
     public Button Join;
     public Button Create;
