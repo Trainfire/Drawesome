@@ -194,7 +194,7 @@ public class Game : MonoBehaviour, IClientHandler
                 GetView<UiGameStateAnswering>().Canvas.SetImage(data.Image);
             });
 
-            Message.IsType<ServerMessage.Game.NotifyAnswerError>(json, (data) =>
+            Message.IsType<ServerMessage.Game.SendAnswerValidation>(json, (data) =>
             {
                 var errorView = GetView<UiGameStateAnswering>().Error;
                 errorView.Show(data.Error);

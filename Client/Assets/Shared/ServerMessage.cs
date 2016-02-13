@@ -143,11 +143,11 @@ namespace Protocol
                 }
             }
 
-            public class NotifyAnswerError : Message
+            public class SendAnswerValidation : Message
             {
                 public GameAnswerError Error { get; private set; }
 
-                public NotifyAnswerError(GameAnswerError error)
+                public SendAnswerValidation(GameAnswerError error)
                 {
                     Error = error;
                 }

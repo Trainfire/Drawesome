@@ -133,9 +133,9 @@ namespace Server
             Socket.Send(message.AsJson());
         }
 
-        public void SendAnswerError(GameAnswerError error)
+        public void SendAnswerValidation(GameAnswerError error)
         {
-            var message = new ServerMessage.Game.NotifyAnswerError(error);
+            var message = new ServerMessage.Game.SendAnswerValidation(error);
             Socket.Send(message.AsJson());
         }
 

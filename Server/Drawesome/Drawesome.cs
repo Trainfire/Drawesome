@@ -221,15 +221,17 @@ namespace Server.Drawesome
                 if (IsPrompt(data.Answer))
                 {
                     Console.WriteLine("Player {0}'s answer matches prompt!", player.Data.Name);
-                    player.SendAnswerError(GameAnswerError.MatchesPrompt);
+                    player.SendAnswerValidation(GameAnswerError.MatchesPrompt);
                 }
                 else if (HasPromptBeenSubmitted(data.Answer))
                 {
                     Console.WriteLine("Player {0}'s answer matches an existing answer from another player!", player.Data.Name);
-                    player.SendAnswerError(GameAnswerError.AlreadyExists);
+                    player.SendAnswerValidation(GameAnswerError.AlreadyExists);
                 }        
                 else
                 {
+                    player.SendAnswerValidation(GameAnswerError.None);
+
                     // Add answer here
                     GameData.SubmittedAnswers.Add(new AnswerData(player.Data, data.Answer));
 
