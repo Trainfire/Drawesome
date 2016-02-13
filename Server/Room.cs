@@ -2,7 +2,6 @@ using System;
 using System.Linq;
 using System.Collections.Generic;
 using Protocol;
-using Server.Game;
 using Server.Drawesome;
 
 namespace Server
@@ -11,11 +10,13 @@ namespace Server
     {
         public event EventHandler<Room> OnEmpty;
 
-        public RoomData Data { get; set; }
+        public RoomData Data { get; private set; }
         public List<Player> Players { get; private set; }
 
         Player Owner { get; set; }
         DrawesomeGame Game { get; set; }
+        IdPool RoomIdPool { get; set; }
+        const int MaxPlayers = 8; // TODO: Place in Server settings
 
         /// <summary>
         /// We'll limit GUID size to 4 characters for now to make joining games easier for development purposes.
@@ -24,14 +25,16 @@ namespace Server
 
         public Room(Player owner, string password = "")
         {
-            // TODO: TESTING!!!
+            Owner = owner;
+
+            RoomIdPool = new IdPool(MaxPlayers);
+
             Data = new RoomData();
             Data.ID = Guid.NewGuid().ToString().Substring(0, GuidSize);
             Data.Password = password;
             Data.Players = new List<PlayerData>();
 
             Players = new List<Player>();
-            Owner = owner;
 
             if (string.IsNullOrEmpty(password))
             {
@@ -66,6 +69,10 @@ namespace Server
             }
             else
             {
+                // Assign colour
+                var color = RoomIdPool.GetValue();
+                joiningPlayer.AssignRoomId(color);
+
                 Players.Add(joiningPlayer);
                 Data.Players.Add(joiningPlayer.Data);
 
@@ -136,6 +143,9 @@ namespace Server
             var data = Data.Players.Find(x => x.ID == e.Player.Data.ID);
             Data.Players.Remove(data);
 
+            // Return color to pool
+            RoomIdPool.ReturnValue(e.Player.Data.RoomId);
+
             // Assign a new owner
             if (Players.Count != 0)
             {
@@ -184,6 +194,5 @@ namespace Server
             var str = string.Format(message, args);
             Console.WriteLine("Room {0} : {1}", Data.ID, str);
         }
-
     }
 }

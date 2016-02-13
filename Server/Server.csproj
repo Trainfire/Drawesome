@@ -81,6 +81,7 @@
     <Compile Include="Game\Game.cs" />
     <Compile Include="Game\GameTimer.cs" />
     <Compile Include="Game\State.cs" />
+    <Compile Include="IdPool.cs" />
     <Compile Include="Logger.cs" />
     <Compile Include="Player.cs" />
     <Compile Include="ConnectionsHandler.cs" />

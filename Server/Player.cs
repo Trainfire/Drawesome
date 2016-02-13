@@ -120,6 +120,13 @@ namespace Server
             Socket.Send(message.AsJson());
         }
 
+        public void AssignRoomId(uint roomId)
+        {
+            var message = new ServerMessage.AssignRoomId(roomId);
+            Data.RoomId = roomId;
+            Socket.Send(message.AsJson());
+        }
+
         public void Update(ConnectionsHandler manager)
         {
             Console.WriteLine("Send update to " + Data.Name);

@@ -59,6 +59,16 @@ namespace Protocol
             }
         }
 
+        public class AssignRoomId : Message
+        {
+            public uint RoomId;
+
+            public AssignRoomId(uint roomId)
+            {
+                RoomId = roomId;
+            }
+        }
+
         #region Game
 
         public class Game
