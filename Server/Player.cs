@@ -30,7 +30,7 @@ namespace Server
     {
         public event EventHandler<PlayerConnectionClosed> OnConnectionClosed;
         public event EventHandler<SharedMessage.Chat> OnChat;
-        public event EventHandler<ClientMessage.StartGame> OnStartGame;
+        public event EventHandler<ClientMessage.SendGameAction> OnGameAction;
         public event EventHandler<Message> OnMessage;
         public event EventHandler<string> OnMessageString;
 
@@ -60,10 +60,10 @@ namespace Server
                         OnChat(this, data);
                 });
 
-                Message.IsType<ClientMessage.StartGame>(message, (data) =>
+                Message.IsType<ClientMessage.SendGameAction>(message, (data) =>
                 {
-                    if (OnStartGame != null)
-                        OnStartGame(this, data);
+                    if (OnGameAction != null)
+                        OnGameAction(this, data);
                 });
 
                 if (OnMessage != null)

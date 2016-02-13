@@ -33,19 +33,13 @@ namespace Server.Game
         /// <summary>
         /// Ends this state and informs the GameManager.
         /// </summary>
-        /// <param name="fireOnEnd">Should the OnEnd event be fired? If true, this will invoke the Game's OnEndState.</param>
+        /// <param name="fireOnEnd">Should the OnEnd event be fired? If true, this will move the game onto the next state.</param>
         public void EndState(bool fireOnEnd = true)
         {
             Timer.Stop();
 
             if (fireOnEnd && OnEnd != null)
                 OnEnd(this, GameData);
-        }
-
-        public void SkipState()
-        {
-            Console.WriteLine("{0}: Skipping...", Type);
-            EndState();
         }
 
         protected void SetTimer(string name, float duration, bool echoToClients = false)

@@ -91,7 +91,7 @@ namespace Server
                 // Add callbacks
                 joiningPlayer.OnConnectionClosed += OnPlayerConnectionClosed;
                 joiningPlayer.OnChat += OnPlayerChat;
-                joiningPlayer.OnStartGame += OnPlayerStartGame;
+                joiningPlayer.OnGameAction += OnPlayerGameAction;
 
                 // Send message to joining player
                 EchoActionToAll(joiningPlayer.Data, PlayerAction.Joined);
@@ -113,12 +113,27 @@ namespace Server
 
         #region Handle Player Messages
 
-        void OnPlayerStartGame(object sender, ClientMessage.StartGame e)
+        void OnPlayerGameAction(object sender, ClientMessage.SendGameAction e)
         {
-            if (e.Player.ID == Owner.Data.ID)
+            if (IsOwner(e.Player))
             {
-                Log("{0} has started the game", Owner.Data.Name);
-                Game.Start(Players);
+                switch (e.Action)
+                {
+                    case GameAction.Start:
+                        Log("{0} has started the game", Owner.Data.Name);
+                        Game.Start(Players);
+                        break;
+                    case GameAction.Restart:
+                        Log("{0} has restarted the game", Owner.Data.Name);
+                        Game.Restart();
+                        break;
+                    case GameAction.StartNewRound:
+                        Log("{0} has started a new round", Owner.Data.Name);
+                        Game.StartNewRound();
+                        break;
+                    default:
+                        break;
+                }
             }
         }
 
@@ -206,6 +221,11 @@ namespace Server
         {
             var str = string.Format(message, args);
             Console.WriteLine("Room {0}: {1}", RoomData.ID, str);
+        }
+
+        bool IsOwner(PlayerData player)
+        {
+            return Owner.Data.ID == player.ID;
         }
     }
 }

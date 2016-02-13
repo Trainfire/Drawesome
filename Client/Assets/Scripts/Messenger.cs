@@ -40,7 +40,17 @@ public class Messenger
 
     public void StartGame()
     {
-        Connection.SendMessage(new ClientMessage.StartGame(Connection.Player));
+        Connection.SendMessage(new ClientMessage.SendGameAction(Connection.Player, GameAction.Start));
+    }
+
+    public void RestartGame()
+    {
+        Connection.SendMessage(new ClientMessage.SendGameAction(Connection.Player, GameAction.Restart));
+    }
+
+    public void StartNewRound()
+    {
+        Connection.SendMessage(new ClientMessage.SendGameAction(Connection.Player, GameAction.StartNewRound));
     }
 
     public void SendImage(byte[] image)

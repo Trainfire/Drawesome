@@ -27,6 +27,7 @@ namespace Server.Game
 
         public virtual void Start(List<Player> players)
         {
+            Log("Started");
             GameData = new TData();
             GameData.Settings = Settings;
             GameData.Players = new List<Player>();
@@ -34,12 +35,23 @@ namespace Server.Game
             GameData.Players.ForEach(x => x.OnMessageString += OnPlayerMessage);
         }
 
+        public virtual void StartNewRound()
+        {
+            Log("Start New Round");
+        }
+
+        public virtual void Restart()
+        {
+            Log("Restarting game...");
+            End();
+        }
+
         public void End()
         {
             Log("Ended");
             if (CurrentState != null)
                 CurrentState.EndState(false);
-        }
+        }        
 
         protected virtual void OnGameOver()
         {
@@ -100,7 +112,7 @@ namespace Server.Game
         void SkipState()
         {
             if (CurrentState != null)
-                CurrentState.SkipState();
+                CurrentState.EndState();
         }
 
         void EndState(object sender, TData gameData)

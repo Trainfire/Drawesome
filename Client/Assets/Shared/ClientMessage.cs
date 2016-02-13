@@ -53,13 +53,15 @@ namespace Protocol
             }
         }
 
-        public class StartGame : Message
+        public class SendGameAction : Message
         {
             public PlayerData Player { get; private set; }
+            public GameAction Action { get; private set; }
 
-            public StartGame(PlayerData player)
+            public SendGameAction(PlayerData player, GameAction action)
             {
                 Player = player;
+                Action = action;
             }
         }
 

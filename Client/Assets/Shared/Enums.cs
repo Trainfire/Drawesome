@@ -5,15 +5,15 @@ namespace Protocol
     [Serializable]
     public enum PlayerAction
     {
-        None = 0,
-        Connected = 1,
-        Disconnected = 2,
-        Kicked = 3,
-        Joined = 4,
-        Left = 5,
-        PromotedToOwner = 6,
-        Ready = 7,
-        Unready = 8,
+        None,
+        Connected,
+        Disconnected,
+        Kicked,
+        Joined,
+        Left,
+        PromotedToOwner,
+        Ready,
+        Unready,
     }
 
     [Serializable]
@@ -24,6 +24,14 @@ namespace Protocol
         RoomFull,
         RoomDoesNotExist,
         AlreadyInRoom,
+    }
+
+    [Serializable]
+    public enum GameAction
+    {
+        Start,
+        Restart,
+        StartNewRound,
     }
 
     [Serializable]
