@@ -120,6 +120,12 @@ namespace Server
             Socket.Send(message.AsJson());
         }
 
+        public void AddTimer(float duration)
+        {
+            var message = new ServerMessage.Game.AddTimer(duration);
+            Socket.Send(message.AsJson());
+        }
+
         public void SetTimer(float time)
         {
             var message = new ServerMessage.Game.SetTimer(time);

@@ -18,8 +18,6 @@ public class Client : MonoBehaviour
         Messenger = new Messenger(Connection);
 
         MessageHandler.OnAny += MessageHandler_OnMessage;
-
-        LogMessages = true;
     }
 
     void MessageHandler_OnMessage(Message message)

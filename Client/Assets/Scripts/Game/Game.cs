@@ -62,10 +62,16 @@ public class Game : MonoBehaviour, IClientHandler
         });
 
         // Show and set timer
-        Message.IsType<ServerMessage.Game.SetTimer>(json, (data) =>
+        Message.IsType<ServerMessage.Game.AddTimer>(json, (data) =>
         {
             Timer.Show();
-            Timer.SetTime(data.Time);
+            Timer.SetDuration(data.Duration);
+        });
+
+        // Update timer
+        Message.IsType<ServerMessage.Game.SetTimer>(json, (data) =>
+        {
+            Timer.SetTime(data.CurrentTime);
         });
     }
 

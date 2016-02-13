@@ -152,7 +152,7 @@ namespace Server.Drawesome
         protected override void OnBegin()
         {
             base.OnBegin();
-            SetTimer("Begin Timer", GameData.Settings.Drawesome.RoundBeginTime);
+            SetTimer("Begin Timer", GameData.Settings.Drawesome.RoundBeginTime, true);
         }
     }
 
@@ -207,7 +207,7 @@ namespace Server.Drawesome
 
         protected override void OnBegin()
         {
-            SetTimer("Answering Timer", GameData.Settings.Drawesome.AnsweringTime);
+            SetTimer("Answering Timer", GameData.Settings.Drawesome.AnsweringTime, true);
             var drawing = GameData.Drawings.Dequeue();
             GameData.Players.ForEach(x => x.SendImage(drawing.Image));
         }

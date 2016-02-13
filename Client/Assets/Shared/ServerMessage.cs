@@ -133,13 +133,23 @@ namespace Protocol
                 }
             }
 
+            public class AddTimer : Message
+            {
+                public float Duration { get; private set; }
+
+                public AddTimer(float duration)
+                {
+                    Duration = duration;
+                }
+            }
+
             public class SetTimer : Message
             {
-                public float Time { get; private set; }
+                public float CurrentTime { get; private set; }
 
-                public SetTimer(float time)
+                public SetTimer(float currentTime)
                 {
-                    Time = time;
+                    CurrentTime = currentTime;
                 }
             }
 
