@@ -12,8 +12,8 @@ public class App : MonoBehaviour
         Client.Initialise();
 
         // Inject dependencies here
+        Game.Initialise(Client);
         Interface.Initialise(Client);
         Console.Initialise(Client);
-        Game.Initialise(Client);
     }
 }

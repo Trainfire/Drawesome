@@ -6,6 +6,7 @@ public class MessageHandler
 {
     public delegate void MessageEvent<T>(T message);
 
+    public event MessageEvent<string> OnMessage;
     public event MessageEvent<Message> OnAny;
 
     public event MessageEvent<ServerMessage.ConnectionSuccess> OnServerCompleteConnectionRequest;
@@ -21,6 +22,7 @@ public class MessageHandler
     public event MessageEvent<ServerMessage.Game.SendChoices> OnRecieveChoices;
     public event MessageEvent<ServerMessage.Game.SendResult> OnRecieveResult;
     public event MessageEvent<ServerMessage.Game.StateChange> OnStateChange;
+    public event MessageEvent<ServerMessage.Game.NotifyAnswerError> OnAnswerError;
 
     public event MessageEvent<ServerMessage.Game.SendImage> OnRecieveImage;
     public event MessageEvent<ServerMessage.Game.SetTimer> OnSetTimer;
@@ -35,6 +37,9 @@ public class MessageHandler
         if (message.Type == Opcode.Text)
         {
             var json = message.Data;
+
+            if (OnMessage != null)
+                OnMessage(message.Data);
 
             #region General
 
@@ -55,6 +60,7 @@ public class MessageHandler
             Message.IsType<ServerMessage.Game.SendPrompt>(json, (data) => FireEvent(OnReceivePrompt, data));
             Message.IsType<ServerMessage.Game.SendResult>(json, (data) => FireEvent(OnRecieveResult, data));
             Message.IsType<ServerMessage.Game.StateChange>(json, (data) => FireEvent(OnStateChange, data));
+            Message.IsType<ServerMessage.Game.NotifyAnswerError>(json, (data) => FireEvent(OnAnswerError, data));
 
             Message.IsType<ServerMessage.Game.SetTimer>(json, (data) => FireEvent(OnSetTimer, data));
 

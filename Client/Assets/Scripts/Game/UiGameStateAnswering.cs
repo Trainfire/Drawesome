@@ -3,6 +3,8 @@ using UnityEngine.UI;
 
 public class UiGameStateAnswering : UiGameState
 {
+    public GameObject ErrorContainer;
+    public Text ErrorLabel;
     public UiDrawingCanvas Canvas;
     public InputField InputField;
     public Button Submit;
