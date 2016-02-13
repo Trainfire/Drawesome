@@ -66,31 +66,24 @@ public class ConsoleView : MonoBehaviour
         LogText.text = log;
 
         // Scroll to bottom
-        LogScrollView.normalizedPosition = new Vector2(LogScrollView.normalizedPosition.x, 0);
+        LogScrollView.ScrollToBottom();
     }
 
     void LateUpdate()
     {
-        if (Input.GetKeyUp(KeyCode.Return))
+        if (ConsoleState == State.Open && Input.GetKeyUp(KeyCode.Return))
         {
             Console.SubmitInput(InputField.text);
             InputField.text = "";
-            Focus();
+            InputField.Focus();
         }
 
         if (Input.GetKeyUp(KeyCode.Tab) || Input.GetKeyUp(KeyCode.F1))
         {
             StopAllCoroutines();
             StartCoroutine(Toggle());
-            Focus();
+            InputField.Focus();
         }
-    }
-
-    void Focus()
-    {
-        // Hack to keep focus on inputfield after submitting a command. Classic Unity.
-        EventSystem.current.SetSelectedGameObject(InputField.gameObject, null);
-        InputField.OnPointerClick(new PointerEventData(EventSystem.current));
     }
 
     IEnumerator Toggle()

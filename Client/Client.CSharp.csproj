@@ -109,6 +109,7 @@
     <Compile Include="Assets\Scripts\UI\UiTimer.cs" />
     <Compile Include="Assets\Scripts\UserInterface.cs" />
     <Compile Include="Assets\Scripts\Utility\GameObjectEx.cs" />
+    <Compile Include="Assets\Scripts\Utility\UiEx.cs" />
     <Compile Include="Assets\Scripts\Utility\UiUtility.cs" />
     <Compile Include="Assets\Shared\ClientMessage.cs" />
     <Compile Include="Assets\Shared\Data.cs" />

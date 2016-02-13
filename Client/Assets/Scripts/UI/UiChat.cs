@@ -6,7 +6,7 @@ public class UiChat : UiBase
 {
     public Text MessagePrototype;
     public RectTransform MessagesContainer;
-    public InputField Input;
+    public InputField InputField;
     public Button Send;
     public ScrollRect ScrollRect;
 
@@ -41,12 +41,19 @@ public class UiChat : UiBase
         instance.text = string.Format(message, args);
         instance.enabled = true;
 
-        ScrollRect.normalizedPosition = new Vector2(ScrollRect.normalizedPosition.x, 0);
+        ScrollRect.ScrollToBottom();
     }
 
     void OnSend()
     {
-        Client.Messenger.Say(Input.text);
-        Input.text = "";
+        Client.Messenger.Say(InputField.text);
+        InputField.text = "";
+        InputField.Focus();
+    }
+
+    void LateUpdate()
+    {
+        if (Input.GetKeyUp(KeyCode.Return))
+            OnSend();
     }
 }

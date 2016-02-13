@@ -8,6 +8,7 @@ public class UserInterface : MonoBehaviour, IClientHandler
     public UiLogin ViewLogin;
     public UiBrowser ViewBrowser;
     public UiRoom ViewRoom;
+    public UiChat ViewChat;
 
     Client Client { get; set; }
 
@@ -23,6 +24,7 @@ public class UserInterface : MonoBehaviour, IClientHandler
 
         // Inject dependencies
         views.ForEach(x => x.Initialise(client));
+        ViewChat.Initialise(client);
 
         ChangeMenu(ViewLogin);
 
