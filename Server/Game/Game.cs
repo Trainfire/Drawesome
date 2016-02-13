@@ -57,7 +57,7 @@ namespace Server.Game
             });
 
             if (CurrentState != null)
-                CurrentState.OnPlayerMessage(player.Data, e);
+                CurrentState.OnPlayerMessage(player, e);
         }
 
         protected void SetState(GameState state, GameData gameData)

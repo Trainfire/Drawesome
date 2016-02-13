@@ -21,11 +21,13 @@ namespace Protocol
     {
         public PlayerData Creator { get; set; }
         public byte[] Image { get; set; }
+        public PromptData Prompt { get; set; }
 
-        public DrawingData(PlayerData creator, byte[] image)
+        public DrawingData(PlayerData creator, byte[] image, PromptData prompt)
         {
             Creator = creator;
             Image = image;
+            Prompt = prompt;
         }
     }
 

@@ -27,6 +27,14 @@ namespace Protocol
     }
 
     [Serializable]
+    public enum GameAnswerError
+    {
+        None,
+        MatchesPrompt,
+        AlreadyExists,
+    }
+
+    [Serializable]
     public enum GameState
     {
         RoundBegin,

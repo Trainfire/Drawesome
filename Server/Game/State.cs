@@ -26,7 +26,7 @@ namespace Server.Game
 
         }
 
-        public virtual void OnPlayerMessage(PlayerData player, string json)
+        public virtual void OnPlayerMessage(Player player, string json)
         {
 
         }

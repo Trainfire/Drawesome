@@ -142,6 +142,16 @@ namespace Protocol
                     Time = time;
                 }
             }
+
+            public class NotifyAnswerError : Message
+            {
+                public GameAnswerError Error { get; private set; }
+
+                public NotifyAnswerError(GameAnswerError error)
+                {
+                    Error = error;
+                }
+            }
         }
 
         #endregion

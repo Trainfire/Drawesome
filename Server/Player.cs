@@ -133,6 +133,12 @@ namespace Server
             Socket.Send(message.AsJson());
         }
 
+        public void SendAnswerError(GameAnswerError error)
+        {
+            var message = new ServerMessage.Game.NotifyAnswerError(error);
+            Socket.Send(message.AsJson());
+        }
+
         public void Update(ConnectionsHandler manager)
         {
             Console.WriteLine("Send update to " + Data.Name);

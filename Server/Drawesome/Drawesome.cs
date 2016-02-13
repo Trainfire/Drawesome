@@ -11,10 +11,11 @@ namespace Server.Drawesome
     public class DrawesomeGameData : GameData
     {
         public Queue<DrawingData> Drawings { get; private set; }
-        public List<AnswerData> SubmittedAnswers { get; set; }
-        public Dictionary<AnswerData, ChoiceData> ChosenAnswers { get; set; }
+        public List<AnswerData> SubmittedAnswers { get; private set; }
+        public Dictionary<AnswerData, ChoiceData> ChosenAnswers { get; private set; }
+        public Dictionary<Player, PromptData> SentPrompts { get; private set; }
 
-        List<PromptData> Prompts { get; set; }
+        List<PromptData> PromptPool { get; set; }
 
         public DrawesomeGameData()
         {
@@ -28,15 +29,26 @@ namespace Server.Drawesome
             
         }
 
-        public PromptData GetPrompt()
+        /// <summary>
+        /// Returns a random prompt from a pool then removes it.
+        /// </summary>
+        /// <param name="player"></param>
+        /// <returns></returns>
+        public PromptData GetPrompt(Player player)
         {
-            if (Prompts == null)
-                Prompts = Settings.Prompts.Items;
+            if (PromptPool == null)
+                PromptPool = Settings.Prompts.Items;
 
             var rnd = new Random();
-            var index = rnd.Next(0, Prompts.Count - 1);
-            var prompt = Prompts[index];
-            Prompts.Remove(prompt);
+            var index = rnd.Next(0, PromptPool.Count - 1);
+            var prompt = PromptPool[index];
+            PromptPool.Remove(prompt);
+
+            if (SentPrompts == null)
+                SentPrompts = new Dictionary<Player, PromptData>();
+
+            SentPrompts.Add(player, prompt);
+
             return prompt;
         }
     }
@@ -160,21 +172,23 @@ namespace Server.Drawesome
             // Send random prompts to players
             foreach (var player in GameData.Players)
             {
-                player.SendPrompt(GameData.GetPrompt().Text);
+                player.SendPrompt(GameData.GetPrompt(player).Text);
             }
         }
 
-        public override void OnPlayerMessage(PlayerData player, string json)
+        public override void OnPlayerMessage(Player player, string json)
         {
             Message.IsType<ClientMessage.Game.SendImage>(json, (data) =>
             {
-                // Update GameData
-                GameData.Drawings.Enqueue(new DrawingData(player, data.Image));
+                var prompt = GameData.SentPrompts[player];
 
-                Console.WriteLine("Recieve image from {0} with {1} bytes", player.Name, data.Image.Length);
+                // Update GameData
+                GameData.Drawings.Enqueue(new DrawingData(player.Data, data.Image, prompt));
+
+                Console.WriteLine("Recieve image from {0} with {1} bytes for prompt {2}", player.Data.Name, data.Image.Length, prompt.Text);
 
                 // Tell all clients that player has submitted drawing
-                GameData.Players.ForEach(x => x.NotifyPlayerGameAction(player));
+                GameData.Players.ForEach(x => x.NotifyPlayerGameAction(player.Data));
 
                 if (GameData.Drawings.Count == GameData.Players.Count)
                     EndState();
@@ -198,21 +212,44 @@ namespace Server.Drawesome
             GameData.Players.ForEach(x => x.SendImage(drawing.Image));
         }
 
-        public override void OnPlayerMessage(PlayerData player, string json)
+        public override void OnPlayerMessage(Player player, string json)
         {
             Message.IsType<ClientMessage.Game.SubmitAnswer>(json, (data) =>
             {
-                Console.WriteLine("{0} submitted '{1}'", player.Name, data.Answer);
+                Console.WriteLine("{0} submitted '{1}'", player.Data.Name, data.Answer);
+              
+                if (IsPrompt(data.Answer))
+                {
+                    Console.WriteLine("Player {0}'s answer matches prompt!", player.Data.Name);
+                    player.SendAnswerError(GameAnswerError.MatchesPrompt);
+                }
+                else if (HasPromptBeenSubmitted(data.Answer))
+                {
+                    Console.WriteLine("Player {0}'s answer matches an existing answer from another player!", player.Data.Name);
+                    player.SendAnswerError(GameAnswerError.AlreadyExists);
+                }        
+                else
+                {
+                    // Add answer here
+                    GameData.SubmittedAnswers.Add(new AnswerData(player.Data, data.Answer));
 
-                // Add answer here
-                GameData.SubmittedAnswers.Add(new AnswerData(player, data.Answer));
+                    // Tell all clients that player has submitted answer
+                    GameData.Players.ForEach(x => x.NotifyPlayerGameAction(player.Data));
 
-                // Tell all clients that player has submitted answer
-                GameData.Players.ForEach(x => x.NotifyPlayerGameAction(player));
-
-                if (GameData.SubmittedAnswers.Count == GameData.Players.Count)
-                    EndState();
+                    if (GameData.SubmittedAnswers.Count == GameData.Players.Count)
+                        EndState();
+                }
             });
+        }
+
+        bool IsPrompt(string answer)
+        {
+            return GameData.SentPrompts.Any(x => x.Value.Text.ToLower() == answer.ToLower());
+        }
+
+        bool HasPromptBeenSubmitted(string answer)
+        {
+            return GameData.SubmittedAnswers.Any(x => x.Answer.ToLower() == answer.ToLower());
         }
     }
 
@@ -241,7 +278,7 @@ namespace Server.Drawesome
             }
         }
 
-        public override void OnPlayerMessage(PlayerData player, string json)
+        public override void OnPlayerMessage(Player player, string json)
         {
             var message = JsonHelper.FromJson<Message>(json);
 
@@ -249,10 +286,10 @@ namespace Server.Drawesome
             {
                 // Add answer
                 var answer = GameData.SubmittedAnswers.Find(x => x.Answer == data.Choice);
-                GameData.ChosenAnswers[answer].Players.Add(player);
+                GameData.ChosenAnswers[answer].Players.Add(player.Data);
 
                 // Tell all clients of choice
-                GameData.Players.ForEach(x => x.NotifyPlayerGameAction(player));
+                GameData.Players.ForEach(x => x.NotifyPlayerGameAction(player.Data));
 
                 // End state if all players have chosen
                 if (GameData.ChosenAnswers.Count == GameData.Players.Count)
