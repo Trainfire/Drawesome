@@ -6,6 +6,7 @@ using Protocol;
 public class UiRoom : UiBase
 {
     public Button Leave;
+    public Text RoomOwner;
     public Text RoomId;
     public Text RoomPassword;
 
@@ -13,14 +14,14 @@ public class UiRoom : UiBase
     {
         base.Initialise(client);
         Leave.onClick.AddListener(() => Client.Messenger.LeaveRoom());
-        Client.MessageHandler.OnRoomUpdate += MessageHandler_OnRoomUpdate;
     }
 
-    void MessageHandler_OnRoomUpdate(ServerMessage.RoomUpdate message)
+    void Update()
     {
-        var roomData = message.RoomData;
+        var roomData = Client.Connection.Room;
 
         RoomId.text = string.Format("Room: {0}", roomData.ID);
+        RoomOwner.text = string.Format("Owner: {0}", roomData.Owner.Name);
         RoomPassword.text = string.Format("Password: {0}", roomData.Password);
         RoomPassword.enabled = !string.IsNullOrEmpty(roomData.Password);
     }
