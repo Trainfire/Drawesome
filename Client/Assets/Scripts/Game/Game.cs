@@ -182,11 +182,22 @@ public class Game : MonoBehaviour, IClientHandler
             });
         }
 
+        protected override void OnShow()
+        {
+            GetView<UiGameStateAnswering>().Error.Hide();
+        }
+
         protected override void OnMessage(string json)
         {
             Message.IsType<ServerMessage.Game.SendImage>(json, (data) =>
             {
                 GetView<UiGameStateAnswering>().Canvas.SetImage(data.Image);
+            });
+
+            Message.IsType<ServerMessage.Game.NotifyAnswerError>(json, (data) =>
+            {
+                var errorView = GetView<UiGameStateAnswering>().Error;
+                errorView.Show(data.Error);
             });
         }
     }

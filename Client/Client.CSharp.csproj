@@ -105,6 +105,7 @@
     <Compile Include="Assets\Scripts\UI\UiChat.cs" />
     <Compile Include="Assets\Scripts\UI\UiChoosingItem.cs" />
     <Compile Include="Assets\Scripts\UI\UiDrawingCanvas.cs" />
+    <Compile Include="Assets\Scripts\UI\UiError.cs" />
     <Compile Include="Assets\Scripts\UI\UiLogin.cs" />
     <Compile Include="Assets\Scripts\UI\UiRoom.cs" />
     <Compile Include="Assets\Scripts\UI\UiTimer.cs" />
