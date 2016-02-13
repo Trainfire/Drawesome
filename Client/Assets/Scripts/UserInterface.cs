@@ -36,7 +36,7 @@ public class UserInterface : MonoBehaviour, IClientHandler
     void OnServerNotifyPlayerAction(ServerMessage.NotifyPlayerAction message)
     {
         // TODO: wtf?!?
-        if (message.Player.ID == Client.Connection.Data.ID)
+        if (message.Player.ID == Client.Connection.Player.ID)
             ChangeMenu(ViewBrowser);
     }
 

@@ -12,35 +12,35 @@ public class Messenger
 
     public void CreateRoom(string password = "")
     {
-        Connection.SendMessage(new ClientMessage.CreateRoom(Connection.Data, password));
+        Connection.SendMessage(new ClientMessage.CreateRoom(Connection.Player, password));
     }
 
     public void JoinRoom(string roomId, string password = "")
     {
         Debug.LogFormat("Attempt to join room {0}", roomId);
-        Connection.SendMessage(new ClientMessage.JoinRoom(Connection.Data, roomId, password));
+        Connection.SendMessage(new ClientMessage.JoinRoom(Connection.Player, roomId, password));
     }
 
     public void LeaveRoom()
     {
-        Connection.SendMessage(new ClientMessage.LeaveRoom(Connection.Data));
+        Connection.SendMessage(new ClientMessage.LeaveRoom(Connection.Player));
     }
 
     public void RequestRooms()
     {
-        Connection.SendMessage(new ClientMessage.RequestRoomList(Connection.Data));
+        Connection.SendMessage(new ClientMessage.RequestRoomList(Connection.Player));
     }
 
     public void Say(string message)
     {
-        Connection.SendMessage(new SharedMessage.Chat(Connection.Data, message));
+        Connection.SendMessage(new SharedMessage.Chat(Connection.Player, message));
     }
 
     #region Game
 
     public void StartGame()
     {
-        Connection.SendMessage(new ClientMessage.StartGame(Connection.Data));
+        Connection.SendMessage(new ClientMessage.StartGame(Connection.Player));
     }
 
     public void SendImage(byte[] image)

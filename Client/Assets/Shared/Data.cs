@@ -5,16 +5,32 @@ namespace Protocol
 {
     public class PlayerData
     {
-        public uint RoomId;
-        public string ID;
-        public string Name;
+        public uint RoomId { get; set; }
+        public string ID { get; set; }
+        public string Name { get; set; }
+
+        public PlayerData()
+        {
+            RoomId = 0;
+            ID = "";
+            Name = "";
+        }
     }
 
     public class RoomData
     {
         public string ID { get; set; }
         public string Password { get; set; }
+        public PlayerData Owner { get; set; }
         public List<PlayerData> Players { get; set; }
+
+        public RoomData()
+        {
+            ID = "";
+            Password = "";
+            Owner = new PlayerData();
+            Players = new List<PlayerData>();
+        }
     }
 
     public class DrawingData

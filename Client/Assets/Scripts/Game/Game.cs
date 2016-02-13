@@ -5,6 +5,7 @@ using Protocol;
 public class Game : MonoBehaviour, IClientHandler
 {
     public Timer Timer;
+    public UiGameStatePreGame PreGameView;
     public UiGameStateRoundBegin RoundBeginView;
     public UiGameStateDrawing DrawingView;
     public UiGameStateAnswering AnsweringView;
@@ -14,12 +15,14 @@ public class Game : MonoBehaviour, IClientHandler
 
     Client Client { get; set; }
     List<State> States { get; set; }
+    State Current { get; set; }
 
     public void Initialise(Client client)
     {
         Client = client;
         Client.MessageHandler.OnMessage += OnMessage;
 
+        AddState(new PreGameState(client, PreGameView));
         AddState(new RoundBeginState(client, RoundBeginView));
         AddState(new DrawingState(client, DrawingView));
         AddState(new AnsweringState(client, AnsweringView));
@@ -27,7 +30,7 @@ public class Game : MonoBehaviour, IClientHandler
         AddState(new ResultsState(client, ResultsView));
         AddState(new RoundEndState(client, RoundEndView));
 
-        ChangeState(GameState.RoundBegin);
+        ChangeState(GameState.PreGame);
     }
 
     void AddState(State state)
@@ -48,6 +51,7 @@ public class Game : MonoBehaviour, IClientHandler
             }
             else
             {
+                Current = s;
                 s.Show();
             }
         }
@@ -73,6 +77,12 @@ public class Game : MonoBehaviour, IClientHandler
         {
             Timer.SetTime(data.CurrentTime);
         });
+    }
+
+    void Update()
+    {
+        if (Current != null)
+            Current.Update();
     }
 
     public abstract class State
@@ -133,6 +143,30 @@ public class Game : MonoBehaviour, IClientHandler
         {
             
         }
+
+        public virtual void Update()
+        {
+
+        }
+    }
+
+    public class PreGameState : State
+    {
+        public override GameState Type { get { return GameState.PreGame; } }
+
+        public PreGameState(Client client, UiGameStatePreGame view) : base(client, view)
+        {
+            view.Start.onClick.AddListener(() => client.Messenger.StartGame());
+        }
+
+        public override void Update()
+        {
+            var view = GetView<UiGameStatePreGame>();
+            bool isClientOwner = Client.Connection.IsRoomOwner();
+            view.InfoBox.SetActive(!isClientOwner);
+            view.Start.interactable = isClientOwner;
+            view.InfoLabel.text = string.Format("Waiting for room owner: {0}", Client.Connection.Room.Owner.Name);
+        }
     }
 
     public class RoundBeginState : State
@@ -158,7 +192,7 @@ public class Game : MonoBehaviour, IClientHandler
         public DrawingState(Client client, UiGameStateDrawing view) : base(client, view)
         {
             // Set brush color
-            view.Canvas.SetBrushColor(Client.Connection.Data.RoomId);
+            view.Canvas.SetBrushColor(Client.Connection.Player.RoomId);
 
             // Send image on submit
             view.Submit.onClick.AddListener(() =>

@@ -11,7 +11,10 @@ public class Connection : MonoBehaviour
 
     public event EventHandler<CloseEventArgs> ConnectionClosed;
 
-    public PlayerData Data { get; private set; }
+    public PlayerData Player { get; private set; }
+    public RoomData Room { get; private set; }
+
+    public bool isRoomOwner;
 
     WebSocket Socket { get; set; }
     string PlayerName { get; set; }
@@ -19,7 +22,8 @@ public class Connection : MonoBehaviour
 
     void Awake()
     {
-        Data = new PlayerData();
+        Player = new PlayerData();
+        Room = new RoomData();
         Socket = new WebSocket(Settings.HostUrl);
         MessageQueue = new Queue<MessageEventArgs>();
     }
@@ -28,6 +32,8 @@ public class Connection : MonoBehaviour
     {
         if (MessageQueue.Count != 0 && MessageRecieved != null)
             MessageRecieved(this, MessageQueue.Dequeue());
+
+        isRoomOwner = IsRoomOwner();
     }
 
     public void Connect(string playerName)
@@ -53,19 +59,24 @@ public class Connection : MonoBehaviour
     {
         Message.IsType<ServerMessage.ConnectionSuccess>(e.Data, (data) =>
         {
-            Data.ID = data.ID;
-            Data.Name = PlayerName;
+            Player.ID = data.ID;
+            Player.Name = PlayerName;
 
-            Debug.Log("Recieved ID: " + Data.ID);
+            Debug.Log("Recieved ID: " + Player.ID);
 
-            SendMessage(new ClientMessage.RequestConnection(Data.ID, Data.Name));
+            SendMessage(new ClientMessage.RequestConnection(Player.ID, Player.Name));
         });
 
         Message.IsType<ServerMessage.AssignRoomId>(e.Data, (data) =>
         {
-            Data.RoomId = data.RoomId;
+            Player.RoomId = data.RoomId;
 
             Debug.LogFormat("Recieved Room ID: {0}", data.RoomId);
+        });
+
+        Message.IsType<ServerMessage.RoomUpdate>(e.Data, (data) =>
+        {
+            Room = data.RoomData;
         });
 
         MessageQueue.Enqueue(e);
@@ -84,5 +95,10 @@ public class Connection : MonoBehaviour
     {
         var json = JsonHelper.ToJson(message);
         Socket.Send(json);
+    }
+
+    public bool IsRoomOwner()
+    {
+        return Room.Owner.ID == Player.ID;
     }
 }

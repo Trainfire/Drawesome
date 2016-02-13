@@ -27,7 +27,7 @@ public class UiChat : UiBase
 
     void OnServerNotifyPlayerAction(ServerMessage.NotifyPlayerAction message)
     {
-        AddMessage(StringFormatter.FormatPlayerAction(message, Client.Connection.Data));
+        AddMessage(StringFormatter.FormatPlayerAction(message, Client.Connection.Player));
     }
 
     void OnChat(SharedMessage.Chat message)

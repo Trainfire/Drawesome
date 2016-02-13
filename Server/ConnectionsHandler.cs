@@ -66,7 +66,7 @@ namespace Server
 
                 var target = Players.Find(x => x.Data.ID == data.Player.ID);
 
-                var protocolRooms = Rooms.Select(x => x.Data).ToList();
+                var protocolRooms = Rooms.Select(x => x.RoomData).ToList();
                 target.SendMessage(new ServerMessage.RoomList(protocolRooms));
             });
 
@@ -78,7 +78,7 @@ namespace Server
                 if (roomHasPlayer != null)
                     roomHasPlayer.Leave(data.Player);
 
-                var targetRoom = Rooms.Find(x => x.Data.ID == data.RoomId);
+                var targetRoom = Rooms.Find(x => x.RoomData.ID == data.RoomId);
                 var joiningPlayer = Players.Find(x => x.Data.ID == data.Player.ID);
 
                 if (targetRoom != null)
@@ -127,7 +127,7 @@ namespace Server
 
         void OnRoomEmpty(object sender, Room e)
         {
-            Console.WriteLine("Closing room {0} as it is empty", e.Data.ID);
+            Console.WriteLine("Closing room {0} as it is empty", e.RoomData.ID);
             e.OnEmpty -= OnRoomEmpty;
             Rooms.Remove(e);
         }

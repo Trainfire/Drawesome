@@ -82,6 +82,7 @@
     <Compile Include="Assets\Scripts\Game\UiGameStateAnswering.cs" />
     <Compile Include="Assets\Scripts\Game\UiGameStateChoosing.cs" />
     <Compile Include="Assets\Scripts\Game\UiGameStateDrawing.cs" />
+    <Compile Include="Assets\Scripts\Game\UiGameStatePreGame.cs" />
     <Compile Include="Assets\Scripts\Game\UiGameStateResults.cs" />
     <Compile Include="Assets\Scripts\Game\UiGameStateRoundBegin.cs" />
     <Compile Include="Assets\Scripts\Game\UiGameStateRoundEnd.cs" />

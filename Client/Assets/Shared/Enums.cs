@@ -37,6 +37,7 @@ namespace Protocol
     [Serializable]
     public enum GameState
     {
+        PreGame,
         RoundBegin,
         Drawing,
         Answering,

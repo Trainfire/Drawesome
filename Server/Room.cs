@@ -10,7 +10,7 @@ namespace Server
     {
         public event EventHandler<Room> OnEmpty;
 
-        public RoomData Data { get; private set; }
+        public RoomData RoomData { get; private set; }
         public List<Player> Players { get; private set; }
 
         Player Owner { get; set; }
@@ -31,10 +31,11 @@ namespace Server
 
             RoomIdPool = new IdPool(MaxPlayers);
 
-            Data = new RoomData();
-            Data.ID = Guid.NewGuid().ToString().Substring(0, GuidSize);
-            Data.Password = password;
-            Data.Players = new List<PlayerData>();
+            RoomData = new RoomData();
+            RoomData.ID = Guid.NewGuid().ToString().Substring(0, GuidSize);
+            RoomData.Password = password;
+            RoomData.Players = new List<PlayerData>();
+            RoomData.Owner = Owner.Data;
 
             Players = new List<Player>();
 
@@ -54,11 +55,11 @@ namespace Server
 
         public void Join(Player joiningPlayer, string password = "")
         {
-            Console.WriteLine("Player {0} joined room {1}", joiningPlayer.Data.Name, Data.ID);
+            Console.WriteLine("Player {0} joined room {1}", joiningPlayer.Data.Name, RoomData.ID);
 
-            if (joiningPlayer.Data.ID != Owner.Data.ID && password != Data.Password)
+            if (joiningPlayer.Data.ID != Owner.Data.ID && password != RoomData.Password)
             {
-                Log("Player {0} provided incorrect password {1}. (Is {2})", joiningPlayer.Data.Name, password, Data.Password);
+                Log("Player {0} provided incorrect password {1}. (Is {2})", joiningPlayer.Data.Name, password, RoomData.Password);
                 joiningPlayer.SendRoomError(RoomError.InvalidPassword);
                 return;
             }
@@ -76,7 +77,7 @@ namespace Server
                 joiningPlayer.AssignRoomId(color);
 
                 Players.Add(joiningPlayer);
-                Data.Players.Add(joiningPlayer.Data);
+                RoomData.Players.Add(joiningPlayer.Data);
 
                 // Add callbacks
                 joiningPlayer.OnConnectionClosed += OnPlayerConnectionClosed;
@@ -142,8 +143,8 @@ namespace Server
 
             Players.Remove(e.Player);
 
-            var data = Data.Players.Find(x => x.ID == e.Player.Data.ID);
-            Data.Players.Remove(data);
+            var data = RoomData.Players.Find(x => x.ID == e.Player.Data.ID);
+            RoomData.Players.Remove(data);
 
             // Return color to pool
             RoomIdPool.ReturnValue(e.Player.Data.RoomId);
@@ -154,6 +155,7 @@ namespace Server
                 if (Owner != Players[0])
                 {
                     Owner = Players[0];
+                    RoomData.Owner = Owner.Data;
                     EchoActionToAll(Owner.Data, PlayerAction.PromotedToOwner);
                     SendUpdateToAll();
                 }
@@ -186,7 +188,7 @@ namespace Server
 
         void SendUpdateToAll()
         {
-            Players.ForEach(x => x.SendMessage(new ServerMessage.RoomUpdate(Data)));
+            Players.ForEach(x => x.SendMessage(new ServerMessage.RoomUpdate(RoomData)));
         }
 
         #endregion
@@ -194,7 +196,7 @@ namespace Server
         void Log(string message, params object[] args)
         {
             var str = string.Format(message, args);
-            Console.WriteLine("Room {0}: {1}", Data.ID, str);
+            Console.WriteLine("Room {0}: {1}", RoomData.ID, str);
         }
     }
 }
