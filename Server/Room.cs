@@ -178,7 +178,7 @@ namespace Server
 
         void EchoChatToAll(SharedMessage.Chat message)
         {
-            Log("{0}: {1}", message.Player.Name, message);
+            Log("{0}: {1}", message.Player.Name, message.Message);
             Players.ForEach(x => x.SendMessage(message));
         }
 
@@ -192,7 +192,7 @@ namespace Server
         void Log(string message, params object[] args)
         {
             var str = string.Format(message, args);
-            Console.WriteLine("Room {0} : {1}", Data.ID, str);
+            Console.WriteLine("Room {0}: {1}", Data.ID, str);
         }
     }
 }
