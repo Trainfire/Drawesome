@@ -1,10 +1,12 @@
 using UnityEngine;
 using UnityEngine.UI;
-using UnityEngine.EventSystems;
+using Protocol;
+using Stylesheet;
 
 [RequireComponent(typeof(RawImage))]
 public class UiDrawingCanvas : MonoBehaviour
 {
+    public ColorData[] PlayerColors = new ColorData[8];
     public Color Color; // TODO: Load from player
     public int BrushSize = 8; // TODO: Load from settings
     public bool AllowDrawing = true;
@@ -111,6 +113,12 @@ public class UiDrawingCanvas : MonoBehaviour
         texture.LoadImage(data);
         texture.Apply();
         RawImage.texture = texture;
+    }
+
+    public void SetBrushColor(uint colorId)
+    {
+        int index = (int)colorId;
+        Color = PlayerColors[index].Color;
     }
 
     public void Recolor(Color color)

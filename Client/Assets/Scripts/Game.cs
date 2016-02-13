@@ -82,6 +82,8 @@ public class Game : MonoBehaviour, IClientHandler
         {
             case GameState.Drawing:
 
+                StateViews.Drawing.Canvas.SetBrushColor(Client.Connection.Data.RoomId);
+
                 StateViews.Drawing.Submit.onClick.AddListener(() =>
                 {
                     var drawing = StateViews.Drawing.Canvas.GetEncodedImage;

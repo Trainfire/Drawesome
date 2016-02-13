@@ -61,6 +61,13 @@ public class Connection : MonoBehaviour
             SendMessage(new ClientMessage.RequestConnection(Data.ID, Data.Name));
         });
 
+        Message.IsType<ServerMessage.AssignRoomId>(e.Data, (data) =>
+        {
+            Data.RoomId = data.RoomId;
+
+            Debug.LogFormat("Recieved Room ID: {0}", data.RoomId);
+        });
+
         MessageQueue.Enqueue(e);
     }
 

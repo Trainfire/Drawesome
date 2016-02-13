@@ -15,6 +15,7 @@ public class MessageHandler
     public event MessageEvent<ServerMessage.NotifyPlayerAction> OnServerNotifyPlayerAction;
     public event MessageEvent<SharedMessage.Chat> OnChat;
     public event MessageEvent<ServerMessage.RoomUpdate> OnRoomUpdate;
+    public event MessageEvent<ServerMessage.AssignRoomId> OnRoomIdAssigned;
 
     public event MessageEvent<ServerMessage.Game.SendPrompt> OnReceivePrompt;
     public event MessageEvent<ServerMessage.Game.SendChoices> OnRecieveChoices;
@@ -43,6 +44,7 @@ public class MessageHandler
             Message.IsType<ServerMessage.RoomList>(json, (data) => FireEvent(OnRecieveRoomList, data));
             Message.IsType<ServerMessage.NotifyRoomError>(json, (data) => FireEvent(OnServerNotifyRoomError, data));
             Message.IsType<SharedMessage.Chat>(json, (data) => FireEvent(OnChat, data));
+            Message.IsType<ServerMessage.AssignRoomId>(json, (data) => FireEvent(OnRoomIdAssigned, data));
 
             #endregion
 
