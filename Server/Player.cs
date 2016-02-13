@@ -108,6 +108,12 @@ namespace Server
             Socket.Send(message.AsJson());
         }
 
+        public void SendPrompt(string prompt)
+        {
+            var message = new ServerMessage.Game.SendPrompt(prompt);
+            Socket.Send(message.AsJson());
+        }
+
         public void NotifyPlayerGameAction(PlayerData actor)
         {
             var message = new ServerMessage.Game.PlayerAction(actor);

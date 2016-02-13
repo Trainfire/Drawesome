@@ -10,9 +10,11 @@ namespace Server.Drawesome
 {
     public class DrawesomeGameData : GameData
     {
-        public Queue<DrawingData> Drawings { get; set; }
+        public Queue<DrawingData> Drawings { get; private set; }
         public List<AnswerData> SubmittedAnswers { get; set; }
         public Dictionary<AnswerData, ChoiceData> ChosenAnswers { get; set; }
+
+        List<PromptData> Prompts { get; set; }
 
         public DrawesomeGameData()
         {
@@ -23,7 +25,19 @@ namespace Server.Drawesome
 
         public DrawesomeGameData(Settings settings) : base(settings)
         {
+            
+        }
 
+        public PromptData GetPrompt()
+        {
+            if (Prompts == null)
+                Prompts = Settings.Prompts.Items;
+
+            var rnd = new Random();
+            var index = rnd.Next(0, Prompts.Count - 1);
+            var prompt = Prompts[index];
+            Prompts.Remove(prompt);
+            return prompt;
         }
     }
 
@@ -48,7 +62,6 @@ namespace Server.Drawesome
             base.Start(players);
             Log("Started");
             Data = new DrawesomeGameData(Settings);
-            Data.Drawings = new Queue<DrawingData>(players.Count);
             SetState(GameState.RoundBegin, Data);
         }
 
@@ -143,6 +156,12 @@ namespace Server.Drawesome
         protected override void OnBegin()
         {
             SetTimer("Drawing Timer", GameData.Settings.Drawesome.DrawTime, true);
+
+            // Send random prompts to players
+            foreach (var player in GameData.Players)
+            {
+                player.SendPrompt(GameData.GetPrompt().Text);
+            }
         }
 
         public override void OnPlayerMessage(PlayerData player, string json)
