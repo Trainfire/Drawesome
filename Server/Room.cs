@@ -27,6 +27,8 @@ namespace Server
 
         public Room(Player owner, Settings settings, string password = "")
         {
+            Settings = settings;
+
             Owner = owner;
 
             RoomIdPool = new IdPool(MaxPlayers);
@@ -61,6 +63,13 @@ namespace Server
             {
                 Log("Player {0} provided incorrect password {1}. (Is {2})", joiningPlayer.Data.Name, password, RoomData.Password);
                 joiningPlayer.SendRoomError(RoomError.InvalidPassword);
+                return;
+            }
+
+            if (Players.Count == Settings.Server.MaxPlayers)
+            {
+                Log("Player {0} attempt to join the room {1} but that room is full", joiningPlayer.Data.Name, RoomData.ID);
+                joiningPlayer.SendRoomError(RoomError.RoomFull);
                 return;
             }
 
