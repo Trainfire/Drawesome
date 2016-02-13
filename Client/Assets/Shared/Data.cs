@@ -3,7 +3,6 @@ using System.Collections.Generic;
 
 namespace Protocol
 {
-    [Serializable]
     public class PlayerData
     {
         public string ID;
@@ -71,5 +70,11 @@ namespace Protocol
             Answer = answer;
             Points = points;
         }
+    }
+
+    public class PromptData
+    {
+        public int Id { get; set; }
+        public string Text { get; set; }
     }
 }

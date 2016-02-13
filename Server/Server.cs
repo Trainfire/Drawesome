@@ -17,7 +17,7 @@ namespace Server
 
         public void Start()
         {
-            SocketServer = new WebSocketServer(Settings.ServerSettings.HostUrl);
+            SocketServer = new WebSocketServer(Settings.Server.HostUrl);
             ConnectionsHandler = new ConnectionsHandler();
 
             SocketServer.Start(socket =>
