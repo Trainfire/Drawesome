@@ -14,8 +14,11 @@ namespace Server
         public List<Player> Players { get; private set; }
         public List<Room> Rooms { get; private set; }
 
-        public ConnectionsHandler()
+        Settings Settings { get; set; }
+
+        public ConnectionsHandler(Settings settings)
         {
+            Settings = settings;
             Rooms = new List<Room>();
         }
 
@@ -114,7 +117,7 @@ namespace Server
                     playerCurrentRoom.Leave(data.Player);
 
                 var creator = Players.Find(x => x.Data.ID == data.Player.ID);
-                var room = new Room(creator, data.Password);
+                var room = new Room(creator, Settings, data.Password);
 
                 room.OnEmpty += OnRoomEmpty;
 

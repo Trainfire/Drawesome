@@ -7,7 +7,7 @@ namespace Server
     {
         ConnectionsHandler ConnectionsHandler { get; set; }
         WebSocketServer SocketServer { get; set; }
-        Settings Settings { get; set; }
+        public Settings Settings { get; private set; }
 
         public Server()
         {
@@ -18,7 +18,7 @@ namespace Server
         public void Start()
         {
             SocketServer = new WebSocketServer(Settings.Server.HostUrl);
-            ConnectionsHandler = new ConnectionsHandler();
+            ConnectionsHandler = new ConnectionsHandler(Settings);
 
             SocketServer.Start(socket =>
             {

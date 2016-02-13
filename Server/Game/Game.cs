@@ -12,20 +12,23 @@ namespace Server.Game
     {
         protected TData GameData { get; set; }
         protected State<TData> CurrentState { get; private set; }
+        protected Settings Settings { get; private set; }
 
         protected abstract string Name { get; }
 
         Dictionary<GameState, State<TData>> States { get; set; }
 
-        public Game()
+        public Game(Settings settings)
         {
             Log("Initialised");
+            Settings = settings;
             States = new Dictionary<GameState, State<TData>>();
         }
 
         public virtual void Start(List<Player> players)
         {
             GameData = new TData();
+            GameData.Settings = Settings;
             GameData.Players = new List<Player>();
             GameData.Players = players;
             GameData.Players.ForEach(x => x.OnMessageString += OnPlayerMessage);

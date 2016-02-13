@@ -8,7 +8,6 @@ using System.Linq;
 
 namespace Server.Drawesome
 {
-
     public class DrawesomeGameData : GameData
     {
         public Queue<DrawingData> Drawings { get; set; }
@@ -21,14 +20,11 @@ namespace Server.Drawesome
             SubmittedAnswers = new List<AnswerData>();
             ChosenAnswers = new Dictionary<AnswerData, ChoiceData>();
         }
-    }
 
-    /// TODO: Load settings from JSON in Server folder
-    public class DrawesomeSettings
-    {
-        public const float DrawTime = 60f;
-        public const float AnsweringTime = 30f;
-        public const float ChoosingTime = 15f;
+        public DrawesomeGameData(Settings settings) : base(settings)
+        {
+
+        }
     }
 
     public class DrawesomeGame : Game<DrawesomeGameData>
@@ -37,7 +33,7 @@ namespace Server.Drawesome
 
         protected override string Name { get { return "Drawesome"; } }
 
-        public DrawesomeGame()
+        public DrawesomeGame(Settings settings) : base(settings)
         {
             AddState(GameState.RoundBegin, new StateRoundBegin());
             AddState(GameState.Drawing, new StateDrawingPhase());
@@ -51,8 +47,7 @@ namespace Server.Drawesome
         {
             base.Start(players);
             Log("Started");
-
-            Data = new DrawesomeGameData();
+            Data = new DrawesomeGameData(Settings);
             Data.Drawings = new Queue<DrawingData>(players.Count);
             SetState(GameState.RoundBegin, Data);
         }
@@ -132,7 +127,7 @@ namespace Server.Drawesome
         protected override void OnBegin()
         {
             base.OnBegin();
-            SetTimer("Begin Timer", 5f);
+            SetTimer("Begin Timer", GameData.Settings.Drawesome.RoundBeginTime);
         }
     }
 
@@ -147,7 +142,7 @@ namespace Server.Drawesome
 
         protected override void OnBegin()
         {
-            SetTimer("Drawing Timer", DrawesomeSettings.DrawTime, true);
+            SetTimer("Drawing Timer", GameData.Settings.Drawesome.DrawTime, true);
         }
 
         public override void OnPlayerMessage(PlayerData player, string json)
@@ -179,7 +174,7 @@ namespace Server.Drawesome
 
         protected override void OnBegin()
         {
-            SetTimer("Answering Timer", DrawesomeSettings.AnsweringTime);
+            SetTimer("Answering Timer", GameData.Settings.Drawesome.AnsweringTime);
             var drawing = GameData.Drawings.Dequeue();
             GameData.Players.ForEach(x => x.SendImage(drawing.Image));
         }
@@ -215,7 +210,7 @@ namespace Server.Drawesome
         {
             base.OnBegin();
 
-            SetTimer("Choosing Timer", DrawesomeSettings.ChoosingTime);
+            SetTimer("Choosing Timer", GameData.Settings.Drawesome.ChoosingTime);
 
             // Send options to each player
             GameData.Players.ForEach(x => x.SendChoices(GameData.SubmittedAnswers));

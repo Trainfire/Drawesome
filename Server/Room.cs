@@ -16,6 +16,8 @@ namespace Server
         Player Owner { get; set; }
         DrawesomeGame Game { get; set; }
         IdPool RoomIdPool { get; set; }
+        Settings Settings { get; set; }
+
         const int MaxPlayers = 8; // TODO: Place in Server settings
 
         /// <summary>
@@ -23,7 +25,7 @@ namespace Server
         /// </summary>
         const int GuidSize = 4;
 
-        public Room(Player owner, string password = "")
+        public Room(Player owner, Settings settings, string password = "")
         {
             Owner = owner;
 
@@ -47,7 +49,7 @@ namespace Server
 
             Join(Owner);
 
-            Game = new DrawesomeGame();
+            Game = new DrawesomeGame(settings);
         }
 
         public void Join(Player joiningPlayer, string password = "")
