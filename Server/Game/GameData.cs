@@ -12,8 +12,9 @@ namespace Server.Game
 
         }
 
-        public GameData(Settings settings)
+        public GameData(List<Player> players, Settings settings)
         {
+            Players = players;
             Settings = settings;
         }
     }

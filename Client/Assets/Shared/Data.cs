@@ -51,6 +51,7 @@ namespace Protocol
     {
         public PlayerData Author { get; set; }
         public string Answer { get; set; }
+        public int Likes { get; set; }
 
         public AnswerData(PlayerData author, string answer)
         {

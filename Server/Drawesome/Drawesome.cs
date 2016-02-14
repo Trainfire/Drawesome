@@ -1,5 +1,5 @@
 using Server.Game;
-using System.Collections;
+using System.Collections.ObjectModel;
 using System.Collections.Generic;
 using System;
 using System.Timers;
@@ -8,33 +8,112 @@ using System.Linq;
 
 namespace Server.Drawesome
 {
-    public class DrawesomeGameData : GameData, IScores
+    public class DrawesomeGameData : GameData
     {
-        public Queue<DrawingData> Drawings { get; private set; }
-        public List<AnswerData> SubmittedAnswers { get; private set; }
-        public Dictionary<AnswerData, ChoiceData> ChosenAnswers { get; private set; }
-        public Dictionary<Player, PromptData> SentPrompts { get; private set; }
-        public Dictionary<PlayerData, uint> PlayerScores { get; private set; }
+        Queue<DrawingData> drawings = new Queue<DrawingData>();
+        //List<AnswerData> answers = new List<AnswerData>();
+        Dictionary<AnswerData, ChoiceData> answers = new Dictionary<AnswerData, ChoiceData>();
+        Dictionary<Player, PromptData> prompts = new Dictionary<Player, PromptData>();
+        Dictionary<PlayerData, uint> scores;
 
         List<PromptData> PromptPool { get; set; }
 
         public DrawesomeGameData()
         {
-            Drawings = new Queue<DrawingData>();
-            SubmittedAnswers = new List<AnswerData>();
-            ChosenAnswers = new Dictionary<AnswerData, ChoiceData>();
+
         }
 
-        public DrawesomeGameData(Settings settings) : base(settings)
+        public DrawesomeGameData(List<Player> players, Settings settings) : base(players, settings)
         {
-            
+
         }
 
-        /// <summary>
-        /// Returns a random prompt from a pool then removes it.
-        /// </summary>
-        /// <param name="player"></param>
-        /// <returns></returns>
+        public ReadOnlyDictionary<AnswerData, ChoiceData> ChosenAnswers
+        {
+            get
+            {
+                return new ReadOnlyDictionary<AnswerData, ChoiceData>(answers);
+            }
+        }
+
+        public ReadOnlyDictionary<Player, PromptData> SentPrompts
+        {
+            get
+            {
+                return new ReadOnlyDictionary<Player, PromptData>(prompts);
+            }
+        }
+
+        public ReadOnlyDictionary<PlayerData, uint> Scores
+        {
+            get
+            {
+                return new ReadOnlyDictionary<PlayerData, uint>(scores);
+            }
+        }
+
+        public ReadOnlyCollection<AnswerData> Answers
+        {
+            get
+            {
+                return new ReadOnlyCollection<AnswerData>(answers.Keys.ToList());
+            }
+        }
+
+        public void AddPoints(PlayerData player, uint points)
+        {
+            if (scores == null)
+            {
+                scores = new Dictionary<PlayerData, uint>();
+                Players.ForEach(x => scores.Add(x.Data, 0));
+            }
+
+            Console.WriteLine("Give {0} {1} points", player.Name, points);
+            scores[player] += points;
+        }
+
+        public void AddAnswer(AnswerData answer)
+        {
+            Console.WriteLine("Add answer {0}", answer.Answer);
+            answers.Add(answer, new ChoiceData());
+        }
+
+        public void AddChosenAnswer(string answer, Player player)
+        {
+            var findAnswer = GetAnswer(answer);
+            Console.WriteLine("Add chosen answer: {0}", findAnswer.Answer);
+            answers[findAnswer].Players.Add(player.Data);
+
+            AddPoints(findAnswer.Author, Settings.Drawesome.PointsPerChoice);
+            // TODO: Give more points if answer matches prompt
+        }
+
+        public void AddDrawing(DrawingData drawing)
+        {
+            drawings.Enqueue(drawing);
+        }
+
+        public void AddLike(string answer)
+        {
+            GetAnswer(answer).Likes++;
+        }
+
+        public void OnNextRound()
+        {
+            answers.Clear();
+            drawings.Dequeue();
+        }
+
+        public DrawingData GetDrawing()
+        {
+            return drawings.Peek();
+        }
+
+        public bool HasDrawings()
+        {
+            return drawings.Count != 0;
+        }
+
         public PromptData GetPrompt(Player player)
         {
             if (PromptPool == null)
@@ -45,24 +124,17 @@ namespace Server.Drawesome
             var prompt = PromptPool[index];
             PromptPool.Remove(prompt);
 
-            if (SentPrompts == null)
-                SentPrompts = new Dictionary<Player, PromptData>();
+            if (prompts == null)
+                prompts = new Dictionary<Player, PromptData>();
 
-            SentPrompts.Add(player, prompt);
+            prompts.Add(player, prompt);
 
             return prompt;
         }
 
-        public void AddPoints(PlayerData player, uint points)
+        AnswerData GetAnswer(string answer)
         {
-            if (PlayerScores == null)
-            {
-                PlayerScores = new Dictionary<PlayerData, uint>();
-                Players.ForEach(x => PlayerScores.Add(x.Data, 0));
-            }
-
-            Console.WriteLine("Give {0} {1} points", player.Name, points);
-            PlayerScores[player] += points;
+            return answers.Keys.First(x => x.Answer == answer);
         }
     }
 
@@ -87,7 +159,7 @@ namespace Server.Drawesome
         public override void Start(List<Player> players)
         {
             base.Start(players);
-            Data = new DrawesomeGameData(Settings);
+            Data = new DrawesomeGameData(players, Settings);
             SetState(GameState.RoundBegin, Data);
         }
 
@@ -123,7 +195,7 @@ namespace Server.Drawesome
                 case GameState.Answering:
 
                     Console.WriteLine("Answers");
-                    foreach (var answer in gameData.SubmittedAnswers)
+                    foreach (var answer in gameData.Answers)
                     {
                         Console.WriteLine("\t{0}: {1}", answer.Author.Name, answer.Answer);
                     }
@@ -136,11 +208,14 @@ namespace Server.Drawesome
                     Console.WriteLine("Choices");
                     foreach (var choice in gameData.ChosenAnswers)
                     {
-                        var players = choice.Value.Players
+                        if (choice.Value != null && choice.Value.Players.Count != 0)
+                        {
+                            var players = choice.Value.Players
                             .Select(x => x.Name)
                             .Aggregate((current, next) => current + ", " + next);
 
-                        Console.WriteLine("\t{0}: {1}", choice.Key.Answer, players);
+                            Console.WriteLine("\t{0}: {1}", choice.Key.Answer, players);
+                        }
                     }
 
                     SetState(GameState.Results, gameData);
@@ -155,7 +230,7 @@ namespace Server.Drawesome
                     break;
 
                 case GameState.RoundEnd:
-                    if (gameData.Drawings.Count != 0)
+                    if (gameData.HasDrawings())
                     {
                         SetState(GameState.Answering, gameData);
                     }
@@ -198,6 +273,8 @@ namespace Server.Drawesome
     {
         public override GameState Type { get { return GameState.Drawing; } }
 
+        float SubmittedDrawings { get; set; }
+
         public StateDrawingPhase()
         {
             
@@ -206,6 +283,8 @@ namespace Server.Drawesome
         protected override void OnBegin()
         {
             SetTimer("Drawing Timer", GameData.Settings.Drawesome.DrawTime, true);
+
+            SubmittedDrawings = 0;
 
             // Send random prompts to players
             foreach (var player in GameData.Players)
@@ -218,17 +297,19 @@ namespace Server.Drawesome
         {
             Message.IsType<ClientMessage.Game.SendImage>(json, (data) =>
             {
+                SubmittedDrawings++;
+
                 var prompt = GameData.SentPrompts[player];
 
                 // Update GameData
-                GameData.Drawings.Enqueue(new DrawingData(player.Data, data.Image, prompt));
+                GameData.AddDrawing(new DrawingData(player.Data, data.Image, prompt));
 
                 Console.WriteLine("Recieve image from {0} with {1} bytes for prompt {2}", player.Data.Name, data.Image.Length, prompt.Text);
 
                 // Tell all clients that player has submitted drawing
                 GameData.Players.ForEach(x => x.NotifyPlayerGameAction(player.Data));
 
-                if (GameData.Drawings.Count == GameData.Players.Count)
+                if (SubmittedDrawings == GameData.Players.Count)
                     EndState();
             });
         }
@@ -247,10 +328,9 @@ namespace Server.Drawesome
         {
             SetTimer("Answering Timer", GameData.Settings.Drawesome.AnsweringTime, true);
 
-            if (GameData.Drawings.Count != 0)
+            if (GameData.HasDrawings())
             {
-                var drawing = GameData.Drawings.Dequeue();
-                GameData.Players.ForEach(x => x.SendImage(drawing.Image));
+                GameData.Players.ForEach(x => x.SendImage(GameData.GetDrawing().Image));
             }
             else
             {
@@ -279,12 +359,12 @@ namespace Server.Drawesome
                     player.SendAnswerValidation(GameAnswerError.None);
 
                     // Add answer here
-                    GameData.SubmittedAnswers.Add(new AnswerData(player.Data, data.Answer));
+                    GameData.AddAnswer(new AnswerData(player.Data, data.Answer));
 
                     // Tell all clients that player has submitted answer
                     GameData.Players.ForEach(x => x.NotifyPlayerGameAction(player.Data));
 
-                    if (GameData.SubmittedAnswers.Count == GameData.Players.Count)
+                    if (GameData.Answers.Count == GameData.Players.Count)
                         EndState();
                 }
             });
@@ -297,7 +377,7 @@ namespace Server.Drawesome
 
         bool HasPromptBeenSubmitted(string answer)
         {
-            return GameData.SubmittedAnswers.Any(x => x.Answer.ToLower() == answer.ToLower());
+            return GameData.Answers.Any(x => x.Answer.ToLower() == answer.ToLower());
         }
     }
 
@@ -305,19 +385,23 @@ namespace Server.Drawesome
     {
         public override GameState Type { get { return GameState.Choosing; } }
 
+        float ChosenAnswerCount { get; set; }
+
         public StateChoosingPhase()
         {
-
+            
         }
 
         protected override void OnBegin()
         {
             base.OnBegin();
 
+            ChosenAnswerCount = 0;
+
             SetTimer("Choosing Timer", GameData.Settings.Drawesome.ChoosingTime);
 
             // Send options to each player
-            GameData.Players.ForEach(x => x.SendChoices(GameData.SubmittedAnswers));
+            GameData.Players.ForEach(x => x.SendChoices(GameData.Answers.ToList()));
         }
 
         public override void OnPlayerMessage(Player player, string json)
@@ -326,31 +410,19 @@ namespace Server.Drawesome
 
             Message.IsType<ClientMessage.Game.SubmitChoice>(json, (data) =>
             {
-                // Add chosen answer
-                var playerChoice = GameData.SubmittedAnswers.Find(x => x.Answer == data.Choice);
-
-                if (!GameData.ChosenAnswers.ContainsKey(playerChoice))
-                    GameData.ChosenAnswers.Add(playerChoice, new ChoiceData());
-
-                GameData.ChosenAnswers[playerChoice].Players.Add(player.Data);
-
-                // Give author points
-                GameData.AddPoints(playerChoice.Author, GameData.Settings.Drawesome.PointsPerChoice);
-                GameData.ChosenAnswers[playerChoice].Points += GameData.Settings.Drawesome.PointsPerChoice;
-
-                // Tell all clients of choice
+                ChosenAnswerCount++;
+                GameData.AddChosenAnswer(data.ChosenAnswer, player);
                 GameData.Players.ForEach(x => x.NotifyPlayerGameAction(player.Data));
 
                 // End state if all players have chosen
-                if (GameData.ChosenAnswers.Count == GameData.Players.Count)
+                if (ChosenAnswerCount == GameData.Players.Count)
                     EndState();
             });
 
             Message.IsType<ClientMessage.Game.LikeAnswer>(json, (data) =>
             {
                 // Add like
-                var answer = GameData.SubmittedAnswers.Find(x => x.Answer == data.Answer);
-                GameData.ChosenAnswers[answer].Likes++;
+                GameData.AddLike(data.Answer);
             });
         }
 
@@ -430,7 +502,8 @@ namespace Server.Drawesome
         protected override void OnBegin()
         {
             base.OnBegin();
-            GameData.Players.ForEach(x => x.SendScores(GameData.PlayerScores));
+            var score = GameData.Scores.ToDictionary(x => x.Key, y => y.Value);
+            GameData.Players.ForEach(x => x.SendScores(score));
             SetTimer("Show Scores", 10f, false);
         }
     }
@@ -442,6 +515,7 @@ namespace Server.Drawesome
         protected override void OnBegin()
         {
             base.OnBegin();
+            GameData.OnNextRound();
             EndState(true);
         }
     }

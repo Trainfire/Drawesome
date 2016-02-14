@@ -202,7 +202,7 @@ public class Game : MonoBehaviour, IClientHandler
 
         void View_OnChoiceSelected(UiChoosingItem obj)
         {
-            Client.Messenger.SubmitChoice(obj.Text.text);
+            Client.Messenger.SubmitChosenAnswer(obj.Text.text);
         }
 
         protected override void OnMessage(string json)

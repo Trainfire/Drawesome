@@ -173,7 +173,7 @@ public class AppConsole : MonoBehaviour, IClientHandler
         }
         else
         {
-            Client.Messenger.SubmitChoice(args[0]);
+            Client.Messenger.SubmitChosenAnswer(args[0]);
         }
     }
 

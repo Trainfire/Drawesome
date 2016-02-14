@@ -101,11 +101,11 @@ namespace Protocol
 
             public class SubmitChoice : Message
             {
-                public string Choice { get; set; }
+                public string ChosenAnswer { get; private set; }
 
-                public SubmitChoice(string choice)
+                public SubmitChoice(string chosenAnswer)
                 {
-                    Choice = choice;
+                    ChosenAnswer = chosenAnswer;
                 }
             }
 

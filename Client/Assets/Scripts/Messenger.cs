@@ -63,7 +63,7 @@ public class Messenger
         Connection.SendMessage(new ClientMessage.Game.SubmitAnswer(answer));
     }
 
-    public void SubmitChoice(string choice)
+    public void SubmitChosenAnswer(string choice)
     {
         Connection.SendMessage(new ClientMessage.Game.SubmitChoice(choice));
     }
