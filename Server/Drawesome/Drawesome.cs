@@ -105,7 +105,7 @@ namespace Server.Drawesome
 
         protected override void OnEndState(DrawesomeGameData gameData)
         {
-            // Loop game if drawings remain
+            // Determine what to do when the current state ends
             switch (CurrentState.Type)
             {
                 case GameState.PreGame:
@@ -151,14 +151,13 @@ namespace Server.Drawesome
                     break;
 
                 case GameState.Scores:
-                    SetState(GameState.Scores, gameData);
+                    SetState(GameState.RoundEnd, gameData);
                     break;
 
                 case GameState.RoundEnd:
                     if (gameData.Drawings.Count != 0)
                     {
-                        gameData.Drawings.Dequeue();
-                        SetState(GameState.Drawing, gameData);
+                        SetState(GameState.Answering, gameData);
                     }
                     else
                     {
@@ -432,12 +431,19 @@ namespace Server.Drawesome
         {
             base.OnBegin();
             GameData.Players.ForEach(x => x.SendScores(GameData.PlayerScores));
+            SetTimer("Show Scores", 10f, false);
         }
     }
 
     public class StateRoundEnd : State<DrawesomeGameData>
     {
         public override GameState Type { get { return GameState.RoundEnd; } }
+
+        protected override void OnBegin()
+        {
+            base.OnBegin();
+            EndState(true);
+        }
     }
 
     #endregion
