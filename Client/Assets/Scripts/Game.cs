@@ -178,6 +178,8 @@ public class Game : MonoBehaviour, IClientHandler
             GetView<UiGameStateAnswering>((view) =>
             {
                 view.Error.Hide();
+                view.InputField.text = "Enter your guess here...";
+                view.InputField.interactable = true;
                 view.Submit.interactable = true;
             });
         }
