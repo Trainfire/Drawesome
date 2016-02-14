@@ -51,6 +51,7 @@ namespace Protocol
         Answering,
         Choosing,
         Results,
+        Scores,
         RoundEnd,
     }
 }
