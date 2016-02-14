@@ -6,28 +6,45 @@ public class UiBase : MonoBehaviour, IClientHandler
 {
     protected Client Client { get; private set; }
 
+    bool IsFirstShow { get; set; }
+
     public virtual void Hide()
     {
+        gameObject.SetActive(false);
         OnHide();
     }
 
     public virtual void Initialise(Client client)
     {
         Client = client;
+        IsFirstShow = true;
     }
 
     public virtual void Show()
     {
+        gameObject.SetActive(true);
+
+        if (IsFirstShow)
+        {
+            OnFirstShow();
+            IsFirstShow = false;
+        }
+
         OnShow();
     }
 
-    protected virtual void OnHide()
+    protected virtual void OnFirstShow()
     {
-        gameObject.SetActive(false);
+
     }
 
     protected virtual void OnShow()
     {
-        gameObject.SetActive(true);
+
+    }
+
+    protected virtual void OnHide()
+    {
+        
     }
 }

@@ -90,6 +90,7 @@
     <Compile Include="Assets\Scripts\MessageHandler.cs" />
     <Compile Include="Assets\Scripts\Messenger.cs" />
     <Compile Include="Assets\Scripts\Settings.cs" />
+    <Compile Include="Assets\Scripts\State.cs" />
     <Compile Include="Assets\Scripts\Stylesheet\ButtonComponent.cs" />
     <Compile Include="Assets\Scripts\Stylesheet\ButtonData.cs" />
     <Compile Include="Assets\Scripts\Stylesheet\ColorComponent.cs" />
@@ -124,6 +125,7 @@
     <Compile Include="Assets\Shared\ProtocolHelper.cs" />
     <Compile Include="Assets\Shared\ServerMessage.cs" />
     <Compile Include="Assets\Shared\StringFormatter.cs" />
+    <Compile Include="Assets\UiResultRow.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\SyntaxTree\UnityVS\2015\UnityVS.CSharp.targets" />
 </Project>

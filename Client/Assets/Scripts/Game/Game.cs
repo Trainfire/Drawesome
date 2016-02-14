@@ -14,7 +14,7 @@ public class Game : MonoBehaviour, IClientHandler
     public UiGameStateRoundEnd RoundEndView;
 
     Client Client { get; set; }
-    List<State> States { get; set; }
+    List<IGameState> States { get; set; }
     State Current { get; set; }
 
     public void Initialise(Client client)
@@ -33,10 +33,10 @@ public class Game : MonoBehaviour, IClientHandler
         ChangeState(GameState.PreGame);
     }
 
-    void AddState(State state)
+    void AddState(IGameState state)
     {
         if (States == null)
-            States = new List<State>();
+            States = new List<IGameState>();
 
         States.Add(state);
     }
@@ -47,12 +47,12 @@ public class Game : MonoBehaviour, IClientHandler
         {
             if (s.Type != nextState)
             {
-                s.Hide();
+                s.State.End();
             }
             else
             {
-                Current = s;
-                s.Show();
+                Current = s.State;
+                s.State.Begin();
             }
         }
     }
@@ -85,74 +85,16 @@ public class Game : MonoBehaviour, IClientHandler
             Current.Update();
     }
 
-    public abstract class State
+    public interface IGameState
     {
-        public abstract GameState Type { get; }
-        protected UiGameState View { get; private set; }
-        protected Client Client { get; private set; }
-        private bool IsFirstShow { get; set; }
-
-        public State(Client client, UiGameState view)
-        {
-            Client = client;
-            Client.MessageHandler.OnMessage += OnMessage;
-            View = view;
-            IsFirstShow = true;
-        }
-
-        public void Show()
-        {
-            View.gameObject.SetActive(true);
-
-            if (IsFirstShow)
-            {
-                OnFirstShow();
-                IsFirstShow = false;
-            }
-
-            OnShow();
-        }
-
-        public void Hide()
-        {
-            View.gameObject.SetActive(false);
-            OnHide();
-        }
-
-        protected T GetView<T>() where T : UiGameState
-        {
-            return View as T;
-        }
-
-        protected virtual void OnFirstShow()
-        {       
-            
-        }
-
-        protected virtual void OnShow()
-        {
-
-        }
-
-        protected virtual void OnMessage(string json)
-        {
-
-        }
-
-        protected virtual void OnHide()
-        {
-            
-        }
-
-        public virtual void Update()
-        {
-
-        }
+        State State { get; }
+        GameState Type { get; }
     }
 
-    public class PreGameState : State
+    public class PreGameState : State, IGameState
     {
-        public override GameState Type { get { return GameState.PreGame; } }
+        public State State { get { return this; } }
+        public GameState Type { get { return GameState.PreGame; } }
 
         public PreGameState(Client client, UiGameStatePreGame view) : base(client, view)
         {
@@ -169,9 +111,10 @@ public class Game : MonoBehaviour, IClientHandler
         }
     }
 
-    public class RoundBeginState : State
+    public class RoundBeginState : State, IGameState
     {
-        public override GameState Type { get { return GameState.RoundBegin; } }
+        public State State { get { return this; } }
+        public GameState Type { get { return GameState.RoundBegin; } }
 
         public RoundBeginState(Client client, UiGameStateRoundBegin view) : base(client, view)
         {
@@ -185,9 +128,10 @@ public class Game : MonoBehaviour, IClientHandler
         }
     }
 
-    public class DrawingState : State
+    public class DrawingState : State, IGameState
     {
-        public override GameState Type { get { return GameState.Drawing; } }
+        public State State { get { return this; } }
+        public GameState Type { get { return GameState.Drawing; } }
 
         public DrawingState(Client client, UiGameStateDrawing view) : base(client, view)
         {
@@ -210,9 +154,10 @@ public class Game : MonoBehaviour, IClientHandler
         }
     }
 
-    public class AnsweringState : State
+    public class AnsweringState : State, IGameState
     {
-        public override GameState Type { get { return GameState.Answering; } }
+        public State State { get { return this; } }
+        public GameState Type { get { return GameState.Answering; } }
 
         public AnsweringState(Client client, UiGameStateAnswering view) : base(client, view)
         {
@@ -222,7 +167,7 @@ public class Game : MonoBehaviour, IClientHandler
             });
         }
 
-        protected override void OnShow()
+        protected override void OnBegin()
         {
             GetView<UiGameStateAnswering>().Error.Hide();
         }
@@ -242,9 +187,10 @@ public class Game : MonoBehaviour, IClientHandler
         }
     }
 
-    public class ChoosingState : State
+    public class ChoosingState : State, IGameState
     {
-        public override GameState Type { get { return GameState.Choosing; } }
+        public State State { get { return this; } }
+        public GameState Type { get { return GameState.Choosing; } }
 
         public ChoosingState(Client client, UiGameStateChoosing view) : base(client, view)
         {
@@ -265,9 +211,10 @@ public class Game : MonoBehaviour, IClientHandler
         }
     }
 
-    public class ResultsState : State
+    public class ResultsState : State, IGameState
     {
-        public override GameState Type { get { return GameState.Results; } }
+        public State State { get { return this; } }
+        public GameState Type { get { return GameState.Results; } }
 
         public ResultsState(Client client, UiGameStateResults view) : base(client, view)
         {
@@ -283,9 +230,10 @@ public class Game : MonoBehaviour, IClientHandler
         }
     }
 
-    public class RoundEndState : State
+    public class RoundEndState : State, IGameState
     {
-        public override GameState Type { get { return GameState.RoundEnd; } }
+        public State State { get { return this; } }
+        public GameState Type { get { return GameState.RoundEnd; } }
 
         public RoundEndState(Client client, UiGameStateRoundEnd view) : base(client, view)
         {

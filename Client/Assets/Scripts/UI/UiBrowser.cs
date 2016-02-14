@@ -47,7 +47,7 @@ public class UiBrowser : UiBase
         foreach (var room in message.Rooms)
         {
             // Make instance of view
-            var view = UiUtility.AddChild<UiBrowserItem>(Browser, BrowserItemPrototype, true);
+            var view = UiUtility.AddChild<UiBrowserItem>(Browser.gameObject, BrowserItemPrototype, true);
             view.Text.text = string.Format("{0}'s Game", room.ID);
             view.Toggle.group = toggleGroup;
             view.RoomData = room;

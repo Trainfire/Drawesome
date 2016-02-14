@@ -1,7 +1,7 @@
 using UnityEngine;
 using System.Collections;
 
-public class UiGameStateRoundBegin : UiGameState
+public class UiGameStateRoundBegin : UiBase
 {
 
 }

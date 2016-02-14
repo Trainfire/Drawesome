@@ -37,7 +37,7 @@ public class UiChat : UiBase
 
     void AddMessage(string message, params object[] args)
     {
-        var instance = UiUtility.AddChild<Text>(MessagesContainer, MessagePrototype);
+        var instance = UiUtility.AddChild<Text>(MessagesContainer.gameObject, MessagePrototype);
         instance.text = string.Format(message, args);
         instance.enabled = true;
 

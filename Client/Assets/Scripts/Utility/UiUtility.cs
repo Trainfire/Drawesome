@@ -12,7 +12,7 @@ public static class UiUtility
     /// <param name="prototype"></param>
     /// <param name="enable">Specify if you want the child to be set active upon creation.</param>
     /// <returns></returns>
-    public static T AddChild<T>(RectTransform parent, T prototype, bool enable = false) where T : MonoBehaviour
+    public static T AddChild<T>(GameObject parent, T prototype, bool enable = false) where T : MonoBehaviour
     {
         var instance = GameObject.Instantiate<T>(prototype);
         instance.transform.SetParent(parent.transform);

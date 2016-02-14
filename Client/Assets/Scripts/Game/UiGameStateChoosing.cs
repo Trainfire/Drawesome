@@ -3,7 +3,7 @@ using UnityEngine.UI;
 using System.Collections.Generic;
 using System;
 
-public class UiGameStateChoosing : UiGameState
+public class UiGameStateChoosing : UiBase
 {
     public event Action<UiChoosingItem> OnChoiceSelected;
 
@@ -12,9 +12,9 @@ public class UiGameStateChoosing : UiGameState
 
     List<UiChoosingItem> Views = new List<UiChoosingItem>();
 
-    void Awake()
+    protected override void OnFirstShow()
     {
-        ChoicePrototype.gameObject.SetActive(false);
+        Views = new List<UiChoosingItem>();
     }
 
     public void ShowChoices(List<string> choices)
@@ -23,7 +23,7 @@ public class UiGameStateChoosing : UiGameState
         {
             Debug.LogFormat("Show choice: {0}", choices[i]);
 
-            var instance = UiUtility.AddChild(SpawnPositions[i], ChoicePrototype, true);
+            var instance = UiUtility.AddChild(SpawnPositions[i].gameObject, ChoicePrototype, true);
 
             instance.Text.text = choices[i];
 
@@ -37,8 +37,9 @@ public class UiGameStateChoosing : UiGameState
         }
     }
 
-    protected override void OnEnd()
+    protected override void OnHide()
     {
         Views.ForEach(x => Destroy(x.gameObject));
+        Views.Clear();
     }
 }

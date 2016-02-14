@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-public class UiGameStateDrawing : UiGameState
+public class UiGameStateDrawing : UiBase
 {
     public UiDrawingCanvas Canvas;
     public Text Prompt;
