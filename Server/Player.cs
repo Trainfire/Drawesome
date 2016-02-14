@@ -26,7 +26,7 @@ namespace Server
         }
     }
 
-    public class Player
+    public class Player : ServerMessage.Game.ISendScores
     {
         public event EventHandler<PlayerConnectionClosed> OnConnectionClosed;
         public event EventHandler<SharedMessage.Chat> OnChat;
@@ -148,6 +148,12 @@ namespace Server
         public void Update(ConnectionsHandler manager)
         {
             Console.WriteLine("Send update to " + Data.Name);
+        }
+
+        public void SendScores(Dictionary<PlayerData, uint> playerScores)
+        {
+            var message = new ServerMessage.Game.SendScores(playerScores);
+            Socket.Send(message.AsJson());
         }
     }
 }

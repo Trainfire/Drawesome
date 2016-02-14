@@ -8,12 +8,13 @@ using System.Linq;
 
 namespace Server.Drawesome
 {
-    public class DrawesomeGameData : GameData
+    public class DrawesomeGameData : GameData, IScores
     {
         public Queue<DrawingData> Drawings { get; private set; }
         public List<AnswerData> SubmittedAnswers { get; private set; }
         public Dictionary<AnswerData, ChoiceData> ChosenAnswers { get; private set; }
         public Dictionary<Player, PromptData> SentPrompts { get; private set; }
+        public Dictionary<PlayerData, uint> PlayerScores { get; private set; }
 
         List<PromptData> PromptPool { get; set; }
 
@@ -51,6 +52,18 @@ namespace Server.Drawesome
 
             return prompt;
         }
+
+        public void AddPoints(PlayerData player, uint points)
+        {
+            if (PlayerScores == null)
+            {
+                PlayerScores = new Dictionary<PlayerData, uint>();
+                Players.ForEach(x => PlayerScores.Add(x.Data, 0));
+            }
+
+            Console.WriteLine("Give {0} {1} points", player.Name, points);
+            PlayerScores[player] += points;
+        }
     }
 
     public class DrawesomeGame : Game<DrawesomeGameData>
@@ -67,6 +80,7 @@ namespace Server.Drawesome
             AddState(GameState.Answering, new StateAnsweringPhase());
             AddState(GameState.Choosing, new StateChoosingPhase());
             AddState(GameState.Results, new StateResultsPhase());
+            AddState(GameState.Scores, new StateScores());
             AddState(GameState.RoundEnd, new StateRoundEnd());
         }
 
@@ -133,7 +147,11 @@ namespace Server.Drawesome
                     break;
 
                 case GameState.Results:
-                    SetState(GameState.RoundEnd, gameData);
+                    SetState(GameState.Scores, gameData);
+                    break;
+
+                case GameState.Scores:
+                    SetState(GameState.Scores, gameData);
                     break;
 
                 case GameState.RoundEnd:
@@ -318,6 +336,7 @@ namespace Server.Drawesome
                 // Add answer
                 var answer = GameData.SubmittedAnswers.Find(x => x.Answer == data.Choice);
                 GameData.ChosenAnswers[answer].Players.Add(player.Data);
+                GameData.AddPoints(answer.Author, GameData.Settings.Drawesome.PointsPerChoice);
 
                 // Tell all clients of choice
                 GameData.Players.ForEach(x => x.NotifyPlayerGameAction(player.Data));
@@ -401,6 +420,17 @@ namespace Server.Drawesome
             {
                 EndState();
             }
+        }
+    }
+
+    public class StateScores : State<DrawesomeGameData>
+    {
+        public override GameState Type { get { return GameState.Scores; } }
+
+        protected override void OnBegin()
+        {
+            base.OnBegin();
+            GameData.Players.ForEach(x => x.SendScores(GameData.PlayerScores));
         }
     }
 

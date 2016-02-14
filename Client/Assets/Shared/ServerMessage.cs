@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using Protocol;
 using System.Linq;
+using Newtonsoft.Json;
 
 namespace Protocol
 {
@@ -120,6 +121,29 @@ namespace Protocol
                 public SendResult(ResultData result)
                 {
                     Result = result;
+                }
+            }
+
+            public interface ISendScores
+            {
+                void SendScores(Dictionary<PlayerData, uint> playerScores);
+            }
+
+            public class SendScores : Message
+            {
+                public List<PlayerData> Players;
+                public List<uint> Scores;
+
+                public SendScores(Dictionary<PlayerData, uint> playerScores)
+                {
+                    Players = new List<PlayerData>();
+                    Scores = new List<uint>();
+
+                    if (playerScores != null)
+                    {
+                        Players = playerScores.Keys.ToList();
+                        Scores = playerScores.Values.ToList();
+                    }   
                 }
             }
 

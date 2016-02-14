@@ -97,6 +97,7 @@ namespace Server
         public float DrawTime = 60f;
         public float AnsweringTime = 30f;
         public float ChoosingTime = 30f;
+        public uint PointsPerChoice = 100;
     }
 
     public class PromptSettings
