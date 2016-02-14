@@ -3,5 +3,6 @@
   "DrawTime": 60.0,
   "AnsweringTime": 30.0,
   "ChoosingTime": 30.0,
+  "ResultTimeBetween": 10.0,
   "PointsPerChoice": 100,
 }

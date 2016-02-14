@@ -319,12 +319,6 @@ namespace Server.Drawesome
 
             // Send options to each player
             GameData.Players.ForEach(x => x.SendChoices(GameData.SubmittedAnswers));
-
-            // Add answers here
-            foreach (var answer in GameData.SubmittedAnswers)
-            {
-                GameData.ChosenAnswers.Add(answer, new ChoiceData());
-            }
         }
 
         public override void OnPlayerMessage(Player player, string json)
@@ -333,10 +327,17 @@ namespace Server.Drawesome
 
             Message.IsType<ClientMessage.Game.SubmitChoice>(json, (data) =>
             {
-                // Add answer
-                var answer = GameData.SubmittedAnswers.Find(x => x.Answer == data.Choice);
-                GameData.ChosenAnswers[answer].Players.Add(player.Data);
-                GameData.AddPoints(answer.Author, GameData.Settings.Drawesome.PointsPerChoice);
+                // Add chosen answer
+                var playerChoice = GameData.SubmittedAnswers.Find(x => x.Answer == data.Choice);
+
+                if (!GameData.ChosenAnswers.ContainsKey(playerChoice))
+                    GameData.ChosenAnswers.Add(playerChoice, new ChoiceData());
+
+                GameData.ChosenAnswers[playerChoice].Players.Add(player.Data);
+
+                // Give author points
+                GameData.AddPoints(playerChoice.Author, GameData.Settings.Drawesome.PointsPerChoice);
+                GameData.ChosenAnswers[playerChoice].Points += GameData.Settings.Drawesome.PointsPerChoice;
 
                 // Tell all clients of choice
                 GameData.Players.ForEach(x => x.NotifyPlayerGameAction(player.Data));
@@ -401,12 +402,12 @@ namespace Server.Drawesome
         {
             // Send choice to client and remove from queue
             var chosenAnswer = ChosenAnswersQueue.Dequeue();
-            var result = new ResultData(chosenAnswer.Key.Author, chosenAnswer.Value.Players, chosenAnswer.Key.Answer, 0);
+            var result = new ResultData(chosenAnswer.Key.Author, chosenAnswer.Value.Players, chosenAnswer.Key.Answer, chosenAnswer.Value.Points);
             var message = new ServerMessage.Game.SendResult(result);
             GameData.Players.ForEach(x => x.SendMessage(message));
 
             // Start timer
-            var timer = new GameTimer(5f);
+            var timer = new GameTimer(GameData.Settings.Drawesome.ResultTimeBetween);
             timer.Finish += UpdateQueue;
         }
 

@@ -68,6 +68,7 @@ namespace Protocol
     {
         public List<PlayerData> Players { get; set; }
         public int Likes { get; set; }
+        public uint Points { get; set; }
 
         public ChoiceData()
         {
