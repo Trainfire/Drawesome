@@ -37,4 +37,11 @@ public class UiGameStateScores : UiBase
 
         // TODO
     }
+
+    protected override void OnHide()
+    {
+        base.OnHide();
+        resultViews.ForEach(x => Destroy(x.gameObject));
+        resultViews.Clear();
+    }
 }
