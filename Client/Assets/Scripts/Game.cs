@@ -167,12 +167,19 @@ public class Game : MonoBehaviour, IClientHandler
             view.Submit.onClick.AddListener(() =>
             {
                 Client.Messenger.SubmitAnswer(view.InputField.text);
+                view.InputField.interactable = false;
+                view.InputField.text = "Answer submitted! Waiting for other players...";
+                view.Submit.interactable = false;
             });
         }
 
         protected override void OnBegin()
         {
-            GetView<UiGameStateAnswering>().Error.Hide();
+            GetView<UiGameStateAnswering>((view) =>
+            {
+                view.Error.Hide();
+                view.Submit.interactable = true;
+            });
         }
 
         protected override void OnMessage(string json)

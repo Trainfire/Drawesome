@@ -42,6 +42,11 @@ public abstract class State
         return View as T;
     }
 
+    protected void GetView<T>(System.Action<T> OnGet) where T : UiBase
+    {
+        OnGet(View as T);
+    }
+
     protected virtual void OnFirstBegin()
     {
 
