@@ -1,4 +1,4 @@
 {
   "HostUrl": "ws://0.0.0.0:8181",
-  "MaxPlayers": 1
+  "MaxPlayers": 8
 }
