@@ -91,6 +91,11 @@ public class Connection : MonoBehaviour
             ConnectionClosed(this, e);
     }
 
+    void OnApplicationQuit()
+    {
+        Disconnect(CloseStatusCode.Normal, "Application Quit");
+    }
+
     public void SendMessage(Message message)
     {
         var json = JsonHelper.ToJson(message);

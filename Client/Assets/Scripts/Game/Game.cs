@@ -1,6 +1,7 @@
 using UnityEngine;
 using System.Collections.Generic;
 using Protocol;
+using System.Linq;
 
 public class Game : MonoBehaviour, IClientHandler
 {
@@ -11,6 +12,7 @@ public class Game : MonoBehaviour, IClientHandler
     public UiGameStateAnswering AnsweringView;
     public UiGameStateChoosing ChoosingView;
     public UiGameStateResults ResultsView;
+    public UiGameStateScores ScoresView;
     public UiGameStateRoundEnd RoundEndView;
 
     Client Client { get; set; }
@@ -28,6 +30,7 @@ public class Game : MonoBehaviour, IClientHandler
         AddState(new AnsweringState(client, AnsweringView));
         AddState(new ChoosingState(client, ChoosingView));
         AddState(new ResultsState(client, ResultsView));
+        AddState(new ScoresState(client, ScoresView));
         AddState(new RoundEndState(client, RoundEndView));
 
         ChangeState(GameState.PreGame);
@@ -226,6 +229,33 @@ public class Game : MonoBehaviour, IClientHandler
             Message.IsType<ServerMessage.Game.SendResult>(json, (data) =>
             {
                 GetView<UiGameStateResults>().ShowResult(data.Result);
+            });
+        }
+    }
+
+    public class ScoresState : State, IGameState
+    {
+        public State State { get { return this; } }
+        public GameState Type { get { return GameState.Scores; } }
+
+        public ScoresState(Client client, UiGameStateScores view) : base(client, view)
+        {
+
+        }
+
+        protected override void OnMessage(string json)
+        {
+            Message.IsType<ServerMessage.Game.SendScores>(json, (data) =>
+            {
+                // Order scores
+                var sortedList = new List<KeyValuePair<PlayerData, uint>>();
+                for (int i = 0; i < data.Players.Count; i++)
+                {
+                    sortedList.Add(new KeyValuePair<PlayerData, uint>(data.Players[i], data.Scores[i]));
+                }
+                sortedList = sortedList.OrderByDescending(x => x.Value).ToList();
+
+                GetView<UiGameStateScores>().ShowScores(sortedList);
             });
         }
     }

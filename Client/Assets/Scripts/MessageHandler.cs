@@ -39,9 +39,6 @@ public class MessageHandler
         {
             var json = message.Data;
 
-            if (OnMessage != null)
-                OnMessage(message.Data);
-
             #region General
 
             Message.IsType<ServerMessage.NotifyPlayerAction>(json, (data) => FireEvent(OnServerNotifyPlayerAction, data));
@@ -64,10 +61,15 @@ public class MessageHandler
             Message.IsType<ServerMessage.Game.SendAnswerValidation>(json, (data) => FireEvent(OnAnswerError, data));
             Message.IsType<ServerMessage.Game.AddTimer>(json, (data) => FireEvent(OnAddTimer, data));
             Message.IsType<ServerMessage.Game.SetTimer>(json, (data) => FireEvent(OnSetTimer, data));
-
             Message.IsType<ServerMessage.Game.SetTimer>(json, (data) => FireEvent(OnSetTimer, data));
 
             #endregion
+
+            if (OnAny != null)
+                OnAny(JsonHelper.FromJson<Message>(message.Data));
+
+            if (OnMessage != null)
+                OnMessage(message.Data);
         }
     }
 
@@ -75,8 +77,5 @@ public class MessageHandler
     {
         if (messageEvent != null)
             messageEvent(data);
-
-        if (OnAny != null)
-            OnAny(data);
     }
 }

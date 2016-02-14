@@ -86,6 +86,7 @@
     <Compile Include="Assets\Scripts\Game\UiGameStateResults.cs" />
     <Compile Include="Assets\Scripts\Game\UiGameStateRoundBegin.cs" />
     <Compile Include="Assets\Scripts\Game\UiGameStateRoundEnd.cs" />
+    <Compile Include="Assets\Scripts\Game\UiGameStateScores.cs" />
     <Compile Include="Assets\Scripts\Interfaces\IClientHandler.cs" />
     <Compile Include="Assets\Scripts\MessageHandler.cs" />
     <Compile Include="Assets\Scripts\Messenger.cs" />
@@ -119,6 +120,7 @@
     <Compile Include="Assets\Shared\ClientMessage.cs" />
     <Compile Include="Assets\Shared\Data.cs" />
     <Compile Include="Assets\Shared\Enums.cs" />
+    <Compile Include="Assets\Shared\Interfaces.cs" />
     <Compile Include="Assets\Shared\JsonHelper.cs" />
     <Compile Include="Assets\Shared\Message.cs" />
     <Compile Include="Assets\Shared\Protocol.cs" />
