@@ -13,7 +13,7 @@ public class Game : MonoBehaviour, IClientHandler
     public UiGameStateChoosing ChoosingView;
     public UiGameStateResults ResultsView;
     public UiGameStateScores ScoresView;
-    public UiGameStateRoundEnd RoundEndView;
+    public UiGameStateGameOver RoundEndView;
 
     Client Client { get; set; }
     List<IGameState> States { get; set; }
@@ -31,7 +31,7 @@ public class Game : MonoBehaviour, IClientHandler
         AddState(new ChoosingState(client, ChoosingView));
         AddState(new ResultsState(client, ResultsView));
         AddState(new ScoresState(client, ScoresView));
-        AddState(new RoundEndState(client, RoundEndView));
+        AddState(new GameOverState(client, RoundEndView));
 
         ChangeState(GameState.PreGame);
     }
@@ -260,12 +260,12 @@ public class Game : MonoBehaviour, IClientHandler
         }
     }
 
-    public class RoundEndState : State, IGameState
+    public class GameOverState : State, IGameState
     {
         public State State { get { return this; } }
-        public GameState Type { get { return GameState.RoundEnd; } }
+        public GameState Type { get { return GameState.GameOver; } }
 
-        public RoundEndState(Client client, UiGameStateRoundEnd view) : base(client, view)
+        public GameOverState(Client client, UiGameStateGameOver view) : base(client, view)
         {
 
         }

@@ -52,6 +52,6 @@ namespace Protocol
         Choosing,
         Results,
         Scores,
-        RoundEnd,
+        GameOver,
     }
 }

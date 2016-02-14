@@ -98,10 +98,11 @@ namespace Server.Drawesome
             GetAnswer(answer).Likes++;
         }
 
-        public void OnNextRound()
+        public void OnNewRound()
         {
             answers.Clear();
-            drawings.Dequeue();
+            if (drawings.Count != 0)
+                drawings.Dequeue();
         }
 
         public DrawingData GetDrawing()
@@ -153,7 +154,7 @@ namespace Server.Drawesome
             AddState(GameState.Choosing, new StateChoosingPhase());
             AddState(GameState.Results, new StateResultsPhase());
             AddState(GameState.Scores, new StateScores());
-            AddState(GameState.RoundEnd, new StateRoundEnd());
+            AddState(GameState.GameOver, new StateRoundEnd());
         }
 
         public override void Start(List<Player> players)
@@ -222,22 +223,24 @@ namespace Server.Drawesome
                     break;
 
                 case GameState.Results:
-                    SetState(GameState.Scores, gameData);
-                    break;
-
-                case GameState.Scores:
-                    SetState(GameState.RoundEnd, gameData);
-                    break;
-
-                case GameState.RoundEnd:
-                    if (gameData.HasDrawings())
+                    gameData.OnNewRound();
+                    if (GameData.HasDrawings())
                     {
-                        SetState(GameState.Answering, gameData);
+                        SetState(GameState.Scores, gameData);
                     }
                     else
                     {
-                        Log("Game Over!");
+                        SetState(GameState.GameOver, gameData);
                     }
+                    break;
+
+                case GameState.Scores:
+                    // After scores, return to Answering phase for remaining drawings
+                    SetState(GameState.Answering, gameData);
+                    break;
+
+                case GameState.GameOver:
+                    Log("Game Over!");
                     break;
 
                 default:
@@ -510,12 +513,12 @@ namespace Server.Drawesome
 
     public class StateRoundEnd : State<DrawesomeGameData>
     {
-        public override GameState Type { get { return GameState.RoundEnd; } }
+        public override GameState Type { get { return GameState.GameOver; } }
 
         protected override void OnBegin()
         {
             base.OnBegin();
-            GameData.OnNextRound();
+            GameData.OnNewRound();
             EndState(true);
         }
     }
