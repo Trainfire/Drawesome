@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using System.Collections.Generic;
 using System;
+using Protocol;
 
 public class UiGameStateChoosing : UiBase
 {
@@ -17,7 +18,7 @@ public class UiGameStateChoosing : UiBase
         Views = new List<UiChoosingItem>();
     }
 
-    public void ShowChoices(List<string> choices)
+    public void ShowChoices(List<AnswerData> choices)
     {
         for (int i = 0; i < choices.Count; i++)
         {
@@ -25,13 +26,22 @@ public class UiGameStateChoosing : UiBase
 
             var instance = UiUtility.AddChild(SpawnPositions[i].gameObject, ChoicePrototype, true);
 
-            instance.Text.text = choices[i];
+            bool isPlayer = choices[i].Author.ID == Client.PlayerData.ID;
 
-            instance.Button.onClick.AddListener(() =>
+            // Show different UI depending of if this is the player's answer
+            // If it is, the player won't be able to select their own answer
+            instance.YourAnswer.SetActive(isPlayer);
+            instance.OtherPlayersAnswer.SetActive(!isPlayer);
+            instance.Text.ForEach(x => x.text = choices[i].Answer);
+
+            if (!isPlayer)
             {
-                if (OnChoiceSelected != null)
-                    OnChoiceSelected(instance);
-            });
+                instance.Button.onClick.AddListener(() =>
+                {
+                    if (OnChoiceSelected != null)
+                        OnChoiceSelected(instance);
+                });
+            }
 
             Views.Add(instance);
         }

@@ -81,7 +81,7 @@ namespace Server.Drawesome
 
         public void AddAnswer(AnswerData answer)
         {
-            Console.WriteLine("Add answer {0}", answer.Answer);
+            Console.WriteLine("Add answer: {0}", answer.Answer);
             answers.Add(answer, new ChoiceData());
         }
 

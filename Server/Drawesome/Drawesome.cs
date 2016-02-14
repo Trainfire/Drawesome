@@ -252,7 +252,7 @@ namespace Server.Drawesome
     {
         public override GameState Type { get { return GameState.Choosing; } }
 
-        float ChosenAnswerCount { get; set; }
+        float ChosenAnswers { get; set; }
 
         public StateChoosingPhase()
         {
@@ -262,12 +262,8 @@ namespace Server.Drawesome
         protected override void OnBegin()
         {
             base.OnBegin();
-
-            ChosenAnswerCount = 0;
-
+            ChosenAnswers = 0;
             SetTimer("Choosing Timer", GameData.Settings.Drawesome.ChoosingTime);
-
-            // Send options to each player
             GameData.Players.ForEach(x => x.SendChoices(GameData.Answers.ToList()));
         }
 
@@ -277,13 +273,17 @@ namespace Server.Drawesome
 
             Message.IsType<ClientMessage.Game.SubmitChoice>(json, (data) =>
             {
-                ChosenAnswerCount++;
-                GameData.AddChosenAnswer(data.ChosenAnswer, player);
-                GameData.Players.ForEach(x => x.NotifyPlayerGameAction(player.Data));
+                if (!GameData.ChosenAnswers.Any(x => x.Value.Players.Any(y => y.ID == player.Data.ID)))
+                {
+                    GameData.AddChosenAnswer(data.ChosenAnswer, player);
+                    GameData.Players.ForEach(x => x.NotifyPlayerGameAction(player.Data));
 
-                // End state if all players have chosen
-                if (ChosenAnswerCount == GameData.Players.Count)
-                    EndState();
+                    ChosenAnswers++;
+
+                    // End state if all players have chosen
+                    if (ChosenAnswers == GameData.Players.Count)
+                        EndState();
+                }
             });
 
             Message.IsType<ClientMessage.Game.LikeAnswer>(json, (data) =>

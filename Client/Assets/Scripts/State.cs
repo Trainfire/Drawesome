@@ -12,6 +12,7 @@ public abstract class State
         Client = client;
         Client.MessageHandler.OnMessage += OnMessage;
         View = view;
+        View.Initialise(client);
         IsFirstShow = true;
     }
 

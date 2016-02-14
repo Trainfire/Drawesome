@@ -7,6 +7,7 @@ public class Client : MonoBehaviour
 {
     public bool LogMessages;
 
+    public PlayerData PlayerData { get { return Connection.Player; } }
     public Connection Connection { get; private set; }
     public MessageHandler MessageHandler { get; private set; }
     public Messenger Messenger { get; private set; }

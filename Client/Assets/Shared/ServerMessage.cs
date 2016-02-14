@@ -106,9 +106,9 @@ namespace Protocol
 
             public class SendChoices : Message
             {
-                public List<string> Choices;
+                public List<AnswerData> Choices;
 
-                public SendChoices(List<string> choices)
+                public SendChoices(List<AnswerData> choices)
                 {
                     Choices = choices;
                 }
