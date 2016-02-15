@@ -59,6 +59,7 @@ namespace Server
         {
             Console.WriteLine("Player {0} joined room {1}", joiningPlayer.Data.Name, RoomData.ID);
 
+            // Prevent join if password is incorrect
             if (joiningPlayer.Data.ID != Owner.Data.ID && password != RoomData.Password)
             {
                 Log("Player {0} provided incorrect password {1}. (Is {2})", joiningPlayer.Data.Name, password, RoomData.Password);
@@ -66,10 +67,19 @@ namespace Server
                 return;
             }
 
+            // Prevent join if room is full
             if (Players.Count == Settings.Server.MaxPlayers)
             {
                 Log("Player {0} attempt to join the room {1} but that room is full", joiningPlayer.Data.Name, RoomData.ID);
                 joiningPlayer.SendRoomError(RoomError.RoomFull);
+                return;
+            }
+
+            // Prevent join if game has started
+            if (RoomData.GameStarted)
+            {
+                Log("Player {0} attempt to join the room {1} but the game has already started", joiningPlayer.Data.Name, RoomData.ID);
+                joiningPlayer.SendRoomError(RoomError.GameAlreadyStarted);
                 return;
             }
 
@@ -121,6 +131,7 @@ namespace Server
                 {
                     case GameAction.Start:
                         Log("{0} has started the game", Owner.Data.Name);
+                        RoomData.GameStarted = true;
                         Game.Start(Players);
                         break;
                     case GameAction.Restart:

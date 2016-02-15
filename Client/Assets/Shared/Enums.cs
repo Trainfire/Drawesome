@@ -24,6 +24,7 @@ namespace Protocol
         RoomFull,
         RoomDoesNotExist,
         AlreadyInRoom,
+        GameAlreadyStarted,
     }
 
     [Serializable]

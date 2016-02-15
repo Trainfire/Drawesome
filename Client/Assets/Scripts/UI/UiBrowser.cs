@@ -48,7 +48,7 @@ public class UiBrowser : UiBase
         {
             // Make instance of view
             var view = UiUtility.AddChild<UiBrowserItem>(Browser.gameObject, BrowserItemPrototype, true);
-            view.Text.text = string.Format("{0}'s Game", room.ID);
+            view.Text.text = string.Format("{0}'s Game / Players: {1} / Started?: {2}", room.Owner.Name, room.Players.Count, room.GameStarted);
             view.Toggle.group = toggleGroup;
             view.RoomData = room;
 

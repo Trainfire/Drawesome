@@ -23,6 +23,7 @@ namespace Protocol
         public string Password { get; set; }
         public PlayerData Owner { get; set; }
         public List<PlayerData> Players { get; set; }
+        public bool GameStarted { get; set; }
 
         public RoomData()
         {
@@ -30,6 +31,7 @@ namespace Protocol
             Password = "";
             Owner = new PlayerData();
             Players = new List<PlayerData>();
+            GameStarted = false;
         }
     }
 
