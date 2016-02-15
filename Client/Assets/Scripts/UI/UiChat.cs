@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.UI;
+using System.Collections;
 using Protocol;
 
 public class UiChat : UiBase
@@ -41,6 +42,16 @@ public class UiChat : UiBase
         instance.text = string.Format(message, args);
         instance.enabled = true;
 
+        if (gameObject.activeInHierarchy)
+        {
+            StopAllCoroutines();
+            StartCoroutine(Hack());
+        }
+    }
+
+    IEnumerator Hack()
+    {
+        yield return new WaitForEndOfFrame();
         ScrollRect.ScrollToBottom();
     }
 
