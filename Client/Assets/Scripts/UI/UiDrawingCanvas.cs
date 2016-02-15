@@ -64,7 +64,7 @@ public class UiDrawingCanvas : MonoBehaviour
     {
         MousePosition = Input.mousePosition;
 
-        if (Input.GetMouseButton(0))
+        if (Input.GetMouseButton(0) && AllowDrawing)
         {
             if (RectTransformUtility.RectangleContainsScreenPoint((RectTransform)transform, MousePosition))
             {
