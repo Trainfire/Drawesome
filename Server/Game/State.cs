@@ -54,7 +54,7 @@ namespace Server.Game
 
         void Timer_Tick(object sender, EventArgs e)
         {
-            GameData.Players.ForEach(x => x.SetTimer(Timer.ElapsedTime));
+            GameData.Players.ForEach(x => x.SetTimer(Timer.Duration - Timer.ElapsedTime));
         }
 
         protected virtual void OnTimerFinish(object sender, EventArgs e)

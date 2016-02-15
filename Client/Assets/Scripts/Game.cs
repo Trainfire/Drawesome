@@ -40,6 +40,8 @@ public class Game : MonoBehaviour, IClientHandler
         Canvas = new DrawingCanvas(client, CanvasView);
         AddHandler(Canvas);
 
+        Timer.Hide();
+
         ChangeState(GameState.PreGame);
     }
 
@@ -83,6 +85,7 @@ public class Game : MonoBehaviour, IClientHandler
         // Change state
         Message.IsType<ServerMessage.Game.StateChange>(json, (data) =>
         {
+            Timer.Hide();
             ChangeState(data.GameState);
         });
 

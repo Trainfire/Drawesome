@@ -31,7 +31,6 @@ public class Timer : MonoBehaviour
 
     public void SetDuration(float duration)
     {
-        Debug.Log("Called once!");
         Duration = duration;
         CurrentTime = duration;
         View.Fill.fillAmount = 1f;
@@ -49,11 +48,11 @@ public class Timer : MonoBehaviour
         if (shouldLerp)
             View.Fill.fillAmount = Mathf.Lerp(View.Fill.fillAmount, CalculateFill(), LerpTime);
 
-        View.Label.text = string.Format("{0}s", Mathf.Floor(Duration - CurrentTime).ToString());
+        View.Label.text = string.Format("{0}s", Mathf.Floor(CurrentTime).ToString());
     }
 
     float CalculateFill()
     {
-        return Mathf.Clamp01((Duration - CurrentTime) / Duration);
+        return Mathf.Clamp01(CurrentTime / Duration);
     }
 }

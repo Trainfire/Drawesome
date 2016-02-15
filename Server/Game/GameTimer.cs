@@ -12,6 +12,7 @@ namespace Server.Game
         string Name { get; set; }
 
         public float ElapsedTime { get; set; }
+        public float CurrentTimer { get; set; }
         public float Duration { get; set; }
 
         public GameTimer()
