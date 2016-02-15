@@ -83,6 +83,9 @@ public class UiDrawingCanvas : MonoBehaviour
 
     void Update()
     {
+        if (!AllowDrawing)
+            return;
+
         if (Input.GetMouseButton(0))
         {
             Draw(PreviousMousePosition, GetMousePosition(), BrushColor, BrushSize);
