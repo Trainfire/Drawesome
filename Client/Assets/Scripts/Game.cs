@@ -172,9 +172,6 @@ public class Game : MonoBehaviour, IClientHandler
             view.Submit.onClick.AddListener(() =>
             {
                 Client.Messenger.SubmitAnswer(view.InputField.text);
-                view.InputField.interactable = false;
-                view.InputField.text = "Answer submitted! Waiting for other players...";
-                view.Submit.interactable = false;
             });
         }
 
@@ -191,16 +188,35 @@ public class Game : MonoBehaviour, IClientHandler
 
         protected override void OnMessage(string json)
         {
+            var view = GetView<UiGameStateAnswering>();
+
             Message.IsType<ServerMessage.Game.SendImage>(json, (data) =>
             {
-                GetView<UiGameStateAnswering>().Canvas.SetImage(data.Image);
+                view.Canvas.SetImage(data.Image);
             });
 
             Message.IsType<ServerMessage.Game.SendAnswerValidation>(json, (data) =>
             {
-                var errorView = GetView<UiGameStateAnswering>().Error;
-                errorView.Show(data.Error);
+                view.Error.Show(data.Error);
+                if (data.Error == GameAnswerError.None)
+                {
+                    OnAnswerValidation();
+                }
+                else
+                {
+                    view.InputField.text = string.Empty;
+                }
             });
+        }
+
+        void OnAnswerValidation()
+        {
+            GetView<UiGameStateAnswering>((view) =>
+            {
+                view.InputField.interactable = false;
+                view.InputField.text = "Answer submitted! Waiting for other players...";
+                view.Submit.interactable = false;
+            });   
         }
     }
 

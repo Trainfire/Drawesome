@@ -7,7 +7,7 @@ public class UiError : UiBase
 
     public void Show(GameAnswerError error)
     {
-        base.OnShow();
+        base.Show();
 
         switch (error)
         {
