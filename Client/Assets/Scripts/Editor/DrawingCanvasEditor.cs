@@ -49,6 +49,9 @@ public class DrawingCanvasEditor : Editor
 
         if (GUILayout.Button("Recolor"))
             Recolor(Color);
+
+        if (GUILayout.Button("Clear"))
+            Clear();
     }
 
     void Save()
@@ -65,5 +68,10 @@ public class DrawingCanvasEditor : Editor
     void Recolor(Color color)
     {
         Controller.Recolor(color);
+    }
+
+    void Clear()
+    {
+        Controller.Clear();
     }
 }

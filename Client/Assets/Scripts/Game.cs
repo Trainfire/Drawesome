@@ -129,6 +129,12 @@ public class Game : MonoBehaviour, IClientHandler
             view.Start.onClick.AddListener(() => client.Messenger.StartGame());
         }
 
+        protected override void OnBegin()
+        {
+            base.OnBegin();
+            Canvas.Clear();
+        }
+
         public override void Update()
         {
             var view = GetView<UiGameStatePreGame>();

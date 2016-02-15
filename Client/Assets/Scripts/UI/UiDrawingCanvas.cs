@@ -12,7 +12,20 @@ public class UiDrawingCanvas : UiBase
     public bool AllowDrawing;
 
     Vector2 MousePosition { get; set; }
-    RawImage RawImage { get; set; }
+
+    RawImage rawImage;
+    RawImage RawImage
+    {
+        get
+        {
+            if (rawImage == null)
+            {
+                rawImage = GetComponent<RawImage>();
+                rawImage.texture = GenerateTexture();
+            }
+            return rawImage;
+        }
+    }
 
     public Texture2D Texture
     {
@@ -28,9 +41,6 @@ public class UiDrawingCanvas : UiBase
 
     void Start()
     {
-        RawImage = GetComponent<RawImage>();
-        RawImage.texture = GenerateTexture();
-
         // Make sure anchor is set to top right, otherwise drawing will be very broken
         var rect = (RectTransform)transform;
         rect.pivot = new Vector2(0f, 1f);

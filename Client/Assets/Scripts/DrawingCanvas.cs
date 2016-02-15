@@ -42,6 +42,17 @@ public class DrawingCanvas : Game.IGameStateHandler
         SetImage(drawing.Image);
     }
 
+    public void Clear()
+    {
+        var pixels = Canvas.Texture.GetPixels();
+        for (int i = 0; i < pixels.Length; i++)
+        {
+            pixels[i] = Color.white;
+        }
+        Canvas.Texture.SetPixels(pixels);
+        Canvas.Texture.Apply();
+    }
+
     public void Recolor(Color color)
     {
         var pixels = Canvas.Texture.GetPixels();
