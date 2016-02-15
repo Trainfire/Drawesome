@@ -17,11 +17,22 @@ public class DrawingCanvasEditor : Editor
         }
     }
 
+    DrawingCanvas controller;
+    DrawingCanvas Controller
+    {
+        get
+        {
+            if (controller == null)
+                controller = new DrawingCanvas(Instance);
+            return controller;
+        }
+    }
+
     Color Color { get; set; }
 
     void Start()
     {
-        Color = Instance.Color;
+        Color = Instance.BrushColor;
     }
 
     public override void OnInspectorGUI()
@@ -42,17 +53,17 @@ public class DrawingCanvasEditor : Editor
 
     void Save()
     {
-        File.WriteAllBytes(Application.dataPath + "/picture.png", Instance.GetTexture.EncodeToPNG());
+        File.WriteAllBytes(Application.dataPath + "/picture.png", Controller.GetEncodedImage());
     }
 
     void Load()
     {
         var bytes = File.ReadAllBytes(Application.dataPath + "/picture.png");
-        Instance.SetImage(bytes);
+        Controller.SetImage(bytes);
     }
 
     void Recolor(Color color)
     {
-        Instance.Recolor(color);
+        Controller.Recolor(color);
     }
 }

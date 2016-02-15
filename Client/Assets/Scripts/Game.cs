@@ -2,10 +2,12 @@ using UnityEngine;
 using System.Collections.Generic;
 using Protocol;
 using System.Linq;
+using System;
 
 public class Game : MonoBehaviour, IClientHandler
 {
     public Timer Timer;
+    public UiDrawingCanvas CanvasView;
     public UiGameStatePreGame PreGameView;
     public UiGameStateRoundBegin RoundBeginView;
     public UiGameStateDrawing DrawingView;
@@ -17,7 +19,9 @@ public class Game : MonoBehaviour, IClientHandler
 
     Client Client { get; set; }
     List<IGameState> States { get; set; }
+    List<IGameStateHandler> Handlers { get; set; }
     State Current { get; set; }
+    DrawingCanvas Canvas { get; set; }
 
     public void Initialise(Client client)
     {
@@ -33,6 +37,9 @@ public class Game : MonoBehaviour, IClientHandler
         AddState(new ScoresState(client, ScoresView));
         AddState(new GameOverState(client, RoundEndView));
 
+        Canvas = new DrawingCanvas(client, CanvasView);
+        AddHandler(Canvas);
+
         ChangeState(GameState.PreGame);
     }
 
@@ -42,6 +49,14 @@ public class Game : MonoBehaviour, IClientHandler
             States = new List<IGameState>();
 
         States.Add(state);
+    }
+
+    void AddHandler(IGameStateHandler handler)
+    {
+        if (Handlers == null)
+            Handlers = new List<IGameStateHandler>();
+
+        Handlers.Add(handler);
     }
 
     void ChangeState(GameState nextState)
@@ -55,9 +70,12 @@ public class Game : MonoBehaviour, IClientHandler
             else
             {
                 Current = s.State;
+                s.Canvas = Canvas;
                 s.State.Begin();
             }
         }
+
+        Handlers.ForEach(x => x.HandleState(nextState));
     }
 
     void OnMessage(string json)
@@ -92,12 +110,19 @@ public class Game : MonoBehaviour, IClientHandler
     {
         State State { get; }
         GameState Type { get; }
+        DrawingCanvas Canvas { set; }
+    }
+
+    public interface IGameStateHandler
+    {
+        void HandleState(GameState state);
     }
 
     public class PreGameState : State, IGameState
     {
         public State State { get { return this; } }
         public GameState Type { get { return GameState.PreGame; } }
+        public DrawingCanvas Canvas { private get; set; }
 
         public PreGameState(Client client, UiGameStatePreGame view) : base(client, view)
         {
@@ -118,6 +143,7 @@ public class Game : MonoBehaviour, IClientHandler
     {
         public State State { get { return this; } }
         public GameState Type { get { return GameState.RoundBegin; } }
+        public DrawingCanvas Canvas { private get; set; }
 
         public RoundBeginState(Client client, UiGameStateRoundBegin view) : base(client, view)
         {
@@ -135,22 +161,15 @@ public class Game : MonoBehaviour, IClientHandler
     {
         public State State { get { return this; } }
         public GameState Type { get { return GameState.Drawing; } }
+        public DrawingCanvas Canvas { private get; set; }
 
         public DrawingState(Client client, UiGameStateDrawing view) : base(client, view)
         {
             // Send image on submit
             view.Submit.onClick.AddListener(() =>
             {
-                Client.Messenger.SendImage(view.Canvas.GetEncodedImage);
+                Client.Messenger.SendImage(Canvas.GetEncodedImage());
             });
-        }
-
-        protected override void OnBegin()
-        {
-            base.OnFirstBegin();
-
-            // Set brush color
-            GetView<UiGameStateDrawing>().Canvas.SetBrushColor(Client.Connection.Player.RoomId);
         }
 
         protected override void OnMessage(string json)
@@ -166,6 +185,7 @@ public class Game : MonoBehaviour, IClientHandler
     {
         public State State { get { return this; } }
         public GameState Type { get { return GameState.Answering; } }
+        public DrawingCanvas Canvas { private get; set; }
 
         public AnsweringState(Client client, UiGameStateAnswering view) : base(client, view)
         {
@@ -192,7 +212,7 @@ public class Game : MonoBehaviour, IClientHandler
 
             Message.IsType<ServerMessage.Game.SendImage>(json, (data) =>
             {
-                view.Canvas.SetImage(data.Drawing.Image);
+                Canvas.SetImage(data.Drawing);
                 bool isClientsDrawing = Client.IsPlayer(data.Drawing.Creator);
                 view.InputField.gameObject.SetActive(!isClientsDrawing);
                 view.Submit.gameObject.SetActive(!isClientsDrawing);
@@ -230,6 +250,7 @@ public class Game : MonoBehaviour, IClientHandler
     {
         public State State { get { return this; } }
         public GameState Type { get { return GameState.Choosing; } }
+        public DrawingCanvas Canvas { private get; set; }
 
         public ChoosingState(Client client, UiGameStateChoosing view) : base(client, view)
         {
@@ -266,6 +287,7 @@ public class Game : MonoBehaviour, IClientHandler
     {
         public State State { get { return this; } }
         public GameState Type { get { return GameState.Results; } }
+        public DrawingCanvas Canvas { private get; set; }
 
         public ResultsState(Client client, UiGameStateResults view) : base(client, view)
         {
@@ -285,6 +307,7 @@ public class Game : MonoBehaviour, IClientHandler
     {
         public State State { get { return this; } }
         public GameState Type { get { return GameState.Scores; } }
+        public DrawingCanvas Canvas { private get; set; }
 
         public ScoresState(Client client, UiGameStateScores view) : base(client, view)
         {
@@ -312,6 +335,7 @@ public class Game : MonoBehaviour, IClientHandler
     {
         public State State { get { return this; } }
         public GameState Type { get { return GameState.GameOver; } }
+        public DrawingCanvas Canvas { private get; set; }
 
         public GameOverState(Client client, UiGameStateGameOver view) : base(client, view)
         {

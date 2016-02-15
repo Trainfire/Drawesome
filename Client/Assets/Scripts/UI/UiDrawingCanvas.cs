@@ -4,29 +4,25 @@ using Protocol;
 using Stylesheet;
 
 [RequireComponent(typeof(RawImage))]
-public class UiDrawingCanvas : MonoBehaviour
+public class UiDrawingCanvas : UiBase
 {
     public ColorData[] PlayerColors = new ColorData[8];
-    public Color Color; // TODO: Load from player
+    public Color BrushColor;
     public int BrushSize = 8; // TODO: Load from settings
-    public bool AllowDrawing = true;
+    public bool AllowDrawing;
 
     Vector2 MousePosition { get; set; }
-    Texture2D Texture { get; set; }
     RawImage RawImage { get; set; }
 
-    enum StraightLineDirection
-    {
-        Horizontal,
-        Vertical,
-    }
-    StraightLineDirection lockDirection = StraightLineDirection.Horizontal;
-
-    public Texture2D GetTexture
+    public Texture2D Texture
     {
         get
         {
             return RawImage.texture as Texture2D;
+        }
+        set
+        {
+            RawImage.texture = value;
         }
     }
 
@@ -70,7 +66,7 @@ public class UiDrawingCanvas : MonoBehaviour
             {
                 Vector2 result;
                 RectTransformUtility.ScreenPointToLocalPointInRectangle((RectTransform)transform, MousePosition, null, out result);
-                DrawCircle((int)result.x, (int)result.y, BrushSize, Color);
+                DrawCircle((int)result.x, (int)result.y, BrushSize, BrushColor);
                 Texture.Apply();
             }
         }
@@ -97,43 +93,5 @@ public class UiDrawingCanvas : MonoBehaviour
                 Texture.SetPixel(nx, ny, color);
             }
         }
-    }
-
-    public byte[] GetEncodedImage
-    {
-        get
-        {
-            return Texture.EncodeToPNG();
-        }
-    }
-
-    public void SetImage(byte[] data)
-    {
-        var texture = RawImage.texture as Texture2D;
-        texture.LoadImage(data);
-        texture.Apply();
-        RawImage.texture = texture;
-    }
-
-    public void SetBrushColor(uint colorId)
-    {
-        int index = (int)colorId;
-        Color = PlayerColors[index].Color;
-    }
-
-    public void Recolor(Color color)
-    {
-        Color = color;
-
-        var pixels = Texture.GetPixels();
-
-        for (int i = 0; i < pixels.Length; i++)
-        {
-            if (pixels[i] != Color.white)
-                pixels[i] = Color;
-        }
-
-        Texture.SetPixels(pixels);
-        Texture.Apply();
     }
 }
