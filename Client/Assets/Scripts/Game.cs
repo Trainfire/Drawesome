@@ -138,14 +138,19 @@ public class Game : MonoBehaviour, IClientHandler
 
         public DrawingState(Client client, UiGameStateDrawing view) : base(client, view)
         {
-            // Set brush color
-            view.Canvas.SetBrushColor(Client.Connection.Player.RoomId);
-
             // Send image on submit
             view.Submit.onClick.AddListener(() =>
             {
                 Client.Messenger.SendImage(view.Canvas.GetEncodedImage);
             });
+        }
+
+        protected override void OnBegin()
+        {
+            base.OnFirstBegin();
+
+            // Set brush color
+            GetView<UiGameStateDrawing>().Canvas.SetBrushColor(Client.Connection.Player.RoomId);
         }
 
         protected override void OnMessage(string json)
