@@ -17,6 +17,7 @@ public class UiGameStateScores : UiBase
 
     public void ShowScores(List<KeyValuePair<PlayerData, uint>> scores)
     {
+        RowPrototype.gameObject.SetActive(false);
         StartCoroutine(Animate(scores));
     }
 

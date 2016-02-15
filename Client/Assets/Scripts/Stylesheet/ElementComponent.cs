@@ -11,7 +11,7 @@ namespace Stylesheet
         {
             if (ElementData != null)
             {
-                graphic.color = ElementData.ColorData.Color;
+                graphic.color = ElementData.Color;
             }
         }
     }
