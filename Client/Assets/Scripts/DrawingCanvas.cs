@@ -11,7 +11,7 @@ public class DrawingCanvas : Game.IGameStateHandler
     public DrawingCanvas(UiDrawingCanvas view)
     {
         Canvas = view;
-        Canvas.AllowDrawing = false;
+        AllowDrawing = false;
     }
 
     public DrawingCanvas(Client client, UiDrawingCanvas view) : this(view)
@@ -56,19 +56,31 @@ public class DrawingCanvas : Game.IGameStateHandler
         Canvas.Texture.Apply();
     }
 
+    public bool AllowDrawing
+    {
+        get
+        {
+            return Canvas.AllowDrawing;
+        }
+        set
+        {
+            Canvas.AllowDrawing = value;
+        }
+    }
+
     void Game.IGameStateHandler.HandleState(GameState state)
     {
         switch (state)
         {
             case GameState.PreGame:
-                Canvas.AllowDrawing = false;
+                AllowDrawing = false;
                 break;
             case GameState.Drawing:
                 SetBrushColor(Client.PlayerData.RoomId);
-                Canvas.AllowDrawing = true;
+                AllowDrawing = true;
                 break;
             case GameState.Answering:
-                Canvas.AllowDrawing = false;
+                AllowDrawing = false;
                 break;
         }
     }

@@ -169,6 +169,7 @@ public class Game : MonoBehaviour, IClientHandler
             view.Submit.onClick.AddListener(() =>
             {
                 Client.Messenger.SendImage(Canvas.GetEncodedImage());
+                Canvas.AllowDrawing = false;
             });
         }
 
