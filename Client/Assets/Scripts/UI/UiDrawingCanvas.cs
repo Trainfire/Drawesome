@@ -1,17 +1,32 @@
 using UnityEngine;
 using UnityEngine.UI;
-using Protocol;
 using Stylesheet;
 
 [RequireComponent(typeof(RawImage))]
-public class UiDrawingCanvas : UiBase
+public class UiDrawingCanvas : MonoBehaviour
 {
     public ColorData[] PlayerColors = new ColorData[8];
     public Color BrushColor;
     public int BrushSize = 8; // TODO: Load from settings
+    public int EraserSize = 8; // TODO: Load from settings
     public bool AllowDrawing;
 
-    Vector2 MousePosition { get; set; }
+    Vector2 CurrentMousePosition { get; set; }
+
+    Vector2 previousMousePosition;
+    Vector2 PreviousMousePosition
+    {
+        get
+        {
+            if (previousMousePosition == null)
+                previousMousePosition = GetMousePosition();
+            return previousMousePosition;
+        }
+        set
+        {
+            previousMousePosition = value;
+        }
+    }
 
     RawImage rawImage;
     RawImage RawImage
@@ -68,20 +83,57 @@ public class UiDrawingCanvas : UiBase
 
     void Update()
     {
-        MousePosition = Input.mousePosition;
-
-        if (Input.GetMouseButton(0) && AllowDrawing)
+        if (Input.GetMouseButton(0))
         {
-            if (RectTransformUtility.RectangleContainsScreenPoint((RectTransform)transform, MousePosition))
-            {
-                Vector2 result;
-                RectTransformUtility.ScreenPointToLocalPointInRectangle((RectTransform)transform, MousePosition, null, out result);
-                DrawCircle((int)result.x, (int)result.y, BrushSize, BrushColor);
-                Texture.Apply();
-            }
+            Draw(PreviousMousePosition, GetMousePosition(), BrushColor, BrushSize);
+            Texture.Apply();
+        }
+
+        if (Input.GetMouseButton(1))
+        {
+            Draw(PreviousMousePosition, GetMousePosition(), Color.white, EraserSize);
+            Texture.Apply();
+        }
+
+        PreviousMousePosition = GetMousePosition();
+    }
+
+    Vector2 GetMousePosition()
+    {
+        Vector2 result;
+        RectTransformUtility.ScreenPointToLocalPointInRectangle((RectTransform)transform, Input.mousePosition, null, out result);
+        return result;
+    }
+
+    /// <summary>
+    /// Draws a series of circles between two positions. This ensure that lines are correctly drawn during fast mouse movements.
+    /// </summary>
+    /// <param name="from"></param>
+    /// <param name="to"></param>
+    void Draw(Vector2 from, Vector2 to, Color color, int size)
+    {
+        var dist = Vector2.Distance(from, to);
+        var dir = (to - from).normalized;
+        var iterations = (int)(dist / size);
+
+        Vector2[] positions = new Vector2[iterations + 2];
+        positions[0] = from;
+        positions[positions.Length - 1] = to;
+
+        for (int i = 1; i < positions.Length - 1; i++)
+        {
+            positions[i] = positions[i - 1] + (dir * size);
+        }
+
+        for (int i = 0; i < positions.Length; i++)
+        {
+            DrawCircle((int)positions[i].x, (int)positions[i].y, size, color);
         }
     }
 
+    /// <summary>
+    /// Stolen from internets.
+    /// </summary>
     void DrawCircle(int cx, int cy, int r, Color color)
     {
         int x, y, px, nx, py, ny, d;
