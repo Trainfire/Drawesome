@@ -27,7 +27,7 @@ namespace Stylesheet
                 colorBlock.normalColor = ButtonData.Normal.Color;
                 colorBlock.highlightedColor = ButtonData.Highlighted.Color;
                 colorBlock.pressedColor = ButtonData.Pressed.Color;
-                colorBlock.disabledColor = ButtonData.Disabled.Color;
+                colorBlock.disabledColor = ButtonData.Disabled;
                 colorBlock.colorMultiplier = ButtonData.ColorMultiplier;
 
                 graphic.colors = colorBlock;

@@ -7,7 +7,8 @@ namespace Stylesheet
         public ColorData Normal { get { return normal; } }
         public ColorData Highlighted { get { return highlighted; } }
         public ColorData Pressed { get { return pressed; } }
-        public ColorData Disabled { get { return disabled; } }
+        public Color Disabled { get { return new Color(disabled.Color.r, disabled.Color.g, disabled.Color.b, disabledAlpha); } }
+        public float DisabledAlpha { get { return disabledAlpha; } }
         public float ColorMultiplier { get { return colorMultiplier; } }
 
         [SerializeField]
@@ -18,6 +19,8 @@ namespace Stylesheet
         ColorData pressed;
         [SerializeField]
         ColorData disabled;
+        [SerializeField]
+        float disabledAlpha = 1f;
         [SerializeField]
         float colorMultiplier;
     }
