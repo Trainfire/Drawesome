@@ -154,6 +154,8 @@ namespace Server.Drawesome
         {
             SetTimer("Drawing Timer", GameData.Settings.Drawesome.DrawTime, true);
 
+            ResponseHandler.Clear();
+
             // Send random prompts to players
             foreach (var player in GameData.Players)
             {
