@@ -236,6 +236,12 @@ public class Game : MonoBehaviour, IClientHandler
             view.OnChoiceSelected += View_OnChoiceSelected;
         }
 
+        protected override void OnBegin()
+        {
+            base.OnBegin();
+            GetView<UiGameStateChoosing>().InfoBox.Hide();
+        }
+
         void View_OnChoiceSelected(UiChoosingItem obj)
         {
             Client.Messenger.SubmitChosenAnswer(obj.Text[0].text);
@@ -245,7 +251,13 @@ public class Game : MonoBehaviour, IClientHandler
         {
             Message.IsType<ServerMessage.Game.SendChoices>(json, (data) =>
             {
-                GetView<UiGameStateChoosing>().ShowChoices(data.Choices);
+                GetView<UiGameStateChoosing>((view) =>
+                {
+                    view.ShowChoices(data.Creator, data.Choices);
+
+                    if (Client.IsPlayer(data.Creator))
+                        view.InfoBox.Show(Strings.PlayersOwnDrawing);
+                });
             });
         }
     }

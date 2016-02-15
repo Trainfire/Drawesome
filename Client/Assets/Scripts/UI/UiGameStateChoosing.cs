@@ -10,6 +10,7 @@ public class UiGameStateChoosing : UiBase
 
     public UiChoosingItem ChoicePrototype;
     public List<RectTransform> SpawnPositions = new List<RectTransform>();
+    public UiInfoBox InfoBox;
 
     List<UiChoosingItem> Views = new List<UiChoosingItem>();
 
@@ -18,7 +19,7 @@ public class UiGameStateChoosing : UiBase
         Views = new List<UiChoosingItem>();
     }
 
-    public void ShowChoices(List<AnswerData> choices)
+    public void ShowChoices(PlayerData creator, List<AnswerData> choices)
     {
         for (int i = 0; i < choices.Count; i++)
         {
@@ -26,15 +27,19 @@ public class UiGameStateChoosing : UiBase
 
             var instance = UiUtility.AddChild(SpawnPositions[i].gameObject, ChoicePrototype, true);
 
-            bool isPlayer = choices[i].Author.ID == Client.PlayerData.ID;
-
             // Show different UI depending of if this is the player's answer
             // If it is, the player won't be able to select their own answer
+            bool isPlayer = choices[i].Author.ID == Client.PlayerData.ID;
+            bool isCreator = Client.IsPlayer(creator);
+
             instance.YourAnswer.SetActive(isPlayer);
             instance.OtherPlayersAnswer.SetActive(!isPlayer);
             instance.Text.ForEach(x => x.text = choices[i].Answer);
 
-            if (!isPlayer)
+            // Don't allow button presses if the drawing creator is the player
+            instance.Button.interactable = !isPlayer && !isCreator;
+
+            if (!isPlayer && !isCreator)
             {
                 instance.Button.onClick.AddListener(() =>
                 {

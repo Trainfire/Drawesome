@@ -106,10 +106,12 @@ namespace Protocol
 
             public class SendChoices : Message
             {
+                public PlayerData Creator;
                 public List<AnswerData> Choices;
 
-                public SendChoices(List<AnswerData> choices)
+                public SendChoices(PlayerData creator, List<AnswerData> choices)
                 {
+                    Creator = creator;
                     Choices = choices;
                 }
             }

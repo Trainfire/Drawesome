@@ -143,11 +143,11 @@ namespace Server.Drawesome
     {
         public override GameState Type { get { return GameState.Drawing; } }
 
-        float SubmittedDrawings { get; set; }
+        ResponseHandler<Player> ResponseHandler { get; set; }
 
         public StateDrawingPhase()
         {
-            
+            ResponseHandler = new ResponseHandler<Player>();
         }
 
         protected override void OnBegin()
@@ -157,6 +157,7 @@ namespace Server.Drawesome
             // Send random prompts to players
             foreach (var player in GameData.Players)
             {
+                ResponseHandler.Add(player);
                 player.SendPrompt(GameData.GetPrompt(player).Text);
             }
         }
@@ -176,7 +177,9 @@ namespace Server.Drawesome
                 // Tell all clients that player has submitted drawing
                 GameData.Players.ForEach(x => x.NotifyPlayerGameAction(player.Data));
 
-                if (GameData.Drawings.Count == GameData.Players.Count)
+                ResponseHandler.Register(player);
+
+                if (ResponseHandler.HaveAllRespondend())
                     EndState();
             });
         }
@@ -186,9 +189,11 @@ namespace Server.Drawesome
     {
         public override GameState Type { get { return GameState.Answering; } }
 
+        ResponseHandler<Player> ResponseHandler { get; set; }
+
         public StateAnsweringPhase()
         {
-
+            ResponseHandler = new ResponseHandler<Player>();
         }
 
         protected override void OnBegin()
@@ -197,7 +202,15 @@ namespace Server.Drawesome
 
             if (GameData.HasDrawings())
             {
+                var drawing = GameData.GetDrawing();
+
                 GameData.Players.ForEach(x => x.SendImage(GameData.GetDrawing()));
+
+                ResponseHandler.Clear();
+
+                // Create a list of players excluding the drawing's creator
+                var players = GameData.Players.Where(x => x.Data.ID != drawing.Creator.ID).ToList();
+                players.ForEach(x => ResponseHandler.Add(x));
             }
             else
             {
@@ -231,7 +244,10 @@ namespace Server.Drawesome
                     // Tell all clients that player has submitted answer
                     GameData.Players.ForEach(x => x.NotifyPlayerGameAction(player.Data));
 
-                    if (GameData.Answers.Count == GameData.Players.Count)
+                    // Register response
+                    ResponseHandler.Register(player);
+
+                    if (ResponseHandler.HaveAllRespondend())
                         EndState();
                 }
             });
@@ -252,19 +268,25 @@ namespace Server.Drawesome
     {
         public override GameState Type { get { return GameState.Choosing; } }
 
-        float ChosenAnswers { get; set; }
+        ResponseHandler<Player> ResponseHandler { get; set; }
 
         public StateChoosingPhase()
         {
-            
+            ResponseHandler = new ResponseHandler<Player>();
         }
 
         protected override void OnBegin()
         {
             base.OnBegin();
-            ChosenAnswers = 0;
+
             SetTimer("Choosing Timer", GameData.Settings.Drawesome.ChoosingTime);
-            GameData.Players.ForEach(x => x.SendChoices(GameData.Answers.ToList()));
+
+            GameData.Players.ForEach(x => x.SendChoices(GameData.CurrentDrawing.Creator, GameData.Answers.ToList()));
+
+            // Handle responses from every player except the one that drew the image
+            ResponseHandler.Clear();
+            var players = GameData.Players.Where(x => x.Data.ID != GameData.CurrentDrawing.Creator.ID).ToList();
+            players.ForEach(x => ResponseHandler.Add(x));
         }
 
         public override void OnPlayerMessage(Player player, string json)
@@ -277,11 +299,10 @@ namespace Server.Drawesome
                 {
                     GameData.AddChosenAnswer(data.ChosenAnswer, player);
                     GameData.Players.ForEach(x => x.NotifyPlayerGameAction(player.Data));
-
-                    ChosenAnswers++;
+                    ResponseHandler.Register(player);
 
                     // End state if all players have chosen
-                    if (ChosenAnswers == GameData.Players.Count)
+                    if (ResponseHandler.HaveAllRespondend())
                         EndState();
                 }
             });

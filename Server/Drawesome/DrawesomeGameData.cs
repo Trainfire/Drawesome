@@ -16,6 +16,7 @@ namespace Server.Drawesome
         Dictionary<PlayerData, uint> scores;
 
         List<PromptData> PromptPool { get; set; }
+        public DrawingData CurrentDrawing { get; private set; }
 
         public DrawesomeGameData()
         {
@@ -114,7 +115,8 @@ namespace Server.Drawesome
 
         public DrawingData GetDrawing()
         {
-            return drawings.Peek();
+            CurrentDrawing = drawings.Peek();
+            return CurrentDrawing;
         }
 
         public bool HasDrawings()
