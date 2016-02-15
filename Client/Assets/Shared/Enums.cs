@@ -33,6 +33,7 @@ namespace Protocol
         Start,
         Restart,
         StartNewRound,
+        FinishShowingResult,
     }
 
     [Serializable]

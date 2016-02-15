@@ -2,7 +2,7 @@
   "RoundBeginTime": 5.0,
   "DrawTime": 60.0,
   "AnsweringTime": 30.0,
-  "ChoosingTime": 30.0,
+  "ChoosingTime": 5.0,
   "ResultTimeBetween": 5,
   "PointsPerChoice": 100,
 }

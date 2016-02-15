@@ -40,17 +40,22 @@ public class Messenger
 
     public void StartGame()
     {
-        Connection.SendMessage(new ClientMessage.SendGameAction(Connection.Player, GameAction.Start));
+        Connection.SendMessage(new ClientMessage.Game.SendAction(Connection.Player, GameAction.Start));
     }
 
     public void RestartGame()
     {
-        Connection.SendMessage(new ClientMessage.SendGameAction(Connection.Player, GameAction.Restart));
+        Connection.SendMessage(new ClientMessage.Game.SendAction(Connection.Player, GameAction.Restart));
     }
 
     public void StartNewRound()
     {
-        Connection.SendMessage(new ClientMessage.SendGameAction(Connection.Player, GameAction.StartNewRound));
+        Connection.SendMessage(new ClientMessage.Game.SendAction(Connection.Player, GameAction.StartNewRound));
+    }
+
+    public void FinishShowingResult()
+    {
+        Connection.SendMessage(new ClientMessage.Game.SendAction(Connection.Player, GameAction.FinishShowingResult));
     }
 
     public void SendImage(byte[] image)

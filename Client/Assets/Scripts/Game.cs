@@ -298,7 +298,10 @@ public class Game : MonoBehaviour, IClientHandler
 
         public ResultsState(Client client, UiGameStateResults view) : base(client, view)
         {
-            
+            view.OnFinishedShowingResult += () =>
+            {
+                client.Messenger.FinishShowingResult();
+            };
         }
 
         protected override void OnMessage(string json)

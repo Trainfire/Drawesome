@@ -159,7 +159,7 @@ namespace Server.Drawesome
             // Send random prompts to players
             foreach (var player in GameData.Players)
             {
-                ResponseHandler.Add(player);
+                ResponseHandler.AddRespondant(player);
                 player.SendPrompt(GameData.GetPrompt(player).Text);
             }
         }
@@ -181,7 +181,7 @@ namespace Server.Drawesome
 
                 ResponseHandler.Register(player);
 
-                if (ResponseHandler.HaveAllRespondend())
+                if (ResponseHandler.AllResponded())
                     EndState();
             });
         }
@@ -212,7 +212,7 @@ namespace Server.Drawesome
 
                 // Create a list of players excluding the drawing's creator
                 var players = GameData.Players.Where(x => x.Data.ID != drawing.Creator.ID).ToList();
-                players.ForEach(x => ResponseHandler.Add(x));
+                players.ForEach(x => ResponseHandler.AddRespondant(x));
             }
             else
             {
@@ -249,7 +249,7 @@ namespace Server.Drawesome
                     // Register response
                     ResponseHandler.Register(player);
 
-                    if (ResponseHandler.HaveAllRespondend())
+                    if (ResponseHandler.AllResponded())
                         EndState();
                 }
             });
@@ -288,7 +288,7 @@ namespace Server.Drawesome
             // Handle responses from every player except the one that drew the image
             ResponseHandler.Clear();
             var players = GameData.Players.Where(x => x.Data.ID != GameData.CurrentDrawing.Creator.ID).ToList();
-            players.ForEach(x => ResponseHandler.Add(x));
+            players.ForEach(x => ResponseHandler.AddRespondant(x));
         }
 
         public override void OnPlayerMessage(Player player, string json)
@@ -304,7 +304,7 @@ namespace Server.Drawesome
                     ResponseHandler.Register(player);
 
                     // End state if all players have chosen
-                    if (ResponseHandler.HaveAllRespondend())
+                    if (ResponseHandler.AllResponded())
                         EndState();
                 }
             });
@@ -335,75 +335,78 @@ namespace Server.Drawesome
         public override GameState Type { get { return GameState.Results; } }
 
         Queue<AnswerData> ChosenAnswersQueue { get; set; }
-        bool HasShownAnswer { get; set; }
+        ResponseHandler<Player> ResponseHandler { get; set; }
 
         public StateResultsPhase()
         {
-
+            
         }
 
         protected override void OnBegin()
         {
             base.OnBegin();
 
-            HasShownAnswer = false;
+            ResponseHandler = new ResponseHandler<Player>();
 
-            if (GameData.ChosenAnswers.Count == 0)
-            {
-                ShowActualAnswer();
-            }
-            else
-            {
-                // Sort chosen answers here...
-                ChosenAnswersQueue = new Queue<AnswerData>();
+            // Sort chosen answers here...
+            ChosenAnswersQueue = new Queue<AnswerData>();
 
-                // Queue up for answers by order of least chosen to most chosen
-                var sortedAnswers = GameData.ChosenAnswers.OrderBy(x => x.Choosers.Count).ToList();
-                sortedAnswers.ForEach(x => ChosenAnswersQueue.Enqueue(x));
+            // Queue up for answers by order of least chosen to most chosen
+            var sortedAnswers = GameData.ChosenAnswers.OrderBy(x => x.Choosers.Count).ToList();
+            sortedAnswers.ForEach(x => ChosenAnswersQueue.Enqueue(x));
+            ChosenAnswersQueue.Enqueue(new AnswerData(GameData.CurrentDrawing.Prompt.Text));
 
-                ShowNextResult();
-            }
+            ShowNextResult();
         }
 
         void ShowNextResult()
         {
             // Send choice to client and remove from queue
             var chosenAnswer = ChosenAnswersQueue.Dequeue();
-            var result = new ResultData(chosenAnswer.Author, chosenAnswer.Choosers, chosenAnswer.Answer, chosenAnswer.Points);
+            bool isAnswer = chosenAnswer.Answer == GameData.CurrentDrawing.Prompt.Text;
+            var result = new ResultData(chosenAnswer.Author, chosenAnswer.Choosers, chosenAnswer.Answer, chosenAnswer.Points, isAnswer);
             var message = new ServerMessage.Game.SendResult(result);
             GameData.Players.ForEach(x => x.SendMessage(message));
-
-            Delay();
         }
 
-        void ShowActualAnswer()
+        public override void OnPlayerMessage(Player player, string json)
         {
-            Console.WriteLine("Reveal answer: {0}", GameData.CurrentDrawing.Prompt.Text);
-            GameData.Players.ForEach(x => x.SendActualAnswer(GameData.CurrentDrawing.Prompt.Text));
-            HasShownAnswer = true;
-            Delay();
+            Message.IsType<ClientMessage.Game.SendAction>(json, (data) =>
+            {
+                if (data.Action == GameAction.FinishShowingResult)
+                {
+                    ResponseHandler.Register(player);
+
+                    Console.WriteLine("Have all responded? {0}", ResponseHandler.AllResponded());
+
+                    if (ResponseHandler.AllResponded())
+                        UpdateQueue();
+                }
+            });
         }
 
-        void Delay()
+        void UpdateQueue()
         {
-            // Start timer
-            var timer = new GameTimer();
-            timer.Finish += UpdateQueue;
-        }
-
-        void UpdateQueue(object sender, EventArgs e)
-        {
-            if (HasShownAnswer)
-                EndState();
-
             if (ChosenAnswersQueue.Count != 0)
             {
                 ShowNextResult();
             }
             else
             {
-                ShowActualAnswer();
+                OnQueueEmpty();
             }
+        }
+
+        void OnQueueEmpty()
+        {
+            // Initial delay
+            var timer = new GameTimer(GameData.Settings.Drawesome.ResultTimeBetween);
+            timer.Finish += Timer_Finish;
+        }
+
+        void Timer_Finish(object sender, EventArgs e)
+        {
+            EndState();
         }
     }
 

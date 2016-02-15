@@ -53,18 +53,6 @@ namespace Protocol
             }
         }
 
-        public class SendGameAction : Message
-        {
-            public PlayerData Player { get; private set; }
-            public GameAction Action { get; private set; }
-
-            public SendGameAction(PlayerData player, GameAction action)
-            {
-                Player = player;
-                Action = action;
-            }
-        }
-
         public class RequestRoomList : Message
         {
             public PlayerData Player;
@@ -124,6 +112,18 @@ namespace Protocol
                 public SkipPhase()
                 {
 
+                }
+            }
+
+            public class SendAction : Message
+            {
+                public PlayerData Player { get; private set; }
+                public GameAction Action { get; private set; }
+
+                public SendAction(PlayerData player, GameAction action)
+                {
+                    Player = player;
+                    Action = action;
                 }
             }
         }

@@ -30,7 +30,7 @@ namespace Server
     {
         public event EventHandler<PlayerConnectionClosed> OnConnectionClosed;
         public event EventHandler<SharedMessage.Chat> OnChat;
-        public event EventHandler<ClientMessage.SendGameAction> OnGameAction;
+        public event EventHandler<ClientMessage.Game.SendAction> OnGameAction;
         public event EventHandler<Message> OnMessage;
         public event EventHandler<string> OnMessageString;
 
@@ -60,7 +60,7 @@ namespace Server
                         OnChat(this, data);
                 });
 
-                Message.IsType<ClientMessage.SendGameAction>(message, (data) =>
+                Message.IsType<ClientMessage.Game.SendAction>(message, (data) =>
                 {
                     if (OnGameAction != null)
                         OnGameAction(this, data);
@@ -153,12 +153,6 @@ namespace Server
         public void SendScores(Dictionary<PlayerData, uint> playerScores)
         {
             var message = new ServerMessage.Game.SendScores(playerScores);
-            Socket.Send(message.AsJson());
-        }
-
-        public void SendActualAnswer(string prompt)
-        {
-            var message = new ServerMessage.Game.SendActualAnswer(prompt);
             Socket.Send(message.AsJson());
         }
     }

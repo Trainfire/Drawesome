@@ -191,9 +191,9 @@ namespace Protocol
 
             public class SendActualAnswer : Message
             {
-                public string Answer;
+                public ResultData Answer;
 
-                public SendActualAnswer(string answer)
+                public SendActualAnswer(ResultData answer)
                 {
                     Answer = answer;
                 }

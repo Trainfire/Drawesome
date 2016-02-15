@@ -66,6 +66,11 @@ namespace Protocol
             Points = 0;
         }
 
+        public AnswerData(string answer) : this()
+        {
+            Answer = answer;
+        }
+
         public AnswerData(PlayerData author, string answer) : this()
         {
             Author = author;
@@ -84,13 +89,15 @@ namespace Protocol
         public List<PlayerData> Players { get; private set; }
         public string Answer { get; private set; }
         public uint Points { get; private set; }
+        public bool IsAnswer { get; private set; }
 
-        public ResultData(PlayerData author, List<PlayerData> players, string answer, uint points)
+        public ResultData(PlayerData author, List<PlayerData> players, string answer, uint points, bool isAnswer)
         {
             Author = author;
             Players = players;
             Answer = answer;
             Points = points;
+            IsAnswer = isAnswer;
         }
     }
 

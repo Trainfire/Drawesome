@@ -3,6 +3,7 @@ using UnityEngine.UI;
 using System.Collections;
 using System.Collections.Generic;
 using Protocol;
+using System;
 
 public class UiGameStateResults : UiBase
 {
@@ -18,6 +19,8 @@ public class UiGameStateResults : UiBase
     public float TimeBetweenIndividualPlayerReveal = 0.1f;
     public float TimeBeforeAuthorReveal = 0.2f;
     public float TimeBeforeScoreReveal = 0.5f;
+
+    public event Action OnFinishedShowingResult;
 
     List<GameObject> resultViews { get; set; }
 
@@ -51,6 +54,11 @@ public class UiGameStateResults : UiBase
         StartCoroutine(Animate(result));
     }
 
+    public void ShowActualAnswer(ResultData result)
+    {
+        Clear();
+    }
+
     IEnumerator Animate(ResultData result)
     {
         yield return new WaitForSeconds(TimeBeforeShowAnswer);
@@ -75,11 +83,20 @@ public class UiGameStateResults : UiBase
         yield return new WaitForSeconds(TimeBeforeAuthorReveal);
 
         Author.gameObject.SetActive(true);
-        Author.text = string.Format("{0}'s guess!", result.Author.Name);
 
-        yield return new WaitForSeconds(TimeBeforeScoreReveal);
+        if (!result.IsAnswer)
+        {
+            Author.text = string.Format("{0}'s guess!", result.Author.Name);
+            yield return new WaitForSeconds(TimeBeforeScoreReveal);
+            Author.text += string.Format(" +{0}", result.Points);
+        }
+        else
+        {
+            Author.text = string.Format("The answer!");
+        }
 
-        Author.text += string.Format(" +{0}", result.Points);
+        if (OnFinishedShowingResult != null)
+            OnFinishedShowingResult();
 
         yield return 0;
     }

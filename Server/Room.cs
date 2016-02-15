@@ -123,7 +123,7 @@ namespace Server
 
         #region Handle Player Messages
 
-        void OnPlayerGameAction(object sender, ClientMessage.SendGameAction e)
+        void OnPlayerGameAction(object sender, ClientMessage.Game.SendAction e)
         {
             if (IsOwner(e.Player))
             {

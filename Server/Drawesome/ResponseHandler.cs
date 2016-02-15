@@ -15,7 +15,7 @@ namespace Server.Drawesome
             Respondants = new Dictionary<T, bool>();
         }
 
-        public void Add(T respondant)
+        public void AddRespondant(T respondant)
         {
             if (!Respondants.ContainsKey(respondant))
                 Respondants.Add(respondant, false);
@@ -27,7 +27,7 @@ namespace Server.Drawesome
                 Respondants[respondant] = true;
         }
 
-        public bool HaveAllRespondend()
+        public bool AllResponded()
         {
             return Respondants.All(x => x.Value == true);
         }
