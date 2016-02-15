@@ -56,4 +56,12 @@ namespace Protocol
         Scores,
         GameOver,
     }
+
+    [Serializable]
+    public enum GameAnswerType
+    {
+        Player,
+        Decoy,
+        ActualAnswer,
+    }
 }

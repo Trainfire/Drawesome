@@ -12,7 +12,7 @@ namespace Server.Drawesome
         Queue<DrawingData> drawings = new Queue<DrawingData>();
         List<AnswerData> answers = new List<AnswerData>();
         Dictionary<Player, PromptData> prompts = new Dictionary<Player, PromptData>();
-        Dictionary<PlayerData, uint> scores = new Dictionary<PlayerData, uint>();
+        Dictionary<PlayerData, uint> scores;
 
         List<PromptData> PromptPool { get; set; }
         public DrawingData CurrentDrawing { get; private set; }
@@ -67,7 +67,7 @@ namespace Server.Drawesome
             }
         }
 
-        public void AddPoints(PlayerData player, uint points)
+        public void AddPoints(AnswerData answer)
         {
             if (scores == null)
             {
@@ -75,8 +75,15 @@ namespace Server.Drawesome
                 Players.ForEach(x => scores.Add(x.Data, 0));
             }
 
-            Console.WriteLine("Give {0} {1} points", player.Name, points);
-            scores[player] += points;
+            if (answer.Type == GameAnswerType.Player)
+            {
+                Console.WriteLine("Give {0} {1} points", answer.Author.Name, Settings.Drawesome.PointsPerChoice);
+                scores[answer.Author] += Settings.Drawesome.PointsPerChoice;
+            }
+            else if (answer.Type == GameAnswerType.ActualAnswer)
+            {
+                scores[CurrentDrawing.Creator] += Settings.Drawesome.PointsForCorrectAnswer;
+            }
         }
 
         public void AddAnswer(AnswerData answer)
@@ -85,14 +92,31 @@ namespace Server.Drawesome
             answers.Add(answer);
         }
 
+        public void AddActualAnswer()
+        {
+            var answerData = new AnswerData(CurrentDrawing.Prompt.Text, GameAnswerType.ActualAnswer);
+            answers.Add(answerData);
+        }
+
         public void AddChosenAnswer(string answer, Player player)
         {
-            var findAnswer = GetAnswer(answer);
-            Console.WriteLine("Add chosen answer: {0}", findAnswer.Answer);
-            findAnswer.Choosers.Add(player.Data);
+            var answerData = GetAnswer(answer);
+            Console.WriteLine("Add chosen answer: {0}", answerData.Answer);
+            answerData.Choosers.Add(player.Data);
 
-            AddPoints(findAnswer.Author, Settings.Drawesome.PointsPerChoice);
-            // TODO: Give more points if answer matches prompt
+            AddPoints(answerData);
+        }
+
+        public void AddDecoys()
+        {
+            var decoyCount = Players.Count - ChosenAnswers.Count;
+            var rnd = new Random();
+            for (int i = 0; i < decoyCount; i++)
+            {
+                var decoy = Settings.Drawesome.Decoys[rnd.Next(0, Settings.Drawesome.Decoys.Count - 1)];
+                answers.Add(new AnswerData(decoy, GameAnswerType.Decoy));
+                Console.WriteLine("Add decoy: {0}", decoy);
+            }
         }
 
         public void AddDrawing(DrawingData drawing)

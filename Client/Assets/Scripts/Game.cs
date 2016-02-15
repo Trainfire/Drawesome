@@ -308,7 +308,7 @@ public class Game : MonoBehaviour, IClientHandler
         {
             Message.IsType<ServerMessage.Game.SendResult>(json, (data) =>
             {
-                GetView<UiGameStateResults>().ShowResult(data.Result);
+                GetView<UiGameStateResults>().ShowAnswer(data.Answer);
             });
         }
     }

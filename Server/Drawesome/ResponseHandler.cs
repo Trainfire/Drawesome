@@ -23,7 +23,7 @@ namespace Server.Drawesome
 
         public void Register(T respondant)
         {
-            if (Respondants.ContainsKey(respondant))
+            if (Respondants.ContainsKey(respondant) && Respondants[respondant] == false)
                 Respondants[respondant] = true;
         }
 

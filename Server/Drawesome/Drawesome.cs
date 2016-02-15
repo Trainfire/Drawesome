@@ -255,6 +255,13 @@ namespace Server.Drawesome
             });
         }
 
+        protected override void OnEndState()
+        {
+            GameData.AddDecoys();
+            GameData.AddActualAnswer();
+            base.OnEndState();
+        }
+
         bool IsPrompt(string answer)
         {
             return GameData.SentPrompts.Any(x => x.Value.Text.ToLower() == answer.ToLower());
@@ -316,14 +323,6 @@ namespace Server.Drawesome
             });
         }
 
-        protected override void OnTimerFinish(object sender, EventArgs e)
-        {
-            // TODO: Add decoys
-            // ...
-
-            base.OnTimerFinish(sender, e);
-        }
-
         bool IsPlayersOwnAnswer(Player player)
         {
             return GameData.ChosenAnswers.Any(x => x.Author.ID == player.Data.ID);
@@ -351,21 +350,54 @@ namespace Server.Drawesome
             // Sort chosen answers here...
             ChosenAnswersQueue = new Queue<AnswerData>();
 
-            // Queue up for answers by order of least chosen to most chosen
-            var sortedAnswers = GameData.ChosenAnswers.OrderBy(x => x.Choosers.Count).ToList();
+            // Queue up player answers and decoys by order of least chosen to most chosen
+            var sortedAnswers = GameData.ChosenAnswers
+                .Where(x => x.Type != GameAnswerType.ActualAnswer)
+                .OrderBy(x => x.Choosers.Count)
+                .ToList();
             sortedAnswers.ForEach(x => ChosenAnswersQueue.Enqueue(x));
-            ChosenAnswersQueue.Enqueue(new AnswerData(GameData.CurrentDrawing.Prompt.Text));
 
-            ShowNextResult();
+            // Queue the actual answer
+            var actualAnswer = GameData.ChosenAnswers.FirstOrDefault(x => x.Type == GameAnswerType.ActualAnswer);
+            if (actualAnswer == null)
+                actualAnswer = new AnswerData(GameData.CurrentDrawing.Prompt.Text, GameAnswerType.ActualAnswer);
+            ChosenAnswersQueue.Enqueue(actualAnswer);
+
+            UpdateQueue();
+        }
+
+        void UpdateQueue()
+        {
+            ResponseHandler.Clear();
+
+            if (ChosenAnswersQueue.Count != 0)
+            {
+                GameData.Players.ForEach(x => ResponseHandler.AddRespondant(x));
+                ShowNextResult();
+            }
+            else
+            {
+                OnQueueEmpty();
+            }
+        }
+
+        void OnQueueEmpty()
+        {
+            // Add delay before next state
+            var timer = new GameTimer(GameData.Settings.Drawesome.ResultTimeBetween);
+            timer.Finish += Timer_Finish;
+        }
+
+        void Timer_Finish(object sender, EventArgs e)
+        {
+            EndState();
         }
 
         void ShowNextResult()
         {
             // Send choice to client and remove from queue
             var chosenAnswer = ChosenAnswersQueue.Dequeue();
-            bool isAnswer = chosenAnswer.Answer == GameData.CurrentDrawing.Prompt.Text;
-            var result = new ResultData(chosenAnswer.Author, chosenAnswer.Choosers, chosenAnswer.Answer, chosenAnswer.Points, isAnswer);
-            var message = new ServerMessage.Game.SendResult(result);
+            var message = new ServerMessage.Game.SendResult(chosenAnswer);
             GameData.Players.ForEach(x => x.SendMessage(message));
         }
 
@@ -383,30 +415,6 @@ namespace Server.Drawesome
                         UpdateQueue();
                 }
             });
-        }
-
-        void UpdateQueue()
-        {
-            if (ChosenAnswersQueue.Count != 0)
-            {
-                ShowNextResult();
-            }
-            else
-            {
-                OnQueueEmpty();
-            }
-        }
-
-        void OnQueueEmpty()
-        {
-            // Initial delay
-            var timer = new GameTimer(GameData.Settings.Drawesome.ResultTimeBetween);
-            timer.Finish += Timer_Finish;
-        }
-
-        void Timer_Finish(object sender, EventArgs e)
-        {
-            EndState();
         }
     }
 

@@ -48,18 +48,13 @@ public class UiGameStateResults : UiBase
         ChosenBy.gameObject.SetActive(false);
     }
 
-    public void ShowResult(ResultData result)
+    public void ShowAnswer(AnswerData result)
     {
         Clear();
         StartCoroutine(Animate(result));
     }
 
-    public void ShowActualAnswer(ResultData result)
-    {
-        Clear();
-    }
-
-    IEnumerator Animate(ResultData result)
+    IEnumerator Animate(AnswerData result)
     {
         yield return new WaitForSeconds(TimeBeforeShowAnswer);
 
@@ -72,7 +67,7 @@ public class UiGameStateResults : UiBase
 
         yield return new WaitForSeconds(TimeBeforePlayersReveal);
 
-        foreach (var player in result.Players)
+        foreach (var player in result.Choosers)
         {
             yield return new WaitForSeconds(TimeBetweenIndividualPlayerReveal);
             var instance = UiUtility.AddChild(Rows, RowPrototype, true);
@@ -84,15 +79,21 @@ public class UiGameStateResults : UiBase
 
         Author.gameObject.SetActive(true);
 
-        if (!result.IsAnswer)
+        if (result.Type == GameAnswerType.Player)
         {
             Author.text = string.Format("{0}'s guess!", result.Author.Name);
             yield return new WaitForSeconds(TimeBeforeScoreReveal);
             Author.text += string.Format(" +{0}", result.Points);
         }
+        else if (result.Type == GameAnswerType.Decoy)
+        {
+            Author.text = string.Format("Decoy!");
+            yield return new WaitForSeconds(TimeBeforeScoreReveal);
+        }
         else
         {
             Author.text = string.Format("The answer!");
+            yield return new WaitForSeconds(TimeBeforeScoreReveal);
         }
 
         if (OnFinishedShowingResult != null)

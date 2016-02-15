@@ -118,11 +118,11 @@ namespace Protocol
 
             public class SendResult : Message
             {
-                public ResultData Result;
+                public AnswerData Answer;
 
-                public SendResult(ResultData result)
+                public SendResult(AnswerData answer)
                 {
-                    Result = result;
+                    Answer = answer;
                 }
             }
 
@@ -191,9 +191,9 @@ namespace Protocol
 
             public class SendActualAnswer : Message
             {
-                public ResultData Answer;
+                public AnswerData Answer;
 
-                public SendActualAnswer(ResultData answer)
+                public SendActualAnswer(AnswerData answer)
                 {
                     Answer = answer;
                 }

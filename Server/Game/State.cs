@@ -38,8 +38,8 @@ namespace Server.Game
         {
             Timer.Stop();
 
-            if (fireOnEnd && OnEnd != null)
-                OnEnd(this, GameData);
+            if (fireOnEnd)
+                OnEndState();
         }
 
         protected void SetTimer(string name, float duration, bool echoToClients = false)
@@ -60,6 +60,12 @@ namespace Server.Game
         protected virtual void OnTimerFinish(object sender, EventArgs e)
         {
             EndState();
+        }
+
+        protected virtual void OnEndState()
+        {
+            if (OnEnd != null)
+                OnEnd(this, GameData);
         }
     }
 }

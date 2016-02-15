@@ -99,6 +99,9 @@ namespace Server
         public float ChoosingTime = 30f;
         public float ResultTimeBetween = 10f;
         public uint PointsPerChoice = 100;
+        public uint PointsForCorrectAnswer = 200;
+
+        public List<string> Decoys = new List<string>();
     }
 
     public class PromptSettings
