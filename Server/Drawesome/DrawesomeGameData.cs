@@ -10,10 +10,9 @@ namespace Server.Drawesome
     public class DrawesomeGameData : GameData
     {
         Queue<DrawingData> drawings = new Queue<DrawingData>();
-        //List<AnswerData> answers = new List<AnswerData>();
-        Dictionary<AnswerData, ChoiceData> answers = new Dictionary<AnswerData, ChoiceData>();
+        List<AnswerData> answers = new List<AnswerData>();
         Dictionary<Player, PromptData> prompts = new Dictionary<Player, PromptData>();
-        Dictionary<PlayerData, uint> scores;
+        Dictionary<PlayerData, uint> scores = new Dictionary<PlayerData, uint>();
 
         List<PromptData> PromptPool { get; set; }
         public DrawingData CurrentDrawing { get; private set; }
@@ -36,11 +35,11 @@ namespace Server.Drawesome
             }
         }
 
-        public ReadOnlyDictionary<AnswerData, ChoiceData> ChosenAnswers
+        public ReadOnlyCollection<AnswerData> ChosenAnswers
         {
             get
             {
-                return new ReadOnlyDictionary<AnswerData, ChoiceData>(answers);
+                return new ReadOnlyCollection<AnswerData>(answers.Where(x => x.Choosers.Count != 0).ToList());
             }
         }
 
@@ -64,7 +63,7 @@ namespace Server.Drawesome
         {
             get
             {
-                return new ReadOnlyCollection<AnswerData>(answers.Keys.ToList());
+                return new ReadOnlyCollection<AnswerData>(answers.ToList());
             }
         }
 
@@ -83,14 +82,14 @@ namespace Server.Drawesome
         public void AddAnswer(AnswerData answer)
         {
             Console.WriteLine("Add answer: {0}", answer.Answer);
-            answers.Add(answer, new ChoiceData());
+            answers.Add(answer);
         }
 
         public void AddChosenAnswer(string answer, Player player)
         {
             var findAnswer = GetAnswer(answer);
             Console.WriteLine("Add chosen answer: {0}", findAnswer.Answer);
-            answers[findAnswer].Players.Add(player.Data);
+            findAnswer.Choosers.Add(player.Data);
 
             AddPoints(findAnswer.Author, Settings.Drawesome.PointsPerChoice);
             // TODO: Give more points if answer matches prompt
@@ -144,7 +143,7 @@ namespace Server.Drawesome
 
         AnswerData GetAnswer(string answer)
         {
-            return answers.Keys.First(x => x.Answer == answer);
+            return answers.First(x => x.Answer == answer);
         }
     }
 }

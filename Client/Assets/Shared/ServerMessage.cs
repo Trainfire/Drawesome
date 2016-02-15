@@ -188,6 +188,16 @@ namespace Protocol
                     Response = response;
                 }
             }
+
+            public class SendActualAnswer : Message
+            {
+                public string Answer;
+
+                public SendActualAnswer(string answer)
+                {
+                    Answer = answer;
+                }
+            }
         }
 
         #endregion

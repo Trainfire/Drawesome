@@ -155,5 +155,11 @@ namespace Server
             var message = new ServerMessage.Game.SendScores(playerScores);
             Socket.Send(message.AsJson());
         }
+
+        public void SendActualAnswer(string prompt)
+        {
+            var message = new ServerMessage.Game.SendActualAnswer(prompt);
+            Socket.Send(message.AsJson());
+        }
     }
 }

@@ -54,8 +54,19 @@ namespace Protocol
         public PlayerData Author { get; set; }
         public string Answer { get; set; }
         public int Likes { get; set; }
+        public List<PlayerData> Choosers { get; set; }
+        public uint Points { get; set; }
 
-        public AnswerData(PlayerData author, string answer)
+        public AnswerData()
+        {
+            Author = new PlayerData();
+            Answer = string.Empty;
+            Likes = 0;
+            Choosers = new List<PlayerData>();
+            Points = 0;
+        }
+
+        public AnswerData(PlayerData author, string answer) : this()
         {
             Author = author;
             Answer = answer;
@@ -65,18 +76,6 @@ namespace Protocol
     public class OptionsData
     {
         public List<AnswerData> Options { get; set; }
-    }
-
-    public class ChoiceData
-    {
-        public List<PlayerData> Players { get; set; }
-        public int Likes { get; set; }
-        public uint Points { get; set; }
-
-        public ChoiceData()
-        {
-            Players = new List<PlayerData>();
-        }
     }
 
     public class ResultData

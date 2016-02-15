@@ -76,13 +76,13 @@ namespace Server.Drawesome
                     Console.WriteLine("Choices");
                     foreach (var choice in gameData.ChosenAnswers)
                     {
-                        if (choice.Value != null && choice.Value.Players.Count != 0)
+                        if (choice.Choosers.Count != 0)
                         {
-                            var players = choice.Value.Players
+                            var players = choice.Choosers
                             .Select(x => x.Name)
                             .Aggregate((current, next) => current + ", " + next);
 
-                            Console.WriteLine("\t{0}: {1}", choice.Key.Answer, players);
+                            Console.WriteLine("\t{0}: {1}", choice.Answer, players);
                         }
                     }
 
@@ -297,7 +297,7 @@ namespace Server.Drawesome
 
             Message.IsType<ClientMessage.Game.SubmitChoice>(json, (data) =>
             {
-                if (!GameData.ChosenAnswers.Any(x => x.Value.Players.Any(y => y.ID == player.Data.ID)))
+                if (!IsPlayersOwnAnswer(player))
                 {
                     GameData.AddChosenAnswer(data.ChosenAnswer, player);
                     GameData.Players.ForEach(x => x.NotifyPlayerGameAction(player.Data));
@@ -323,13 +323,19 @@ namespace Server.Drawesome
 
             base.OnTimerFinish(sender, e);
         }
+
+        bool IsPlayersOwnAnswer(Player player)
+        {
+            return GameData.ChosenAnswers.Any(x => x.Author.ID == player.Data.ID);
+        }
     }
 
     public class StateResultsPhase : State<DrawesomeGameData>
     {
         public override GameState Type { get { return GameState.Results; } }
 
-        Queue<KeyValuePair<AnswerData, ChoiceData>> ChosenAnswersQueue { get; set; }
+        Queue<AnswerData> ChosenAnswersQueue { get; set; }
+        bool HasShownAnswer { get; set; }
 
         public StateResultsPhase()
         {
@@ -340,20 +346,20 @@ namespace Server.Drawesome
         {
             base.OnBegin();
 
+            HasShownAnswer = false;
+
             if (GameData.ChosenAnswers.Count == 0)
             {
-                EndState();
+                ShowActualAnswer();
             }
             else
             {
                 // Sort chosen answers here...
-                ChosenAnswersQueue = new Queue<KeyValuePair<AnswerData, ChoiceData>>();
+                ChosenAnswersQueue = new Queue<AnswerData>();
 
-                var sortedAnswers = GameData.ChosenAnswers.OrderBy(x => x.Value.Players.Count).ToList();
-                foreach (var answer in sortedAnswers)
-                {
-                    ChosenAnswersQueue.Enqueue(new KeyValuePair<AnswerData, ChoiceData>(answer.Key, answer.Value));
-                }
+                // Queue up for answers by order of least chosen to most chosen
+                var sortedAnswers = GameData.ChosenAnswers.OrderBy(x => x.Choosers.Count).ToList();
+                sortedAnswers.ForEach(x => ChosenAnswersQueue.Enqueue(x));
 
                 ShowNextResult();
             }
@@ -363,24 +369,40 @@ namespace Server.Drawesome
         {
             // Send choice to client and remove from queue
             var chosenAnswer = ChosenAnswersQueue.Dequeue();
-            var result = new ResultData(chosenAnswer.Key.Author, chosenAnswer.Value.Players, chosenAnswer.Key.Answer, chosenAnswer.Value.Points);
+            var result = new ResultData(chosenAnswer.Author, chosenAnswer.Choosers, chosenAnswer.Answer, chosenAnswer.Points);
             var message = new ServerMessage.Game.SendResult(result);
             GameData.Players.ForEach(x => x.SendMessage(message));
 
+            Delay();
+        }
+
+        void ShowActualAnswer()
+        {
+            Console.WriteLine("Reveal answer: {0}", GameData.CurrentDrawing.Prompt.Text);
+            GameData.Players.ForEach(x => x.SendActualAnswer(GameData.CurrentDrawing.Prompt.Text));
+            HasShownAnswer = true;
+            Delay();
+        }
+
+        void Delay()
+        {
             // Start timer
-            var timer = new GameTimer(GameData.Settings.Drawesome.ResultTimeBetween);
+            var timer = new GameTimer();
             timer.Finish += UpdateQueue;
         }
 
         void UpdateQueue(object sender, EventArgs e)
         {
+            if (HasShownAnswer)
+                EndState();
+
             if (ChosenAnswersQueue.Count != 0)
             {
                 ShowNextResult();
             }
             else
             {
-                EndState();
+                ShowActualAnswer();
             }
         }
     }
