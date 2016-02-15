@@ -3,7 +3,7 @@ using UnityEngine.UI;
 
 public class UiGameStateAnswering : UiBase
 {
-    public UiError Error;
+    public UiInfoBox InfoBox;
     public UiDrawingCanvas Canvas;
     public InputField InputField;
     public Button Submit;

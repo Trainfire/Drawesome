@@ -82,6 +82,7 @@
     <Compile Include="Assets\Scripts\Messenger.cs" />
     <Compile Include="Assets\Scripts\Settings.cs" />
     <Compile Include="Assets\Scripts\State.cs" />
+    <Compile Include="Assets\Scripts\Strings.cs" />
     <Compile Include="Assets\Scripts\Stylesheet\ButtonComponent.cs" />
     <Compile Include="Assets\Scripts\Stylesheet\ButtonData.cs" />
     <Compile Include="Assets\Scripts\Stylesheet\ColorComponent.cs" />
@@ -99,7 +100,6 @@
     <Compile Include="Assets\Scripts\UI\UiChat.cs" />
     <Compile Include="Assets\Scripts\UI\UiChoosingItem.cs" />
     <Compile Include="Assets\Scripts\UI\UiDrawingCanvas.cs" />
-    <Compile Include="Assets\Scripts\UI\UiError.cs" />
     <Compile Include="Assets\Scripts\UI\UiGameState.cs" />
     <Compile Include="Assets\Scripts\UI\UiGameStateAnswering.cs" />
     <Compile Include="Assets\Scripts\UI\UiGameStateChoosing.cs" />
@@ -109,6 +109,7 @@
     <Compile Include="Assets\Scripts\UI\UiGameStateResults.cs" />
     <Compile Include="Assets\Scripts\UI\UiGameStateRoundBegin.cs" />
     <Compile Include="Assets\Scripts\UI\UiGameStateScores.cs" />
+    <Compile Include="Assets\Scripts\UI\UiInfoBox.cs" />
     <Compile Include="Assets\Scripts\UI\UiLogin.cs" />
     <Compile Include="Assets\Scripts\UI\UiRoom.cs" />
     <Compile Include="Assets\Scripts\UI\UiTimer.cs" />

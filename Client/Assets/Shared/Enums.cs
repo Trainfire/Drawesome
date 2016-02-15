@@ -35,7 +35,7 @@ namespace Protocol
     }
 
     [Serializable]
-    public enum GameAnswerError
+    public enum GameAnswerValidationResponse
     {
         None,
         MatchesPrompt,

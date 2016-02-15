@@ -110,7 +110,7 @@ public class Game : MonoBehaviour, IClientHandler
             bool isClientOwner = Client.Connection.IsRoomOwner();
             view.InfoBox.SetActive(!isClientOwner);
             view.Start.interactable = isClientOwner;
-            view.InfoLabel.text = string.Format("Waiting for room owner: {0}", Client.Connection.Room.Owner.Name);
+            view.InfoLabel.text = string.Format(Strings.WaitingForRoomOwner, Client.Connection.Room.Owner.Name);
         }
     }
 
@@ -179,8 +179,8 @@ public class Game : MonoBehaviour, IClientHandler
         {
             GetView<UiGameStateAnswering>((view) =>
             {
-                view.Error.Hide();
-                view.InputField.text = "Enter your guess here...";
+                view.InfoBox.Hide();
+                view.InputField.text = Strings.PromptEnterGuess;
                 view.InputField.interactable = true;
                 view.Submit.interactable = true;
             });
@@ -192,13 +192,19 @@ public class Game : MonoBehaviour, IClientHandler
 
             Message.IsType<ServerMessage.Game.SendImage>(json, (data) =>
             {
-                view.Canvas.SetImage(data.Image);
+                view.Canvas.SetImage(data.Drawing.Image);
+                bool isClientsDrawing = Client.IsPlayer(data.Drawing.Creator);
+                view.InputField.gameObject.SetActive(!isClientsDrawing);
+                view.Submit.gameObject.SetActive(!isClientsDrawing);
+
+                if (isClientsDrawing)
+                    view.InfoBox.Show(Strings.PlayersOwnDrawing);
             });
 
             Message.IsType<ServerMessage.Game.SendAnswerValidation>(json, (data) =>
             {
-                view.Error.Show(data.Error);
-                if (data.Error == GameAnswerError.None)
+                view.InfoBox.Show(data.Response);
+                if (data.Response == GameAnswerValidationResponse.None)
                 {
                     OnAnswerValidation();
                 }
@@ -214,7 +220,7 @@ public class Game : MonoBehaviour, IClientHandler
             GetView<UiGameStateAnswering>((view) =>
             {
                 view.InputField.interactable = false;
-                view.InputField.text = "Answer submitted! Waiting for other players...";
+                view.InputField.text = Strings.AnswerSubmitted;
                 view.Submit.interactable = false;
             });   
         }

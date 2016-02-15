@@ -102,9 +102,9 @@ namespace Server
             Socket.Send(message.AsJson());
         }
 
-        public void SendImage(byte[] image)
+        public void SendImage(DrawingData drawing)
         {
-            var message = new ServerMessage.Game.SendImage(image);
+            var message = new ServerMessage.Game.SendImage(drawing);
             Socket.Send(message.AsJson());
         }
 
@@ -139,7 +139,7 @@ namespace Server
             Socket.Send(message.AsJson());
         }
 
-        public void SendAnswerValidation(GameAnswerError error)
+        public void SendAnswerValidation(GameAnswerValidationResponse error)
         {
             var message = new ServerMessage.Game.SendAnswerValidation(error);
             Socket.Send(message.AsJson());

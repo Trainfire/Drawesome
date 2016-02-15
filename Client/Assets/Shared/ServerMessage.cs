@@ -86,11 +86,11 @@ namespace Protocol
 
             public class SendImage : Message
             {
-                public byte[] Image;
+                public DrawingData Drawing { get; private set; }
 
-                public SendImage(byte[] image)
+                public SendImage(DrawingData drawing)
                 {
-                    Image = image;
+                    Drawing = drawing;
                 }
             }
 
@@ -179,11 +179,11 @@ namespace Protocol
 
             public class SendAnswerValidation : Message
             {
-                public GameAnswerError Error { get; private set; }
+                public GameAnswerValidationResponse Response { get; private set; }
 
-                public SendAnswerValidation(GameAnswerError error)
+                public SendAnswerValidation(GameAnswerValidationResponse response)
                 {
-                    Error = error;
+                    Response = response;
                 }
             }
         }

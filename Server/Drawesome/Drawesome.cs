@@ -197,7 +197,7 @@ namespace Server.Drawesome
 
             if (GameData.HasDrawings())
             {
-                GameData.Players.ForEach(x => x.SendImage(GameData.GetDrawing().Image));
+                GameData.Players.ForEach(x => x.SendImage(GameData.GetDrawing()));
             }
             else
             {
@@ -214,16 +214,16 @@ namespace Server.Drawesome
                 if (IsPrompt(data.Answer))
                 {
                     Console.WriteLine("Player {0}'s answer matches prompt!", player.Data.Name);
-                    player.SendAnswerValidation(GameAnswerError.MatchesPrompt);
+                    player.SendAnswerValidation(GameAnswerValidationResponse.MatchesPrompt);
                 }
                 else if (HasPromptBeenSubmitted(data.Answer))
                 {
                     Console.WriteLine("Player {0}'s answer matches an existing answer from another player!", player.Data.Name);
-                    player.SendAnswerValidation(GameAnswerError.AlreadyExists);
+                    player.SendAnswerValidation(GameAnswerValidationResponse.AlreadyExists);
                 }        
                 else
                 {
-                    player.SendAnswerValidation(GameAnswerError.None);
+                    player.SendAnswerValidation(GameAnswerValidationResponse.None);
 
                     // Add answer here
                     GameData.AddAnswer(new AnswerData(player.Data, data.Answer));

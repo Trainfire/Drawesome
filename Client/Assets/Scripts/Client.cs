@@ -26,4 +26,9 @@ public class Client : MonoBehaviour
         if (LogMessages)
             Debug.LogFormat("{0} - Recieved Message - Type: {1}, Json: {2}", DateTime.Now.ToShortTimeString(), message.Identity, message.AsJson());
     }
+
+    public bool IsPlayer(PlayerData otherPlayerData)
+    {
+        return PlayerData.ID == otherPlayerData.ID;
+    }
 }
