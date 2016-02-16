@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using System.Collections;
+using System;
 
 public static class UiEx
 {
@@ -19,20 +20,51 @@ public static class UiEx
 
     public static void Fade(this CanvasGroup canvas, float from, float to, float duration)
     {
-        var mono =canvas.GetComponent<MonoBehaviour>();
-        mono.StartCoroutine(_Fade(canvas, from, to, duration));
+        var mono = canvas.GetComponent<MonoBehaviour>();
+        mono.StartCoroutine(TweenFloat(canvas, from, to, duration, (value) =>
+        {
+            canvas.alpha = value;
+        }));
     }
 
-    static IEnumerator _Fade(CanvasGroup canvas, float from, float to, float duration)
+    public static void Scale(this CanvasGroup canvas, Vector2 from, Vector2 to, float duration)
+    {
+        var mono = canvas.GetComponent<MonoBehaviour>();
+        mono.StartCoroutine(TweenVector(canvas, from, to, duration, (value) =>
+        {
+            canvas.transform.localScale = value;
+        }));
+    }
+
+    static IEnumerator TweenVector(CanvasGroup canvas, Vector3 from, Vector3 to, float duration, Action<Vector3> onTween)
     {
         float time = 0f;
+        Vector3 v = from;
         while (time < duration)
         {
-            canvas.alpha = Mathf.Lerp(from, to, time / duration);
+            v = Vector3.Lerp(from, to, time / duration);
             time += Time.deltaTime;
-            yield return 0;
+            onTween(v);
+            yield return v;
         }
-        canvas.alpha = to;
-        yield return 0;
+        v = to;
+        onTween(v);
+        yield return v;
+    }
+
+    static IEnumerator TweenFloat(CanvasGroup canvas, float from, float to, float duration, Action<float> onTween)
+    {
+        float time = 0f;
+        float v = from;
+        while (time < duration)
+        {
+            v = Mathf.Lerp(from, to, time / duration);
+            time += Time.deltaTime;
+            onTween(v);
+            yield return v;
+        }
+        v = to;
+        onTween(v);
+        yield return v;
     }
 }
