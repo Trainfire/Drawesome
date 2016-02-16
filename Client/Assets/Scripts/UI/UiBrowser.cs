@@ -24,7 +24,7 @@ public class UiBrowser : UiBase
     void Awake()
     {
         BrowserItemPrototype.gameObject.SetActive(false);
-        toggleGroup = this.GetOrAddComponent<ToggleGroup>();
+        toggleGroup = gameObject.GetOrAddComponent<ToggleGroup>();
         browserItems = new List<UiBrowserItem>();
     }
 

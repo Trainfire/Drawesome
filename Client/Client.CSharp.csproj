@@ -102,6 +102,7 @@
     <Compile Include="Assets\Scripts\UI\UiChat.cs" />
     <Compile Include="Assets\Scripts\UI\UiChoice.cs" />
     <Compile Include="Assets\Scripts\UI\UiDrawingCanvas.cs" />
+    <Compile Include="Assets\Scripts\UI\UiGame.cs" />
     <Compile Include="Assets\Scripts\UI\UiGameState.cs" />
     <Compile Include="Assets\Scripts\UI\UiGameStateAnswering.cs" />
     <Compile Include="Assets\Scripts\UI\UiGameStateChoosing.cs" />

@@ -7,6 +7,7 @@ using System;
 public class Game : MonoBehaviour, IClientHandler
 {
     public Timer Timer;
+    public UiGame View;
     public UiPlayerList PlayerListView;
     public UiDrawingCanvas CanvasView;
     public UiGameStatePreGame PreGameView;
@@ -22,6 +23,7 @@ public class Game : MonoBehaviour, IClientHandler
     List<IGameState> States { get; set; }
     List<IGameStateHandler> StateHandlers { get; set; }
     List<IGameMessageHandler> MessageHandlers { get; set; }
+    List<IGameTransitionhandler> TransitionHandlers { get; set; }
     State Current { get; set; }
     DrawingCanvas Canvas { get; set; }
     PlayerList PlayerList { get; set; }
@@ -31,6 +33,7 @@ public class Game : MonoBehaviour, IClientHandler
         Client = client;
         Client.MessageHandler.OnMessage += OnMessage;
 
+        // Game state logic and views
         AddState(new PreGameState(client, PreGameView));
         AddState(new RoundBeginState(client, RoundBeginView));
         AddState(new DrawingState(client, DrawingView));
@@ -40,12 +43,18 @@ public class Game : MonoBehaviour, IClientHandler
         AddState(new ScoresState(client, ScoresView));
         AddState(new GameOverState(client, RoundEndView));
 
+        // Drawing canvas
         Canvas = new DrawingCanvas(client, CanvasView);
         AddStateHandler(Canvas);
 
+        // Player List that appears on the right
         PlayerList = new PlayerList(client, PlayerListView);
         AddMessageHandler(PlayerList);
         AddStateHandler(PlayerList);
+
+        // Game View
+        AddStateHandler(View);
+        AddTransitionHandler(View);
 
         Timer.Hide();
 
@@ -74,6 +83,14 @@ public class Game : MonoBehaviour, IClientHandler
             MessageHandlers = new List<IGameMessageHandler>();
 
         MessageHandlers.Add(handler);
+    }
+
+    void AddTransitionHandler(IGameTransitionhandler handler)
+    {
+        if (TransitionHandlers == null)
+            TransitionHandlers = new List<IGameTransitionhandler>();
+
+        TransitionHandlers.Add(handler);
     }
 
     void ChangeState(GameState nextState)
@@ -118,6 +135,12 @@ public class Game : MonoBehaviour, IClientHandler
         {
             Timer.SetTime(data.CurrentTime);
         });
+
+        // Transition
+        Message.IsType<ServerMessage.Game.SendTransitionPeriod>(json, (data) =>
+        {
+            TransitionHandlers.ForEach(x => x.HandleTransition(data));
+        });
     }
 
     void Update()
@@ -141,6 +164,12 @@ public class Game : MonoBehaviour, IClientHandler
     public interface IGameMessageHandler
     {
         void HandleMessage(string json);
+    }
+
+    public interface IGameTransitionhandler
+    {
+        // Hmm?
+        void HandleTransition(ServerMessage.Game.SendTransitionPeriod transition);
     }
 
     public class PreGameState : State, IGameState

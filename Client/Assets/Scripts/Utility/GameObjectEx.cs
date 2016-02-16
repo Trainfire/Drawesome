@@ -2,7 +2,7 @@ using UnityEngine;
 
 public static class GameObjectEx
 {
-    public static T GetOrAddComponent<T>(this Component obj) where T : MonoBehaviour
+    public static T GetOrAddComponent<T>(this GameObject obj) where T : Component
     {
         var comp = obj.GetComponent<T>();
         if (comp != null)
