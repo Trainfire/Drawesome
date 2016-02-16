@@ -8,8 +8,6 @@ public class Timer : MonoBehaviour
 
     float Duration { get; set; }
     float CurrentTime { get; set; }
-
-    AnimationCurve Curve = AnimationCurve.EaseInOut(0f, 0f, 1f, 1f);
     bool shouldLerp = false;
 
     void Awake()

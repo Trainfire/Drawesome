@@ -13,12 +13,12 @@ public class UiDrawingCanvas : MonoBehaviour
 
     Vector2 CurrentMousePosition { get; set; }
 
-    Vector2 previousMousePosition;
+    Vector2 previousMousePosition = Vector2.zero;
     Vector2 PreviousMousePosition
     {
         get
         {
-            if (previousMousePosition == null)
+            if (previousMousePosition == Vector2.zero)
                 previousMousePosition = GetMousePosition();
             return previousMousePosition;
         }
