@@ -197,16 +197,14 @@ namespace Server.Drawesome
 
             Message.IsType<ClientMessage.Game.SubmitChoice>(json, (data) =>
             {
-                if (!IsPlayersOwnAnswer(player))
-                {
-                    GameData.AddChosenAnswer(data.ChosenAnswer, player);
-                    GameData.Players.ForEach(x => x.NotifyPlayerGameAction(player.Data, GamePlayerAction.ChoiceChosen));
-                    ResponseHandler.Register(player);
+                Console.WriteLine("Player {0} chose {1}", player.Data.Name, data.ChosenAnswer);
+                GameData.AddChosenAnswer(data.ChosenAnswer, player);
+                GameData.Players.ForEach(x => x.NotifyPlayerGameAction(player.Data, GamePlayerAction.ChoiceChosen));
+                ResponseHandler.Register(player);
 
-                    // End state if all players have chosen
-                    if (ResponseHandler.AllResponded())
-                        EndState();
-                }
+                // End state if all players have chosen
+                if (ResponseHandler.AllResponded())
+                    EndState();
             });
 
             Message.IsType<ClientMessage.Game.LikeAnswer>(json, (data) =>
@@ -214,11 +212,6 @@ namespace Server.Drawesome
                 // Add like
                 GameData.AddLike(data.Answer);
             });
-        }
-
-        bool IsPlayersOwnAnswer(Player player)
-        {
-            return GameData.ChosenAnswers.Any(x => x.Author.ID == player.Data.ID);
         }
 
         protected override void OnEndState()
@@ -284,6 +277,7 @@ namespace Server.Drawesome
         {
             ResponseHandler.Clear();
 
+            // Loop through all results until empty
             if (ChosenAnswersQueue.Count != 0)
             {
                 GameData.Players.ForEach(x => ResponseHandler.AddRespondant(x));
@@ -291,18 +285,8 @@ namespace Server.Drawesome
             }
             else
             {
-                OnQueueEmpty();
-            }
-        }
-
-        void OnQueueEmpty()
-        {
-            // Add delay before next state
-            var timer = new GameTimer(GameData.Settings.Drawesome.ResultTimeBetween);
-            timer.Finish += (sender, args) =>
-            {
                 EndState();
-            };
+            }
         }
 
         void ShowNextResult()
@@ -340,6 +324,11 @@ namespace Server.Drawesome
         {
             base.OnBegin();
             GameData.OnNewRound();
+            EndState();
+        }
+
+        protected override void OnEndState()
+        {
             AddTransitionTimer(GameData.Settings.Drawesome.Transitions.ScoresToAnswering, GameTransition.ScoresToAnswering);
         }
     }

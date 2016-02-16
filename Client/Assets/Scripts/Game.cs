@@ -181,9 +181,8 @@ public class Game : MonoBehaviour, IClientHandler
         {
             var view = GetView<UiGameStatePreGame>();
             bool isClientOwner = Client.Connection.IsRoomOwner();
-            view.InfoBox.SetActive(!isClientOwner);
-            view.Start.interactable = isClientOwner;
-            view.InfoLabel.text = string.Format(Strings.WaitingForRoomOwner, Client.Connection.Room.Owner.Name);
+            view.Start.gameObject.SetActive(isClientOwner);
+            view.InfoLabel.text = isClientOwner ? Strings.StartGame : string.Format(Strings.WaitingForRoomOwner, Client.Connection.Room.Owner.Name);
         }
     }
 
