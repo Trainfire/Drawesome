@@ -20,7 +20,8 @@ public class Game : MonoBehaviour, IClientHandler
 
     Client Client { get; set; }
     List<IGameState> States { get; set; }
-    List<IGameStateHandler> Handlers { get; set; }
+    List<IGameStateHandler> StateHandlers { get; set; }
+    List<IGameMessageHandler> MessageHandlers { get; set; }
     State Current { get; set; }
     DrawingCanvas Canvas { get; set; }
     PlayerList PlayerList { get; set; }
@@ -40,9 +41,11 @@ public class Game : MonoBehaviour, IClientHandler
         AddState(new GameOverState(client, RoundEndView));
 
         Canvas = new DrawingCanvas(client, CanvasView);
-        AddHandler(Canvas);
+        AddStateHandler(Canvas);
 
         PlayerList = new PlayerList(client, PlayerListView);
+        AddMessageHandler(PlayerList);
+        AddStateHandler(PlayerList);
 
         Timer.Hide();
 
@@ -57,12 +60,20 @@ public class Game : MonoBehaviour, IClientHandler
         States.Add(state);
     }
 
-    void AddHandler(IGameStateHandler handler)
+    void AddStateHandler(IGameStateHandler handler)
     {
-        if (Handlers == null)
-            Handlers = new List<IGameStateHandler>();
+        if (StateHandlers == null)
+            StateHandlers = new List<IGameStateHandler>();
 
-        Handlers.Add(handler);
+        StateHandlers.Add(handler);
+    }
+
+    void AddMessageHandler(IGameMessageHandler handler)
+    {
+        if (MessageHandlers == null)
+            MessageHandlers = new List<IGameMessageHandler>();
+
+        MessageHandlers.Add(handler);
     }
 
     void ChangeState(GameState nextState)
@@ -81,15 +92,16 @@ public class Game : MonoBehaviour, IClientHandler
             }
         }
 
-        Handlers.ForEach(x => x.HandleState(nextState));
+        StateHandlers.ForEach(x => x.HandleState(nextState));
     }
 
     void OnMessage(string json)
     {
+        MessageHandlers.ForEach(x => x.HandleMessage(json));
+
         // Change state
         Message.IsType<ServerMessage.Game.StateChange>(json, (data) =>
         {
-            PlayerList.ClearTicks();
             Timer.Hide();
             ChangeState(data.GameState);
         });
@@ -105,19 +117,6 @@ public class Game : MonoBehaviour, IClientHandler
         Message.IsType<ServerMessage.Game.SetTimer>(json, (data) =>
         {
             Timer.SetTime(data.CurrentTime);
-        });
-
-        // Update player list
-        Message.IsType<ServerMessage.RoomUpdate>(json, (data) =>
-        {
-            PlayerList.Clear();
-            data.RoomData.Players.ForEach(x => PlayerList.AddPlayer(x));
-        });
-
-        // Set tick on player action such as submit drawing, answering and choosing
-        Message.IsType<ServerMessage.Game.PlayerAction>(json, (data) =>
-        {
-            PlayerList.SetTick(data.Actor, true);
         });
     }
 
@@ -137,6 +136,11 @@ public class Game : MonoBehaviour, IClientHandler
     public interface IGameStateHandler
     {
         void HandleState(GameState state);
+    }
+
+    public interface IGameMessageHandler
+    {
+        void HandleMessage(string json);
     }
 
     public class PreGameState : State, IGameState

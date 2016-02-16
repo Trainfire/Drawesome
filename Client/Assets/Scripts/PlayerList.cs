@@ -2,8 +2,9 @@ using UnityEngine;
 using System.Collections.Generic;
 using Protocol;
 using System.Linq;
+using System;
 
-public class PlayerList
+public class PlayerList : Game.IGameStateHandler, Game.IGameMessageHandler
 {
     UiPlayerList View { get; set; }
     Client Client { get; set; }
@@ -16,7 +17,7 @@ public class PlayerList
         Players = new Dictionary<PlayerData, UiPlayerListItem>();
     }
 
-    public void SetTick(PlayerData player, bool enabled)
+    void SetTick(PlayerData player, bool enabled)
     {
         if (Players.ContainsKey(player))
         {
@@ -24,7 +25,7 @@ public class PlayerList
         }
     }
 
-    public void AddPlayer(PlayerData player)
+    void AddPlayer(PlayerData player)
     {
         if (!Players.ContainsKey(player))
         {
@@ -32,7 +33,7 @@ public class PlayerList
         }
     }
 
-    public void RemovePlayer(PlayerData player)
+    void RemovePlayer(PlayerData player)
     {
         if (Players.ContainsKey(player))
         {
@@ -41,7 +42,7 @@ public class PlayerList
         }
     }
 
-    public void ClearTicks()
+    void ClearTicks()
     {
         foreach (var player in Players)
         {
@@ -49,7 +50,7 @@ public class PlayerList
         }
     }
 
-    public void Clear()
+    void Clear()
     {
         foreach (var player in Players)
         {
@@ -57,5 +58,39 @@ public class PlayerList
         }
 
         Players.Clear();
+    }
+
+    void Game.IGameStateHandler.HandleState(GameState state)
+    {
+        ClearTicks();
+
+        switch (state)
+        {
+            case GameState.PreGame:
+                View.Show();
+                break;
+            case GameState.Answering:
+                View.Show();
+                break;
+            case GameState.Results:
+                View.Hide();
+                break;
+        }
+    }
+
+    void Game.IGameMessageHandler.HandleMessage(string json)
+    {
+        // Update player list
+        Message.IsType<ServerMessage.RoomUpdate>(json, (data) =>
+        {
+            Clear();
+            data.RoomData.Players.ForEach(x => AddPlayer(x));
+        });
+
+        // Set tick on player action such as submit drawing, answering and choosing
+        Message.IsType<ServerMessage.Game.PlayerAction>(json, (data) =>
+        {
+            SetTick(data.Actor, true);
+        });
     }
 }
