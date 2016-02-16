@@ -15,9 +15,9 @@
 	  "memes",
   ],
   "Transitions": {
-    "RoundBeginToDrawing": 5.0,
-    "DrawingToAnswering": 5.0,
-	"AnsweringToChoosing": 5.0,
+    "RoundBeginToDrawing": 1.0,
+    "DrawingToAnswering": 2.0,
+	"AnsweringToChoosing": 2.0,
     "ChoosingtoResults": 5.0,
 	"ResultsToScores": 5.0,
 	"ScoresToAnswering": 5.0,

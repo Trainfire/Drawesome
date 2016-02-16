@@ -21,9 +21,9 @@ namespace Server.Drawesome
             SetCountdownTimer("Begin Timer", GameData.Settings.Drawesome.RoundBeginTime, true);
         }
 
-        protected override void OnCountdownFinish(object sender, EventArgs e)
+        protected override void OnEndState()
         {
-            EndState(GameData.Settings.Drawesome.Transitions.RoundBeginToDrawing, GameTransition.RoundBeginToDrawing);
+            AddTransitionTimer(GameData.Settings.Drawesome.Transitions.RoundBeginToDrawing, GameTransition.RoundBeginToDrawing);
         }
     }
 
@@ -70,13 +70,13 @@ namespace Server.Drawesome
                 ResponseHandler.Register(player);
 
                 if (ResponseHandler.AllResponded())
-                    EndState(GameData.Settings.Drawesome.Transitions.DrawingToAnswering, GameTransition.DrawingToAnswering);
+                    EndState();
             });
         }
 
-        protected override void OnCountdownFinish(object sender, EventArgs e)
+        protected override void OnEndState()
         {
-            EndState(GameData.Settings.Drawesome.Transitions.DrawingToAnswering, GameTransition.DrawingToAnswering, true);
+            AddTransitionTimer(GameData.Settings.Drawesome.Transitions.DrawingToAnswering, GameTransition.DrawingToAnswering);
         }
     }
 
@@ -148,16 +148,11 @@ namespace Server.Drawesome
             });
         }
 
-        protected override void OnCountdownFinish(object sender, EventArgs e)
-        {
-            EndState(GameData.Settings.Drawesome.Transitions.AnsweringToChoosing, GameTransition.AnsweringToChoosing, true);
-        }
-
         protected override void OnEndState()
         {
             GameData.AddDecoys();
             GameData.AddActualAnswer();
-            base.OnEndState();
+            AddTransitionTimer(GameData.Settings.Drawesome.Transitions.AnsweringToChoosing, GameTransition.AnsweringToChoosing);
         }
 
         bool IsPrompt(string answer)
@@ -226,9 +221,9 @@ namespace Server.Drawesome
             return GameData.ChosenAnswers.Any(x => x.Author.ID == player.Data.ID);
         }
 
-        protected override void OnCountdownFinish(object sender, EventArgs e)
+        protected override void OnEndState()
         {
-            EndState(GameData.Settings.Drawesome.Transitions.ChoosingtoResults, GameTransition.ChoosingToResults, true);
+            AddTransitionTimer(GameData.Settings.Drawesome.Transitions.ChoosingtoResults, GameTransition.ChoosingToResults);
         }
     }
 
@@ -318,9 +313,9 @@ namespace Server.Drawesome
             GameData.Players.ForEach(x => x.SendMessage(message));
         }
 
-        protected override void OnCountdownFinish(object sender, EventArgs e)
+        protected override void OnEndState()
         {
-            EndState(GameData.Settings.Drawesome.Transitions.ResultsToScores, GameTransition.ResultsToScores, true);
+            AddTransitionTimer(GameData.Settings.Drawesome.Transitions.ResultsToScores, GameTransition.ResultsToScores);
         }
     }
 
@@ -345,7 +340,7 @@ namespace Server.Drawesome
         {
             base.OnBegin();
             GameData.OnNewRound();
-            EndState(GameData.Settings.Drawesome.Transitions.ScoresToAnswering, GameTransition.ScoresToAnswering);
+            AddTransitionTimer(GameData.Settings.Drawesome.Transitions.ScoresToAnswering, GameTransition.ScoresToAnswering);
         }
     }
 }
