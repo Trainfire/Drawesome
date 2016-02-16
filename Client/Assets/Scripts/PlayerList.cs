@@ -41,6 +41,14 @@ public class PlayerList
         }
     }
 
+    public void ClearTicks()
+    {
+        foreach (var player in Players)
+        {
+            player.Value.Tick.SetActive(false);
+        }
+    }
+
     public void Clear()
     {
         foreach (var player in Players)

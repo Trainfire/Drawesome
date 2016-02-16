@@ -18,17 +18,13 @@ namespace Protocol
 
         public override int GetHashCode()
         {
-            return base.GetHashCode();
+            return ID.GetHashCode();
         }
 
         public override bool Equals(object obj)
         {
-            var playerData = obj as PlayerData;
-
-            if (playerData == null)
-                return false;
-
-            return playerData.ID == this.ID;
+            var other = obj as PlayerData;
+            return other != null && other.ID == this.ID;
         }
     }
 

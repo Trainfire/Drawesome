@@ -177,7 +177,7 @@ namespace Server.Drawesome
                 Console.WriteLine("Recieve image from {0} with {1} bytes for prompt {2}", player.Data.Name, data.Image.Length, prompt.Text);
 
                 // Tell all clients that player has submitted drawing
-                GameData.Players.ForEach(x => x.NotifyPlayerGameAction(player.Data));
+                GameData.Players.ForEach(x => x.NotifyPlayerGameAction(player.Data, GamePlayerAction.DrawingSubmitted));
 
                 ResponseHandler.Register(player);
 
@@ -244,7 +244,7 @@ namespace Server.Drawesome
                     GameData.AddAnswer(new AnswerData(player.Data, data.Answer));
 
                     // Tell all clients that player has submitted answer
-                    GameData.Players.ForEach(x => x.NotifyPlayerGameAction(player.Data));
+                    GameData.Players.ForEach(x => x.NotifyPlayerGameAction(player.Data, GamePlayerAction.AnswerSubmitted));
 
                     // Register response
                     ResponseHandler.Register(player);
@@ -307,7 +307,7 @@ namespace Server.Drawesome
                 if (!IsPlayersOwnAnswer(player))
                 {
                     GameData.AddChosenAnswer(data.ChosenAnswer, player);
-                    GameData.Players.ForEach(x => x.NotifyPlayerGameAction(player.Data));
+                    GameData.Players.ForEach(x => x.NotifyPlayerGameAction(player.Data, GamePlayerAction.ChoiceChosen));
                     ResponseHandler.Register(player);
 
                     // End state if all players have chosen

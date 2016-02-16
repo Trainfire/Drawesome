@@ -89,6 +89,7 @@ public class Game : MonoBehaviour, IClientHandler
         // Change state
         Message.IsType<ServerMessage.Game.StateChange>(json, (data) =>
         {
+            PlayerList.ClearTicks();
             Timer.Hide();
             ChangeState(data.GameState);
         });
@@ -111,6 +112,12 @@ public class Game : MonoBehaviour, IClientHandler
         {
             PlayerList.Clear();
             data.RoomData.Players.ForEach(x => PlayerList.AddPlayer(x));
+        });
+
+        // Set tick on player action such as submit drawing, answering and choosing
+        Message.IsType<ServerMessage.Game.PlayerAction>(json, (data) =>
+        {
+            PlayerList.SetTick(data.Actor, true);
         });
     }
 

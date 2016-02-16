@@ -37,6 +37,15 @@ namespace Protocol
     }
 
     [Serializable]
+    public enum GamePlayerAction
+    {
+        None,
+        DrawingSubmitted,
+        AnswerSubmitted,
+        ChoiceChosen,
+    }
+
+    [Serializable]
     public enum GameAnswerValidationResponse
     {
         None,

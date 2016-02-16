@@ -152,10 +152,12 @@ namespace Protocol
             public class PlayerAction : Message
             {
                 public PlayerData Actor { get; private set; }
+                public GamePlayerAction Action { get; private set; }
 
-                public PlayerAction(PlayerData actor)
+                public PlayerAction(PlayerData actor, GamePlayerAction action)
                 {
                     Actor = actor;
+                    Action = action;
                 }
             }
 
