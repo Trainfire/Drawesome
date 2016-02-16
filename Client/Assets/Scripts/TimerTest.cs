@@ -30,9 +30,7 @@ public class TimerTest : MonoBehaviour
     {
         if (Input.GetKeyUp(KeyCode.Space))
         {
-            Time = 30f;
-            StopAllCoroutines();
-            StartCoroutine(Countdown());
+          
         }
     }
 }

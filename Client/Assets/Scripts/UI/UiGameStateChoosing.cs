@@ -6,26 +6,39 @@ using Protocol;
 
 public class UiGameStateChoosing : UiBase
 {
-    public event Action<UiChoosingItem> OnChoiceSelected;
+    public event Action<AnswerData> OnChoiceSelected;
+    public event Action<AnswerData> OnLike;
 
-    public UiChoosingItem ChoicePrototype;
-    public List<RectTransform> SpawnPositions = new List<RectTransform>();
+    public UiChoice ChoicePrototype;
+    public GameObject Left;
+    public GameObject Right;
     public UiInfoBox InfoBox;
 
-    List<UiChoosingItem> Views = new List<UiChoosingItem>();
+    List<UiChoice> Views = new List<UiChoice>();
 
     protected override void OnFirstShow()
     {
-        Views = new List<UiChoosingItem>();
+        Views = new List<UiChoice>();
+        ChoicePrototype.gameObject.SetActive(false);
+    }
+
+    protected override void OnShow()
+    {
+        base.OnShow();
+        InfoBox.Hide();
     }
 
     public void ShowChoices(PlayerData creator, List<AnswerData> choices)
     {
-        for (int i = 0; i < choices.Count; i++)
+        if (Client.IsPlayer(creator))
+            InfoBox.Show(Strings.PlayersOwnDrawing);
+
+        for (int i = 0; i < choices.Count - 1; i++)
         {
             Debug.LogFormat("Show choice: {0}", choices[i]);
 
-            var instance = UiUtility.AddChild(SpawnPositions[i].gameObject, ChoicePrototype, true);
+            var position = i % 2 == 1 ? Left : Right;
+            var instance = UiUtility.AddChild(position.gameObject, ChoicePrototype, true);
 
             // Show different UI depending of if this is the player's answer
             // If it is, the player won't be able to select their own answer
@@ -38,18 +51,36 @@ public class UiGameStateChoosing : UiBase
 
             // Don't allow button presses if the drawing creator is the player
             instance.Button.interactable = !isPlayer && !isCreator;
+            instance.Like.interactable = !isPlayer;
 
             if (!isPlayer && !isCreator)
             {
+                var tempChoice = choices[i];
+
                 instance.Button.onClick.AddListener(() =>
                 {
                     if (OnChoiceSelected != null)
-                        OnChoiceSelected(instance);
+                        OnChoiceSelected(tempChoice);
+
+                    DisableButtons();
+
+                    InfoBox.Show(Strings.ChoiceSubmitted);
+                });
+
+                instance.Like.onClick.AddListener(() =>
+                {
+                    if (OnLike != null)
+                        OnLike(tempChoice);
                 });
             }
 
             Views.Add(instance);
         }
+    }
+
+    public void DisableButtons()
+    {
+        Views.ForEach(x => x.Button.interactable = false);
     }
 
     protected override void OnHide()

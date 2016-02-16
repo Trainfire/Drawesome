@@ -224,8 +224,8 @@ public class Game : MonoBehaviour, IClientHandler
             {
                 view.InfoBox.Hide();
                 view.InputField.text = Strings.PromptEnterGuess;
-                view.InputField.interactable = true;
-                view.Submit.interactable = true;
+                view.InputField.gameObject.SetActive(true);
+                view.Submit.gameObject.SetActive(true);
             });
         }
 
@@ -262,9 +262,9 @@ public class Game : MonoBehaviour, IClientHandler
         {
             GetView<UiGameStateAnswering>((view) =>
             {
-                view.InputField.interactable = false;
-                view.InputField.text = Strings.AnswerSubmitted;
-                view.Submit.interactable = false;
+                view.InputField.gameObject.SetActive(false);
+                view.Submit.gameObject.SetActive(false);
+                view.InfoBox.Show(Strings.AnswerSubmitted);
             });   
         }
     }
@@ -277,18 +277,21 @@ public class Game : MonoBehaviour, IClientHandler
 
         public ChoosingState(Client client, UiGameStateChoosing view) : base(client, view)
         {
-            view.OnChoiceSelected += View_OnChoiceSelected;
+            view.OnChoiceSelected += (choice) =>
+            {
+                Client.Messenger.SubmitChosenAnswer(choice.Answer);
+            };
+
+            view.OnLike += (choice) =>
+            {
+                Client.Messenger.SubmitLike(choice.Answer);
+            };
         }
 
         protected override void OnBegin()
         {
             base.OnBegin();
             GetView<UiGameStateChoosing>().InfoBox.Hide();
-        }
-
-        void View_OnChoiceSelected(UiChoosingItem obj)
-        {
-            Client.Messenger.SubmitChosenAnswer(obj.Text[0].text);
         }
 
         protected override void OnMessage(string json)
@@ -298,9 +301,6 @@ public class Game : MonoBehaviour, IClientHandler
                 GetView<UiGameStateChoosing>((view) =>
                 {
                     view.ShowChoices(data.Creator, data.Choices);
-
-                    if (Client.IsPlayer(data.Creator))
-                        view.InfoBox.Show(Strings.PlayersOwnDrawing);
                 });
             });
         }

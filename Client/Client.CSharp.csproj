@@ -99,7 +99,7 @@
     <Compile Include="Assets\Scripts\UI\UiBrowser.cs" />
     <Compile Include="Assets\Scripts\UI\UiBrowserItem.cs" />
     <Compile Include="Assets\Scripts\UI\UiChat.cs" />
-    <Compile Include="Assets\Scripts\UI\UiChoosingItem.cs" />
+    <Compile Include="Assets\Scripts\UI\UiChoice.cs" />
     <Compile Include="Assets\Scripts\UI\UiDrawingCanvas.cs" />
     <Compile Include="Assets\Scripts\UI\UiGameState.cs" />
     <Compile Include="Assets\Scripts\UI\UiGameStateAnswering.cs" />
