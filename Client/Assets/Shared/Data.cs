@@ -15,6 +15,21 @@ namespace Protocol
             ID = "";
             Name = "";
         }
+
+        public override int GetHashCode()
+        {
+            return base.GetHashCode();
+        }
+
+        public override bool Equals(object obj)
+        {
+            var playerData = obj as PlayerData;
+
+            if (playerData == null)
+                return false;
+
+            return playerData.ID == this.ID;
+        }
     }
 
     public class RoomData

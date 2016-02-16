@@ -7,6 +7,7 @@ using System;
 public class Game : MonoBehaviour, IClientHandler
 {
     public Timer Timer;
+    public UiPlayerList PlayerListView;
     public UiDrawingCanvas CanvasView;
     public UiGameStatePreGame PreGameView;
     public UiGameStateRoundBegin RoundBeginView;
@@ -22,6 +23,7 @@ public class Game : MonoBehaviour, IClientHandler
     List<IGameStateHandler> Handlers { get; set; }
     State Current { get; set; }
     DrawingCanvas Canvas { get; set; }
+    PlayerList PlayerList { get; set; }
 
     public void Initialise(Client client)
     {
@@ -39,6 +41,8 @@ public class Game : MonoBehaviour, IClientHandler
 
         Canvas = new DrawingCanvas(client, CanvasView);
         AddHandler(Canvas);
+
+        PlayerList = new PlayerList(client, PlayerListView);
 
         Timer.Hide();
 
@@ -100,6 +104,13 @@ public class Game : MonoBehaviour, IClientHandler
         Message.IsType<ServerMessage.Game.SetTimer>(json, (data) =>
         {
             Timer.SetTime(data.CurrentTime);
+        });
+
+        // Update player list
+        Message.IsType<ServerMessage.RoomUpdate>(json, (data) =>
+        {
+            PlayerList.Clear();
+            data.RoomData.Players.ForEach(x => PlayerList.AddPlayer(x));
         });
     }
 

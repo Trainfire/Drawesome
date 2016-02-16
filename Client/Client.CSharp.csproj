@@ -81,6 +81,7 @@
     <Compile Include="Assets\Scripts\Interfaces\IClientHandler.cs" />
     <Compile Include="Assets\Scripts\MessageHandler.cs" />
     <Compile Include="Assets\Scripts\Messenger.cs" />
+    <Compile Include="Assets\Scripts\PlayerList.cs" />
     <Compile Include="Assets\Scripts\Settings.cs" />
     <Compile Include="Assets\Scripts\State.cs" />
     <Compile Include="Assets\Scripts\Strings.cs" />
@@ -112,6 +113,8 @@
     <Compile Include="Assets\Scripts\UI\UiGameStateScores.cs" />
     <Compile Include="Assets\Scripts\UI\UiInfoBox.cs" />
     <Compile Include="Assets\Scripts\UI\UiLogin.cs" />
+    <Compile Include="Assets\Scripts\UI\UiPlayerList.cs" />
+    <Compile Include="Assets\Scripts\UI\UiPlayerListItem.cs" />
     <Compile Include="Assets\Scripts\UI\UiRoom.cs" />
     <Compile Include="Assets\Scripts\UI\UiTimer.cs" />
     <Compile Include="Assets\Scripts\UserInterface.cs" />
