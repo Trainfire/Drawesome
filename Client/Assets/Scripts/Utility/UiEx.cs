@@ -32,6 +32,7 @@ public static class UiEx
             time += Time.deltaTime;
             yield return 0;
         }
+        canvas.alpha = to;
         yield return 0;
     }
 }

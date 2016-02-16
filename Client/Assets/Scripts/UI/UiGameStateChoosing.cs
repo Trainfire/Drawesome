@@ -10,8 +10,7 @@ public class UiGameStateChoosing : UiBase
     public event Action<AnswerData> OnLike;
 
     public UiChoice ChoicePrototype;
-    public GameObject Left;
-    public GameObject Right;
+    public GameObject List;
     public UiInfoBox InfoBox;
 
     List<UiChoice> Views = new List<UiChoice>();
@@ -33,12 +32,11 @@ public class UiGameStateChoosing : UiBase
         if (Client.IsPlayer(creator))
             InfoBox.Show(Strings.PlayersOwnDrawing);
 
-        for (int i = 0; i < choices.Count - 1; i++)
+        for (int i = 0; i < choices.Count; i++)
         {
-            Debug.LogFormat("Show choice: {0}", choices[i]);
+            Debug.LogFormat("Show choice: {0}", choices[i].Answer);
 
-            var position = i % 2 == 1 ? Left : Right;
-            var instance = UiUtility.AddChild(position.gameObject, ChoicePrototype, true);
+            var instance = UiUtility.AddChild(List.gameObject, ChoicePrototype, true);
 
             // Show different UI depending of if this is the player's answer
             // If it is, the player won't be able to select their own answer
