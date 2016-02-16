@@ -1,7 +1,8 @@
 using UnityEngine;
 using System.Collections;
+using Protocol;
 
-public class Timer : MonoBehaviour
+public class Timer : MonoBehaviour, Game.IGameStateHandler, Game.IGameMessageHandler
 {
     public UiTimer View;
     public float LerpTime = 0.8f;
@@ -14,20 +15,21 @@ public class Timer : MonoBehaviour
     {
         Duration = 30f;
         CurrentTime = Duration;
+        Hide();
     }
 
-    public void Show()
+    void Show()
     {
         View.gameObject.SetActive(true);
     }
 
-    public void Hide()
+    void Hide()
     {
         View.gameObject.SetActive(false);
         StopAllCoroutines();
     }
 
-    public void SetDuration(float duration)
+    void SetDuration(float duration)
     {
         Duration = duration;
         CurrentTime = duration;
@@ -35,7 +37,7 @@ public class Timer : MonoBehaviour
         shouldLerp = false;
     }
 
-    public void SetTime(float currentTime)
+    void SetTime(float currentTime)
     {
         CurrentTime = currentTime;
         shouldLerp = true;
@@ -52,5 +54,32 @@ public class Timer : MonoBehaviour
     float CalculateFill()
     {
         return Mathf.Clamp01(CurrentTime / Duration);
+    }
+
+    void Game.IGameStateHandler.HandleState(GameState state)
+    {
+        
+    }
+
+    void Game.IGameMessageHandler.HandleMessage(string json)
+    {
+        // Change state
+        Message.IsType<ServerMessage.Game.StateChange>(json, (data) =>
+        {
+            Hide();
+        });
+
+        // Show and set timer
+        Message.IsType<ServerMessage.Game.AddTimer>(json, (data) =>
+        {
+            Show();
+            SetDuration(data.Duration);
+        });
+
+        // Update timer
+        Message.IsType<ServerMessage.Game.SetTimer>(json, (data) =>
+        {
+            SetTime(data.CurrentTime);
+        });
     }
 }

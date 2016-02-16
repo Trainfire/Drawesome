@@ -95,7 +95,6 @@
     <Compile Include="Assets\Scripts\Stylesheet\TextComponent.cs" />
     <Compile Include="Assets\Scripts\Stylesheet\TextData.cs" />
     <Compile Include="Assets\Scripts\Timer.cs" />
-    <Compile Include="Assets\Scripts\TimerTest.cs" />
     <Compile Include="Assets\Scripts\UI\UiBase.cs" />
     <Compile Include="Assets\Scripts\UI\UiBrowser.cs" />
     <Compile Include="Assets\Scripts\UI\UiBrowserItem.cs" />

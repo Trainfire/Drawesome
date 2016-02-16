@@ -56,7 +56,9 @@ public class Game : MonoBehaviour, IClientHandler
         AddStateHandler(View);
         AddTransitionHandler(View);
 
-        Timer.Hide();
+        // Timer
+        AddMessageHandler(Timer);
+        AddStateHandler(Timer);
 
         ChangeState(GameState.PreGame);
     }
@@ -119,21 +121,7 @@ public class Game : MonoBehaviour, IClientHandler
         // Change state
         Message.IsType<ServerMessage.Game.StateChange>(json, (data) =>
         {
-            Timer.Hide();
             ChangeState(data.GameState);
-        });
-
-        // Show and set timer
-        Message.IsType<ServerMessage.Game.AddTimer>(json, (data) =>
-        {
-            Timer.Show();
-            Timer.SetDuration(data.Duration);
-        });
-
-        // Update timer
-        Message.IsType<ServerMessage.Game.SetTimer>(json, (data) =>
-        {
-            Timer.SetTime(data.CurrentTime);
         });
 
         // Transition
