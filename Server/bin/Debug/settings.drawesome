@@ -1,9 +1,9 @@
 {
   "RoundBeginTime": 5.0,
   "DrawTime": 60.0,
-  "AnsweringTime": 5.0,
-  "ChoosingTime": 5.0,
-  "ResultTimeBetween": 5,
+  "AnsweringTime": 30.0,
+  "ChoosingTime": 30.0,
+  "ResultTimeBetween": 10.0,
   "PointsPerChoice": 100,
   "PointsForCorrectAnswer": 200,
   "Decoys":
@@ -13,5 +13,13 @@
 	  "aliens",
 	  "horses",
 	  "memes",
-  ]
+  ],
+  "Transitions": {
+    "RoundBeginToDrawing": 5.0,
+    "DrawingToAnswering": 5.0,
+	"AnsweringToChoosing": 5.0,
+    "ChoosingtoResults": 5.0,
+	"ResultsToScores": 5.0,
+	"ScoresToAnswering": 5.0,
+  }
 }

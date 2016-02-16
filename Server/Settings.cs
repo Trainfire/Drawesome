@@ -102,6 +102,18 @@ namespace Server
         public uint PointsForCorrectAnswer = 200;
 
         public List<string> Decoys = new List<string>();
+
+        public TransitionData Transitions = new TransitionData();
+
+        public class TransitionData
+        {
+            public float RoundBeginToDrawing;
+            public float DrawingToAnswering;
+            public float AnsweringToChoosing;
+            public float ChoosingtoResults;
+            public float ResultsToScores;
+            public float ScoresToAnswering;
+        }
     }
 
     public class PromptSettings

@@ -84,6 +84,18 @@ namespace Protocol
                 }
             }
 
+            public class SendTransitionPeriod : Message
+            {
+                public GameTransition Transition { get; private set; }
+                public float Duration { get; private set; }
+
+                public SendTransitionPeriod(float duration, GameTransition transition)
+                {
+                    Duration = duration;
+                    Transition = transition;
+                }
+            }
+
             public class SendImage : Message
             {
                 public DrawingData Drawing { get; private set; }

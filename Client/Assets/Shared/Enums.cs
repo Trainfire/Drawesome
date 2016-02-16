@@ -67,6 +67,17 @@ namespace Protocol
     }
 
     [Serializable]
+    public enum GameTransition
+    {
+        RoundBeginToDrawing,
+        DrawingToAnswering,
+        AnsweringToChoosing,
+        ChoosingToResults,
+        ResultsToScores,
+        ScoresToAnswering,
+    }
+
+    [Serializable]
     public enum GameAnswerType
     {
         Player,

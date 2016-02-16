@@ -81,6 +81,7 @@
     </Compile>
     <Compile Include="Drawesome\Drawesome.cs" />
     <Compile Include="Drawesome\DrawesomeGameData.cs" />
+    <Compile Include="Drawesome\DrawesomeStates.cs" />
     <Compile Include="Drawesome\ResponseHandler.cs" />
     <Compile Include="Game\GameData.cs" />
     <Compile Include="Game\Game.cs" />
