@@ -174,11 +174,24 @@ public class Game : MonoBehaviour, IClientHandler
 
         public DrawingState(Client client, UiGameStateDrawing view) : base(client, view)
         {
+            view.InfoBox.Label.text = Strings.DrawingSubmitted;
+
             // Send image on submit
             view.Submit.onClick.AddListener(() =>
             {
                 Client.Messenger.SendImage(Canvas.GetEncodedImage());
                 Canvas.AllowDrawing = false;
+                view.InfoBox.Show();
+                view.Submit.gameObject.SetActive(false);
+            });
+        }
+
+        protected override void OnBegin()
+        {
+            GetView<UiGameStateDrawing>((view) =>
+            {
+                view.InfoBox.Hide();
+                view.Submit.gameObject.SetActive(true);
             });
         }
 

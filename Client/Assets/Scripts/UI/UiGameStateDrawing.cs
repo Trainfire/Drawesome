@@ -3,6 +3,7 @@ using UnityEngine.UI;
 
 public class UiGameStateDrawing : UiBase
 {
+    public UiInfoBox InfoBox;
     public Text Prompt;
     public Button Submit;
 
