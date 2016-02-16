@@ -94,6 +94,7 @@
     <Compile Include="Assets\Scripts\Stylesheet\StylesheetComponent.cs" />
     <Compile Include="Assets\Scripts\Stylesheet\TextComponent.cs" />
     <Compile Include="Assets\Scripts\Stylesheet\TextData.cs" />
+    <Compile Include="Assets\Scripts\Tests\ResultsTest.cs" />
     <Compile Include="Assets\Scripts\Timer.cs" />
     <Compile Include="Assets\Scripts\UI\UiBase.cs" />
     <Compile Include="Assets\Scripts\UI\UiBrowser.cs" />
