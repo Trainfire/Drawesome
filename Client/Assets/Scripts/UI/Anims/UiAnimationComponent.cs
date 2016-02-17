@@ -2,12 +2,14 @@ using UnityEngine;
 using UnityEngine.Events;
 using System;
 
-public abstract class UiAnimationComponent
+public abstract class UiAnimationComponent : IAnimatable
 {
-    public event Action<UiAnimationComponent> OnDone;
+    public event Action<IAnimatable> OnDone;
+
     public GameObject Target { get; private set; }
     public bool WaitForCompletion;
     public bool Playing { get; protected set; }
+    public virtual string Name { get; set; }
 
     public virtual void Setup()
     {

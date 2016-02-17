@@ -98,11 +98,12 @@
     <Compile Include="Assets\Scripts\Tests\TestOrderedList.cs" />
     <Compile Include="Assets\Scripts\Tests\TestScores.cs" />
     <Compile Include="Assets\Scripts\Timer.cs" />
+    <Compile Include="Assets\Scripts\UI\Anims\IAnimatable.cs" />
+    <Compile Include="Assets\Scripts\UI\Anims\UiAnimationAction.cs" />
     <Compile Include="Assets\Scripts\UI\Anims\UiAnimationComponent.cs" />
     <Compile Include="Assets\Scripts\UI\Anims\UiAnimationController.cs" />
     <Compile Include="Assets\Scripts\UI\Anims\UiAnimationDelay.cs" />
     <Compile Include="Assets\Scripts\UI\Anims\UiAnimationFade.cs" />
-    <Compile Include="Assets\Scripts\UI\Anims\UiAnimationListArrange.cs" />
     <Compile Include="Assets\Scripts\UI\UiBase.cs" />
     <Compile Include="Assets\Scripts\UI\UiBrowser.cs" />
     <Compile Include="Assets\Scripts\UI\UiBrowserItem.cs" />

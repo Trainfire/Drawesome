@@ -22,32 +22,22 @@ public static class TestUtility
         return data;
     }
 
-    public static string GetRandomName()
+    /// <summary>
+    /// Returns score data for 8 players. Each score has a random value between 0 and 2000.
+    /// </summary>
+    /// <returns></returns>
+    public static Dictionary<PlayerData, uint> GetPlayerScores()
     {
-        var names = new List<string>()
+        var data = new Dictionary<PlayerData, uint>();
+        for (int i = 0; i < 8; i++)
         {
-            "Aaron",
-            "Billy",
-            "Charlie",
-            "David",
-            "Poopy Joe",
-            "Ronald Reagan",
-            "u wot m8",
-            "badman",
-            "well good",
-            "Aaron",
-            "Billy",
-            "Charlie",
-            "David",
-            "Poopy Joe",
-            "Ronald Reagan",
-            "u wot m8",
-            "badman",
-            "well good",
-        };
+            var player = new PlayerData();
+            player.ID = i.ToString();
+            player.Name = "Player " + i;
 
-        var rnd = new System.Random().Next(0, names.Count);
-        Debug.Log(rnd);
-        return names[rnd];
+            var score = Random.Range(0, 2000);
+            data.Add(player, (uint)score);
+        }
+        return data;
     }
 }

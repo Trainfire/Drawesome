@@ -44,7 +44,7 @@ public class UiAnimationFade : UiAnimationComponent
 
         if (Mathf.Approximately(Duration, 0f))
         {
-            Canvas.alpha = Fade == FadeType.In ? 1f : 0f;
+            FixAlpha();
             Done();
             return;
         }
@@ -58,7 +58,13 @@ public class UiAnimationFade : UiAnimationComponent
 
         tweener.Play(() =>
         {
+            FixAlpha();
             Done();
         });
+    }
+    
+    void FixAlpha()
+    {
+        Canvas.alpha = Fade == FadeType.In ? 1f : 0f;
     }
 }

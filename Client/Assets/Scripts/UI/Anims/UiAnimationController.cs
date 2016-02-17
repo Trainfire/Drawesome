@@ -1,20 +1,25 @@
 using UnityEngine;
 using System.Collections.Generic;
-using System.Linq;
+using System;
 
 public class UiAnimationController : MonoBehaviour
 {
     public bool ShowDebug = true;
 
     List<UiAnimationComponent> Animations = new List<UiAnimationComponent>();
-    Queue<UiAnimationComponent> Queue = new Queue<UiAnimationComponent>();
+    Queue<IAnimatable> Queue = new Queue<IAnimatable>();
 
-    UiAnimationComponent currentAnim;
-    bool waitingForAnim = false;
+    IAnimatable currentAnim;
+
+    public void AddAction(string name, Action action)
+    {
+        var anim = new UiAnimationAction(name, action);
+        Animations.Add(anim);
+    }
 
     public void AddAnim(UiAnimationComponent anim)
     {
-        Debug.LogFormat("Add anim: {0}", anim.GetType());
+        Debug.LogFormat("Add anim: {0}", anim.Name);
         Animations.Add(anim);
     }
 
@@ -40,13 +45,16 @@ public class UiAnimationController : MonoBehaviour
         Animations.Clear();
     }
 
-    void UpdateQueue(UiAnimationComponent anim)
+    void UpdateQueue(IAnimatable anim)
     {
         anim.OnDone -= UpdateQueue;
         if (Queue.Count != 0)
         {
             currentAnim = Queue.Dequeue();
-            Debug.LogFormat("Play anim: {0}", currentAnim.GetType());
+
+            var name = string.IsNullOrEmpty(currentAnim.Name) ? "Unnamed Anim" : currentAnim.Name;
+
+            Debug.LogFormat("Play anim: {0}", name);
             currentAnim.OnDone += UpdateQueue;
             PlayAnim(currentAnim);
         }
@@ -60,7 +68,7 @@ public class UiAnimationController : MonoBehaviour
     /// <summary>
     /// Plays all animations in the queue.
     /// </summary>
-    void PlayAnim(UiAnimationComponent anim)
+    void PlayAnim(IAnimatable anim)
     {
         anim.Play();
     }

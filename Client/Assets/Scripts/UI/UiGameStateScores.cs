@@ -12,78 +12,99 @@ public class UiGameStateScores : UiBase
     public GameObject Divider;
     public UiResultRow RowPrototype;
     public GameObject Rows;
+    public UiOrderedList List;
 
     public float TimeRevealTitle;
     public float TimeBetweenTitleAndDivider;
     public float TimeRevealDivider;
     public float TimeBeforeShowScores;
     public float TimeShowScores;
-    public float TimeBeforeWinnerReveal;
+    public float TimeBetweenShowPointsAndUpdateList;
+    public float TimeBeforeRearrangeList;
 
-    List<UiResultRow> resultViews = new List<UiResultRow>();
+    Dictionary<PlayerData, UiResultRow> Views = new Dictionary<PlayerData, UiResultRow>();
 
-    List<KeyValuePair<PlayerData, uint>> cachedScores = new List<KeyValuePair<PlayerData, uint>>();
+    void Awake()
+    {
+        RowPrototype.gameObject.SetActive(false);
+    }
 
-    public void ShowScores(List<KeyValuePair<PlayerData, uint>> scores)
+    public void ShowScores(Dictionary<PlayerData, TestScores.ScoreWrapper> newScores)
     {
         RowPrototype.gameObject.SetActive(false);
 
+        // Show titles
         AnimController.AddAnim(new UiAnimationFade(Title.gameObject, TimeRevealTitle, UiAnimationFade.FadeType.In));
         AnimController.AddDelay(TimeBetweenTitleAndDivider);
+
+        // Show divider
         AnimController.AddAnim(new UiAnimationFade(Divider.gameObject, TimeRevealDivider, UiAnimationFade.FadeType.In));
         AnimController.AddDelay(TimeBeforeShowScores);
 
-        float revealScores = TimeShowScores / scores.Count;
+        float revealScores = TimeShowScores / newScores.Count;
 
-        foreach (var data in scores)
+        // Reveal current scores
+        foreach (var score in newScores)
         {
-            var instance = UiUtility.AddChild(Rows, RowPrototype, true);
-
-            instance.PlayerName.text = data.Key.Name;
-            instance.Score.text = data.Value.ToString();
-
-            var lastScore = 0f;
-            lastScore = cachedScores.Find(x => x.Key == data.Key).Value;
-            if (Mathf.Approximately(lastScore, 0f))
+            var view = AddOrGetView(score.Key, score.Value);
+            var temp = score;
+            AnimController.AddAction("Show Previous Scores", () =>
             {
-                instance.PointsEarned.text = data.Value.ToString();
-            }
-            else
-            {
-                instance.PointsEarned.text = (data.Value - lastScore).ToString();
-            }
-
-            AnimController.AddAnim(new UiAnimationFade(instance.gameObject, revealScores, UiAnimationFade.FadeType.In));
+                view.Score.text = temp.Value.PreviousScore.ToString();
+                view.PointsEarned.text = "";
+            });
+            AnimController.AddAnim(new UiAnimationFade(view.gameObject, revealScores, UiAnimationFade.FadeType.In));
         }
+
+        AnimController.AddDelay(1f);
+
+        // Reveal points earned
+        foreach (var score in newScores)
+        {
+            var view = AddOrGetView(score.Key, score.Value);
+            var temp = score;
+            AnimController.AddAction("Shows Points Earned", () =>
+            {
+                view.PointsEarned.text = string.Format("+{0}", temp.Value.PointsEarned);
+            });
+            AnimController.AddAnim(new UiAnimationFade(view.PointsEarned.gameObject, 0f, UiAnimationFade.FadeType.In));
+        }
+
+        AnimController.AddDelay(TimeBetweenShowPointsAndUpdateList);
+
+        // Update scores
+        foreach (var score in newScores)
+        {
+            var view = AddOrGetView(score.Key, score.Value);
+            var temp = score;
+            AnimController.AddAnim(new UiAnimationFade(view.PointsEarned.gameObject, 0.1f, UiAnimationFade.FadeType.Out));
+            AnimController.AddAction("Update Scores", () =>
+            {
+                view.Score.text = temp.Value.CurrentScore.ToString();
+            });
+        }
+
+        // Delay
+        AnimController.AddDelay(TimeBeforeRearrangeList);
+
+        // Reorder list
+        AnimController.AddAction("Reorder List", () =>
+        {
+            List.OrderBy<TestScores.ScoreWrapper>((a, b) => a.CurrentScore.CompareTo(b.CurrentScore));
+        });
 
         AnimController.PlayAnimations();
-
-        cachedScores = scores;
     }
 
-    List<UiResultRow> Players()
+    UiResultRow AddOrGetView(PlayerData player, TestScores.ScoreWrapper score)
     {
-        if (resultViews.Count == 0)
+        if (!Views.ContainsKey(player))
         {
-            var instance = UiUtility.AddChild(Rows, RowPrototype, true);
-            resultViews.Add(instance);
+            var view = List.AddItem(score, RowPrototype);
+            view.PlayerName.text = player.Name;
+            Views.Add(player, view);
         }
-        return resultViews;
-    }
 
-    IEnumerator Animate(List<KeyValuePair<PlayerData, uint>> scores)
-    {
-       
-        yield return new WaitForSeconds(TimeBeforeWinnerReveal);
-
-        // TODO
-        AnimController.ClearQueue();
-    }
-
-    protected override void OnHide()
-    {
-        base.OnHide();
-        resultViews.ForEach(x => Destroy(x.gameObject));
-        resultViews.Clear();
+        return Views[player];
     }
 }

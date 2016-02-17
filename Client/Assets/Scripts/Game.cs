@@ -390,7 +390,7 @@ public class Game : MonoBehaviour, IClientHandler
                 }
                 sortedList = sortedList.OrderByDescending(x => x.Value).ToList();
 
-                GetView<UiGameStateScores>().ShowScores(sortedList);
+                //GetView<UiGameStateScores>().ShowScores(sortedList);
             });
         }
     }

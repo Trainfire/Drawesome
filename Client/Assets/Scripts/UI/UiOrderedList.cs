@@ -18,7 +18,7 @@ public class UiOrderedList : MonoBehaviour
         Items = new Dictionary<object, MonoBehaviour>();
     }
 
-    public void AddItem<TData, TView>(TData data, TView view, Action<TData, TView> onAdd = null) where TView : MonoBehaviour
+    public TView AddItem<TData, TView>(TData data, TView view, Action<TData, TView> onAdd = null) where TView : MonoBehaviour
     {
         var instance = UiUtility.AddChild<TView>(gameObject, view, true);
 
@@ -26,6 +26,8 @@ public class UiOrderedList : MonoBehaviour
             onAdd((TData)data, (TView)instance);
 
         Items.Add(data, instance);
+
+        return instance;
     }
 
     IEnumerator Rearrange(List<Transform> rows)
