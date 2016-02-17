@@ -19,7 +19,7 @@
     "DrawingToAnswering": 2.0,
 	"AnsweringToChoosing": 2.0,
     "ChoosingtoResults": 0.0,
-	"ResultsToScores": 5.0,
+	"ResultsToScores": 0,
 	"ScoresToAnswering": 1.0,
   }
 }

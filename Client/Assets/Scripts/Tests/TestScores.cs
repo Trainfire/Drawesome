@@ -54,6 +54,6 @@ public class TestScores : MonoBehaviour
         }
 
         // Show values on UI
-        View.ShowScores(scoreCache);
+        //View.ShowScores(scoreCache);
     }
 }

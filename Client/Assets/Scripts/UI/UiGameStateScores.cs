@@ -29,7 +29,7 @@ public class UiGameStateScores : UiBase
         RowPrototype.gameObject.SetActive(false);
     }
 
-    public void ShowScores(Dictionary<PlayerData, TestScores.ScoreWrapper> newScores)
+    public void ShowScores(Dictionary<PlayerData, GameScore> newScores)
     {
         RowPrototype.gameObject.SetActive(false);
 
@@ -90,13 +90,13 @@ public class UiGameStateScores : UiBase
         // Reorder list
         AnimController.AddAction("Reorder List", () =>
         {
-            List.OrderBy<TestScores.ScoreWrapper>((a, b) => a.CurrentScore.CompareTo(b.CurrentScore));
+            List.OrderBy<GameScore>((a, b) => a.CurrentScore.CompareTo(b.CurrentScore));
         });
 
         AnimController.PlayAnimations();
     }
 
-    UiResultRow AddOrGetView(PlayerData player, TestScores.ScoreWrapper score)
+    UiResultRow AddOrGetView(PlayerData player, GameScore score)
     {
         if (!Views.ContainsKey(player))
         {

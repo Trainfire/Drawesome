@@ -373,6 +373,8 @@ public class Game : MonoBehaviour, IClientHandler
         public GameState Type { get { return GameState.Scores; } }
         public DrawingCanvas Canvas { private get; set; }
 
+        Dictionary<PlayerData, GameScore> scoreCache = new Dictionary<PlayerData, GameScore>();
+
         public ScoresState(Client client, UiGameStateScores view) : base(client, view)
         {
 
@@ -382,15 +384,25 @@ public class Game : MonoBehaviour, IClientHandler
         {
             Message.IsType<ServerMessage.Game.SendScores>(json, (data) =>
             {
-                // Order scores
-                var sortedList = new List<KeyValuePair<PlayerData, uint>>();
-                for (int i = 0; i < data.Players.Count; i++)
-                {
-                    sortedList.Add(new KeyValuePair<PlayerData, uint>(data.Players[i], data.Scores[i]));
-                }
-                sortedList = sortedList.OrderByDescending(x => x.Value).ToList();
+                // Make dictionary mapping players[i] to scores[i]
+                var scores = Enumerable.Range(0, data.Players.Count)
+                .ToDictionary(i => data.Players[i], i => data.Scores[i]);
 
-                //GetView<UiGameStateScores>().ShowScores(sortedList);
+                foreach (var score in scores)
+                {
+                    if (!scoreCache.ContainsKey(score.Key))
+                        scoreCache.Add(score.Key, new GameScore());
+
+                    // Cache previous score
+                    scoreCache[score.Key].PreviousScore = scoreCache[score.Key].CurrentScore;
+
+                    Debug.LogFormat("{0}'s previous score is {1}", score.Key.Name, scoreCache[score.Key].PreviousScore);
+
+                    // Set current score
+                    scoreCache[score.Key].CurrentScore = score.Value;
+                }
+
+                GetView<UiGameStateScores>().ShowScores(scoreCache);
             });
         }
     }
