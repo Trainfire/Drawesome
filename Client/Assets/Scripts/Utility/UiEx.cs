@@ -18,7 +18,7 @@ public static class UiEx
         scrollRect.normalizedPosition = new Vector2(scrollRect.normalizedPosition.x, 0);
     }
 
-    public static void Fade(this CanvasGroup canvas, float from, float to, float duration)
+    public static void Fade(this CanvasGroup canvas, float from, float to, float duration, Action onDone = null)
     {
         var mono = canvas.GetComponent<MonoBehaviour>();
         mono.StartCoroutine(TweenFloat(canvas, from, to, duration, (value) =>

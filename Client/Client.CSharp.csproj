@@ -69,7 +69,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Assets\ResultsTest.cs" />
     <Compile Include="Assets\Scripts\App.cs" />
     <Compile Include="Assets\Scripts\Base.cs" />
     <Compile Include="Assets\Scripts\Client.cs" />
@@ -96,7 +95,14 @@
     <Compile Include="Assets\Scripts\Stylesheet\TextComponent.cs" />
     <Compile Include="Assets\Scripts\Stylesheet\TextData.cs" />
     <Compile Include="Assets\Scripts\Tests\ResultsTest.cs" />
+    <Compile Include="Assets\Scripts\Tests\TestOrderedList.cs" />
+    <Compile Include="Assets\Scripts\Tests\TestScores.cs" />
     <Compile Include="Assets\Scripts\Timer.cs" />
+    <Compile Include="Assets\Scripts\UI\Anims\UiAnimationComponent.cs" />
+    <Compile Include="Assets\Scripts\UI\Anims\UiAnimationController.cs" />
+    <Compile Include="Assets\Scripts\UI\Anims\UiAnimationDelay.cs" />
+    <Compile Include="Assets\Scripts\UI\Anims\UiAnimationFade.cs" />
+    <Compile Include="Assets\Scripts\UI\Anims\UiAnimationListArrange.cs" />
     <Compile Include="Assets\Scripts\UI\UiBase.cs" />
     <Compile Include="Assets\Scripts\UI\UiBrowser.cs" />
     <Compile Include="Assets\Scripts\UI\UiBrowserItem.cs" />
@@ -115,12 +121,17 @@
     <Compile Include="Assets\Scripts\UI\UiGameStateScores.cs" />
     <Compile Include="Assets\Scripts\UI\UiInfoBox.cs" />
     <Compile Include="Assets\Scripts\UI\UiLogin.cs" />
+    <Compile Include="Assets\Scripts\UI\UiOrderedList.cs" />
     <Compile Include="Assets\Scripts\UI\UiPlayerList.cs" />
     <Compile Include="Assets\Scripts\UI\UiPlayerListItem.cs" />
     <Compile Include="Assets\Scripts\UI\UiRoom.cs" />
     <Compile Include="Assets\Scripts\UI\UiTimer.cs" />
+    <Compile Include="Assets\Scripts\UI\UiTween.cs" />
+    <Compile Include="Assets\Scripts\UI\UiTweenFloat.cs" />
+    <Compile Include="Assets\Scripts\UI\UiTweenVector.cs" />
     <Compile Include="Assets\Scripts\UserInterface.cs" />
     <Compile Include="Assets\Scripts\Utility\GameObjectEx.cs" />
+    <Compile Include="Assets\Scripts\Utility\TestUtility.cs" />
     <Compile Include="Assets\Scripts\Utility\UiEx.cs" />
     <Compile Include="Assets\Scripts\Utility\UiUtility.cs" />
     <Compile Include="Assets\Shared\ClientMessage.cs" />
