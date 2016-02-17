@@ -227,6 +227,8 @@ namespace Server.Drawesome
         Queue<AnswerData> ChosenAnswersQueue { get; set; }
         ResponseHandler<Player> ResponseHandler { get; set; }
 
+        static readonly object _lock = new object();
+
         public StateResultsPhase()
         {
 
@@ -259,18 +261,22 @@ namespace Server.Drawesome
 
         public override void OnPlayerMessage(Player player, string json)
         {
-            Message.IsType<ClientMessage.Game.SendAction>(json, (data) =>
+            lock (_lock)
             {
-                if (data.Action == GameAction.FinishShowingResult)
+                // TODO: lmao. Make this server-authoritive.
+                Message.IsType<ClientMessage.Game.SendAction>(json, (data) =>
                 {
-                    ResponseHandler.Register(player);
+                    if (data.Action == GameAction.FinishShowingResult)
+                    {
+                        ResponseHandler.Register(player);
 
-                    Console.WriteLine("Have all responded? {0}", ResponseHandler.AllResponded());
+                        Console.WriteLine("Have all responded? {0}", ResponseHandler.AllResponded());
 
-                    if (ResponseHandler.AllResponded())
-                        UpdateQueue();
-                }
-            });
+                        if (ResponseHandler.AllResponded())
+                            UpdateQueue();
+                    }
+                });
+            }
         }
 
         void UpdateQueue()
@@ -314,6 +320,11 @@ namespace Server.Drawesome
             GameData.Players.ForEach(x => x.SendScores(score));
             SetCountdownTimer("Show Scores", 10f, false);
         }
+
+        protected override void OnEndState()
+        {
+            AddTransitionTimer(GameData.Settings.Drawesome.Transitions.ScoresToAnswering, GameTransition.ScoresToAnswering);
+        }
     }
 
     public class StateRoundEnd : State<DrawesomeGameData>
@@ -325,11 +336,6 @@ namespace Server.Drawesome
             base.OnBegin();
             GameData.OnNewRound();
             EndState();
-        }
-
-        protected override void OnEndState()
-        {
-            AddTransitionTimer(GameData.Settings.Drawesome.Transitions.ScoresToAnswering, GameTransition.ScoresToAnswering);
         }
     }
 }
