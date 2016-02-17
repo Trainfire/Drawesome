@@ -96,7 +96,7 @@ public class UiGameStateResults : UiBase
             yield return new WaitForSeconds(revealTime);
             var instance = UiUtility.AddChild(Rows, RowPrototype, true);
             instance.PlayerName.text = player.Name;
-            instance.gameObject.GetOrAddComponent<CanvasGroup>().Fade(0f, 1f, 0.1f);
+            instance.gameObject.GetOrAddComponent<CanvasGroup>().Scale(Vector3.one * 5, Vector3.one, 0.2f);
             resultViews.Add(instance.gameObject);
         }
 
