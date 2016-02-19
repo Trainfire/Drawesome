@@ -19,7 +19,7 @@ namespace Protocol
 
         public class CreateRoom : Message
         {
-            public string Password;
+            public string Password { get; private set; }
 
             public CreateRoom(PlayerData playerInfo, string password)
             {
@@ -29,8 +29,8 @@ namespace Protocol
 
         public class JoinRoom : Message
         {
-            public string RoomId;
-            public string Password;
+            public string RoomId { get; private set; }
+            public string Password { get; private set; }
 
             public JoinRoom(PlayerData playerInfo, string roomId, string password = "")
             {
