@@ -161,5 +161,10 @@ namespace Server
             var message = new ServerMessage.Game.SendTransitionPeriod(time, transition);
             Socket.Send(message.AsJson());
         }
+
+        public override string ToString()
+        {
+            return Data.Name != null ? Data.Name : "Unassigned Name";
+        }
     }
 }

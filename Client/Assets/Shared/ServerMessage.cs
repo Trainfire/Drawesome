@@ -10,11 +10,11 @@ namespace Protocol
     {
         public class ConnectionSuccess : Message
         {
-            public readonly string ID;
+            public PlayerData NewPlayerInfo { get; private set; }
 
-            public ConnectionSuccess(string id)
+            public ConnectionSuccess(PlayerData newPlayerInfo)
             {
-                ID = id;
+                NewPlayerInfo = newPlayerInfo;
             }
         }
 

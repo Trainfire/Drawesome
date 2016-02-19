@@ -59,12 +59,9 @@ public class Connection : MonoBehaviour
     {
         Message.IsType<ServerMessage.ConnectionSuccess>(e.Data, (data) =>
         {
-            Player.ID = data.ID;
-            Player.Name = PlayerName;
-
-            Debug.Log("Recieved ID: " + Player.ID);
-
-            SendMessage(new ClientMessage.RequestConnection(Player.ID, Player.Name));
+            Player = data.NewPlayerInfo;
+            Debug.Log("Recieved ID: " + data.NewPlayerInfo.ID);
+            SendMessage(new ClientMessage.RequestConnection(Player, PlayerName));
         });
 
         Message.IsType<ServerMessage.AssignRoomId>(e.Data, (data) =>

@@ -3,41 +3,37 @@ using Protocol;
 
 namespace Protocol
 {
-    public class ClientMessage
+    public class ClientMessage : Message
     {
         public class RequestConnection : Message
         {
-            public string ID;
-            public string PlayerName;
+            public PlayerData PlayerInfo { get; private set; }
+            public string Name { get; private set; }
 
-            public RequestConnection(string id, string playerName)
+            public RequestConnection(PlayerData playerInfo, string name)
             {
-                ID = id;
-                PlayerName = playerName;
+                PlayerInfo = playerInfo;
+                Name = name;
             }
         }
 
         public class CreateRoom : Message
         {
-            public PlayerData Player;
             public string Password;
 
-            public CreateRoom(PlayerData player, string password)
+            public CreateRoom(PlayerData playerInfo, string password)
             {
-                Player = player;
                 Password = password;
             }
         }
 
         public class JoinRoom : Message
         {
-            public PlayerData Player;
             public string RoomId;
             public string Password;
 
-            public JoinRoom(PlayerData player, string roomId, string password = "")
+            public JoinRoom(PlayerData playerInfo, string roomId, string password = "")
             {
-                Player = player;
                 RoomId = roomId;
                 Password = password;
             }
@@ -45,21 +41,17 @@ namespace Protocol
 
         public class LeaveRoom : Message
         {
-            public PlayerData Player;
-
-            public LeaveRoom(PlayerData player)
+            public LeaveRoom(PlayerData playerInfo)
             {
-                Player = player;
+
             }
         }
 
         public class RequestRoomList : Message
         {
-            public PlayerData Player;
-
-            public RequestRoomList(PlayerData player)
+            public RequestRoomList(PlayerData playerInfo)
             {
-                Player = player;
+
             }
         }
 

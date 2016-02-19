@@ -6,13 +6,17 @@ using Protocol;
 
 namespace Server
 {
+    /// <summary>
+    /// This class handles clients connecting and disconnecting, as well as messages.
+    /// Messages are relayed to any assigned handlers that implement IConnectionMessageHandler.
+    /// </summary>
     public class ConnectionsHandler
     {
         public event EventHandler<Player> PlayerConnected;
         public event EventHandler<Player> PlayerDisconnected;
 
         List<IConnectionMessageHandler> Handlers { get; set; }
-        List<Player> Players { get; set; }
+        List<Player> ConnectedPlayers { get; set; }
         Settings Settings { get; set; }
 
         public ConnectionsHandler(Settings settings)
@@ -33,39 +37,47 @@ namespace Server
 
             // Respond to a join request by assigning a unique ID to the connection and sending it back to the client.
             var player = AddPlayer(socket);
-            Send(new ServerMessage.ConnectionSuccess(player.Data.ID), player);
+            Send(new ServerMessage.ConnectionSuccess(player.Data), player);
         }
 
         public void OnMessage(string json)
         {
             Message.IsType<ClientMessage.RequestConnection>(json, (data) =>
             {
-                Player matchingPlayer = null;
-                foreach (var player in Players)
+                var matchingConnections = ConnectedPlayers.Where(x => x.Data.ID == data.PlayerInfo.ID).ToList();
+
+                if (matchingConnections.Count > 1)
                 {
-                    if (player.Data.ID == data.ID)
-                    {
-                        player.Data.Name = data.PlayerName;
-
-                        Logger.WriteLine("Player {0} connected.", player.Data.Name);
-
-                        // Assign callback to recieve messages from the player
-                        player.OnMessageString += OnPlayerMessage;
-
-                        matchingPlayer = player;
-                        break;
-                    }
+                    Logger.WriteLine("There is more than one player on the server with ID '{0}'. This is very bad!", data.PlayerInfo.ID);
+                    return;
                 }
 
-                // Send the latest player state to all clients.
-                SendUpdateToAllClients();
+                var matchingPlayer = matchingConnections.First();
 
-                // Send Player Joined message.
-                SendToAll(new ServerMessage.NotifyPlayerAction(matchingPlayer.Data, PlayerAction.Connected));
+                if (matchingPlayer == null)
+                {
+                    Logger.WriteLine("Could not find connection matching the ID '{0}'", data.PlayerInfo.ID);
+                }
+                else
+                {
+                    // Assign the requested name
+                    matchingPlayer.Data.SetName(data.Name);
 
-                // Trigger event.
-                if (PlayerConnected != null)
-                    PlayerConnected(this, matchingPlayer);
+                    Logger.WriteLine("Player {0} connected.", matchingPlayer.Data.Name);
+
+                    // Send the latest player state to all clients.
+                    SendUpdateToAllClients();
+
+                    // Send Player Joined message.
+                    SendToAll(new ServerMessage.NotifyPlayerAction(matchingPlayer.Data, PlayerAction.Connected));
+
+                    // Trigger event.
+                    if (PlayerConnected != null)
+                        PlayerConnected(this, matchingPlayer);
+
+                    // Assign callback
+                    matchingPlayer.OnMessageString += OnPlayerMessage;
+                }
             });
         }
 
@@ -83,10 +95,10 @@ namespace Server
         public void OnClose(IWebSocketConnection socket)
         {
             // Remove disconnected player from manager.
-            var player = Players.Find(x => x.Socket == socket);
+            var player = ConnectedPlayers.Find(x => x.Socket == socket);
             if (player != null)
             {
-                Players.Remove(player);
+                ConnectedPlayers.Remove(player);
 
                 Logger.WriteLine("Player {0} disconnected", player.Data.Name);
 
@@ -99,8 +111,8 @@ namespace Server
 
         Player AddPlayer(IWebSocketConnection socket)
         {
-            if (Players == null)
-                Players = new List<Player>();
+            if (ConnectedPlayers == null)
+                ConnectedPlayers = new List<Player>();
 
             Player player = GetPlayerFromSocket(socket);
 
@@ -109,7 +121,7 @@ namespace Server
                 player = new Player("N/A", socket);
                 player.Data.ID = Guid.NewGuid().ToString();
 
-                Players.Add(player);
+                ConnectedPlayers.Add(player);
             }
             else
             {
@@ -126,12 +138,12 @@ namespace Server
 
         public void SendToAll(Message message)
         {
-            Players.ForEach(x => x.SendMessage(message));
+            ConnectedPlayers.ForEach(x => x.SendMessage(message));
         }
 
         public void SendToAll(Message message, Player exception)
         {
-            var players = Players.Where(x => x != exception).ToList();
+            var players = ConnectedPlayers.Where(x => x != exception).ToList();
             players.ForEach(x => x.SendMessage(message));
         }
 
@@ -140,16 +152,16 @@ namespace Server
         /// </summary>
         public void SendUpdateToAllClients()
         {
-            List<PlayerData> protocolPlayers = Players.Select(x => x.Data).ToList();
+            List<PlayerData> protocolPlayers = ConnectedPlayers.Select(x => x.Data).ToList();
 
             var serverUpdate = new ServerUpdate(protocolPlayers);
 
-            Players.ForEach(x => x.SendMessage(serverUpdate));
+            ConnectedPlayers.ForEach(x => x.SendMessage(serverUpdate));
         }
 
         Player GetPlayerFromSocket(IWebSocketConnection socket)
         {
-            return Players.FirstOrDefault(x => x.Socket == socket);
+            return ConnectedPlayers.FirstOrDefault(x => x.Socket == socket);
         }
     }
 }

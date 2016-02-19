@@ -21,18 +21,18 @@ namespace Server
         {
             Message.IsType<ClientMessage.RequestRoomList>(json, (data) =>
             {
-                Console.WriteLine("Recieved a request from {0} for a list a rooms.", data.Player.ID);
+                Console.WriteLine("Recieved a request from {0} for a list a rooms.", player);
                 var rooms = Rooms.Select(x => x.RoomData).ToList();
                 player.SendMessage(new ServerMessage.RoomList(rooms));
             });
 
             Message.IsType<ClientMessage.JoinRoom>(json, (data) =>
             {
-                Console.WriteLine("Recieved a request from {0} to join room {1}.", data.Player.ID, data.RoomId);
+                Console.WriteLine("Recieved a request from {0} to join room {1}.", player.Data, data.RoomId);
 
-                var roomHasPlayer = Rooms.Find(x => x.HasPlayer(data.Player));
+                var roomHasPlayer = Rooms.Find(x => x.HasPlayer(player.Data));
                 if (roomHasPlayer != null)
-                    roomHasPlayer.Leave(data.Player);
+                    roomHasPlayer.Leave(player.Data);
 
                 var targetRoom = Rooms.Find(x => x.RoomData.ID == data.RoomId);
 
@@ -48,28 +48,28 @@ namespace Server
 
             Message.IsType<ClientMessage.LeaveRoom>(json, (data) =>
             {
-                var containingRoom = Rooms.Find(x => x.HasPlayer(data.Player));
+                var containingRoom = Rooms.Find(x => x.HasPlayer(player.Data));
 
                 if (containingRoom != null)
                 {
-                    Console.WriteLine("Remove {0} from room", data.Player.Name);
-                    containingRoom.Leave(data.Player);
+                    Console.WriteLine("Remove {0} from room", player);
+                    containingRoom.Leave(player.Data);
                 }
                 else
                 {
-                    Console.WriteLine("Cannot remove {0} from room as they are not in that room", data.Player.Name);
+                    Console.WriteLine("Cannot remove {0} from room as they are not in that room", player);
                 }
             });
 
             Message.IsType<ClientMessage.CreateRoom>(json, (data) =>
             {
-                Console.WriteLine("Create room for {0} with password {1}", data.Player.Name, data.Password);
+                Console.WriteLine("Create room for {0} with password {1}", player, data.Password);
 
                 Console.WriteLine("You shouldn't see this!");
 
-                var playerCurrentRoom = FindRoomContainingPlayer(data.Player);
+                var playerCurrentRoom = FindRoomContainingPlayer(player.Data);
                 if (playerCurrentRoom != null)
-                    playerCurrentRoom.Leave(data.Player);
+                    playerCurrentRoom.Leave(player.Data);
 
                 var room = new Room(player, Settings, data.Password);
 
