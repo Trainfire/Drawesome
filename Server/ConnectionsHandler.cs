@@ -6,26 +6,29 @@ using Protocol;
 
 namespace Server
 {
-    public class ConnectionsHandler : WebSocketBehaviour
+    public class ConnectionsHandler
     {
         public event EventHandler<Player> PlayerConnected;
         public event EventHandler<Player> PlayerDisconnected;
 
-        public List<Player> Players { get; private set; }
-        public List<Room> Rooms { get; private set; }
-
+        List<IConnectionMessageHandler> Handlers { get; set; }
+        List<Player> Players { get; set; }
         Settings Settings { get; set; }
 
         public ConnectionsHandler(Settings settings)
         {
             Settings = settings;
-            Rooms = new List<Room>();
+            Handlers = new List<IConnectionMessageHandler>();
         }
 
-        public override void OnOpen(IWebSocketConnection socket)
+        public void AddMessageListener(IConnectionMessageHandler handler)
         {
-            base.OnOpen(socket);
+            if (!Handlers.Contains(handler))
+                Handlers.Add(handler);
+        }
 
+        public void OnOpen(IWebSocketConnection socket)
+        {
             Logger.WriteLine("A connection was opened");
 
             // Respond to a join request by assigning a unique ID to the connection and sending it back to the client.
@@ -33,7 +36,7 @@ namespace Server
             Send(new ServerMessage.ConnectionSuccess(player.Data.ID), player);
         }
 
-        public override void OnMessage(string json)
+        public void OnMessage(string json)
         {
             Message.IsType<ClientMessage.RequestConnection>(json, (data) =>
             {
@@ -43,7 +46,12 @@ namespace Server
                     if (player.Data.ID == data.ID)
                     {
                         player.Data.Name = data.PlayerName;
+
                         Logger.WriteLine("Player {0} connected.", player.Data.Name);
+
+                        // Assign callback to recieve messages from the player
+                        player.OnMessageString += OnPlayerMessage;
+
                         matchingPlayer = player;
                         break;
                     }
@@ -59,83 +67,21 @@ namespace Server
                 if (PlayerConnected != null)
                     PlayerConnected(this, matchingPlayer);
             });
-
-            Message.IsType<ClientMessage.RequestRoomList>(json, (data) =>
-            {
-                Console.WriteLine("Recieved a request from {0} for a list a rooms.", data.Player.ID);
-
-                var target = Players.Find(x => x.Data.ID == data.Player.ID);
-
-                var protocolRooms = Rooms.Select(x => x.RoomData).ToList();
-                target.SendMessage(new ServerMessage.RoomList(protocolRooms));
-            });
-
-            Message.IsType<ClientMessage.JoinRoom>(json, (data) =>
-            {
-                Console.WriteLine("Recieved a request from {0} to join room {1}.", data.Player.ID, data.RoomId);
-
-                var roomHasPlayer = Rooms.Find(x => x.HasPlayer(data.Player));
-                if (roomHasPlayer != null)
-                    roomHasPlayer.Leave(data.Player);
-
-                var targetRoom = Rooms.Find(x => x.RoomData.ID == data.RoomId);
-                var joiningPlayer = Players.Find(x => x.Data.ID == data.Player.ID);
-
-                if (targetRoom != null)
-                {
-                    targetRoom.Join(joiningPlayer, data.Password);
-                }
-                else
-                {
-                    joiningPlayer.SendRoomError(RoomError.RoomDoesNotExist);
-                }
-            });
-
-            Message.IsType<ClientMessage.LeaveRoom>(json, (data) =>
-            {
-                var containingRoom = Rooms.Find(x => x.HasPlayer(data.Player));
-
-                if (containingRoom != null)
-                {
-                    Console.WriteLine("Remove {0} from room", data.Player.Name);
-                    containingRoom.Leave(data.Player);
-                }
-                else
-                {
-                    Console.WriteLine("Cannot remove {0} from room as they are not in that room", data.Player.Name);
-                }
-            });
-
-            Message.IsType<ClientMessage.CreateRoom>(json, (data) =>
-            {
-                Console.WriteLine("Create room for {0} with password {1}", data.Player.Name, data.Password);
-
-                Console.WriteLine("You shouldn't see this!");
-
-                var playerCurrentRoom = FindRoomContainingPlayer(data.Player);
-                if (playerCurrentRoom != null)
-                    playerCurrentRoom.Leave(data.Player);
-
-                var creator = Players.Find(x => x.Data.ID == data.Player.ID);
-                var room = new Room(creator, Settings, data.Password);
-
-                room.OnEmpty += OnRoomEmpty;
-
-                Rooms.Add(room);
-            });
         }
 
-        void OnRoomEmpty(object sender, Room e)
+        /// <summary>
+        /// Passes a player's message to any interested listeners.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="json"></param>
+        void OnPlayerMessage(object sender, string json)
         {
-            Console.WriteLine("Closing room {0} as it is empty", e.RoomData.ID);
-            e.OnEmpty -= OnRoomEmpty;
-            Rooms.Remove(e);
+            var player = sender as Player;
+            Handlers.ForEach(x => x.HandleMessage(player, json));
         }
 
-        public override void OnClose(IWebSocketConnection socket)
+        public void OnClose(IWebSocketConnection socket)
         {
-            base.OnClose(socket);
-
             // Remove disconnected player from manager.
             var player = Players.Find(x => x.Socket == socket);
             if (player != null)
@@ -204,11 +150,6 @@ namespace Server
         Player GetPlayerFromSocket(IWebSocketConnection socket)
         {
             return Players.FirstOrDefault(x => x.Socket == socket);
-        }
-
-        Room FindRoomContainingPlayer(PlayerData player)
-        {
-            return Rooms.Find(x => x.HasPlayer(player));
         }
     }
 }
