@@ -10,9 +10,9 @@ namespace Server.Drawesome
     {
         DrawesomeGameData Data { get; set; }
 
-        protected override string Name { get { return "Drawesome"; } }
+        public override string LogName { get { return "Drawesome"; } }
 
-        public DrawesomeGame(Settings settings) : base(settings)
+        public DrawesomeGame(ConnectionsHandler connections, Settings settings) : base(connections, settings)
         {
             AddState(GameState.PreGame, new StatePreGame());
             AddState(GameState.RoundBegin, new StateRoundBegin());
@@ -110,7 +110,7 @@ namespace Server.Drawesome
                     break;
 
                 case GameState.GameOver:
-                    Log("Game Over!");
+                    Logger.Log(this, "Game Over!");
                     break;
 
                 default:

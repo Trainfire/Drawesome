@@ -52,7 +52,7 @@ namespace Server.Drawesome
             }
         }
 
-        public override void OnPlayerMessage(Player player, string json)
+        public override void HandleMessage(Player player, string json)
         {
             Message.IsType<ClientMessage.Game.SendImage>(json, (data) =>
             {
@@ -113,7 +113,7 @@ namespace Server.Drawesome
             }
         }
 
-        public override void OnPlayerMessage(Player player, string json)
+        public override void HandleMessage(Player player, string json)
         {
             Message.IsType<ClientMessage.Game.SubmitAnswer>(json, (data) =>
             {
@@ -191,7 +191,7 @@ namespace Server.Drawesome
             players.ForEach(x => ResponseHandler.AddRespondant(x));
         }
 
-        public override void OnPlayerMessage(Player player, string json)
+        public override void HandleMessage(Player player, string json)
         {
             var message = JsonHelper.FromJson<Message>(json);
 
@@ -259,7 +259,7 @@ namespace Server.Drawesome
             UpdateQueue();
         }
 
-        public override void OnPlayerMessage(Player player, string json)
+        public override void HandleMessage(Player player, string json)
         {
             lock (_lock)
             {

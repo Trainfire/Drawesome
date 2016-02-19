@@ -27,7 +27,7 @@ namespace Server
         /// </summary>
         const int GuidSize = 4;
 
-        public Room(Player owner, Settings settings, string password = "")
+        public Room(ConnectionsHandler connections, Player owner, Settings settings, string password = "")
         {
             Settings = settings;
 
@@ -54,7 +54,7 @@ namespace Server
 
             Join(Owner);
 
-            Game = new DrawesomeGame(settings);
+            Game = new DrawesomeGame(connections, settings);
         }
 
         public void Join(Player joiningPlayer, string password = "")

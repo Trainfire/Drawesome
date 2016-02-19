@@ -21,6 +21,8 @@ namespace Server
         List<Player> ConnectedPlayers { get; set; }
         Settings Settings { get; set; }
 
+        static readonly object _lock = new object();
+
         public ConnectionsHandler(Settings settings)
         {
             Settings = settings;
@@ -91,7 +93,7 @@ namespace Server
         void OnPlayerMessage(object sender, string json)
         {
             var player = sender as Player;
-            Handlers.ForEach(x => x.HandleMessage(player, json));
+            Handlers.ToList().ForEach(x => x.HandleMessage(player, json));
         }
 
         public void OnClose(IWebSocketConnection socket)

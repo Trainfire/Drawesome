@@ -4,7 +4,7 @@ using Protocol;
 
 namespace Server.Game
 {
-    public abstract class State<T> where T : GameData, new()
+    public abstract class State<T> : IConnectionMessageHandler where T : GameData, new()
     {
         /// <summary>
         /// This event is used to tell the instance of Game that this state has ended.
@@ -28,7 +28,7 @@ namespace Server.Game
 
         }
 
-        public virtual void OnPlayerMessage(Player player, string json)
+        public virtual void HandleMessage(Player player, string json)
         {
 
         }
@@ -55,7 +55,7 @@ namespace Server.Game
         /// </summary>
         public void AddTransitionTimer(float duration, GameTransition transition)
         {
-            var transitionTimer = new GameTimer("Transition", duration);
+            var transitionTimer = new GameTimer(Type.ToString() + " - Transition", duration);
             transitionTimer.Finish += (sender, args) =>
             {
                 if (OnEnd != null)
@@ -79,7 +79,7 @@ namespace Server.Game
         /// <param name="echoToClients">Inform the client of a timer being added?</param>
         protected void SetCountdownTimer(string name, float duration, bool echoToClients = false)
         {
-            Timer = new GameTimer(name, duration);
+            Timer = new GameTimer(Type.ToString() + " - " + name, duration);
             Timer.Finish += OnCountdownFinish;
             Timer.Tick += OnTimerTick;
 

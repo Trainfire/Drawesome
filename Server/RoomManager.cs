@@ -9,6 +9,7 @@ namespace Server
     {
         Settings Settings { get; set; }
         List<Room> Rooms { get; set; }
+        ConnectionsHandler ConnectionsHandler { get; set; }
 
         public string LogName { get { return "Room Manager"; } }
 
@@ -16,7 +17,8 @@ namespace Server
         {
             Rooms = new List<Room>();
             Settings = settings;
-            connectionHandler.AddMessageListener(this);
+            ConnectionsHandler = connectionHandler;
+            ConnectionsHandler.AddMessageListener(this);
         }
 
         void IConnectionMessageHandler.HandleMessage(Player player, string json)
@@ -71,7 +73,7 @@ namespace Server
                 if (playerCurrentRoom != null)
                     playerCurrentRoom.Leave(player.Data);
 
-                var room = new Room(player, Settings, data.Password);
+                var room = new Room(ConnectionsHandler, player, Settings, data.Password);
 
                 room.OnEmpty += OnRoomEmpty;
 
