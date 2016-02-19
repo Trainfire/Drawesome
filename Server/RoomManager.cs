@@ -23,7 +23,7 @@ namespace Server
         {
             Message.IsType<ClientMessage.RequestRoomList>(json, (data) =>
             {
-                Logger.Warn(this, "Recieved a request from {0} for a list a rooms.", player);
+                Logger.Log(this, "Recieved a request from {0} for a list a rooms.", player);
                 var rooms = Rooms.Select(x => x.RoomData).ToList();
                 player.SendMessage(new ServerMessage.RoomList(rooms));
             });
