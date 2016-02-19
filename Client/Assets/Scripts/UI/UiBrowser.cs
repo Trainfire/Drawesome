@@ -63,6 +63,11 @@ public class UiBrowser : UiBase
                 }
             });
 
+            view.gameObject.GetOrAddComponent<DoubleClickHandler>().OnDoubleClick += () =>
+            {
+                OnJoin();
+            };
+
             browserItems.Add(view);
         }
 
