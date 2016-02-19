@@ -5,14 +5,12 @@ namespace Protocol
 {
     public class ClientMessage : Message
     {
-        public class RequestConnection : Message
+        public class GiveName : Message
         {
-            public PlayerData PlayerInfo { get; private set; }
             public string Name { get; private set; }
 
-            public RequestConnection(PlayerData playerInfo, string name)
+            public GiveName(string name)
             {
-                PlayerInfo = playerInfo;
                 Name = name;
             }
         }
@@ -52,6 +50,16 @@ namespace Protocol
             public RequestRoomList(PlayerData playerInfo)
             {
 
+            }
+        }
+
+        public class SendChat : Message
+        {
+            public string Message { get; private set; }
+
+            public SendChat(string message)
+            {
+                Message = message;
             }
         }
 

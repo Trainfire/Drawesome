@@ -90,9 +90,33 @@ namespace Server
             Socket.Send(message.AsJson());
         }
 
+        public void AssignClientId(string id)
+        {
+            var message = new ServerMessage.AssignClientId(id);
+            Socket.Send(message.AsJson());
+        }
+
+        public void RequestClientName()
+        {
+            var message = new ServerMessage.RequestClientName();
+            Socket.Send(message.AsJson());
+        }
+
+        public void UpdatePlayerInfo(PlayerData playerData)
+        {
+            var message = new ServerMessage.UpdatePlayerInfo(playerData);
+            Socket.Send(message.AsJson());
+        }
+
         public void SendRoomError(RoomError roomError)
         {
             var message = new ServerMessage.NotifyRoomError(roomError);
+            Socket.Send(message.AsJson());
+        }
+
+        public void SendChat(PlayerData player, string chat)
+        {
+            var message = new ServerMessage.NotifyChatMessage(player, chat);
             Socket.Send(message.AsJson());
         }
 
@@ -111,6 +135,12 @@ namespace Server
         public void SendPrompt(string prompt)
         {
             var message = new ServerMessage.Game.SendPrompt(prompt);
+            Socket.Send(message.AsJson());
+        }
+
+        public void NotifyConnectionSuccess()
+        {
+            var message = new ServerMessage.NotifyConnectionSuccess();
             Socket.Send(message.AsJson());
         }
 

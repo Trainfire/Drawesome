@@ -6,7 +6,7 @@ using Server.Drawesome;
 
 namespace Server
 {
-    public class Room : ILogger
+    public class Room : IConnectionMessageHandler, ILogger
     {
         public event EventHandler<Room> OnEmpty;
 
@@ -29,6 +29,8 @@ namespace Server
 
         public Room(ConnectionsHandler connections, Player owner, Settings settings, string password = "")
         {
+            connections.AddMessageListener(this);
+
             Settings = settings;
 
             Owner = owner;
@@ -59,7 +61,7 @@ namespace Server
 
         public void Join(Player joiningPlayer, string password = "")
         {
-            Console.WriteLine("Player {0} joined room {1}", joiningPlayer.Data.Name, RoomData.ID);
+            Logger.Log(this, "Player {0} joined room {1}", joiningPlayer.Data.Name, RoomData.ID);
 
             // Prevent join if password is incorrect
             if (joiningPlayer.Data.ID != Owner.Data.ID && password != RoomData.Password)
@@ -102,8 +104,6 @@ namespace Server
 
                 // Add callbacks
                 joiningPlayer.OnConnectionClosed += OnPlayerConnectionClosed;
-                joiningPlayer.OnChat += OnPlayerChat;
-                joiningPlayer.OnGameAction += OnPlayerGameAction;
 
                 // Send message to joining player
                 EchoActionToAll(joiningPlayer.Data, PlayerAction.Joined);
@@ -123,44 +123,45 @@ namespace Server
             return Players.Exists(x => x.Data.ID == player.ID);
         }
 
-        #region Handle Player Messages
-
-        void OnPlayerGameAction(object sender, ClientMessage.Game.SendAction e)
+        void IConnectionMessageHandler.HandleMessage(Player player, string json)
         {
-            if (IsOwner(e.Player))
+            Message.IsType<ClientMessage.Game.SendAction>(json, (data) =>
             {
-                switch (e.Action)
+                if (player == Owner)
                 {
-                    case GameAction.Start:
-                        Logger.Log(this, "{0} has started the game", Owner.Data.Name);
-                        RoomData.GameStarted = true;
-                        Game.Start(Players);
-                        break;
-                    case GameAction.Restart:
-                        Logger.Log(this, "{0} has restarted the game", Owner.Data.Name);
-                        Game.Restart();
-                        break;
-                    case GameAction.StartNewRound:
-                        Logger.Log(this, "{0} has started a new round", Owner.Data.Name);
-                        Game.StartNewRound();
-                        break;
-                    default:
-                        break;
+                    switch (data.Action)
+                    {
+                        case GameAction.Start:
+                            Logger.Log(this, "{0} has started the game", Owner.Data.Name);
+                            RoomData.GameStarted = true;
+                            Game.Start(Players);
+                            break;
+                        case GameAction.Restart:
+                            Logger.Log(this, "{0} has restarted the game", Owner.Data.Name);
+                            Game.Restart();
+                            break;
+                        case GameAction.StartNewRound:
+                            Logger.Log(this, "{0} has started a new round", Owner.Data.Name);
+                            Game.StartNewRound();
+                            break;
+                        default:
+                            break;
+                    }
                 }
-            }
-        }
+            });
 
-        void OnPlayerChat(object sender, SharedMessage.Chat message)
-        {
-            var player = sender as Player;
-            EchoChatToAll(message);
+            Message.IsType<ClientMessage.SendChat>(json, (data) =>
+            {
+                Logger.Log(this, "{0}: {1}", player.Data.Name, data.Message);
+                // Echo chat to all clients
+                Players.ForEach(x => x.SendChat(player.Data, data.Message));
+            });
         }
 
         void OnPlayerConnectionClosed(object sender, PlayerConnectionClosed e)
         {
             // Remove callbacks
             e.Player.OnConnectionClosed -= OnPlayerConnectionClosed;
-            e.Player.OnChat -= OnPlayerChat;
 
             // Inform players
             switch (e.CloseReason)
@@ -207,8 +208,6 @@ namespace Server
             }
         }
 
-        #endregion
-
         #region Messaging
 
         void EchoActionToAll(PlayerData actor, PlayerAction action)
@@ -217,24 +216,12 @@ namespace Server
             Players.ForEach(x => x.SendAction(actor, action));
         }
 
-        void EchoChatToAll(SharedMessage.Chat message)
-        {
-            Logger.Log(this, "{0}: {1}", message.Player.Name, message.Message);
-            Players.ForEach(x => x.SendMessage(message));
-        }
-
         void SendUpdateToAll()
         {
             Players.ForEach(x => x.SendMessage(new ServerMessage.RoomUpdate(RoomData)));
         }
 
         #endregion
-
-        void Log(string message, params object[] args)
-        {
-            var str = string.Format(message, args);
-            Logger.Log(this, "Room {0}: {1}", RoomData.ID, str);
-        }
 
         bool IsOwner(PlayerData player)
         {

@@ -41,48 +41,38 @@ namespace Server
 
             // Respond to a join request by assigning a unique ID to the connection and sending it back to the client.
             var player = AddPlayer(socket);
-            Send(new ServerMessage.ConnectionSuccess(player.Data), player);
-        }
+            player.RequestClientName();
 
-        public void OnMessage(string json)
-        {
-            Message.IsType<ClientMessage.RequestConnection>(json, (data) =>
+            // Wait for player reponse with their name
+            player.Socket.OnMessage += (message) =>
             {
-                var matchingConnections = ConnectedPlayers.Where(x => x.Data.ID == data.PlayerInfo.ID).ToList();
-
-                if (matchingConnections.Count > 1)
+                Message.IsType<ClientMessage.GiveName>(message, (data) =>
                 {
-                    Logger.Warn(this, "There is more than one player on the server with ID '{0}'. This is very bad!", data.PlayerInfo.ID);
-                    return;
-                }
+                    // Assign the requested name and send the final Server copy of the player data
+                    player.Data.SetName(data.Name);
 
-                var matchingPlayer = matchingConnections.First();
+                    Logger.Log(this, "Player {0} connected.", player.Data.Name);
 
-                if (matchingPlayer == null)
-                {
-                    Logger.Warn(this, "Could not find connection matching the ID '{0}'", data.PlayerInfo.ID);
-                }
-                else
-                {
-                    // Assign the requested name
-                    matchingPlayer.Data.SetName(data.Name);
+                    // Inform the player that the connection was successful
+                    player.NotifyConnectionSuccess();
 
-                    Logger.Log(this, "Player {0} connected.", matchingPlayer.Data.Name);
+                    // Send the player the latest version of their server-side data (they need to know their GUID)
+                    player.UpdatePlayerInfo(player.Data);
 
                     // Send the latest player state to all clients.
                     SendUpdateToAllClients();
 
                     // Send Player Joined message.
-                    SendToAll(new ServerMessage.NotifyPlayerAction(matchingPlayer.Data, PlayerAction.Connected));
+                    SendToAll(new ServerMessage.NotifyPlayerAction(player.Data, PlayerAction.Connected));
 
                     // Trigger event.
                     if (PlayerConnected != null)
-                        PlayerConnected(this, matchingPlayer);
+                        PlayerConnected(this, player);
 
                     // Assign callback
-                    matchingPlayer.OnMessageString += OnPlayerMessage;
-                }
-            });
+                    player.OnMessageString += OnPlayerMessage;
+                });
+            };
         }
 
         /// <summary>

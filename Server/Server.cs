@@ -26,7 +26,6 @@ namespace Server
             {
                 socket.OnOpen += () => ConnectionsHandler.OnOpen(socket);
                 socket.OnClose += () => ConnectionsHandler.OnClose(socket);
-                socket.OnMessage += (data) => ConnectionsHandler.OnMessage(data);
             });
         }
 

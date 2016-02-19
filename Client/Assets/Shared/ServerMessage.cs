@@ -8,13 +8,39 @@ namespace Protocol
 {
     public class ServerMessage
     {
-        public class ConnectionSuccess : Message
+        public class AssignClientId : Message
         {
-            public PlayerData NewPlayerInfo { get; private set; }
+            public string ID { get; private set; }
 
-            public ConnectionSuccess(PlayerData newPlayerInfo)
+            public AssignClientId(string id)
             {
-                NewPlayerInfo = newPlayerInfo;
+                ID = id;
+            }
+        }
+
+        public class NotifyConnectionSuccess : Message
+        {
+            public NotifyConnectionSuccess()
+            {
+
+            }
+        }
+
+        public class RequestClientName : Message
+        {
+            public RequestClientName()
+            {
+
+            }
+        }
+
+        public class UpdatePlayerInfo : Message
+        {
+            public PlayerData PlayerData { get; private set; }
+
+            public UpdatePlayerInfo(PlayerData playerData)
+            {
+                PlayerData = playerData;
             }
         }
 
@@ -25,6 +51,18 @@ namespace Protocol
             public RoomList(List<RoomData> rooms)
             {
                 Rooms = rooms;
+            }
+        }
+
+        public class NotifyChatMessage : Message
+        {
+            public PlayerData Player { get; private set; }
+            public string Message { get; private set; }
+
+            public NotifyChatMessage(PlayerData player, string message)
+            {
+                Player = player;
+                Message = message;
             }
         }
 

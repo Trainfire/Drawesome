@@ -31,7 +31,7 @@ public class UiChat : UiBase
         AddMessage(StringFormatter.FormatPlayerAction(message, Client.Connection.Player));
     }
 
-    void OnChat(SharedMessage.Chat message)
+    void OnChat(ServerMessage.NotifyChatMessage message)
     {
         AddMessage("{0}: {1}", message.Player.Name, message.Message);
     }
