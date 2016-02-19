@@ -10,10 +10,12 @@ namespace Server
     /// This class handles clients connecting and disconnecting, as well as messages.
     /// Messages are relayed to any assigned handlers that implement IConnectionMessageHandler.
     /// </summary>
-    public class ConnectionsHandler
+    public class ConnectionsHandler : ILogger
     {
         public event EventHandler<Player> PlayerConnected;
         public event EventHandler<Player> PlayerDisconnected;
+
+        public string LogName { get { return "Connections Handler"; } }
 
         List<IConnectionMessageHandler> Handlers { get; set; }
         List<Player> ConnectedPlayers { get; set; }
@@ -33,7 +35,7 @@ namespace Server
 
         public void OnOpen(IWebSocketConnection socket)
         {
-            Logger.WriteLine("A connection was opened");
+            Logger.Log(this, "A connection was opened");
 
             // Respond to a join request by assigning a unique ID to the connection and sending it back to the client.
             var player = AddPlayer(socket);
@@ -48,7 +50,7 @@ namespace Server
 
                 if (matchingConnections.Count > 1)
                 {
-                    Logger.WriteLine("There is more than one player on the server with ID '{0}'. This is very bad!", data.PlayerInfo.ID);
+                    Logger.Warn(this, "There is more than one player on the server with ID '{0}'. This is very bad!", data.PlayerInfo.ID);
                     return;
                 }
 
@@ -56,14 +58,14 @@ namespace Server
 
                 if (matchingPlayer == null)
                 {
-                    Logger.WriteLine("Could not find connection matching the ID '{0}'", data.PlayerInfo.ID);
+                    Logger.Warn(this, "Could not find connection matching the ID '{0}'", data.PlayerInfo.ID);
                 }
                 else
                 {
                     // Assign the requested name
                     matchingPlayer.Data.SetName(data.Name);
 
-                    Logger.WriteLine("Player {0} connected.", matchingPlayer.Data.Name);
+                    Logger.Log(this, "Player {0} connected.", matchingPlayer.Data.Name);
 
                     // Send the latest player state to all clients.
                     SendUpdateToAllClients();
@@ -100,7 +102,7 @@ namespace Server
             {
                 ConnectedPlayers.Remove(player);
 
-                Logger.WriteLine("Player {0} disconnected", player.Data.Name);
+                Logger.Log(this, "Player {0} disconnected", player.Data.Name);
 
                 SendToAll(new ServerMessage.NotifyPlayerAction(player.Data, PlayerAction.Disconnected));
 
@@ -125,7 +127,7 @@ namespace Server
             }
             else
             {
-                Logger.WriteLine("Player {0} already exists...", player.Data.Name);
+                Logger.Warn(this, "Player {0} already exists...", player.Data.Name);
             }
 
             return player;

@@ -10,20 +10,25 @@ namespace Server
         public static bool Enabled { get { return enabled; } set { enabled = value; } }
         static bool enabled = true;
 
-        public static void WriteLine(string message, params object[] args)
+        public static void Log(ILogger logger, string message, params object[] args)
         {
-            if (enabled)
-            {
-                WriteLine(string.Format(message, args));
-            }
+            Log(logger.LogName + " - " + message, args);
         }
 
-        static void WriteLine(string message)
+        public static void Warn(ILogger logger, string message, params object[] args)
+        {
+            Log("[WARNING] " + logger.LogName + " - " + message, args);
+        }
+
+        public static void Log(string message, params object[] args)
+        {
+            Log(string.Format(message, args));
+        }
+
+        static void Log(string message)
         {
             if (enabled)
-            {
-                Console.WriteLine(message);
-            }
+                Console.WriteLine(DateTime.Now + " - " + message);
         }
     }
 }

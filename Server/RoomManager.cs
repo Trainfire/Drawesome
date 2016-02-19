@@ -5,10 +5,12 @@ using Protocol;
 
 namespace Server
 {
-    public class RoomManager : IConnectionMessageHandler
+    public class RoomManager : IConnectionMessageHandler, ILogger
     {
         Settings Settings { get; set; }
         List<Room> Rooms { get; set; }
+
+        public string LogName { get { return "Room Manager"; } }
 
         public RoomManager(ConnectionsHandler connectionHandler, Settings settings)
         {
@@ -21,14 +23,14 @@ namespace Server
         {
             Message.IsType<ClientMessage.RequestRoomList>(json, (data) =>
             {
-                Console.WriteLine("Recieved a request from {0} for a list a rooms.", player);
+                Logger.Warn(this, "Recieved a request from {0} for a list a rooms.", player);
                 var rooms = Rooms.Select(x => x.RoomData).ToList();
                 player.SendMessage(new ServerMessage.RoomList(rooms));
             });
 
             Message.IsType<ClientMessage.JoinRoom>(json, (data) =>
             {
-                Console.WriteLine("Recieved a request from {0} to join room {1}.", player.Data, data.RoomId);
+                Logger.Log(this, "Recieved a request from {0} to join room {1}.", player.Data, data.RoomId);
 
                 var roomHasPlayer = Rooms.Find(x => x.HasPlayer(player.Data));
                 if (roomHasPlayer != null)
@@ -52,20 +54,18 @@ namespace Server
 
                 if (containingRoom != null)
                 {
-                    Console.WriteLine("Remove {0} from room", player);
+                    Logger.Log(this, "Remove {0} from room", player);
                     containingRoom.Leave(player.Data);
                 }
                 else
                 {
-                    Console.WriteLine("Cannot remove {0} from room as they are not in that room", player);
+                    Logger.Warn(this, "Cannot remove {0} from room as they are not in that room", player);
                 }
             });
 
             Message.IsType<ClientMessage.CreateRoom>(json, (data) =>
             {
-                Console.WriteLine("Create room for {0} with password {1}", player, data.Password);
-
-                Console.WriteLine("You shouldn't see this!");
+                Logger.Log(this, "Create room for {0} with password {1}", player, data.Password);
 
                 var playerCurrentRoom = FindRoomContainingPlayer(player.Data);
                 if (playerCurrentRoom != null)
@@ -81,7 +81,7 @@ namespace Server
 
         void OnRoomEmpty(object sender, Room e)
         {
-            Console.WriteLine("Closing room {0} as it is empty", e.RoomData.ID);
+            Logger.Log(this, "Closing room {0} as it is empty", e.RoomData.ID);
             e.OnEmpty -= OnRoomEmpty;
             Rooms.Remove(e);
         }
