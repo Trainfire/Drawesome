@@ -7,6 +7,7 @@ using System;
 public class Game : MonoBehaviour, IClientHandler
 {
     public Timer Timer;
+    public Transition Transition;
     public UiGame View;
     public UiPlayerList PlayerListView;
     public UiDrawingCanvas CanvasView;
@@ -24,9 +25,11 @@ public class Game : MonoBehaviour, IClientHandler
     List<IGameStateHandler> StateHandlers { get; set; }
     List<IGameMessageHandler> MessageHandlers { get; set; }
     List<IGameTransitionhandler> TransitionHandlers { get; set; }
+    List<IGameStateEndHandler> StateEndHandlers { get; set; }
     State Current { get; set; }
     DrawingCanvas Canvas { get; set; }
     PlayerList PlayerList { get; set; }
+    GameState CurrentState { get; set; }
 
     public void Initialise(Client client)
     {
@@ -60,6 +63,10 @@ public class Game : MonoBehaviour, IClientHandler
         AddMessageHandler(Timer);
         AddStateHandler(Timer);
 
+        // Transition Message
+        AddStateEndHandler(Transition);
+        AddStateHandler(Transition);
+
         ChangeState(GameState.PreGame);
     }
 
@@ -77,6 +84,14 @@ public class Game : MonoBehaviour, IClientHandler
             StateHandlers = new List<IGameStateHandler>();
 
         StateHandlers.Add(handler);
+    }
+
+    void AddStateEndHandler(IGameStateEndHandler handler)
+    {
+        if (StateEndHandlers == null)
+            StateEndHandlers = new List<IGameStateEndHandler>();
+
+        StateEndHandlers.Add(handler);
     }
 
     void AddMessageHandler(IGameMessageHandler handler)
@@ -112,6 +127,8 @@ public class Game : MonoBehaviour, IClientHandler
         }
 
         StateHandlers.ForEach(x => x.HandleState(nextState));
+
+        CurrentState = nextState;
     }
 
     void OnMessage(string json)
@@ -129,6 +146,10 @@ public class Game : MonoBehaviour, IClientHandler
         Message.IsType<ServerMessage.Game.EndState>(json, (data) =>
         {
             Debug.LogFormat("End current state. (Reason: {0})", data.Reason);
+            foreach (var handler in StateEndHandlers)
+            {
+                handler.HandleStateEnd(CurrentState, data.Reason);
+            }
         });
 
         // Transition
@@ -154,6 +175,11 @@ public class Game : MonoBehaviour, IClientHandler
     public interface IGameStateHandler
     {
         void HandleState(GameState state);
+    }
+
+    public interface IGameStateEndHandler
+    {
+        void HandleStateEnd(GameState currentState, GameStateEndReason reason);
     }
 
     public interface IGameMessageHandler

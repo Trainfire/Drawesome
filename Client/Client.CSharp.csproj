@@ -105,6 +105,7 @@
     <Compile Include="Assets\Scripts\Tests\TestResults.cs" />
     <Compile Include="Assets\Scripts\Tests\TestScores.cs" />
     <Compile Include="Assets\Scripts\Timer.cs" />
+    <Compile Include="Assets\Scripts\Transition.cs" />
     <Compile Include="Assets\Scripts\UI\Anims\IAnimatable.cs" />
     <Compile Include="Assets\Scripts\UI\Anims\UiAnimationAction.cs" />
     <Compile Include="Assets\Scripts\UI\Anims\UiAnimationComponent.cs" />
@@ -136,6 +137,7 @@
     <Compile Include="Assets\Scripts\UI\UiPopup.cs" />
     <Compile Include="Assets\Scripts\UI\UiRoom.cs" />
     <Compile Include="Assets\Scripts\UI\UiTimer.cs" />
+    <Compile Include="Assets\Scripts\UI\UiTransition.cs" />
     <Compile Include="Assets\Scripts\UI\UiTween.cs" />
     <Compile Include="Assets\Scripts\UI\UiTweenFloat.cs" />
     <Compile Include="Assets\Scripts\UI\UiTweenVector.cs" />
