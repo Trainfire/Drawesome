@@ -1,6 +1,11 @@
-public static class Settings
+public class Settings
 {
-    public const string HostUrl = "ws://127.0.0.1:8181/room";
-    public const int CharacterLimitMin = 3;
-    public const int CharacterLimitMax = 32;
+    public string HostUrl = "ws://188.166.145.195:8181";
+    public int NameMinChars = 3;
+    public int NameMaxChars = 32;
+
+    public Settings()
+    {
+        
+    }
 }

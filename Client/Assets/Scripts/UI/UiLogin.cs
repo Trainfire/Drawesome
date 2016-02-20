@@ -26,7 +26,7 @@ public class UiLogin : UiBase
                     Client.Connection.Connect(InputName.text);
                     break;
                 case ValidationResult.InvalidCharacterLength:
-                    InfoBox.Show(string.Format(Strings.CharacterLimit, Settings.CharacterLimitMin, Settings.CharacterLimitMax));
+                    InfoBox.Show(string.Format(Strings.CharacterLimit, SettingsLoader.Settings.NameMinChars, SettingsLoader.Settings.NameMinChars));
                     break;
                 default:
                     break;
@@ -41,10 +41,10 @@ public class UiLogin : UiBase
         input = input.Trim();
         input = input.Replace("\t", "");
 
-        if (input.Length > Settings.CharacterLimitMax)
+        if (input.Length > SettingsLoader.Settings.NameMinChars)
             return ValidationResult.InvalidCharacterLength;
 
-        if (input.Length < Settings.CharacterLimitMin)
+        if (input.Length < SettingsLoader.Settings.NameMaxChars)
             return ValidationResult.InvalidCharacterLength;
 
         return ValidationResult.Success;

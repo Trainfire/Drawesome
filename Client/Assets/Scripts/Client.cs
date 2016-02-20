@@ -11,6 +11,7 @@ public class Client : MonoBehaviour
     public Connection Connection { get; private set; }
     public MessageHandler MessageHandler { get; private set; }
     public Messenger Messenger { get; private set; }
+    public Settings Settings { get; private set; }
 
     public void Initialise()
     {

@@ -87,6 +87,7 @@
     <Compile Include="Assets\Scripts\Popup.cs" />
     <Compile Include="Assets\Scripts\PopupFactory.cs" />
     <Compile Include="Assets\Scripts\Settings.cs" />
+    <Compile Include="Assets\Scripts\SettingsLoader.cs" />
     <Compile Include="Assets\Scripts\Singleton.cs" />
     <Compile Include="Assets\Scripts\State.cs" />
     <Compile Include="Assets\Scripts\Strings.cs" />

@@ -22,9 +22,9 @@ public class Connection : MonoBehaviour
 
     void Awake()
     {
+        Socket = new WebSocket(SettingsLoader.Settings.HostUrl);
         Player = new PlayerData();
         Room = new RoomData();
-        Socket = new WebSocket(Settings.HostUrl);
         MessageQueue = new Queue<MessageEventArgs>();
     }
 
