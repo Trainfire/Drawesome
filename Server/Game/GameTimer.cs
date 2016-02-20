@@ -59,10 +59,10 @@ namespace Server.Game
         {
             Console.WriteLine("{0}: Time remaining: {1}", Name, Duration - ElapsedTime);
 
-            ElapsedTime += 1f;
-
             if (Tick != null)
                 Tick(this, null);
+
+            ElapsedTime += 1f;
 
             if (ElapsedTime > Duration)
             {
