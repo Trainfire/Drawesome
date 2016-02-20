@@ -11,11 +11,11 @@ namespace Server.Game
     public abstract class Game<TData> : IConnectionMessageHandler, ILogger where TData : GameData, new()
     {
         protected TData GameData { get; set; }
-        protected State<TData> CurrentState { get; private set; }
         protected Settings Settings { get; private set; }
 
         public abstract string LogName { get; }
 
+        State<TData> CurrentState { get; set; }
         Dictionary<GameState, State<TData>> States { get; set; }
 
         public Game(ConnectionsHandler connectionsHandler, Settings settings)
@@ -50,7 +50,7 @@ namespace Server.Game
         {
             Logger.Log(this, "Ended");
             if (CurrentState != null)
-                CurrentState.EndState(false);
+                CurrentState.EndState(GameStateEndReason.GameEnded, false);
         }        
 
         protected virtual void OnGameOver()
@@ -70,27 +70,32 @@ namespace Server.Game
                 CurrentState.HandleMessage(player, json);
         }
 
-        protected void SetState(GameState state, GameData gameData)
+        protected void SetState(GameState state, float transitionTime)
         {
             if (CurrentState != null)
                 CurrentState.OnEnd -= EndState;
 
             if (!States.ContainsKey(state))
             {
-                // TODO: Flag as fatal error
-                Logger.Log(this, "State {0} does not exist.", state.ToString());
+                Logger.Warn(this, "State {0} does not exist.", state.ToString());
                 return;
             }
 
             CurrentState = States[state];
 
-            Logger.Log(this, "{0}: {1}", "Change state to", CurrentState.Type.ToString());
+            // Add transition before moving onto next state
+            var transitionTimer = new GameTimer("Transition", transitionTime, () =>
+            {
+                Logger.Log(this, "{0}: {1}", "Change state to", CurrentState.Type.ToString());
 
-            // Notify clients of state change
-            GameData.Players.ForEach(x => x.SendMessage(new ServerMessage.Game.StateChange(CurrentState.Type)));
+                // Notify clients of state change
+                GameData.Players.ForEach(x => x.SendMessage(new ServerMessage.Game.ChangeState(CurrentState.Type)));
 
-            CurrentState.OnEnd += EndState;
-            CurrentState.Begin(GameData);
+                CurrentState.OnEnd += EndState;
+                CurrentState.Begin(GameData);
+            });
+
+            GameData.Players.ForEach(x => x.SendTransitionPeriod(transitionTimer.Duration));
         }
 
         protected TState AddState<TState>(GameState stateType, TState stateInstance) where TState : State<TData>
@@ -104,19 +109,20 @@ namespace Server.Game
         void SkipState()
         {
             if (CurrentState != null)
-                CurrentState.EndState();
+                CurrentState.EndState(GameStateEndReason.Skipped);
         }
 
-        void EndState(object sender, TData gameData)
+        void EndState(object sender, State<TData>.StateEventArgs args)
         {
             var state = sender as State<TData>;
 
             if (!IsGameOver())
             {
-                Logger.Log(this, "End " + state.Type.ToString());
+                var log = string.Format("End state '{0}'. (Reason: {1})", state.Type.ToString(), args.EndReason.ToString());
+                Logger.Log(this, log);
 
-                // Pass the latest copy of gamedata from the ending state back into the game manager.
-                OnEndState(GameData);
+                GameData.Players.ForEach(x => x.SendMessage(new ServerMessage.Game.EndState(args.EndReason)));
+                OnEndState(state.Type);
             }
             else
             {
@@ -124,7 +130,7 @@ namespace Server.Game
             }
         }
 
-        protected abstract void OnEndState(TData gameData);
+        protected abstract void OnEndState(GameState endingState);
         protected abstract bool IsGameOver();
     }
 }

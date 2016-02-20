@@ -28,56 +28,56 @@ namespace Server.Drawesome
         {
             base.Start(players);
             Data = new DrawesomeGameData(players, Settings);
-            SetState(GameState.RoundBegin, Data);
+            SetState(GameState.RoundBegin, 0f);
         }
 
         public override void StartNewRound()
         {
             base.StartNewRound();
-            SetState(GameState.Drawing, GameData);
+            SetState(GameState.Drawing, Settings.Drawesome.Transitions.RoundBeginToDrawing);
         }
 
         public override void Restart()
         {
             base.Restart();
-            SetState(GameState.PreGame, Data);
+            SetState(GameState.PreGame, Settings.Drawesome.Transitions.RoundBeginToDrawing);
         }
 
         /// <summary>
         /// Determine what to do when the current state ends.
         /// </summary>
         /// <param name="gameData"></param>
-        protected override void OnEndState(DrawesomeGameData gameData)
+        protected override void OnEndState(GameState endingState)
         {
-            switch (CurrentState.Type)
+            switch (endingState)
             {
                 case GameState.PreGame:
-                    SetState(GameState.PreGame, gameData);
+                    SetState(GameState.RoundBegin, Settings.Drawesome.Transitions.RoundBeginToDrawing);
                     break;
 
                 case GameState.RoundBegin:
-                    SetState(GameState.Drawing, gameData);
+                    SetState(GameState.Drawing, Settings.Drawesome.Transitions.RoundBeginToDrawing);
                     break;
 
                 case GameState.Drawing:
-                    SetState(GameState.Answering, gameData);
+                    SetState(GameState.Answering, Settings.Drawesome.Transitions.DrawingToAnswering);
                     break;
 
                 case GameState.Answering:
 
                     Console.WriteLine("Answers");
-                    foreach (var answer in gameData.Answers)
+                    foreach (var answer in GameData.Answers)
                     {
                         Console.WriteLine("\t{0}: {1}", answer.Author.Name, answer.Answer);
                     }
 
-                    SetState(GameState.Choosing, gameData);
+                    SetState(GameState.Choosing, Settings.Drawesome.Transitions.AnsweringToChoosing);
                     break;
 
                 case GameState.Choosing:
 
                     Console.WriteLine("Choices");
-                    foreach (var choice in gameData.ChosenAnswers)
+                    foreach (var choice in GameData.ChosenAnswers)
                     {
                         if (choice.Choosers.Count != 0)
                         {
@@ -89,24 +89,25 @@ namespace Server.Drawesome
                         }
                     }
 
-                    SetState(GameState.Results, gameData);
+                    SetState(GameState.Results, Settings.Drawesome.Transitions.ChoosingtoResults);
                     break;
 
                 case GameState.Results:
-                    gameData.OnNewRound();
+                    GameData.OnNewRound();
                     if (GameData.HasDrawings())
                     {
-                        SetState(GameState.Scores, gameData);
+                        SetState(GameState.Scores, Settings.Drawesome.Transitions.ScoresToAnswering);
                     }
                     else
                     {
-                        SetState(GameState.GameOver, gameData);
+                        // TODO: Add new transition timer for end game
+                        SetState(GameState.GameOver, Settings.Drawesome.Transitions.ScoresToAnswering);
                     }
                     break;
 
                 case GameState.Scores:
                     // After scores, return to Answering phase for remaining drawings
-                    SetState(GameState.Answering, gameData);
+                    SetState(GameState.Answering, Settings.Drawesome.Transitions.ScoresToAnswering);
                     break;
 
                 case GameState.GameOver:

@@ -22,7 +22,7 @@ public class MessageHandler
     public event MessageEvent<ServerMessage.Game.SendPrompt> OnReceivePrompt;
     public event MessageEvent<ServerMessage.Game.SendChoices> OnRecieveChoices;
     public event MessageEvent<ServerMessage.Game.SendResult> OnRecieveResult;
-    public event MessageEvent<ServerMessage.Game.StateChange> OnStateChange;
+    public event MessageEvent<ServerMessage.Game.ChangeState> OnStateChange;
     public event MessageEvent<ServerMessage.Game.SendAnswerValidation> OnAnswerError;
 
     public event MessageEvent<ServerMessage.Game.SendImage> OnRecieveImage;
@@ -59,7 +59,7 @@ public class MessageHandler
             Message.IsType<ServerMessage.Game.SendImage>(json, (data) => FireEvent(OnRecieveImage, data));
             Message.IsType<ServerMessage.Game.SendPrompt>(json, (data) => FireEvent(OnReceivePrompt, data));
             Message.IsType<ServerMessage.Game.SendResult>(json, (data) => FireEvent(OnRecieveResult, data));
-            Message.IsType<ServerMessage.Game.StateChange>(json, (data) => FireEvent(OnStateChange, data));
+            Message.IsType<ServerMessage.Game.ChangeState>(json, (data) => FireEvent(OnStateChange, data));
             Message.IsType<ServerMessage.Game.SendAnswerValidation>(json, (data) => FireEvent(OnAnswerError, data));
             Message.IsType<ServerMessage.Game.AddTimer>(json, (data) => FireEvent(OnAddTimer, data));
             Message.IsType<ServerMessage.Game.SetTimer>(json, (data) => FireEvent(OnSetTimer, data));

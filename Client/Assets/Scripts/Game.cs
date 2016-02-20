@@ -96,7 +96,7 @@ public class Game : MonoBehaviour, IClientHandler
     }
 
     void ChangeState(GameState nextState)
-    {
+    {    
         foreach (var s in States)
         {
             if (s.Type != nextState)
@@ -119,9 +119,16 @@ public class Game : MonoBehaviour, IClientHandler
         MessageHandlers.ForEach(x => x.HandleMessage(json));
 
         // Change state
-        Message.IsType<ServerMessage.Game.StateChange>(json, (data) =>
+        Message.IsType<ServerMessage.Game.ChangeState>(json, (data) =>
         {
+            Debug.LogFormat("Change state to {0}", data.GameState);
             ChangeState(data.GameState);
+        });
+
+        // End state
+        Message.IsType<ServerMessage.Game.EndState>(json, (data) =>
+        {
+            Debug.LogFormat("End current state. (Reason: {0})", data.Reason);
         });
 
         // Transition

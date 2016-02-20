@@ -186,9 +186,9 @@ namespace Server
             Socket.Send(message.AsJson());
         }
 
-        public void SendTransitionPeriod(float time, GameTransition transition)
+        public void SendTransitionPeriod(float time)
         {
-            var message = new ServerMessage.Game.SendTransitionPeriod(time, transition);
+            var message = new ServerMessage.Game.SendTransitionPeriod(time);
             Socket.Send(message.AsJson());
         }
 

@@ -21,10 +21,10 @@ namespace Server.Drawesome
             SetCountdownTimer("Begin Timer", GameData.Settings.Drawesome.RoundBeginTime, true);
         }
 
-        protected override void OnEndState()
-        {
-            AddTransitionTimer(GameData.Settings.Drawesome.Transitions.RoundBeginToDrawing, GameTransition.RoundBeginToDrawing);
-        }
+        //protected override void OnEndState(GameStateEndReason reason)
+        //{
+        //    AddTransitionTimer(GameData.Settings.Drawesome.Transitions.RoundBeginToDrawing, GameTransition.RoundBeginToDrawing);
+        //}
     }
 
     public class StateDrawingPhase : State<DrawesomeGameData>
@@ -72,11 +72,6 @@ namespace Server.Drawesome
                 if (ResponseHandler.AllResponded())
                     EndState();
             });
-        }
-
-        protected override void OnEndState()
-        {
-            AddTransitionTimer(GameData.Settings.Drawesome.Transitions.DrawingToAnswering, GameTransition.DrawingToAnswering);
         }
     }
 
@@ -148,11 +143,11 @@ namespace Server.Drawesome
             });
         }
 
-        protected override void OnEndState()
+        protected override void OnEndState(GameStateEndReason reason)
         {
             GameData.AddDecoys();
             GameData.AddActualAnswer();
-            AddTransitionTimer(GameData.Settings.Drawesome.Transitions.AnsweringToChoosing, GameTransition.AnsweringToChoosing);
+            base.OnEndState(reason);
         }
 
         bool IsPrompt(string answer)
@@ -212,11 +207,6 @@ namespace Server.Drawesome
                 // Add like
                 GameData.AddLike(data.Answer);
             });
-        }
-
-        protected override void OnEndState()
-        {
-            AddTransitionTimer(GameData.Settings.Drawesome.Transitions.ChoosingtoResults, GameTransition.ChoosingToResults);
         }
     }
 
@@ -302,11 +292,6 @@ namespace Server.Drawesome
             var message = new ServerMessage.Game.SendResult(chosenAnswer);
             GameData.Players.ForEach(x => x.SendMessage(message));
         }
-
-        protected override void OnEndState()
-        {
-            AddTransitionTimer(GameData.Settings.Drawesome.Transitions.ResultsToScores, GameTransition.ResultsToScores);
-        }
     }
 
     public class StateScores : State<DrawesomeGameData>
@@ -319,11 +304,6 @@ namespace Server.Drawesome
             var score = GameData.Scores.ToDictionary(x => x.Key, y => y.Value);
             GameData.Players.ForEach(x => x.SendScores(score));
             SetCountdownTimer("Show Scores", 10f, false);
-        }
-
-        protected override void OnEndState()
-        {
-            AddTransitionTimer(GameData.Settings.Drawesome.Transitions.ScoresToAnswering, GameTransition.ScoresToAnswering);
         }
     }
 

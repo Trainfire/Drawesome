@@ -78,6 +78,15 @@ namespace Protocol
     }
 
     [Serializable]
+    public enum GameStateEndReason
+    {
+        Normal,
+        TimerExpired,
+        Skipped,
+        GameEnded,
+    }
+
+    [Serializable]
     public enum GameAnswerType
     {
         Player,

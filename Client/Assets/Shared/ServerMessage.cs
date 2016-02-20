@@ -112,25 +112,33 @@ namespace Protocol
 
         public class Game
         {
-            public class StateChange : Message
+            public class ChangeState : Message
             {
-                public GameState GameState;
+                public GameState GameState { get; private set; }
 
-                public StateChange(GameState gameState)
+                public ChangeState(GameState gameState)
                 {
                     GameState = gameState;
                 }
             }
 
+            public class EndState : Message
+            {
+                public GameStateEndReason Reason { get; private set; }
+
+                public EndState(GameStateEndReason reason)
+                {
+                    Reason = reason;
+                }
+            }
+
             public class SendTransitionPeriod : Message
             {
-                public GameTransition Transition { get; private set; }
                 public float Duration { get; private set; }
 
-                public SendTransitionPeriod(float duration, GameTransition transition)
+                public SendTransitionPeriod(float duration)
                 {
                     Duration = duration;
-                    Transition = transition;
                 }
             }
 

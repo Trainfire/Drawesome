@@ -9,12 +9,24 @@ namespace Server.Game
         /// <summary>
         /// This event is used to tell the instance of Game that this state has ended.
         /// </summary>
-        public event EventHandler<T> OnEnd;
+        public event EventHandler<StateEventArgs> OnEnd;
 
         public abstract GameState Type { get; } // TODO: Move into interface or different base class
         public T GameData { get; protected set; }
 
         GameTimer Timer { get; set; }
+
+        public class StateEventArgs : EventArgs
+        {
+            public T GameData { get; protected set; }
+            public GameStateEndReason EndReason { get; protected set; }
+
+            public StateEventArgs(T gameData, GameStateEndReason endReason)
+            {
+                GameData = gameData;
+                EndReason = endReason;
+            }
+        }
 
         public void Begin(T gameData)
         {
@@ -33,42 +45,28 @@ namespace Server.Game
 
         }
 
-        protected virtual void OnCountdownFinish(object sender, EventArgs e)
-        {
-            EndState();
-        }
-
         /// <summary>
         /// Ends this state and informs the Game.
         /// </summary>
         /// <param name="fireOnEnd">Should the OnEnd event be fired? If true, this will move the game onto the next state.</param>
         public void EndState(bool fireOnEnd = true)
         {
-            Timer.Stop();
+            EndState(GameStateEndReason.Normal, fireOnEnd);
+        }
+
+        public void EndState(GameStateEndReason reason, bool fireOnEnd = true)
+        {
+            if (Timer != null)
+                Timer.Stop();
 
             if (fireOnEnd)
-                OnEndState();
+                OnEndState(reason);
         }
 
-        /// <summary>
-        /// Adds a transition timer. The state will end when this timer reaches 0.
-        /// </summary>
-        public void AddTransitionTimer(float duration, GameTransition transition)
-        {
-            var transitionTimer = new GameTimer(Type.ToString() + " - Transition", duration);
-            transitionTimer.Finish += (sender, args) =>
-            {
-                if (OnEnd != null)
-                    OnEnd(this, GameData);
-            };
-
-            GameData.Players.ForEach(x => x.SendTransitionPeriod(duration, transition));
-        }
-
-        protected virtual void OnEndState()
+        protected virtual void OnEndState(GameStateEndReason reason)
         {
             if (OnEnd != null)
-                OnEnd(this, GameData);
+                OnEnd(this, new StateEventArgs(GameData, reason));            
         }
 
         /// <summary>
@@ -79,8 +77,10 @@ namespace Server.Game
         /// <param name="echoToClients">Inform the client of a timer being added?</param>
         protected void SetCountdownTimer(string name, float duration, bool echoToClients = false)
         {
-            Timer = new GameTimer(Type.ToString() + " - " + name, duration);
-            Timer.Finish += OnCountdownFinish;
+            Timer = new GameTimer(Type.ToString() + " - " + name, duration, () =>
+            {
+                EndState(GameStateEndReason.TimerExpired);
+            });
             Timer.Tick += OnTimerTick;
 
             if (echoToClients)

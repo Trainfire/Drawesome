@@ -64,7 +64,7 @@ public class Timer : MonoBehaviour, Game.IGameStateHandler, Game.IGameMessageHan
     void Game.IGameMessageHandler.HandleMessage(string json)
     {
         // Change state
-        Message.IsType<ServerMessage.Game.StateChange>(json, (data) =>
+        Message.IsType<ServerMessage.Game.ChangeState>(json, (data) =>
         {
             Hide();
         });
