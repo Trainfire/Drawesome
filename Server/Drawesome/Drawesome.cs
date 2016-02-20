@@ -8,8 +8,6 @@ namespace Server.Drawesome
 {
     public class DrawesomeGame : Game<DrawesomeGameData>
     {
-        DrawesomeGameData Data { get; set; }
-
         public override string LogName { get { return "Drawesome"; } }
 
         public DrawesomeGame(ConnectionsHandler connections, Settings settings) : base(connections, settings)
@@ -27,19 +25,22 @@ namespace Server.Drawesome
         public override void Start(List<Player> players)
         {
             base.Start(players);
-            Data = new DrawesomeGameData(players, Settings);
+            GameData = new DrawesomeGameData(players, Settings);
             SetState(GameState.RoundBegin, 0f);
         }
 
         public override void StartNewRound()
         {
             base.StartNewRound();
+            GameData = new DrawesomeGameData(GameData.Players, Settings);
+            Console.WriteLine(GameData.Answers.Count);
             SetState(GameState.Drawing, Settings.Drawesome.Transitions.RoundBeginToDrawing);
         }
 
         public override void Restart()
         {
             base.Restart();
+            GameData = new DrawesomeGameData(GameData.Players, Settings);
             SetState(GameState.PreGame, Settings.Drawesome.Transitions.RoundBeginToDrawing);
         }
 
@@ -70,6 +71,8 @@ namespace Server.Drawesome
                     {
                         Console.WriteLine("\t{0}: {1}", answer.Author.Name, answer.Answer);
                     }
+
+                    Console.WriteLine(GameData.Answers.Count);
 
                     SetState(GameState.Choosing, Settings.Drawesome.Transitions.AnsweringToChoosing);
                     break;
