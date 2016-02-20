@@ -233,6 +233,8 @@ namespace Server.Drawesome
             // Sort chosen answers here...
             ChosenAnswersQueue = new Queue<AnswerData>();
 
+            GameData.CalculateScores();
+
             // Queue up player answers and decoys by order of least chosen to most chosen
             var sortedAnswers = GameData.ChosenAnswers
                 .Where(x => x.Type != GameAnswerType.ActualAnswer)

@@ -67,7 +67,7 @@ namespace Server.Drawesome
             }
         }
 
-        public void AddPoints(AnswerData answer)
+        public void CalculateScores()
         {
             if (scores == null)
             {
@@ -75,14 +75,25 @@ namespace Server.Drawesome
                 Players.ForEach(x => scores.Add(x.Data, 0));
             }
 
-            if (answer.Type == GameAnswerType.Player)
+            foreach (var answer in ChosenAnswers)
             {
-                Console.WriteLine("Give {0} {1} points", answer.Author.Name, Settings.Drawesome.PointsPerChoice);
-                scores[answer.Author] += Settings.Drawesome.PointsPerChoice;
-            }
-            else if (answer.Type == GameAnswerType.ActualAnswer)
-            {
-                scores[CurrentDrawing.Creator] += Settings.Drawesome.PointsForCorrectAnswer;
+                if (answer.Type == GameAnswerType.ActualAnswer)
+                {
+                    // Give the drawing's creator points
+                    scores[CurrentDrawing.Creator] += (uint)answer.Choosers.Count * Settings.Drawesome.PointsToDrawerForCorrectAnswer;
+
+                    // Give the choosers points
+                    answer.Choosers.ForEach(x => scores[x] += Settings.Drawesome.PointsForCorrectAnswer);
+                }
+                else if (answer.Type == GameAnswerType.Player)
+                {
+                    // Give the answer's author points
+                    var points = (uint)answer.Choosers.Count * Settings.Drawesome.PointsForFakeAnswer;
+                    scores[answer.Author] += points;
+
+                    // Assign points earned into answer. This value will be displayed for each result.
+                    answer.Points = points;
+                }
             }
         }
 
@@ -103,8 +114,6 @@ namespace Server.Drawesome
             var answerData = GetAnswer(answer);
             Console.WriteLine("Add chosen answer: {0}", answerData.Answer);
             answerData.Choosers.Add(player.Data);
-
-            AddPoints(answerData);
         }
 
         public void AddDecoys()

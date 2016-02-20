@@ -4,8 +4,9 @@
   "AnsweringTime": 30.0,
   "ChoosingTime": 30.0,
   "ResultTimeBetween": 10.0,
-  "PointsPerChoice": 100,
-  "PointsForCorrectAnswer": 200,
+  "PointsForFakeAnswer": 200,
+  "PointsForCorrectAnswer": 500,
+  "PointsToDrawerForCorrectAnswer": 1000,
   "Decoys":
   [
 	  "astonpeel",
@@ -16,8 +17,8 @@
   ],
   "Transitions": {
     "RoundBeginToDrawing": 1.0,
-    "DrawingToAnswering": 5.0,
-	"AnsweringToChoosing": 5.0,
+    "DrawingToAnswering": 1.0,
+	"AnsweringToChoosing": 1.0,
     "ChoosingtoResults": 0.0,
 	"ResultsToScores": 0,
 	"ScoresToAnswering": 1.0,

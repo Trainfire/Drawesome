@@ -98,8 +98,9 @@ namespace Server
         public float AnsweringTime = 30f;
         public float ChoosingTime = 30f;
         public float ResultTimeBetween = 10f;
-        public uint PointsPerChoice = 100;
+        public uint PointsForFakeAnswer = 100;
         public uint PointsForCorrectAnswer = 200;
+        public uint PointsToDrawerForCorrectAnswer = 1000;
 
         public List<string> Decoys = new List<string>();
 
