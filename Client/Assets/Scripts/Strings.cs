@@ -12,7 +12,7 @@ public static class Strings
     public const string CharacterLimit = "Name invalid. Character limit is: {0} - {1}";
     public const string DrawingSubmitted = "Drawing submitted! Waiting for other players...";
     public const string TimesUp = "Time's up!";
-    public const string AllPlayersDone = "Done!";
+    public const string AllPlayersDone = "Everyone's finished";
     public const string StateEndDrawing = "Let's see what you've drawn...";
     public const string StateEndAnswering = "The answers are in";
     public const string StateEndChoosing = "What did everybody pick?";
