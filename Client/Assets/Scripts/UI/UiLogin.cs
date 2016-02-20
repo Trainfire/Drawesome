@@ -41,10 +41,10 @@ public class UiLogin : UiBase
         input = input.Trim();
         input = input.Replace("\t", "");
 
-        if (input.Length > SettingsLoader.Settings.NameMinChars)
+        if (input.Length > SettingsLoader.Settings.NameMaxChars)
             return ValidationResult.InvalidCharacterLength;
 
-        if (input.Length < SettingsLoader.Settings.NameMaxChars)
+        if (input.Length < SettingsLoader.Settings.NameMinChars)
             return ValidationResult.InvalidCharacterLength;
 
         return ValidationResult.Success;
