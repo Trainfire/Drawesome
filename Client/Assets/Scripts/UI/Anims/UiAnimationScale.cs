@@ -14,6 +14,7 @@ public class UiAnimationScale : UiAnimationComponent
         Canvas = gameobject.GetOrAddComponent<CanvasGroup>();
         Duration = duration;
         To = to;
+        From = from;
     }
 
     public override void Play()

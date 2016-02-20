@@ -7,10 +7,6 @@ public class Transition : MonoBehaviour, Game.IGameStateEndHandler, Game.IGameSt
 {
     public UiTransition View;
 
-    string Title { get; set; }
-    string Message { get; set; }
-    bool Show { get; set; }
-
     void Awake()
     {
         View.Hide();
@@ -18,10 +14,24 @@ public class Transition : MonoBehaviour, Game.IGameStateEndHandler, Game.IGameSt
 
     void Game.IGameStateEndHandler.HandleStateEnd(GameState currentState, GameStateEndReason reason)
     {
-        if (reason == GameStateEndReason.TimerExpired)
+        string message = "";
+
+        switch (currentState)
         {
-            View.Show(Strings.TimesUp);
+            case GameState.Drawing:
+                message = Strings.StateEndDrawing;
+                break;
+            case GameState.Answering:
+                message = Strings.StateEndAnswering;
+                break;
+            case GameState.Choosing:
+                message = Strings.StateEndChoosing;
+                break;
         }
+
+        string title = reason == GameStateEndReason.TimerExpired ? Strings.TimesUp : Strings.AllPlayersDone;
+
+        View.Show(title, message);
     }
 
     void Game.IGameStateHandler.HandleState(GameState state)

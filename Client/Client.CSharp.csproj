@@ -100,6 +100,7 @@
     <Compile Include="Assets\Scripts\Stylesheet\TextComponent.cs" />
     <Compile Include="Assets\Scripts\Stylesheet\TextData.cs" />
     <Compile Include="Assets\Scripts\Tests\Test.cs" />
+    <Compile Include="Assets\Scripts\Tests\TestMessage.cs" />
     <Compile Include="Assets\Scripts\Tests\TestOrderedList.cs" />
     <Compile Include="Assets\Scripts\Tests\TestPopup.cs" />
     <Compile Include="Assets\Scripts\Tests\TestResults.cs" />

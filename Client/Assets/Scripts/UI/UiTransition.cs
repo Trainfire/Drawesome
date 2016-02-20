@@ -7,6 +7,11 @@ public class UiTransition : UiBase
     public Text Title;
     public Text Message;
 
+    public float TitleScaleFrom;
+    public float TitleScaleDuration;
+    public float TimeBetween;
+    public float MessageFadeDuration;
+
     public void Show(string title, string message = "")
     {
         base.Show();
@@ -18,7 +23,10 @@ public class UiTransition : UiBase
         Message.enabled = !string.IsNullOrEmpty(message);
         Message.text = message;
 
-        anim.AddAnim(new UiAnimationScale(gameObject, Vector3.one * 5, Vector3.one, 0.1f));
+        anim.AddAnim(new UiAnimationFade(Title.gameObject, MessageFadeDuration, UiAnimationFade.FadeType.In), false);
+        anim.AddAnim(new UiAnimationScale(Title.gameObject, Vector3.one * TitleScaleFrom, Vector3.one, TitleScaleDuration));
+        anim.AddDelay(TimeBetween);
+        anim.AddAnim(new UiAnimationFade(Message.gameObject, MessageFadeDuration, UiAnimationFade.FadeType.In));
         anim.PlayAnimations();
     }
 

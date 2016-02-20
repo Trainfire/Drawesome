@@ -17,16 +17,19 @@ public class UiAnimationController : MonoBehaviour
         Animations.Add(anim);
     }
 
-    public void AddAnim(UiAnimationComponent anim)
+    public void AddAnim(UiAnimationComponent anim, bool waitForCompletion = true)
     {
         Debug.LogFormat("Add anim: {0}", anim.Name);
+        anim.WaitForCompletion = waitForCompletion;
         Animations.Add(anim);
     }
 
-    public void AddDelay(float delay)
+    public void AddDelay(float delay, bool waitForCompletion = true)
     {
         Debug.LogFormat("Add delay: {0}", delay);
-        Animations.Add(new UiAnimationDelay(this, delay));
+        var anim = new UiAnimationDelay(this, delay);
+        anim.WaitForCompletion = waitForCompletion;
+        Animations.Add(anim);
     }
 
     /// <summary>
@@ -47,7 +50,9 @@ public class UiAnimationController : MonoBehaviour
 
     void UpdateQueue(IAnimatable anim)
     {
-        anim.OnDone -= UpdateQueue;
+        if (anim.WaitForCompletion)
+            anim.OnDone -= UpdateQueue;
+
         if (Queue.Count != 0)
         {
             currentAnim = Queue.Dequeue();
@@ -55,8 +60,14 @@ public class UiAnimationController : MonoBehaviour
             var name = string.IsNullOrEmpty(currentAnim.Name) ? "Unnamed Anim" : currentAnim.Name;
 
             Debug.LogFormat("Play anim: {0}", name);
-            currentAnim.OnDone += UpdateQueue;
+
+            if (currentAnim.WaitForCompletion)
+                currentAnim.OnDone += UpdateQueue;
+
             PlayAnim(currentAnim);
+
+            if (!currentAnim.WaitForCompletion)
+                UpdateQueue(currentAnim);
         }
         else
         {

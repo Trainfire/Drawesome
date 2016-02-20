@@ -7,7 +7,7 @@ public abstract class UiAnimationComponent : IAnimatable
     public event Action<IAnimatable> OnDone;
 
     public GameObject Target { get; private set; }
-    public bool WaitForCompletion;
+    public bool WaitForCompletion { get; set; }
     public bool Playing { get; protected set; }
     public virtual string Name { get; set; }
 
