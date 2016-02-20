@@ -37,4 +37,9 @@ public static class StringFormatter
 
         return "";
     }
+
+    public static string FormatAnswer(string answer)
+    {
+        return answer.Trim();
+    }
 }

@@ -114,12 +114,14 @@ namespace Server.Drawesome
             {
                 Console.WriteLine("{0} submitted '{1}'", player.Data.Name, data.Answer);
 
-                if (IsPrompt(data.Answer))
+                var answer = StringFormatter.FormatAnswer(data.Answer);
+
+                if (IsPrompt(answer))
                 {
                     Console.WriteLine("Player {0}'s answer matches prompt!", player.Data.Name);
                     player.SendAnswerValidation(GameAnswerValidationResponse.MatchesPrompt);
                 }
-                else if (HasPromptBeenSubmitted(data.Answer))
+                else if (MatchesExistingAnswer(answer))
                 {
                     Console.WriteLine("Player {0}'s answer matches an existing answer from another player!", player.Data.Name);
                     player.SendAnswerValidation(GameAnswerValidationResponse.AlreadyExists);
@@ -129,7 +131,7 @@ namespace Server.Drawesome
                     player.SendAnswerValidation(GameAnswerValidationResponse.None);
 
                     // Add answer here
-                    GameData.AddAnswer(new AnswerData(player.Data, data.Answer));
+                    GameData.AddAnswer(new AnswerData(player.Data, answer));
 
                     // Tell all clients that player has submitted answer
                     GameData.Players.ForEach(x => x.NotifyPlayerGameAction(player.Data, GamePlayerAction.AnswerSubmitted));
@@ -155,7 +157,7 @@ namespace Server.Drawesome
             return GameData.SentPrompts.Any(x => x.Value.Text.ToLower() == answer.ToLower());
         }
 
-        bool HasPromptBeenSubmitted(string answer)
+        bool MatchesExistingAnswer(string answer)
         {
             return GameData.Answers.Any(x => x.Answer.ToLower() == answer.ToLower());
         }
