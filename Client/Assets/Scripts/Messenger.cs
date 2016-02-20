@@ -33,7 +33,7 @@ public class Messenger
 
     public void Say(string message)
     {
-        Connection.SendMessage(new SharedMessage.Chat(Connection.Player, message));
+        Connection.SendMessage(new ClientMessage.SendChat(message));
     }
 
     #region Game

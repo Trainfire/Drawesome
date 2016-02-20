@@ -6,143 +6,95 @@ using Protocol;
 
 namespace Server
 {
-    public class ConnectionsHandler : WebSocketBehaviour
+    /// <summary>
+    /// This class handles clients connecting and disconnecting, as well as messages.
+    /// Messages are relayed to any assigned handlers that implement IConnectionMessageHandler.
+    /// </summary>
+    public class ConnectionsHandler : ILogger
     {
         public event EventHandler<Player> PlayerConnected;
         public event EventHandler<Player> PlayerDisconnected;
 
-        public List<Player> Players { get; private set; }
-        public List<Room> Rooms { get; private set; }
+        public string LogName { get { return "Connections Handler"; } }
 
+        List<IConnectionMessageHandler> Handlers { get; set; }
+        List<Player> ConnectedPlayers { get; set; }
         Settings Settings { get; set; }
+
+        static readonly object _lock = new object();
 
         public ConnectionsHandler(Settings settings)
         {
             Settings = settings;
-            Rooms = new List<Room>();
+            Handlers = new List<IConnectionMessageHandler>();
         }
 
-        public override void OnOpen(IWebSocketConnection socket)
+        public void AddMessageListener(IConnectionMessageHandler handler)
         {
-            base.OnOpen(socket);
+            if (!Handlers.Contains(handler))
+                Handlers.Add(handler);
+        }
 
-            Logger.WriteLine("A connection was opened");
+        public void OnOpen(IWebSocketConnection socket)
+        {
+            Logger.Log(this, "A connection was opened");
 
             // Respond to a join request by assigning a unique ID to the connection and sending it back to the client.
             var player = AddPlayer(socket);
-            Send(new ServerMessage.ConnectionSuccess(player.Data.ID), player);
+            player.RequestClientName();
+
+            // Wait for player reponse with their name
+            player.Socket.OnMessage += (message) =>
+            {
+                Message.IsType<ClientMessage.GiveName>(message, (data) =>
+                {
+                    // Assign the requested name and send the final Server copy of the player data
+                    player.Data.SetName(data.Name);
+
+                    Logger.Log(this, "Player {0} connected.", player.Data.Name);
+
+                    // Inform the player that the connection was successful
+                    player.NotifyConnectionSuccess();
+
+                    // Send the player the latest version of their server-side data (they need to know their GUID)
+                    player.UpdatePlayerInfo(player.Data);
+
+                    // Send the latest player state to all clients.
+                    SendUpdateToAllClients();
+
+                    // Send Player Joined message.
+                    SendToAll(new ServerMessage.NotifyPlayerAction(player.Data, PlayerAction.Connected));
+
+                    // Trigger event.
+                    if (PlayerConnected != null)
+                        PlayerConnected(this, player);
+
+                    // Assign callback
+                    player.OnMessageString += OnPlayerMessage;
+                });
+            };
         }
 
-        public override void OnMessage(string json)
+        /// <summary>
+        /// Passes a player's message to any interested listeners.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="json"></param>
+        void OnPlayerMessage(object sender, string json)
         {
-            Message.IsType<ClientMessage.RequestConnection>(json, (data) =>
-            {
-                Player matchingPlayer = null;
-                foreach (var player in Players)
-                {
-                    if (player.Data.ID == data.ID)
-                    {
-                        player.Data.Name = data.PlayerName;
-                        Logger.WriteLine("Player {0} connected.", player.Data.Name);
-                        matchingPlayer = player;
-                        break;
-                    }
-                }
-
-                // Send the latest player state to all clients.
-                SendUpdateToAllClients();
-
-                // Send Player Joined message.
-                SendToAll(new ServerMessage.NotifyPlayerAction(matchingPlayer.Data, PlayerAction.Connected));
-
-                // Trigger event.
-                if (PlayerConnected != null)
-                    PlayerConnected(this, matchingPlayer);
-            });
-
-            Message.IsType<ClientMessage.RequestRoomList>(json, (data) =>
-            {
-                Console.WriteLine("Recieved a request from {0} for a list a rooms.", data.Player.ID);
-
-                var target = Players.Find(x => x.Data.ID == data.Player.ID);
-
-                var protocolRooms = Rooms.Select(x => x.RoomData).ToList();
-                target.SendMessage(new ServerMessage.RoomList(protocolRooms));
-            });
-
-            Message.IsType<ClientMessage.JoinRoom>(json, (data) =>
-            {
-                Console.WriteLine("Recieved a request from {0} to join room {1}.", data.Player.ID, data.RoomId);
-
-                var roomHasPlayer = Rooms.Find(x => x.HasPlayer(data.Player));
-                if (roomHasPlayer != null)
-                    roomHasPlayer.Leave(data.Player);
-
-                var targetRoom = Rooms.Find(x => x.RoomData.ID == data.RoomId);
-                var joiningPlayer = Players.Find(x => x.Data.ID == data.Player.ID);
-
-                if (targetRoom != null)
-                {
-                    targetRoom.Join(joiningPlayer, data.Password);
-                }
-                else
-                {
-                    joiningPlayer.SendRoomError(RoomError.RoomDoesNotExist);
-                }
-            });
-
-            Message.IsType<ClientMessage.LeaveRoom>(json, (data) =>
-            {
-                var containingRoom = Rooms.Find(x => x.HasPlayer(data.Player));
-
-                if (containingRoom != null)
-                {
-                    Console.WriteLine("Remove {0} from room", data.Player.Name);
-                    containingRoom.Leave(data.Player);
-                }
-                else
-                {
-                    Console.WriteLine("Cannot remove {0} from room as they are not in that room", data.Player.Name);
-                }
-            });
-
-            Message.IsType<ClientMessage.CreateRoom>(json, (data) =>
-            {
-                Console.WriteLine("Create room for {0} with password {1}", data.Player.Name, data.Password);
-
-                Console.WriteLine("You shouldn't see this!");
-
-                var playerCurrentRoom = FindRoomContainingPlayer(data.Player);
-                if (playerCurrentRoom != null)
-                    playerCurrentRoom.Leave(data.Player);
-
-                var creator = Players.Find(x => x.Data.ID == data.Player.ID);
-                var room = new Room(creator, Settings, data.Password);
-
-                room.OnEmpty += OnRoomEmpty;
-
-                Rooms.Add(room);
-            });
+            var player = sender as Player;
+            Handlers.ToList().ForEach(x => x.HandleMessage(player, json));
         }
 
-        void OnRoomEmpty(object sender, Room e)
+        public void OnClose(IWebSocketConnection socket)
         {
-            Console.WriteLine("Closing room {0} as it is empty", e.RoomData.ID);
-            e.OnEmpty -= OnRoomEmpty;
-            Rooms.Remove(e);
-        }
-
-        public override void OnClose(IWebSocketConnection socket)
-        {
-            base.OnClose(socket);
-
             // Remove disconnected player from manager.
-            var player = Players.Find(x => x.Socket == socket);
+            var player = ConnectedPlayers.Find(x => x.Socket == socket);
             if (player != null)
             {
-                Players.Remove(player);
+                ConnectedPlayers.Remove(player);
 
-                Logger.WriteLine("Player {0} disconnected", player.Data.Name);
+                Logger.Log(this, "Player {0} disconnected", player.Data.Name);
 
                 SendToAll(new ServerMessage.NotifyPlayerAction(player.Data, PlayerAction.Disconnected));
 
@@ -153,8 +105,8 @@ namespace Server
 
         Player AddPlayer(IWebSocketConnection socket)
         {
-            if (Players == null)
-                Players = new List<Player>();
+            if (ConnectedPlayers == null)
+                ConnectedPlayers = new List<Player>();
 
             Player player = GetPlayerFromSocket(socket);
 
@@ -163,11 +115,11 @@ namespace Server
                 player = new Player("N/A", socket);
                 player.Data.ID = Guid.NewGuid().ToString();
 
-                Players.Add(player);
+                ConnectedPlayers.Add(player);
             }
             else
             {
-                Logger.WriteLine("Player {0} already exists...", player.Data.Name);
+                Logger.Warn(this, "Player {0} already exists...", player.Data.Name);
             }
 
             return player;
@@ -180,12 +132,12 @@ namespace Server
 
         public void SendToAll(Message message)
         {
-            Players.ForEach(x => x.SendMessage(message));
+            ConnectedPlayers.ForEach(x => x.SendMessage(message));
         }
 
         public void SendToAll(Message message, Player exception)
         {
-            var players = Players.Where(x => x != exception).ToList();
+            var players = ConnectedPlayers.Where(x => x != exception).ToList();
             players.ForEach(x => x.SendMessage(message));
         }
 
@@ -194,21 +146,16 @@ namespace Server
         /// </summary>
         public void SendUpdateToAllClients()
         {
-            List<PlayerData> protocolPlayers = Players.Select(x => x.Data).ToList();
+            List<PlayerData> protocolPlayers = ConnectedPlayers.Select(x => x.Data).ToList();
 
             var serverUpdate = new ServerUpdate(protocolPlayers);
 
-            Players.ForEach(x => x.SendMessage(serverUpdate));
+            ConnectedPlayers.ForEach(x => x.SendMessage(serverUpdate));
         }
 
         Player GetPlayerFromSocket(IWebSocketConnection socket)
         {
-            return Players.FirstOrDefault(x => x.Socket == socket);
-        }
-
-        Room FindRoomContainingPlayer(PlayerData player)
-        {
-            return Rooms.Find(x => x.HasPlayer(player));
+            return ConnectedPlayers.FirstOrDefault(x => x.Socket == socket);
         }
     }
 }

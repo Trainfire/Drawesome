@@ -3,41 +3,35 @@ using Protocol;
 
 namespace Protocol
 {
-    public class ClientMessage
+    public class ClientMessage : Message
     {
-        public class RequestConnection : Message
+        public class GiveName : Message
         {
-            public string ID;
-            public string PlayerName;
+            public string Name { get; private set; }
 
-            public RequestConnection(string id, string playerName)
+            public GiveName(string name)
             {
-                ID = id;
-                PlayerName = playerName;
+                Name = name;
             }
         }
 
         public class CreateRoom : Message
         {
-            public PlayerData Player;
-            public string Password;
+            public string Password { get; private set; }
 
-            public CreateRoom(PlayerData player, string password)
+            public CreateRoom(PlayerData playerInfo, string password)
             {
-                Player = player;
                 Password = password;
             }
         }
 
         public class JoinRoom : Message
         {
-            public PlayerData Player;
-            public string RoomId;
-            public string Password;
+            public string RoomId { get; private set; }
+            public string Password { get; private set; }
 
-            public JoinRoom(PlayerData player, string roomId, string password = "")
+            public JoinRoom(PlayerData playerInfo, string roomId, string password = "")
             {
-                Player = player;
                 RoomId = roomId;
                 Password = password;
             }
@@ -45,21 +39,27 @@ namespace Protocol
 
         public class LeaveRoom : Message
         {
-            public PlayerData Player;
-
-            public LeaveRoom(PlayerData player)
+            public LeaveRoom(PlayerData playerInfo)
             {
-                Player = player;
+
             }
         }
 
         public class RequestRoomList : Message
         {
-            public PlayerData Player;
-
-            public RequestRoomList(PlayerData player)
+            public RequestRoomList(PlayerData playerInfo)
             {
-                Player = player;
+
+            }
+        }
+
+        public class SendChat : Message
+        {
+            public string Message { get; private set; }
+
+            public SendChat(string message)
+            {
+                Message = message;
             }
         }
 

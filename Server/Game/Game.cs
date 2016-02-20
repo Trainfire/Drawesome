@@ -8,68 +8,66 @@ namespace Server.Game
     /// Each Game has associated GameData. GameData will be passed between different states of the game and updated throughout.
     /// </summary>
     /// <typeparam name="TData">The GameData associated with this Game.</typeparam>
-    public abstract class Game<TData> where TData : GameData, new()
+    public abstract class Game<TData> : IConnectionMessageHandler, ILogger where TData : GameData, new()
     {
         protected TData GameData { get; set; }
         protected State<TData> CurrentState { get; private set; }
         protected Settings Settings { get; private set; }
 
-        protected abstract string Name { get; }
+        public abstract string LogName { get; }
 
         Dictionary<GameState, State<TData>> States { get; set; }
 
-        public Game(Settings settings)
+        public Game(ConnectionsHandler connectionsHandler, Settings settings)
         {
-            Log("Initialised");
+            Logger.Log(this, "Initialised");
             Settings = settings;
             States = new Dictionary<GameState, State<TData>>();
+            connectionsHandler.AddMessageListener(this);
         }
 
         public virtual void Start(List<Player> players)
         {
-            Log("Started");
+            Logger.Log(this, "Started");
             GameData = new TData();
             GameData.Settings = Settings;
             GameData.Players = new List<Player>();
             GameData.Players = players;
-            GameData.Players.ForEach(x => x.OnMessageString += OnPlayerMessage);
         }
 
         public virtual void StartNewRound()
         {
-            Log("Start New Round");
+            Logger.Log(this, "Start New Round");
         }
 
         public virtual void Restart()
         {
-            Log("Restarting game...");
+            Logger.Log(this, "Restarting game...");
             End();
         }
 
         public void End()
         {
-            Log("Ended");
+            Logger.Log(this, "Ended");
             if (CurrentState != null)
                 CurrentState.EndState(false);
         }        
 
         protected virtual void OnGameOver()
         {
-            Log("Game Over!");
+            Logger.Log(this, "Game Over!");
         }
 
-        protected virtual void OnPlayerMessage(object sender, string e)
+        public void HandleMessage(Player player, string json)
         {
-            var player = sender as Player;
-
             // Skip current state
-            Message.IsType<ClientMessage.Game.SkipPhase>(e, (data) =>
+            Message.IsType<ClientMessage.Game.SkipPhase>(json, (data) =>
             {
                 SkipState();
             });
 
             if (CurrentState != null)
-                CurrentState.OnPlayerMessage(player, e);
+                CurrentState.HandleMessage(player, json);
         }
 
         protected void SetState(GameState state, GameData gameData)
@@ -80,13 +78,13 @@ namespace Server.Game
             if (!States.ContainsKey(state))
             {
                 // TODO: Flag as fatal error
-                Log("State {0} does not exist.", state.ToString());
+                Logger.Log(this, "State {0} does not exist.", state.ToString());
                 return;
             }
 
             CurrentState = States[state];
 
-            Log("{0}: {1}", "Change state to", state);
+            Logger.Log(this, "{0}: {1}", "Change state to", CurrentState.Type.ToString());
 
             // Notify clients of state change
             GameData.Players.ForEach(x => x.SendMessage(new ServerMessage.Game.StateChange(CurrentState.Type)));
@@ -103,12 +101,6 @@ namespace Server.Game
             return stateInstance;
         }
 
-        protected void Log(string message, params object[] args)
-        {
-            var str = string.Format(message, args);
-            Console.WriteLine("{0}: {1}", Name, str);
-        }
-
         void SkipState()
         {
             if (CurrentState != null)
@@ -117,8 +109,12 @@ namespace Server.Game
 
         void EndState(object sender, TData gameData)
         {
+            var state = sender as State<TData>;
+
             if (!IsGameOver())
             {
+                Logger.Log(this, "End " + state.Type.ToString());
+
                 // Pass the latest copy of gamedata from the ending state back into the game manager.
                 OnEndState(GameData);
             }

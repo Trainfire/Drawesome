@@ -57,14 +57,14 @@ public class Connection : MonoBehaviour
 
     void OnMessage(object sender, MessageEventArgs e)
     {
-        Message.IsType<ServerMessage.ConnectionSuccess>(e.Data, (data) =>
+        Message.IsType<ServerMessage.RequestClientName>(e.Data, (data) =>
         {
-            Player.ID = data.ID;
-            Player.Name = PlayerName;
+            SendMessage(new ClientMessage.GiveName(PlayerName));
+        });
 
-            Debug.Log("Recieved ID: " + Player.ID);
-
-            SendMessage(new ClientMessage.RequestConnection(Player.ID, Player.Name));
+        Message.IsType<ServerMessage.UpdatePlayerInfo>(e.Data, (data) =>
+        {
+            Player = data.PlayerData;
         });
 
         Message.IsType<ServerMessage.AssignRoomId>(e.Data, (data) =>

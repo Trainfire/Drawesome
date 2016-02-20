@@ -28,7 +28,7 @@ public class UserInterface : MonoBehaviour, IClientHandler
 
         ChangeMenu(ViewLogin);
 
-        client.MessageHandler.OnServerCompleteConnectionRequest += OnServerCompleteConnectionRequest;
+        client.MessageHandler.OnServerConnectionSuccess += OnServerCompleteConnectionRequest;
         client.MessageHandler.OnServerNotifyPlayerAction += OnServerNotifyPlayerAction;
         client.MessageHandler.OnRoomUpdate += OnRoomUpdate;
     }
@@ -40,7 +40,7 @@ public class UserInterface : MonoBehaviour, IClientHandler
             ChangeMenu(ViewBrowser);
     }
 
-    void OnServerCompleteConnectionRequest(ServerMessage.ConnectionSuccess message)
+    void OnServerCompleteConnectionRequest(ServerMessage.NotifyConnectionSuccess message)
     {
         ChangeMenu(ViewBrowser);
     }

@@ -26,6 +26,11 @@ namespace Protocol
             var other = obj as PlayerData;
             return other != null && other.ID == this.ID;
         }
+
+        public void SetName(string name)
+        {
+            Name = name;
+        }
     }
 
     public class RoomData

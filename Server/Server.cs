@@ -7,6 +7,7 @@ namespace Server
     {
         ConnectionsHandler ConnectionsHandler { get; set; }
         WebSocketServer SocketServer { get; set; }
+        RoomManager RoomManager { get; set; }
         public Settings Settings { get; private set; }
 
         public Server()
@@ -19,12 +20,12 @@ namespace Server
         {
             SocketServer = new WebSocketServer(Settings.Server.HostUrl);
             ConnectionsHandler = new ConnectionsHandler(Settings);
+            RoomManager = new RoomManager(ConnectionsHandler, Settings);
 
             SocketServer.Start(socket =>
             {
                 socket.OnOpen += () => ConnectionsHandler.OnOpen(socket);
                 socket.OnClose += () => ConnectionsHandler.OnClose(socket);
-                socket.OnMessage += (data) => ConnectionsHandler.OnMessage(data);
             });
         }
 
