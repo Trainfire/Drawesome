@@ -1,0 +1,5 @@
+{
+  "HostUrl": "ws://127.0.0.1:8181",
+  "NameMinChars": 3,
+  "NameMaxChars": 32
+}

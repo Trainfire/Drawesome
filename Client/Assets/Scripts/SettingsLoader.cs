@@ -5,9 +5,9 @@ using Newtonsoft.Json;
 
 public static class SettingsLoader
 {
-    const string SettingsFileName = "settings";
+    const string SettingsFileName = "main";
 
-    const string Prefix = "";
+    const string FileExtension = ".settings";
     static string RootDirectory
     {
         get
@@ -43,11 +43,12 @@ public static class SettingsLoader
         if (File.Exists(path))
         {
             var file = File.ReadAllText(path);
+            Debug.Log("Found settings");
             return JsonConvert.DeserializeObject<T>(file);
         }
         else
         {
-            Console.WriteLine("Failed to find '{0}'. Making default...", fileName);
+            Debug.LogWarningFormat("Failed to find '{0}'. Making default...", fileName);
             return MakeDefault<T>(fileName);
         }
     }
@@ -68,6 +69,6 @@ public static class SettingsLoader
 
     static string GetFileName(string fileName)
     {
-        return Prefix + "." + fileName;
+        return SettingsFileName + FileExtension;
     }
 }
