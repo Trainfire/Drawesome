@@ -18,7 +18,7 @@ namespace Server.Drawesome
         protected override void OnBegin()
         {
             base.OnBegin();
-            SetCountdownTimer("Begin Timer", GameData.Settings.Drawesome.RoundBeginTime, true);
+            SetCountdownTimer("Begin Timer", GameData.Settings.Drawesome.RoundBeginTime, false);
         }
 
         //protected override void OnEndState(GameStateEndReason reason)
