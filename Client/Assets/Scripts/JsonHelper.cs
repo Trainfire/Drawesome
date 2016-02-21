@@ -9,8 +9,6 @@ static class JsonHelper
 
     public static string ToJson(object obj)
     {
-        var json = JsonUtility.ToJson(obj);
-        Debug.Log("Json: " + json);
-        return "";
+        return JsonUtility.ToJson(obj);
     }
 }
