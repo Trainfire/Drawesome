@@ -22,7 +22,6 @@ public class Connection : MonoBehaviour
 
     void Awake()
     {
-        Socket = new WebSocket(SettingsLoader.Settings.HostUrl);
         Player = new PlayerData();
         Room = new RoomData();
         MessageQueue = new Queue<MessageEventArgs>();
@@ -38,7 +37,17 @@ public class Connection : MonoBehaviour
 
     public void Connect(string playerName)
     {
+        Connect(playerName, SettingsLoader.Settings.HostUrl);
+    }
+
+    public void Connect(string playerName, string url)
+    {
         PlayerName = playerName;
+
+        if (Socket != null)
+            Disconnect();
+
+        Socket = new WebSocket(url);
 
         Socket.OnMessage += OnMessage;
         Socket.OnClose += OnClose;

@@ -17,6 +17,14 @@ namespace Protocol
     }
 
     [Serializable]
+    public enum ConnectionError
+    {
+        None,
+        InvalidNameLength,
+        MatchesExistingName,
+    }
+
+    [Serializable]
     public enum RoomError
     {
         None,

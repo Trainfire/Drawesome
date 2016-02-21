@@ -18,6 +18,16 @@ namespace Protocol
             }
         }
 
+        public class SendConnectionError : Message
+        {
+            public ConnectionError Error { get; private set; }
+
+            public SendConnectionError(ConnectionError error)
+            {
+                Error = error;
+            }
+        }
+
         public class NotifyConnectionSuccess : Message
         {
             public NotifyConnectionSuccess()

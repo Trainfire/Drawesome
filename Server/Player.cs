@@ -138,6 +138,12 @@ namespace Server
             Socket.Send(message.AsJson());
         }
 
+        public void SendConnectionError(ConnectionError connectionError)
+        {
+            var message = new ServerMessage.SendConnectionError(connectionError);
+            Socket.Send(message.AsJson());
+        }
+
         public void NotifyConnectionSuccess()
         {
             var message = new ServerMessage.NotifyConnectionSuccess();

@@ -89,6 +89,8 @@ namespace Server
     {
         public string HostUrl = "ws://0.0.0.0:8080";
         public int MaxPlayers = 1;
+        public int NameMinChars = 3;
+        public int NameMaxChars = 24;
     }
 
     public class DrawesomeSettings

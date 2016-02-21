@@ -9,7 +9,8 @@ public static class Strings
     public const string PromptEnterGuess = "Enter your guess here...";
     public const string WaitingForRoomOwner = "Waiting for room owner: {0}...";
     public const string StartGame = "You're the room owner. Click Start to begin";
-    public const string CharacterLimit = "Name invalid. Character limit is: {0} - {1}";
+    public const string NameCharacterLimit = "Name invalid. Character limit is 3 - 24 characters";
+    public const string NameMatchesExisting = "Someone already has that name";
     public const string DrawingSubmitted = "Drawing submitted! Waiting for other players...";
     public const string TimesUp = "Time's up!";
     public const string AllPlayersDone = "Everyone's finished";

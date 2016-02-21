@@ -5,6 +5,21 @@ public class UiInfoBox : UiBase
 {
     public Text Label;
 
+    public void Show(ConnectionError error)
+    {
+        base.Show();
+
+        switch(error)
+        {
+            case ConnectionError.InvalidNameLength:
+                Label.text = Strings.NameCharacterLimit;
+                break;
+            case ConnectionError.MatchesExistingName:
+                Label.text = Strings.NameMatchesExisting;
+                break;
+        }
+    }
+
     public void Show(GameAnswerValidationResponse error)
     {
         base.Show();

@@ -48,29 +48,36 @@ namespace Server
             {
                 Message.IsType<ClientMessage.GiveName>(message, (data) =>
                 {
-                    // Assign the requested name and send the final Server copy of the player data
-                    player.Data.SetName(data.Name);
+                    if (data.Name.Length >= Settings.Server.NameMinChars && data.Name.Length <= Settings.Server.NameMaxChars)
+                    {
+                        // Assign the requested name and send the final Server copy of the player data
+                        player.Data.SetName(data.Name);
 
-                    Logger.Log(this, "Player {0} connected.", player.Data.Name);
+                        Logger.Log(this, "Player {0} connected.", player.Data.Name);
 
-                    // Inform the player that the connection was successful
-                    player.NotifyConnectionSuccess();
+                        // Inform the player that the connection was successful
+                        player.NotifyConnectionSuccess();
 
-                    // Send the player the latest version of their server-side data (they need to know their GUID)
-                    player.UpdatePlayerInfo(player.Data);
+                        // Send the player the latest version of their server-side data (they need to know their GUID)
+                        player.UpdatePlayerInfo(player.Data);
 
-                    // Send the latest player state to all clients.
-                    SendUpdateToAllClients();
+                        // Send the latest player state to all clients.
+                        SendUpdateToAllClients();
 
-                    // Send Player Joined message.
-                    SendToAll(new ServerMessage.NotifyPlayerAction(player.Data, PlayerAction.Connected));
+                        // Send Player Joined message.
+                        SendToAll(new ServerMessage.NotifyPlayerAction(player.Data, PlayerAction.Connected));
 
-                    // Trigger event.
-                    if (PlayerConnected != null)
-                        PlayerConnected(this, player);
+                        // Trigger event.
+                        if (PlayerConnected != null)
+                            PlayerConnected(this, player);
 
-                    // Assign callback
-                    player.OnMessageString += OnPlayerMessage;
+                        // Assign callback
+                        player.OnMessageString += OnPlayerMessage;
+                    }
+                    else
+                    {
+                        player.SendConnectionError(ConnectionError.InvalidNameLength);
+                    }
                 });
             };
         }

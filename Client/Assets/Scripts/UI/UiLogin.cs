@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.UI;
+using Protocol;
 
 public class UiLogin : UiBase
 {
@@ -19,34 +20,31 @@ public class UiLogin : UiBase
 
         Login.onClick.AddListener(() =>
         {
-            switch (IsInputValid(InputName.text))
-            {
-                case ValidationResult.Success:
-                    InfoBox.Hide();
-                    Client.Connection.Connect(InputName.text);
-                    break;
-                case ValidationResult.InvalidCharacterLength:
-                    InfoBox.Show(string.Format(Strings.CharacterLimit, SettingsLoader.Settings.NameMinChars, SettingsLoader.Settings.NameMinChars));
-                    break;
-                default:
-                    break;
-            }
+            var name = ValidateInput(InputName.text);
+            Client.Connection.Connect(name);
         });
 
         InfoBox.Hide();
+
+        client.MessageHandler.OnConnectionError += OnConnectionError;
     }
 
-    ValidationResult IsInputValid(string input)
+    void OnConnectionError(ServerMessage.SendConnectionError message)
+    {
+        if (message.Error == ConnectionError.None)
+        {
+            InfoBox.Hide();
+        }
+        else
+        {
+            InfoBox.Show(message.Error);
+        }
+    }
+
+    string ValidateInput(string input)
     {
         input = input.Trim();
         input = input.Replace("\t", "");
-
-        if (input.Length > SettingsLoader.Settings.NameMaxChars)
-            return ValidationResult.InvalidCharacterLength;
-
-        if (input.Length < SettingsLoader.Settings.NameMinChars)
-            return ValidationResult.InvalidCharacterLength;
-
-        return ValidationResult.Success;
+        return input;
     }
 }

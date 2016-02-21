@@ -9,6 +9,7 @@ public class MessageHandler
     public event MessageEvent<string> OnMessage;
     public event MessageEvent<Message> OnAny;
 
+    public event MessageEvent<ServerMessage.SendConnectionError> OnConnectionError;
     public event MessageEvent<ServerMessage.NotifyConnectionSuccess> OnServerConnectionSuccess;
     public event MessageEvent<ServerMessage.UpdatePlayerInfo> OnServerUpdatePlayerInfo;
     public event MessageEvent<ServerMessage.RoomList> OnRecieveRoomList;
@@ -42,6 +43,7 @@ public class MessageHandler
 
             #region General
 
+            Message.IsType<ServerMessage.SendConnectionError>(json, (data) => FireEvent(OnConnectionError, data));
             Message.IsType<ServerMessage.NotifyConnectionSuccess>(json, (data) => FireEvent(OnServerConnectionSuccess, data));
             Message.IsType<ServerMessage.NotifyPlayerAction>(json, (data) => FireEvent(OnServerNotifyPlayerAction, data));
             Message.IsType<ServerMessage.UpdatePlayerInfo>(json, (data) => FireEvent(OnServerUpdatePlayerInfo, data));
