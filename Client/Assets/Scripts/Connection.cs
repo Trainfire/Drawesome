@@ -37,7 +37,8 @@ public class Connection : MonoBehaviour
 
     public void Connect(string playerName)
     {
-        Connect(playerName, SettingsLoader.Settings.HostUrl);
+        var url = Application.isEditor ? "ws://127.0.0.1:8181" : SettingsLoader.Settings.HostUrl;
+        Connect(playerName, url);
     }
 
     public void Connect(string playerName, string url)

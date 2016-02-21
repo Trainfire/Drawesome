@@ -36,6 +36,11 @@ public class Messenger
         Connection.SendMessage(new ClientMessage.SendChat(message));
     }
 
+    public void RequestAdmin(string password)
+    {
+        Connection.SendMessage(new ClientMessage.RequestAdmin(password));
+    }
+
     #region Game
 
     public void StartGame()

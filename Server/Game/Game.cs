@@ -63,7 +63,8 @@ namespace Server.Game
             // Skip current state
             Message.IsType<ClientMessage.Game.SkipPhase>(json, (data) =>
             {
-                SkipState();
+                if (player.IsAdmin)
+                    SkipState();
             });
 
             if (CurrentState != null)

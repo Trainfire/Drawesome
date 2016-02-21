@@ -88,6 +88,7 @@ namespace Server
     public class ServerSettings
     {
         public string HostUrl = "ws://0.0.0.0:8080";
+        public string AdminPassword = "doubleButts.exe"; // TODO: Generate this everytime the server runs?
         public int MaxPlayers = 1;
         public int NameMinChars = 3;
         public int NameMaxChars = 24;

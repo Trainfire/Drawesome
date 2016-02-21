@@ -5,6 +5,16 @@ namespace Protocol
 {
     public class ClientMessage : Message
     {
+        public class RequestAdmin : Message
+        {
+            public string Password { get; private set; }
+
+            public RequestAdmin(string password)
+            {
+                Password = password;
+            }
+        }
+
         public class GiveName : Message
         {
             public string Name { get; private set; }

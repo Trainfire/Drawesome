@@ -36,9 +36,13 @@ namespace Server
 
         public PlayerData Data { get; set; }
         public IWebSocketConnection Socket { get; private set; }
+        public bool IsAdmin { get; set; }
 
-        public Player(string playerName, IWebSocketConnection socket)
+        Settings Settings { get; set; }
+
+        public Player(string playerName, IWebSocketConnection socket, Settings settings)
         {
+            Settings = settings;
             Data = new PlayerData();
             Data.Name = playerName;
             Data.ID = Guid.NewGuid().ToString();
@@ -50,28 +54,39 @@ namespace Server
                     OnConnectionClosed(this, new PlayerConnectionClosed(this, PlayerCloseReason.Disconnected));
             };
 
-            socket.OnMessage += (message) =>
+            socket.OnMessage += (json) => OnPlayerMessage(json);
+        }
+
+        void OnPlayerMessage(string json)
+        {
+            Message.IsType<ClientMessage.RequestAdmin>(json, (data) =>
             {
-                var obj = JsonHelper.FromJson<Message>(message);
-
-                Message.IsType<SharedMessage.Chat>(message, (data) =>
+                if (data.Password == Settings.Server.AdminPassword)
                 {
-                    if (OnChat != null)
-                        OnChat(this, data);
-                });
+                    Logger.Log("Admin granted to {0}", Data.Name);
+                    IsAdmin = true;
+                }
+            });
 
-                Message.IsType<ClientMessage.Game.SendAction>(message, (data) =>
-                {
-                    if (OnGameAction != null)
-                        OnGameAction(this, data);
-                });
+            Message.IsType<SharedMessage.Chat>(json, (data) =>
+            {
+                if (OnChat != null)
+                    OnChat(this, data);
+            });
 
-                if (OnMessage != null)
-                    OnMessage(this, obj);
+            Message.IsType<ClientMessage.Game.SendAction>(json, (data) =>
+            {
+                if (OnGameAction != null)
+                    OnGameAction(this, data);
+            });
 
-                if (OnMessageString != null)
-                    OnMessageString(this, message);
-            };
+            var obj = JsonHelper.FromJson<Message>(json);
+
+            if (OnMessage != null)
+                OnMessage(this, obj);
+
+            if (OnMessageString != null)
+                OnMessageString(this, json);
         }
 
         public void SendMessage(Message message)

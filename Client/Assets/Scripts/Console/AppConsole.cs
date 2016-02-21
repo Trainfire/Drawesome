@@ -17,6 +17,7 @@ public class AppConsole : MonoBehaviour, IClientHandler
         View.SetConsole(Controller);
 
         // General
+        Controller.RegisterCommand(new ConsoleCommand("admin", RequestAdmin, "[Password] You must be *this* cool to use this command"));
         Controller.RegisterCommand(new ConsoleCommand("join", Join, "[RoomID] (Joins a room with the specified ID)"));
         Controller.RegisterCommand(new ConsoleCommand("connect", Connect, "[Name]"));
         Controller.RegisterCommand(new ConsoleCommand("requestrooms", RequestRooms, "[RoomID] (Returns a list of rooms on the server)"));
@@ -39,6 +40,18 @@ public class AppConsole : MonoBehaviour, IClientHandler
     #region Commands
 
     #region General
+
+    void RequestAdmin(ConsoleCommand command, string[] args)
+    {
+        if (args.Length == 1)
+        {
+            Client.Messenger.RequestAdmin(args[0]);
+        }
+        else
+        {
+            Controller.PrintError(command);
+        }
+    }
 
     void CreateRoom(ConsoleCommand command, string[] args)
     {

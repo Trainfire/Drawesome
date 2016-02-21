@@ -119,7 +119,7 @@ namespace Server
 
             if (player == null)
             {
-                player = new Player("N/A", socket);
+                player = new Player("N/A", socket, Settings);
                 player.Data.ID = Guid.NewGuid().ToString();
 
                 ConnectedPlayers.Add(player);
