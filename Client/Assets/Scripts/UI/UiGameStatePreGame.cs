@@ -3,6 +3,8 @@ using UnityEngine.UI;
 
 public class UiGameStatePreGame : UiBase
 {
+    public GameObject Top;
+
     public GameObject InfoBox;
     public Text InfoLabel;
     public Button Start;
@@ -35,6 +37,9 @@ public class UiGameStatePreGame : UiBase
 
         Setup();
 
+        // Fade out top
+        AnimController.AddAnim(new UiAnimationFade(Top.gameObject, 0.25f, UiAnimationFade.FadeType.Out), false);
+
         // Fade and scale in title simultaneously
         AnimController.AddAnim(new UiAnimationFade(ReadyTitle.gameObject, 0.5f, UiAnimationFade.FadeType.In), false);
 
@@ -64,6 +69,9 @@ public class UiGameStatePreGame : UiBase
         // Fade out elements
         AnimController.AddAnim(new UiAnimationFade(ReadyTitle.gameObject, 0.25f, UiAnimationFade.FadeType.Out), false);
         AnimController.AddAnim(new UiAnimationFade(ReadyTimer.gameObject, 0.25f, UiAnimationFade.FadeType.Out), false);
+
+        // Fade in top
+        AnimController.AddAnim(new UiAnimationFade(Top.gameObject, 0.25f, UiAnimationFade.FadeType.In), false);
 
         AnimController.PlayAnimations();
     }
