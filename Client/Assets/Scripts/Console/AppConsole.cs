@@ -99,10 +99,19 @@ public class AppConsole : MonoBehaviour, IClientHandler
         {
             Controller.PrintError(command);
         }
-        else
+        else if (args.Length == 1)
         {
             Debug.LogFormat("Connect with name {0}", args[0]);
             Client.Connection.Connect(args[0]);
+        }
+        else if (args.Length == 2)
+        {
+            Debug.LogFormat("Connect with name {0} to {1}", args[0], args[1]);
+            Client.Connection.Connect(args[0], args[1]);
+        }
+        else
+        {
+            Controller.PrintError(command);
         }
     }
 
@@ -197,4 +206,9 @@ public class AppConsole : MonoBehaviour, IClientHandler
     #endregion
 
     #endregion	
+
+    bool StringToBool(string str)
+    {
+        return str == "1";
+    }
 }
