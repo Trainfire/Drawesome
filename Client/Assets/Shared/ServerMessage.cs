@@ -64,6 +64,24 @@ namespace Protocol
             }
         }
 
+        public class NotifyRoomCountdown : Message
+        {
+            public float Duration { get; private set; }
+
+            public NotifyRoomCountdown(float duration)
+            {
+                Duration = duration;
+            }
+        }
+
+        public class NotifyRoomCountdownCancel : Message
+        {
+            public NotifyRoomCountdownCancel()
+            {
+
+            }
+        }
+
         public class NotifyChatMessage : Message
         {
             public PlayerData Player { get; private set; }

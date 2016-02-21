@@ -17,4 +17,5 @@ public static class Strings
     public const string StateEndDrawing = "Let's see what you've drawn...";
     public const string StateEndAnswering = "The answers are in";
     public const string StateEndChoosing = "What did everybody pick?";
+    public const string Cancel = "Cancel";
 }

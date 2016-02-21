@@ -78,7 +78,6 @@
     <Compile Include="..\Client\Assets\Shared\ServerMessage.cs">
       <Link>Protocol\ServerMessage.cs</Link>
     </Compile>
-    <Compile Include="AdminManager.cs" />
     <Compile Include="Drawesome\Drawesome.cs" />
     <Compile Include="Drawesome\DrawesomeGameData.cs" />
     <Compile Include="Drawesome\DrawesomeStates.cs" />

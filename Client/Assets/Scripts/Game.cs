@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Protocol;
 using System.Linq;
 using System;
+using System.Collections;
 
 public class Game : MonoBehaviour, IClientHandler
 {
@@ -199,23 +200,70 @@ public class Game : MonoBehaviour, IClientHandler
         public GameState Type { get { return GameState.PreGame; } }
         public DrawingCanvas Canvas { private get; set; }
 
+        bool IsCountingDown { get; set; }
+
         public PreGameState(Client client, UiGameStatePreGame view) : base(client, view)
         {
             view.Start.onClick.AddListener(() => client.Messenger.StartGame());
+            view.Cancel.onClick.AddListener(() => client.Messenger.CancelGameStart());
         }
 
         protected override void OnBegin()
         {
             base.OnBegin();
             Canvas.Clear();
+
+            GetView<UiGameStatePreGame>((view) =>
+            {
+                view.Start.gameObject.SetActive(false);
+                view.Cancel.gameObject.SetActive(false);
+            });
         }
 
         public override void Update()
         {
             var view = GetView<UiGameStatePreGame>();
-            bool isClientOwner = Client.Connection.IsRoomOwner();
-            view.Start.gameObject.SetActive(isClientOwner);
-            view.InfoLabel.text = isClientOwner ? Strings.StartGame : string.Format(Strings.WaitingForRoomOwner, Client.Connection.Room.Owner.Name);
+
+            // Show info box "Waiting for Room Owner" if player is NOT the room owner
+            view.InfoLabel.text = Client.Connection.IsRoomOwner() ? Strings.StartGame : string.Format(Strings.WaitingForRoomOwner, Client.Connection.Room.Owner.Name);
+
+            // Enable info box if game hasn't started, disable it if it has.
+            view.InfoBox.SetActive(!Client.Connection.Room.GameStarted);
+        }
+
+        protected override void OnMessage(string json)
+        {
+            var view = GetView<UiGameStatePreGame>();
+
+            // Show Start button if room owner
+            Message.IsType<ServerMessage.RoomUpdate>(json, (data) =>
+            {
+                view.Start.gameObject.SetActive(Client.Connection.IsRoomOwner() && !data.RoomData.GameStarted);
+            });
+
+            // Hide Start button, show Cancel button if room owner
+            Message.IsType<ServerMessage.NotifyRoomCountdown>(json, (data) =>
+            {
+                if (Client.Connection.IsRoomOwner())
+                {
+                    view.Start.gameObject.SetActive(false);
+                    view.Cancel.gameObject.SetActive(true);
+                }
+
+                view.SetCountdown(data.Duration);
+            });
+
+            // Show Start button, hide Cancel button if room owner
+            Message.IsType<ServerMessage.NotifyRoomCountdownCancel>(json, (data) =>
+            {
+                if (Client.Connection.IsRoomOwner())
+                {
+                    view.Start.gameObject.SetActive(true);
+                    view.Cancel.gameObject.SetActive(false);
+                }
+
+                view.CancelCountdown();
+            });
         }
     }
 

@@ -48,6 +48,11 @@ public class Messenger
         Connection.SendMessage(new ClientMessage.Game.SendAction(Connection.Player, GameAction.Start));
     }
 
+    public void CancelGameStart()
+    {
+        Connection.SendMessage(new ClientMessage.Game.SendAction(Connection.Player, GameAction.CancelStart));
+    }
+
     public void RestartGame()
     {
         Connection.SendMessage(new ClientMessage.Game.SendAction(Connection.Player, GameAction.Restart));

@@ -3,6 +3,7 @@ using System.Linq;
 using System.Collections.Generic;
 using Protocol;
 using Server.Drawesome;
+using Server.Game;
 
 namespace Server
 {
@@ -19,6 +20,8 @@ namespace Server
         DrawesomeGame Game { get; set; }
         IdPool RoomIdPool { get; set; }
         Settings Settings { get; set; }
+
+        GameTimer CountdownTimer { get; set; }
 
         const int MaxPlayers = 8; // TODO: Place in Server settings
 
@@ -134,19 +137,30 @@ namespace Server
                         case GameAction.Start:
                             Logger.Log(this, "{0} has started the game", Owner.Data.Name);
                             RoomData.GameStarted = true;
-                            Game.Start(Players);
+                            StartCountdown();
                             break;
+
+                        case GameAction.CancelStart:
+                            Logger.Log(this, "{0} has cancelled the game from starting", Owner.Data.Name);
+                            RoomData.GameStarted = false;
+                            CancelCountdown();
+                            break;
+
                         case GameAction.Restart:
                             Logger.Log(this, "{0} has restarted the game", Owner.Data.Name);
                             Game.Restart();
                             break;
+
                         case GameAction.StartNewRound:
                             Logger.Log(this, "{0} has started a new round", Owner.Data.Name);
                             Game.StartNewRound();
                             break;
+
                         default:
                             break;
                     }
+
+                    SendUpdateToAll();
                 }
             });
 
@@ -226,6 +240,30 @@ namespace Server
         bool IsOwner(PlayerData player)
         {
             return Owner.Data.ID == player.ID;
+        }
+
+        void StartCountdown()
+        {
+            // Notify players
+            Players.ForEach(x => x.NotifyRoomCountdownStart(5f));
+
+            // Start game when countdown reaches 0
+            CountdownTimer = new GameTimer("Countdown", 5f, () =>
+            {
+                Logger.Log(this, "{0} has started the game", Owner.Data.Name);
+                Game.Start(Players);
+            });
+        }
+
+        void CancelCountdown()
+        {
+            // Notify players
+            Players.ForEach(x => x.NotifyRoomCountdownCancel());
+
+            if (CountdownTimer != null)
+                CountdownTimer.Stop();
+
+            CountdownTimer = null;
         }
     }
 }

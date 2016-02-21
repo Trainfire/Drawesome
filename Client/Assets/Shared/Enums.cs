@@ -42,6 +42,7 @@ namespace Protocol
         Restart,
         StartNewRound,
         FinishShowingResult,
+        CancelStart,
     }
 
     [Serializable]

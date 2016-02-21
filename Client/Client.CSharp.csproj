@@ -104,6 +104,7 @@
     <Compile Include="Assets\Scripts\Tests\TestMessage.cs" />
     <Compile Include="Assets\Scripts\Tests\TestOrderedList.cs" />
     <Compile Include="Assets\Scripts\Tests\TestPopup.cs" />
+    <Compile Include="Assets\Scripts\Tests\TestPreGame.cs" />
     <Compile Include="Assets\Scripts\Tests\TestResults.cs" />
     <Compile Include="Assets\Scripts\Tests\TestScores.cs" />
     <Compile Include="Assets\Scripts\Timer.cs" />

@@ -44,8 +44,14 @@ public class UiAnimationController : MonoBehaviour
 
     public void ClearQueue()
     {
-        Queue.Clear();
-        Animations.Clear();
+        if (Queue != null)
+            Queue.Clear();
+
+        if (Animations != null)
+            Animations.Clear();
+
+        if (currentAnim != null)
+            currentAnim.OnDone -= UpdateQueue;
     }
 
     void UpdateQueue(IAnimatable anim)

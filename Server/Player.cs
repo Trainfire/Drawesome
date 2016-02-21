@@ -171,6 +171,18 @@ namespace Server
             Socket.Send(message.AsJson());
         }
 
+        public void NotifyRoomCountdownStart(float duration)
+        {
+            var message = new ServerMessage.NotifyRoomCountdown(duration);
+            Socket.Send(message.AsJson());
+        }
+
+        public void NotifyRoomCountdownCancel()
+        {
+            var message = new ServerMessage.NotifyRoomCountdownCancel();
+            Socket.Send(message.AsJson());
+        }
+
         public void AddTimer(float duration)
         {
             var message = new ServerMessage.Game.AddTimer(duration);
