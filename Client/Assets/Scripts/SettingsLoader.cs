@@ -1,11 +1,20 @@
 using UnityEngine;
 using System;
+using System.IO;
 using Newtonsoft.Json;
 
 public static class SettingsLoader
 {
     const string SettingsFileName = "settings";
+
     const string Prefix = "";
+    static string RootDirectory
+    {
+        get
+        {
+            return Application.dataPath;
+        }
+    }
 
     static Settings settings;
     public static Settings Settings
@@ -27,23 +36,33 @@ public static class SettingsLoader
         return Load<Settings>(SettingsFileName);
     }
 
-    static T Load<T>(string prefKey)
+    static T Load<T>(string fileName)
     {
-        if (!string.IsNullOrEmpty(PlayerPrefs.GetString(SettingsFileName, "")))
+        var path = Path.Combine(RootDirectory, GetFileName(fileName));
+
+        if (File.Exists(path))
         {
-            var file = PlayerPrefs.GetString(prefKey);
+            var file = File.ReadAllText(path);
             return JsonConvert.DeserializeObject<T>(file);
         }
         else
         {
-            Console.WriteLine("Failed to find '{0}'. Making default...", prefKey);
-            return MakeDefault<T>();
+            Console.WriteLine("Failed to find '{0}'. Making default...", fileName);
+            return MakeDefault<T>(fileName);
         }
     }
 
-    static T MakeDefault<T>()
+    static void Save<T>(T data, string fileName)
+    {
+        var json = JsonConvert.SerializeObject(data, Formatting.Indented);
+        File.WriteAllText(RootDirectory + GetFileName(fileName), json);
+    }
+
+    static T MakeDefault<T>(string fileName)
     {
         T data = Activator.CreateInstance<T>();
+        var json = JsonConvert.SerializeObject(data, Formatting.Indented);
+        File.WriteAllText(GetFileName(fileName), json);
         return data;
     }
 
