@@ -26,7 +26,7 @@ namespace Server.Game
             Name = name;
         }
 
-        public GameTimer(string name, float duration, Action onFinish) : this(name, duration)
+        public GameTimer(string name, float duration, System.Action onFinish) : this(name, duration)
         {
             //OnFinish = onFinish;
         }
