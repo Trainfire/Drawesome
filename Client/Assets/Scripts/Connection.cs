@@ -37,7 +37,7 @@ public class Connection : MonoBehaviour
 
     public void Connect(string playerName)
     {
-        var url = Application.isEditor ? "ws://127.0.0.1:8181" : SettingsLoader.Settings.HostUrl;
+        var url = Debug.isDebugBuild ? "ws://127.0.0.1:8181" : SettingsLoader.Settings.HostUrl;
         Connect(playerName, url);
     }
 
