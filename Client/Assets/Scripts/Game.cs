@@ -419,6 +419,10 @@ public class Game : MonoBehaviour, IClientHandler
             {
                 GetView<UiGameStateChoosing>((view) =>
                 {
+                    // Randomise order of choices before showing on UI
+                    data.Choices.Shuffle();
+
+                    // Send to UI
                     view.ShowChoices(data.Creator, data.Choices);
                 });
             });
