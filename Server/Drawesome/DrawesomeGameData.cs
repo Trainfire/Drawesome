@@ -153,8 +153,16 @@ namespace Server.Drawesome
         /// </summary>
         public void AddDecoys()
         {
-            // Decoy counts = Players except drawing owner - Number of chosen answers
-            var decoyCount = (Players.Count - 1) - ChosenAnswers.Count;
+            int decoyCount = 0;
+
+            foreach (var player in Players)
+            {
+                if (!ChosenAnswers.Any(x => x.Author == player.Data) && player.Data != CurrentDrawing.Creator)
+                    decoyCount++;
+            }
+
+            Console.WriteLine("{0} players did not submit an answer. Adding {0} decoys...", decoyCount);
+
             var rnd = new Random();
             for (int i = 0; i < decoyCount; i++)
             {
