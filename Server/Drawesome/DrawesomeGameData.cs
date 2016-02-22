@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using Server.Game;
 using Protocol;
-using System.Collections.ObjectModel;
 
 namespace Server.Drawesome
 {
@@ -27,43 +26,43 @@ namespace Server.Drawesome
 
         }
 
-        public ReadOnlyCollection<DrawingData> Drawings
+        public List<DrawingData> Drawings
         {
             get
             {
-                return new ReadOnlyCollection<DrawingData>(drawings.ToList());
+                return new List<DrawingData>(drawings.ToList());
             }
         }
 
-        public ReadOnlyCollection<AnswerData> ChosenAnswers
+        public List<AnswerData> ChosenAnswers
         {
             get
             {
-                return new ReadOnlyCollection<AnswerData>(answers.Where(x => x.Choosers.Count != 0).ToList());
+                return new List<AnswerData>(answers.Where(x => x.Choosers.Count != 0).ToList());
             }
         }
 
-        public ReadOnlyDictionary<Player, PromptData> SentPrompts
+        public Dictionary<Player, PromptData> SentPrompts
         {
             get
             {
-                return new ReadOnlyDictionary<Player, PromptData>(prompts);
+                return new Dictionary<Player, PromptData>(prompts);
             }
         }
 
-        public ReadOnlyDictionary<PlayerData, uint> Scores
+        public Dictionary<PlayerData, uint> Scores
         {
             get
             {
-                return new ReadOnlyDictionary<PlayerData, uint>(scores);
+                return new Dictionary<PlayerData, uint>(scores);
             }
         }
 
-        public ReadOnlyCollection<AnswerData> Answers
+        public List<AnswerData> Answers
         {
             get
             {
-                return new ReadOnlyCollection<AnswerData>(answers.ToList());
+                return new List<AnswerData>(answers.ToList());
             }
         }
 
