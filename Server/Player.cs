@@ -213,9 +213,9 @@ namespace Server
             Console.WriteLine("Send update to " + Data.Name);
         }
 
-        public void SendScores(Dictionary<PlayerData, ScoreData> playerScores)
+        public void SendScores(Dictionary<PlayerData, ScoreData> playerScores, bool orderByDescending = false)
         {
-            var message = new ServerMessage.Game.SendScores(playerScores);
+            var message = new ServerMessage.Game.SendScores(playerScores, orderByDescending);
             Socket.Send(message.AsJson());
         }
 

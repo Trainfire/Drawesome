@@ -327,9 +327,23 @@ namespace Server.Drawesome
         }
     }
 
+    public class StateFinalScores : State<DrawesomeGameData>
+    {
+        public override GameState Type { get { return GameState.FinalScores; } }
+
+        protected override void OnBegin()
+        {
+            base.OnBegin();
+            SetCountdownTimer("Show FInal Scores", 15f, false);
+
+            // Send final scores
+            GameData.Players.ForEach(x => x.SendScores(GameData.GetLatestScores(), true));
+        }
+    }
+
     public class StateRoundEnd : State<DrawesomeGameData>
     {
-        public override GameState Type { get { return GameState.GameOver; } }
+        public override GameState Type { get { return GameState.FinalScores; } }
 
         protected override void OnBegin()
         {

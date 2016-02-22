@@ -19,6 +19,7 @@ namespace Server.Drawesome
             AddState(GameState.Choosing, new StateChoosingPhase());
             AddState(GameState.Results, new StateResultsPhase());
             AddState(GameState.Scores, new StateScores());
+            AddState(GameState.FinalScores, new StateFinalScores());
             AddState(GameState.GameOver, new StateRoundEnd());
         }
 
@@ -96,7 +97,8 @@ namespace Server.Drawesome
                     break;
 
                 case GameState.Results:
-                    if (GameData.HasDrawings())
+                    Logger.Log(this, "{0} drawings remain", GameData.Drawings.Count);
+                    if (GameData.Drawings.Count > 1)
                     {
                         // Show the scores as normal
                         SetState(GameState.Scores, Settings.Drawesome.Transitions.ScoresToAnswering);
@@ -104,7 +106,7 @@ namespace Server.Drawesome
                     else
                     {
                         // Show the final scores
-                        SetState(GameState.GameOver, Settings.Drawesome.Transitions.ScoresToAnswering);
+                        SetState(GameState.FinalScores, Settings.Drawesome.Transitions.ScoresToAnswering);
                     }
                     break;
 
@@ -116,7 +118,7 @@ namespace Server.Drawesome
                     SetState(GameState.Answering, Settings.Drawesome.Transitions.ScoresToAnswering);
                     break;
 
-                case GameState.GameOver:
+                case GameState.FinalScores:
                     Logger.Log(this, "Game Over!");
                     break;
 

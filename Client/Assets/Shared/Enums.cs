@@ -72,6 +72,7 @@ namespace Protocol
         Choosing,
         Results,
         Scores,
+        FinalScores,
         GameOver,
     }
 

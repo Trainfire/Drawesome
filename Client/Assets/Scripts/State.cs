@@ -5,12 +5,14 @@ public abstract class State
 {
     protected UiBase View { get; private set; }
     protected Client Client { get; private set; }
-    private bool IsFirstShow { get; set; }
+
+    bool IsFirstShow { get; set; }
+    bool IsActive { get; set; }
 
     public State(Client client, UiBase view)
     {
         Client = client;
-        Client.MessageHandler.OnMessage += OnMessage;
+        Client.MessageHandler.OnMessage += HandleMessage;
         View = view;
         View.Initialise(client);
         IsFirstShow = true;
@@ -27,6 +29,7 @@ public abstract class State
             IsFirstShow = false;
         }
 
+        IsActive = true;
         OnBegin();
     }
 
@@ -35,6 +38,7 @@ public abstract class State
         View.gameObject.SetActive(false);
         View.Hide();
         OnEnd();
+        IsActive = false;
     }
 
     protected T GetView<T>() where T : UiBase
@@ -55,6 +59,12 @@ public abstract class State
     protected virtual void OnBegin()
     {
 
+    }
+
+    void HandleMessage(string json)
+    {
+        if (IsActive)
+            OnMessage(json);
     }
 
     protected virtual void OnMessage(string json)

@@ -19,6 +19,7 @@ public class Game : MonoBehaviour, IClientHandler
     public UiGameStateChoosing ChoosingView;
     public UiGameStateResults ResultsView;
     public UiGameStateScores ScoresView;
+    public UiGameStateFinalScores FinalScoresView;
     public UiGameStateGameOver RoundEndView;
 
     Client Client { get; set; }
@@ -45,6 +46,7 @@ public class Game : MonoBehaviour, IClientHandler
         AddState(new ChoosingState(client, ChoosingView));
         AddState(new ResultsState(client, ResultsView));
         AddState(new ScoresState(client, ScoresView));
+        AddState(new FinalScoresState(client, FinalScoresView));
         AddState(new GameOverState(client, RoundEndView));
 
         // Drawing canvas
@@ -488,6 +490,30 @@ public class Game : MonoBehaviour, IClientHandler
                 }
 
                 GetView<UiGameStateScores>().ShowScores(scoreCache);
+            });
+        }
+    }
+
+    public class FinalScoresState : State, IGameState
+    {
+        public State State { get { return this; } }
+        public GameState Type { get { return GameState.FinalScores; } }
+        public DrawingCanvas Canvas { private get; set; }
+
+        public FinalScoresState(Client client, UiGameStateFinalScores view) : base(client, view)
+        {
+
+        }
+
+        protected override void OnMessage(string json)
+        {
+            Message.IsType<ServerMessage.Game.SendScores>(json, (data) =>
+            {
+                // Make dictionary mapping players to scores.
+                var scores = Enumerable.Range(0, data.Players.Count)
+                .ToDictionary(i => data.Players[i], i => data.Scores[i]);
+
+                GetView<UiGameStateFinalScores>().Show(scores);
             });
         }
     }

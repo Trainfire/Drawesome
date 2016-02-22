@@ -101,6 +101,7 @@
     <Compile Include="Assets\Scripts\Stylesheet\TextComponent.cs" />
     <Compile Include="Assets\Scripts\Stylesheet\TextData.cs" />
     <Compile Include="Assets\Scripts\Tests\Test.cs" />
+    <Compile Include="Assets\Scripts\Tests\TestFinalScores.cs" />
     <Compile Include="Assets\Scripts\Tests\TestMessage.cs" />
     <Compile Include="Assets\Scripts\Tests\TestOrderedList.cs" />
     <Compile Include="Assets\Scripts\Tests\TestPopup.cs" />
@@ -122,11 +123,13 @@
     <Compile Include="Assets\Scripts\UI\UiChat.cs" />
     <Compile Include="Assets\Scripts\UI\UiChoice.cs" />
     <Compile Include="Assets\Scripts\UI\UiDrawingCanvas.cs" />
+    <Compile Include="Assets\Scripts\UI\UiFinalScoreRow.cs" />
     <Compile Include="Assets\Scripts\UI\UiGame.cs" />
     <Compile Include="Assets\Scripts\UI\UiGameState.cs" />
     <Compile Include="Assets\Scripts\UI\UiGameStateAnswering.cs" />
     <Compile Include="Assets\Scripts\UI\UiGameStateChoosing.cs" />
     <Compile Include="Assets\Scripts\UI\UiGameStateDrawing.cs" />
+    <Compile Include="Assets\Scripts\UI\UiGameStateFinalScores.cs" />
     <Compile Include="Assets\Scripts\UI\UiGameStateGameOver.cs" />
     <Compile Include="Assets\Scripts\UI\UiGameStatePreGame.cs" />
     <Compile Include="Assets\Scripts\UI\UiGameStateResults.cs" />
@@ -161,6 +164,7 @@
     <Compile Include="Assets\Shared\ProtocolHelper.cs" />
     <Compile Include="Assets\Shared\ServerMessage.cs" />
     <Compile Include="Assets\Shared\StringFormatter.cs" />
+    <Compile Include="Assets\TestScoresServer.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\SyntaxTree\UnityVS\2015\UnityVS.CSharp.targets" />
 </Project>

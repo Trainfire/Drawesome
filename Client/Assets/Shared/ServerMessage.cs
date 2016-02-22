@@ -219,19 +219,38 @@ namespace Protocol
 
             public class SendScores : Message
             {
-                public List<PlayerData> Players;
-                public List<ScoreData> Scores;
+                public List<PlayerData> Players = new List<PlayerData>();
+                public List<ScoreData> Scores = new List<ScoreData>();
+                public bool IsOrderedByDescending;
 
-                public SendScores(Dictionary<PlayerData, ScoreData> playerScores)
+                public SendScores()
                 {
-                    Players = new List<PlayerData>();
-                    Scores = new List<ScoreData>();
 
-                    if (playerScores != null)
+                }
+
+                public SendScores(Dictionary<PlayerData, ScoreData> playerScores, bool orderByDescending = false)
+                {
+                    IsOrderedByDescending = orderByDescending;
+
+                    Players = playerScores.Keys.ToList();
+                    Scores = playerScores.Values.ToList();
+
+                    if (orderByDescending)
                     {
-                        Players = playerScores.Keys.ToList();
-                        Scores = playerScores.Values.ToList();
-                    }   
+                        var pairs = new List<KeyValuePair<PlayerData, ScoreData>>();
+
+                        for (int i = 0; i < playerScores.Count; i++)
+                        {
+                            pairs.Add(new KeyValuePair<PlayerData, ScoreData>(Players[i], Scores[i]));
+                        }
+
+                        pairs = pairs.OrderByDescending(x => x.Value.CurrentScore).ToList();
+
+                        Players = pairs.Select(x => x.Key).ToList();
+                        Scores = pairs.Select(x => x.Value).ToList();
+
+                        IsOrderedByDescending = true;
+                    } 
                 }
             }
 
