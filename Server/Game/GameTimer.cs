@@ -10,7 +10,7 @@ namespace Server.Game
 
         Timer Timer { get; set; }
         string Name { get; set; }
-        Action OnFinish { get; set; }
+        //Action OnFinish { get; set; }
 
         public float ElapsedTime { get; set; }
         public float CurrentTimer { get; set; }
@@ -28,7 +28,7 @@ namespace Server.Game
 
         public GameTimer(string name, float duration, Action onFinish) : this(name, duration)
         {
-            OnFinish = onFinish;
+            //OnFinish = onFinish;
         }
 
         public GameTimer(float duration)
@@ -71,8 +71,8 @@ namespace Server.Game
                 if (Finish != null)
                     Finish(this, null);
 
-                if (OnFinish != null)
-                    OnFinish();
+                //if (OnFinish != null)
+                //    OnFinish();
             }
         }
     }
