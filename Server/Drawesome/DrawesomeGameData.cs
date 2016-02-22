@@ -105,7 +105,7 @@ namespace Server.Drawesome
 
         public void AddActualAnswer()
         {
-            var answerData = new AnswerData(CurrentDrawing.Prompt.Text, GameAnswerType.ActualAnswer);
+            var answerData = new AnswerData(CurrentDrawing.Prompt.GetText(), GameAnswerType.ActualAnswer);
             answers.Add(answerData);
         }
 
@@ -158,13 +158,18 @@ namespace Server.Drawesome
 
         public PromptData GetPrompt(Player player)
         {
+            // Get prompts from JSON
             if (PromptPool == null)
                 PromptPool = Settings.Prompts.Items;
 
+            // Choose a random prompt from the pool
             var rnd = new Random();
             var index = rnd.Next(0, PromptPool.Count - 1);
             var prompt = PromptPool[index];
             PromptPool.Remove(prompt);
+
+            // Make sure the prompt text is formatted if it contains a special token such as 'random player name'
+            prompt.ReplaceTokens(player.Data, Players.Select(x => x.Data).ToList());
 
             if (prompts == null)
                 prompts = new Dictionary<Player, PromptData>();

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Protocol
 {
@@ -103,6 +104,33 @@ namespace Protocol
     public class PromptData
     {
         public int Id { get; set; }
-        public string Text { get; set; }
+        public string Text { private get; set; }
+
+        // Replaces any tokens such as "random player name" appropriately replaced.
+        public string ReplaceTokens(PlayerData player, List<PlayerData> players)
+        {
+            // TODO: Move somewhere more appropriate.
+            var tokenPlayerName = "<RANDOM PLAYER NAME>";
+
+            if (Text.Contains(tokenPlayerName))
+            {
+                // Replace with random player that isn't this player
+                var playersExceptOwner = players.Where(x => x != player).ToList();
+
+                var rnd = new Random().Next(playersExceptOwner.Count);
+                Text = Text.Replace(tokenPlayerName, playersExceptOwner[rnd].Name.ToLower());
+            }
+
+            return Text;
+        }
+
+        /// <summary>
+        /// Returns the text formatted to lower case.
+        /// </summary>
+        /// <returns></returns>
+        public string GetText()
+        {
+            return Text.ToLower();
+        }
     }
 }

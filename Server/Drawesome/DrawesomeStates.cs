@@ -48,7 +48,9 @@ namespace Server.Drawesome
             foreach (var player in GameData.Players)
             {
                 ResponseHandler.AddRespondant(player);
-                player.SendPrompt(GameData.GetPrompt(player).Text);
+
+                // Send prompt to player in lower-case
+                player.SendPrompt(GameData.GetPrompt(player).GetText().ToLower());
             }
         }
 
@@ -62,7 +64,7 @@ namespace Server.Drawesome
                 if (!GameData.Drawings.Any(x => x.Creator.ID == player.Data.ID))
                     GameData.AddDrawing(new DrawingData(player.Data, data.Image, prompt));
 
-                Console.WriteLine("Recieve image from {0} with {1} bytes for prompt {2}", player.Data.Name, data.Image.Length, prompt.Text);
+                Console.WriteLine("Recieve image from {0} with {1} bytes for prompt {2}", player.Data.Name, data.Image.Length, prompt.GetText());
 
                 // Tell all clients that player has submitted drawing
                 GameData.Players.ForEach(x => x.NotifyPlayerGameAction(player.Data, GamePlayerAction.DrawingSubmitted));
@@ -154,7 +156,7 @@ namespace Server.Drawesome
 
         bool IsPrompt(string answer)
         {
-            return GameData.SentPrompts.Any(x => x.Value.Text.ToLower() == answer.ToLower());
+            return GameData.SentPrompts.Any(x => x.Value.GetText().ToLower() == answer.ToLower());
         }
 
         bool MatchesExistingAnswer(string answer)
@@ -247,7 +249,7 @@ namespace Server.Drawesome
             // Queue the actual answer
             var actualAnswer = GameData.ChosenAnswers.FirstOrDefault(x => x.Type == GameAnswerType.ActualAnswer);
             if (actualAnswer == null)
-                actualAnswer = new AnswerData(GameData.CurrentDrawing.Prompt.Text, GameAnswerType.ActualAnswer);
+                actualAnswer = new AnswerData(GameData.CurrentDrawing.Prompt.GetText(), GameAnswerType.ActualAnswer);
             ChosenAnswersQueue.Enqueue(actualAnswer);
 
             UpdateQueue();
