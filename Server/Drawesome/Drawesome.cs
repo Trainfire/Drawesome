@@ -96,19 +96,22 @@ namespace Server.Drawesome
                     break;
 
                 case GameState.Results:
-                    GameData.OnNewRound();
                     if (GameData.HasDrawings())
                     {
+                        // Show the scores as normal
                         SetState(GameState.Scores, Settings.Drawesome.Transitions.ScoresToAnswering);
                     }
                     else
                     {
-                        // TODO: Add new transition timer for end game
+                        // Show the final scores
                         SetState(GameState.GameOver, Settings.Drawesome.Transitions.ScoresToAnswering);
                     }
                     break;
 
                 case GameState.Scores:
+                    // Clear data for the next round
+                    GameData.OnNewRound();
+
                     // After scores, return to Answering phase for remaining drawings
                     SetState(GameState.Answering, Settings.Drawesome.Transitions.ScoresToAnswering);
                     break;

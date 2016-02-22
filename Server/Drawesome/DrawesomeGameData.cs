@@ -67,6 +67,10 @@ namespace Server.Drawesome
             }
         }
 
+        /// <summary>
+        /// Calculates the current score.
+        /// </summary>
+        /// <returns></returns>
         public void CalculateScores()
         {
             if (scores == null)
@@ -75,6 +79,7 @@ namespace Server.Drawesome
                 Players.ForEach(x => scores.Add(x.Data, 0));
             }
 
+            // Give points for each chosen answer to the appropriate players.
             foreach (var answer in ChosenAnswers)
             {
                 if (answer.Type == GameAnswerType.ActualAnswer)
@@ -95,6 +100,33 @@ namespace Server.Drawesome
                     answer.Points = points;
                 }
             }
+        }
+
+        /// <summary>
+        /// Returns the latest scores for this round and the answers that each player gave (if any).
+        /// </summary>
+        /// <returns></returns>
+        public Dictionary<PlayerData, ScoreData> GetLatestScores()
+        {
+            var answerData = new Dictionary<PlayerData, AnswerData>();
+            foreach (var answer in Answers)
+            {
+                if (answer.Type == GameAnswerType.Player)
+                {
+                    answerData.Add(answer.Author, answer);
+                }
+            }
+
+            var scoreData = new Dictionary<PlayerData, ScoreData>();
+
+            foreach (var score in scores)
+            {
+                // Try and get the player's answer, if they gave one.
+                var answer = answerData.FirstOrDefault(x => x.Key == score.Key).Value;
+                scoreData.Add(score.Key, new ScoreData(score.Value, answer));
+            }
+
+            return scoreData;
         }
 
         public void AddAnswer(AnswerData answer)

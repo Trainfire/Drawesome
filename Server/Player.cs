@@ -26,7 +26,7 @@ namespace Server
         }
     }
 
-    public class Player : ServerMessage.Game.ISendScores
+    public class Player
     {
         public event EventHandler<PlayerConnectionClosed> OnConnectionClosed;
         public event EventHandler<SharedMessage.Chat> OnChat;
@@ -213,7 +213,7 @@ namespace Server
             Console.WriteLine("Send update to " + Data.Name);
         }
 
-        public void SendScores(Dictionary<PlayerData, uint> playerScores)
+        public void SendScores(Dictionary<PlayerData, ScoreData> playerScores)
         {
             var message = new ServerMessage.Game.SendScores(playerScores);
             Socket.Send(message.AsJson());

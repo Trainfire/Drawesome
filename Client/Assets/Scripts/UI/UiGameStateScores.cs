@@ -77,12 +77,23 @@ public class UiGameStateScores : UiBase
         {
             var view = AddOrGetView(score.Key, score.Value);
             var temp = score;
-            AnimController.AddAnim(new UiAnimationFade(view.PointsEarned.gameObject, 0.1f, UiAnimationFade.FadeType.Out));
+
+            // Fade in the points earned text displayed on right side as + 1234
+            AnimController.AddAnim(new UiAnimationFade(view.PointsEarned.gameObject, 0.1f, UiAnimationFade.FadeType.Out), false);
+
+            // Reveal player's answer underneath if they gave one
+            //AnimController.AddAnim(new UiAnimationFade(view.Answer.gameObject, 0.1f, UiAnimationFade.FadeType.In));
+            view.Answer.text = temp.Value.ScoreData.AnswerGiven != null ? temp.Value.ScoreData.AnswerGiven.Answer : "";
+
+            // Show the player's current score
             AnimController.AddAction("Update Scores", () =>
             {
                 view.Score.text = temp.Value.CurrentScore.ToString();
             });
         }
+
+        // Reveal player's answer
+        
 
         // Delay
         AnimController.AddDelay(TimeBeforeRearrangeList);

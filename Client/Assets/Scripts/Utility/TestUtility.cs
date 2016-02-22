@@ -26,17 +26,18 @@ public static class TestUtility
     /// Returns score data for 8 players. Each score has a random value between 0 and 2000.
     /// </summary>
     /// <returns></returns>
-    public static Dictionary<PlayerData, uint> GetPlayerScores()
+    public static Dictionary<PlayerData, ScoreData> GetPlayerScores()
     {
-        var data = new Dictionary<PlayerData, uint>();
+        var data = new Dictionary<PlayerData, ScoreData>();
         for (int i = 0; i < 8; i++)
         {
             var player = new PlayerData();
             player.ID = i.ToString();
             player.Name = "Player " + i;
 
-            var score = Random.Range(0, 2000);
-            data.Add(player, (uint)score);
+            var score = (uint)Random.Range(0, 2000);
+            var scoreData = new ScoreData(score, new AnswerData("random answer"));
+            data.Add(player, scoreData);
         }
         return data;
     }

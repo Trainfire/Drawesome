@@ -307,7 +307,21 @@ namespace Server.Drawesome
         protected override void OnBegin()
         {
             base.OnBegin();
-            var score = GameData.Scores.ToDictionary(x => x.Key, y => y.Value);
+
+            var score = GameData.GetLatestScores();
+
+            foreach (var s in score)
+            {
+                if (s.Value.AnswerGiven != null)
+                {
+                    Logger.Log("Player: {0}, Score: {1}, Answer Given: {2}", s.Key.Name, s.Value.CurrentScore, s.Value.AnswerGiven);
+                }
+                else
+                {
+                    Logger.Log("Player: {0}, Score: {1}, Answer Given: None", s.Key.Name, s.Value.CurrentScore);
+                }
+            }
+
             GameData.Players.ForEach(x => x.SendScores(score));
             SetCountdownTimer("Show Scores", 10f, false);
         }

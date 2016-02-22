@@ -220,12 +220,12 @@ namespace Protocol
             public class SendScores : Message
             {
                 public List<PlayerData> Players;
-                public List<uint> Scores;
+                public List<ScoreData> Scores;
 
-                public SendScores(Dictionary<PlayerData, uint> playerScores)
+                public SendScores(Dictionary<PlayerData, ScoreData> playerScores)
                 {
                     Players = new List<PlayerData>();
-                    Scores = new List<uint>();
+                    Scores = new List<ScoreData>();
 
                     if (playerScores != null)
                     {
