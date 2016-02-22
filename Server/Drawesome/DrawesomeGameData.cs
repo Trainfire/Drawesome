@@ -157,7 +157,7 @@ namespace Server.Drawesome
 
             foreach (var player in Players)
             {
-                if (!ChosenAnswers.Any(x => x.Author == player.Data) && player.Data != CurrentDrawing.Creator)
+                if (!answers.Any(x => x.Author == player.Data) && player.Data != CurrentDrawing.Creator)
                     decoyCount++;
             }
 
