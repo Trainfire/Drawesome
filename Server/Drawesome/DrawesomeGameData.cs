@@ -116,9 +116,13 @@ namespace Server.Drawesome
             answerData.Choosers.Add(player.Data);
         }
 
+        /// <summary>
+        /// Adds one decoy for every player that hasn't provided an answer.
+        /// </summary>
         public void AddDecoys()
         {
-            var decoyCount = Players.Count - ChosenAnswers.Count;
+            // Decoy counts = Players except drawing owner - Number of chosen answers
+            var decoyCount = (Players.Count - 1) - ChosenAnswers.Count;
             var rnd = new Random();
             for (int i = 0; i < decoyCount; i++)
             {
