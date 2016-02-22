@@ -147,6 +147,7 @@
     <Compile Include="Assets\Scripts\UI\UiTweenVector.cs" />
     <Compile Include="Assets\Scripts\UserInterface.cs" />
     <Compile Include="Assets\Scripts\Utility\GameObjectEx.cs" />
+    <Compile Include="Assets\Scripts\Utility\ListEx.cs" />
     <Compile Include="Assets\Scripts\Utility\TestUtility.cs" />
     <Compile Include="Assets\Scripts\Utility\UiEx.cs" />
     <Compile Include="Assets\Scripts\Utility\UiUtility.cs" />
