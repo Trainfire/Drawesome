@@ -37,30 +37,6 @@ namespace Server.Drawesome
             }
         }
 
-        public ReadOnlyCollection<AnswerData> ChosenAnswers
-        {
-            get
-            {
-                return new ReadOnlyCollection<AnswerData>(answers.Where(x => x.Choosers.Count != 0).ToList());
-            }
-        }
-
-        public ReadOnlyDictionary<Player, PromptData> SentPrompts
-        {
-            get
-            {
-                return new ReadOnlyDictionary<Player, PromptData>(prompts);
-            }
-        }
-
-        public ReadOnlyDictionary<PlayerData, uint> Scores
-        {
-            get
-            {
-                return new ReadOnlyDictionary<PlayerData, uint>(scores);
-            }
-        }
-
         public ReadOnlyCollection<AnswerData> Answers
         {
             get
@@ -146,8 +122,13 @@ namespace Server.Drawesome
             answerData.Choosers.Add(player.Data);
         }
 
-        public void SubmitDrawing(Player player, byte[] image, PromptData prompt)
+        public void SubmitDrawing(Player player, byte[] image)
         {
+            // Find the prompt that was sent to the player
+            var prompt = prompts[player];
+
+            Console.WriteLine("Recieve image from {0} with {1} bytes for prompt {2}", player.Data.Name, image.Length, prompt.GetText());
+
             if (!drawings.Any(x => x.Creator.ID == player.Data.ID))
                 drawings.Enqueue(new DrawingData(player.Data, image, prompt));
         }
@@ -261,6 +242,33 @@ namespace Server.Drawesome
 
         #region Helpers
 
+        public Queue<AnswerData> GetResults(List<AnswerData> answers, DrawingData currentDrawing)
+        {
+            this.answers = answers;
+            this.CurrentDrawing = currentDrawing;
+            return GetResults();
+        }
+
+        public Queue<AnswerData> GetResults()
+        {
+            var results = new Queue<AnswerData>();
+
+            // Sort answers by least chosen to most chosen excluding the actual answer
+            var sortedAnswers = ChosenAnswers
+                .Where(x => x.Type != GameAnswerType.ActualAnswer)
+                .OrderBy(x => x.Choosers.Count)
+                .ToList();
+            sortedAnswers.ForEach(x => results.Enqueue(x));
+
+            // Append the actual answer to the queue
+            var actualAnswer = ChosenAnswers.FirstOrDefault(x => x.Type == GameAnswerType.ActualAnswer);
+            if (actualAnswer == null)
+                actualAnswer = new AnswerData(CurrentDrawing.Prompt.GetText(), GameAnswerType.ActualAnswer);
+            results.Enqueue(actualAnswer);
+
+            return results;
+        }
+
         public bool IsPrompt(string answer)
         {
             // TODO: Replace string with object
@@ -270,6 +278,14 @@ namespace Server.Drawesome
         public bool MatchesExistingAnswer(string answer)
         {
             return answers.Any(x => x.Answer.ToLower() == answer.ToLower());
+        }
+
+        public ReadOnlyCollection<AnswerData> ChosenAnswers
+        {
+            get
+            {
+                return new ReadOnlyCollection<AnswerData>(answers.Where(x => x.Choosers.Count != 0).ToList());
+            }
         }
 
         #endregion

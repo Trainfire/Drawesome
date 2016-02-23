@@ -58,12 +58,7 @@ namespace Server.Drawesome
         {
             Message.IsType<ClientMessage.Game.SendImage>(json, (data) =>
             {
-                var prompt = GameData.SentPrompts[player];
-
-                // Update GameData
-                GameData.SubmitDrawing(player, data.Image, prompt);
-
-                Console.WriteLine("Recieve image from {0} with {1} bytes for prompt {2}", player.Data.Name, data.Image.Length, prompt.GetText());
+                GameData.SubmitDrawing(player, data.Image);
 
                 // Tell all clients that player has submitted drawing
                 GameData.Players.ForEach(x => x.NotifyPlayerGameAction(player.Data, GamePlayerAction.DrawingSubmitted));
@@ -203,23 +198,9 @@ namespace Server.Drawesome
         {
             base.OnBegin();
 
-            // Sort chosen answers here...
-            ChosenAnswersQueue = new Queue<AnswerData>();
-
             GameData.CalculateScores();
 
-            // Queue up player answers and decoys by order of least chosen to most chosen
-            var sortedAnswers = GameData.ChosenAnswers
-                .Where(x => x.Type != GameAnswerType.ActualAnswer)
-                .OrderBy(x => x.Choosers.Count)
-                .ToList();
-            sortedAnswers.ForEach(x => ChosenAnswersQueue.Enqueue(x));
-
-            // Queue the actual answer
-            var actualAnswer = GameData.ChosenAnswers.FirstOrDefault(x => x.Type == GameAnswerType.ActualAnswer);
-            if (actualAnswer == null)
-                actualAnswer = new AnswerData(GameData.CurrentDrawing.Prompt.GetText(), GameAnswerType.ActualAnswer);
-            ChosenAnswersQueue.Enqueue(actualAnswer);
+            ChosenAnswersQueue = GameData.GetResults();
 
             UpdateQueue();
         }
