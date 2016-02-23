@@ -269,7 +269,8 @@ namespace Server.Drawesome
             GameData.Players.ForEach(x => x.SendMessage(message));
 
             float duration = isFinalResult ? Settings.Drawesome.TimeToShowFinalResult : Settings.Drawesome.TimeToShowResult;
-            var timer = new GameTimer("Display result", duration, () => UpdateQueue());
+            string name = isFinalResult ? "Display actual answer" : "Display player answer";
+            var timer = new GameTimer(name, duration, () => UpdateQueue());
         }
     }
 
