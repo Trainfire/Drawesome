@@ -86,13 +86,8 @@ namespace Server.Drawesome
 
             if (GameData.HasDrawings())
             {
-                var drawing = GameData.GetDrawing();
-
-                GameData.Players.ForEach(x => x.SendImage(GameData.GetDrawing()));
-
-                // Create a list of players excluding the drawing's creator
-                var players = GameData.Players.Where(x => x.Data.ID != drawing.Creator.ID).ToList();
-                players.ForEach(x => ResponseHandler.AddRespondant(x));
+                GameData.SendDrawingToPlayers();
+                GameData.GetAnsweringPlayers().ForEach(x => ResponseHandler.AddRespondant(x));
             }
             else
             {

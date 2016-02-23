@@ -17,7 +17,7 @@ namespace Server.Drawesome
         string ILogger.LogName { get { return "Drawesome Game Controller"; } }
 
         List<PromptData> PromptPool { get; set; }
-        public DrawingData CurrentDrawing { get; private set; }
+        DrawingData CurrentDrawing { get; set; }
 
         public DrawesomeGameData()
         {
@@ -27,22 +27,6 @@ namespace Server.Drawesome
         public DrawesomeGameData(List<Player> players, Settings settings) : base(players, settings)
         {
 
-        }
-
-        public ReadOnlyCollection<DrawingData> Drawings
-        {
-            get
-            {
-                return new ReadOnlyCollection<DrawingData>(drawings.ToList());
-            }
-        }
-
-        public ReadOnlyCollection<AnswerData> Answers
-        {
-            get
-            {
-                return new ReadOnlyCollection<AnswerData>(answers.ToList());
-            }
         }
 
         /// <summary>
@@ -152,6 +136,12 @@ namespace Server.Drawesome
             }
         }
 
+        public void SendDrawingToPlayers()
+        {
+            CurrentDrawing = drawings.Dequeue();
+            Players.ForEach(x => x.SendImage(CurrentDrawing));
+        }
+
         public void SendChoicesToPlayers()
         {
             // Find out how many players didn't answer
@@ -189,25 +179,13 @@ namespace Server.Drawesome
 
         #endregion
 
+        /// TODO: eh?
         public void OnNewRound()
         {
             answers.Clear();
-            if (drawings.Count != 0)
-                drawings.Dequeue();
         }
 
-        public DrawingData GetDrawing()
-        {
-            CurrentDrawing = drawings.Peek();
-            return CurrentDrawing;
-        }
-
-        public bool HasDrawings()
-        {
-            return drawings.Count != 0;
-        }
-
-        public PromptData GetPrompt(Player player)
+        PromptData GetPrompt(Player player)
         {
             // Get prompts from JSON
             if (PromptPool == null)
@@ -235,12 +213,17 @@ namespace Server.Drawesome
             return answers.First(x => x.Answer == answer);
         }
 
+        #region Helpers
+
+        public bool HasDrawings()
+        {
+            return drawings.Count != 0;
+        }
+
         public List<Player> GetAnsweringPlayers()
         {
             return Players.Where(x => x.Data.ID != CurrentDrawing.Creator.ID).ToList();
         }
-
-        #region Helpers
 
         public Queue<AnswerData> GetResults()
         {
@@ -254,7 +237,9 @@ namespace Server.Drawesome
             sortedAnswers.ForEach(x => results.Enqueue(x));
 
             // Append the actual answer to the queue
-            var actualAnswer = new AnswerData(CurrentDrawing.Prompt.GetText(), GameAnswerType.ActualAnswer);
+            var actualAnswer = ChosenAnswers.FirstOrDefault(x => x.Type == GameAnswerType.ActualAnswer);
+            if (actualAnswer == null)
+                actualAnswer = new AnswerData(CurrentDrawing.Prompt.GetText(), GameAnswerType.ActualAnswer);
             results.Enqueue(actualAnswer);
 
             return results;
@@ -276,6 +261,22 @@ namespace Server.Drawesome
             get
             {
                 return new ReadOnlyCollection<AnswerData>(answers.Where(x => x.Choosers.Count != 0).ToList());
+            }
+        }
+
+        public ReadOnlyCollection<DrawingData> Drawings
+        {
+            get
+            {
+                return new ReadOnlyCollection<DrawingData>(drawings.ToList());
+            }
+        }
+
+        public ReadOnlyCollection<AnswerData> Answers
+        {
+            get
+            {
+                return new ReadOnlyCollection<AnswerData>(answers.ToList());
             }
         }
 

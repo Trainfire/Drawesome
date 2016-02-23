@@ -97,7 +97,7 @@ namespace Server.Drawesome
 
                 case GameState.Results:
                     Logger.Log(this, "{0} drawings remain", GameData.Drawings.Count);
-                    if (GameData.Drawings.Count > 1)
+                    if (GameData.HasDrawings())
                     {
                         // Show the scores as normal
                         SetState(GameState.Scores, Settings.Drawesome.Transitions.ScoresToAnswering);
