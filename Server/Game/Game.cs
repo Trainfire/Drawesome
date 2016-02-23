@@ -10,6 +10,8 @@ namespace Server.Game
     /// <typeparam name="TData">The GameData associated with this Game.</typeparam>
     public abstract class Game<TData> : IConnectionMessageHandler, ILogger where TData : GameData, new()
     {
+        public EventHandler OnEnd;
+
         protected TData GameData { get; set; }
         protected Settings Settings { get; private set; }
 
@@ -49,8 +51,12 @@ namespace Server.Game
         public void End()
         {
             Logger.Log(this, "Ended");
+
             if (CurrentState != null)
                 CurrentState.EndState(GameStateEndReason.GameEnded, false);
+
+            if (OnEnd != null)
+                OnEnd(this, null);
         }        
 
         protected virtual void OnGameOver()

@@ -24,8 +24,9 @@ public class UiGameStatePreGame : UiBase
         }
     }
 
-    void Awake()
+    protected override void OnShow()
     {
+        base.OnShow();
         Setup();
     }
 
@@ -84,6 +85,7 @@ public class UiGameStatePreGame : UiBase
         // Set initial alpha via hack :^)
         AnimController.AddAnim(new UiAnimationFade(ReadyTitle.gameObject, 0f, UiAnimationFade.FadeType.Out), false);
         AnimController.AddAnim(new UiAnimationFade(ReadyTimer.gameObject, 0f, UiAnimationFade.FadeType.Out), false);
+        AnimController.AddAnim(new UiAnimationFade(Top.gameObject, 0f, UiAnimationFade.FadeType.In), false);
 
         AnimController.PlayAnimations();
     }

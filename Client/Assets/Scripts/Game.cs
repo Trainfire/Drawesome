@@ -229,19 +229,16 @@ public class Game : MonoBehaviour, IClientHandler
             // Show info box "Waiting for Room Owner" if player is NOT the room owner
             view.InfoLabel.text = Client.Connection.IsRoomOwner() ? Strings.StartGame : string.Format(Strings.WaitingForRoomOwner, Client.Connection.Room.Owner.Name);
 
-            // Enable info box if game hasn't started, disable it if it has.
+            // Show Start button if room owner
+            view.Start.gameObject.SetActive(Client.Connection.IsRoomOwner() && !Client.Connection.Room.GameStarted);
+
+            // Enable info box if game hasn't started, disable it if it has
             view.InfoBox.SetActive(!Client.Connection.Room.GameStarted);
         }
 
         protected override void OnMessage(string json)
         {
             var view = GetView<UiGameStatePreGame>();
-
-            // Show Start button if room owner
-            Message.IsType<ServerMessage.RoomUpdate>(json, (data) =>
-            {
-                view.Start.gameObject.SetActive(Client.Connection.IsRoomOwner() && !data.RoomData.GameStarted);
-            });
 
             // Hide Start button, show Cancel button if room owner
             Message.IsType<ServerMessage.NotifyRoomCountdown>(json, (data) =>

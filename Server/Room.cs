@@ -252,7 +252,15 @@ namespace Server
             {
                 Logger.Log(this, "{0} has started the game", Owner.Data.Name);
                 Game.Start(Players);
+                Game.OnEnd += Game_OnEnd;
             });
+        }
+
+        void Game_OnEnd(object sender, EventArgs e)
+        {
+            Game.OnEnd -= Game_OnEnd;
+            RoomData.GameStarted = false;
+            SendUpdateToAll();
         }
 
         void CancelCountdown()
