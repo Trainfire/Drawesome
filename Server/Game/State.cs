@@ -15,6 +15,7 @@ namespace Server.Game
         public T GameData { get; protected set; }
 
         protected ResponseHandler<Player> ResponseHandler { get; private set; }
+        protected Settings Settings { get; private set; }
 
         GameTimer Timer { get; set; }
 
@@ -30,8 +31,9 @@ namespace Server.Game
             }
         }
 
-        public State()
+        public State(Settings settings)
         {
+            Settings = settings;
             ResponseHandler = new ResponseHandler<Player>();
         }
 

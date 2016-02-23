@@ -9,11 +9,21 @@ namespace Server.Drawesome
     public class StatePreGame : State<DrawesomeGameData>
     {
         public override GameState Type { get { return GameState.PreGame; } }
+
+        public StatePreGame(Settings settings) : base(settings)
+        {
+
+        }
     }
 
     public class StateRoundBegin : State<DrawesomeGameData>
     {
         public override GameState Type { get { return GameState.RoundBegin; } }
+
+        public StateRoundBegin(Settings settings) : base(settings)
+        {
+
+        }
 
         protected override void OnBegin()
         {
@@ -25,6 +35,11 @@ namespace Server.Drawesome
     public class StateDrawingPhase : State<DrawesomeGameData>
     {
         public override GameState Type { get { return GameState.Drawing; } }
+
+        public StateDrawingPhase(Settings settings) : base(settings)
+        {
+
+        }
 
         protected override void OnBegin()
         {
@@ -66,6 +81,11 @@ namespace Server.Drawesome
     public class StateAnsweringPhase : State<DrawesomeGameData>
     {
         public override GameState Type { get { return GameState.Answering; } }
+
+        public StateAnsweringPhase(Settings settings) : base(settings)
+        {
+
+        }
 
         protected override void OnBegin()
         {
@@ -148,6 +168,11 @@ namespace Server.Drawesome
     {
         public override GameState Type { get { return GameState.Choosing; } }
 
+        public StateChoosingPhase(Settings settings) : base(settings)
+        {
+
+        }
+
         protected override void OnBegin()
         {
             base.OnBegin();
@@ -192,9 +217,7 @@ namespace Server.Drawesome
 
         Queue<AnswerData> ChosenAnswersQueue { get; set; }
 
-        static readonly object _lock = new object();
-
-        public StateResultsPhase()
+        public StateResultsPhase(Settings settings) : base(settings)
         {
 
         }
@@ -224,35 +247,13 @@ namespace Server.Drawesome
             UpdateQueue();
         }
 
-        public override void HandleMessage(Player player, string json)
-        {
-            lock (_lock)
-            {
-                // TODO: lmao. Make this server-authoritive.
-                Message.IsType<ClientMessage.Game.SendAction>(json, (data) =>
-                {
-                    if (data.Action == GameAction.FinishShowingResult)
-                    {
-                        ResponseHandler.Register(player);
-
-                        Console.WriteLine("Have all responded? {0}", ResponseHandler.AllResponded());
-
-                        if (ResponseHandler.AllResponded())
-                            UpdateQueue();
-                    }
-                });
-            }
-        }
-
         void UpdateQueue()
         {
-            ResponseHandler.Clear();
-
             // Loop through all results until empty
             if (ChosenAnswersQueue.Count != 0)
             {
                 GameData.Players.ForEach(x => ResponseHandler.AddRespondant(x));
-                ShowNextResult();
+                ShowNextResult(ChosenAnswersQueue.Count == 1);
             }
             else
             {
@@ -260,18 +261,26 @@ namespace Server.Drawesome
             }
         }
 
-        void ShowNextResult()
+        void ShowNextResult(bool isFinalResult)
         {
             // Send choice to client and remove from queue
             var chosenAnswer = ChosenAnswersQueue.Dequeue();
             var message = new ServerMessage.Game.SendResult(chosenAnswer);
             GameData.Players.ForEach(x => x.SendMessage(message));
+
+            float duration = isFinalResult ? Settings.Drawesome.TimeToShowFinalResult : Settings.Drawesome.TimeToShowResult;
+            var timer = new GameTimer("Display result", duration, () => UpdateQueue());
         }
     }
 
     public class StateScores : State<DrawesomeGameData>
     {
         public override GameState Type { get { return GameState.Scores; } }
+
+        public StateScores(Settings settings) : base(settings)
+        {
+
+        }
 
         protected override void OnBegin()
         {
@@ -300,6 +309,11 @@ namespace Server.Drawesome
     {
         public override GameState Type { get { return GameState.FinalScores; } }
 
+        public StateFinalScores(Settings settings) : base(settings)
+        {
+
+        }
+
         protected override void OnBegin()
         {
             base.OnBegin();
@@ -310,9 +324,14 @@ namespace Server.Drawesome
         }
     }
 
-    public class StateRoundEnd : State<DrawesomeGameData>
+    public class StateGameOver : State<DrawesomeGameData>
     {
-        public override GameState Type { get { return GameState.FinalScores; } }
+        public override GameState Type { get { return GameState.GameOver; } }
+
+        public StateGameOver(Settings settings) : base(settings)
+        {
+
+        }
 
         protected override void OnBegin()
         {

@@ -7,6 +7,8 @@
   "PointsForFakeAnswer": 200,
   "PointsForCorrectAnswer": 500,
   "PointsToDrawerForCorrectAnswer": 1000,
+  "TimeToShowResult": 8,
+  "TimeToShowFinalResult": 10,
   "Decoys":
   [
 	  "astonpeel",

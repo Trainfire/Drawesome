@@ -12,15 +12,15 @@ namespace Server.Drawesome
 
         public DrawesomeGame(ConnectionsHandler connections, Settings settings) : base(connections, settings)
         {
-            AddState(GameState.PreGame, new StatePreGame());
-            AddState(GameState.RoundBegin, new StateRoundBegin());
-            AddState(GameState.Drawing, new StateDrawingPhase());
-            AddState(GameState.Answering, new StateAnsweringPhase());
-            AddState(GameState.Choosing, new StateChoosingPhase());
-            AddState(GameState.Results, new StateResultsPhase());
-            AddState(GameState.Scores, new StateScores());
-            AddState(GameState.FinalScores, new StateFinalScores());
-            AddState(GameState.GameOver, new StateRoundEnd());
+            AddState(GameState.PreGame, new StatePreGame(settings));
+            AddState(GameState.RoundBegin, new StateRoundBegin(settings));
+            AddState(GameState.Drawing, new StateDrawingPhase(settings));
+            AddState(GameState.Answering, new StateAnsweringPhase(settings));
+            AddState(GameState.Choosing, new StateChoosingPhase(settings));
+            AddState(GameState.Results, new StateResultsPhase(settings));
+            AddState(GameState.Scores, new StateScores(settings));
+            AddState(GameState.FinalScores, new StateFinalScores(settings));
+            AddState(GameState.GameOver, new StateGameOver(settings));
         }
 
         public override void Start(List<Player> players)
