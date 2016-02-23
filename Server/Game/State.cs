@@ -65,6 +65,8 @@ namespace Server.Game
 
         public void EndState(GameStateEndReason reason, bool fireOnEnd = true)
         {
+            ResponseHandler.Clear();
+
             if (Timer != null)
                 Timer.Stop();
 

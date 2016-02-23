@@ -7,12 +7,14 @@ using System.Collections.ObjectModel;
 
 namespace Server.Drawesome
 {
-    public class DrawesomeGameData : GameData
+    public class DrawesomeGameData : GameData, ILogger
     {
         Queue<DrawingData> drawings = new Queue<DrawingData>();
         List<AnswerData> answers = new List<AnswerData>();
         Dictionary<Player, PromptData> prompts = new Dictionary<Player, PromptData>();
         Dictionary<PlayerData, uint> scores;
+
+        string ILogger.LogName { get { return "Drawesome Game Controller"; } }
 
         List<PromptData> PromptPool { get; set; }
         public DrawingData CurrentDrawing { get; private set; }
@@ -129,28 +131,39 @@ namespace Server.Drawesome
             return scoreData;
         }
 
-        public void AddAnswer(AnswerData answer)
+        #region Submission Handlers
+
+        public void SubmitAnswer(AnswerData answer)
         {
             Console.WriteLine("Add answer: {0}", answer.Answer);
             answers.Add(answer);
         }
 
-        public void AddActualAnswer()
-        {
-            var answerData = new AnswerData(CurrentDrawing.Prompt.GetText(), GameAnswerType.ActualAnswer);
-            answers.Add(answerData);
-        }
-
-        public void AddChosenAnswer(string answer, Player player)
+        public void SubmitChoice(string answer, Player player)
         {
             var answerData = GetAnswer(answer);
             Console.WriteLine("Add chosen answer: {0}", answerData.Answer);
             answerData.Choosers.Add(player.Data);
         }
 
-        public void SendPrompts(List<Player> players)
+        public void SubmitDrawing(Player player, byte[] image, PromptData prompt)
         {
-            foreach (var player in players)
+            if (!drawings.Any(x => x.Creator.ID == player.Data.ID))
+                drawings.Enqueue(new DrawingData(player.Data, image, prompt));
+        }
+
+        public void SubmitLike(string answer)
+        {
+            GetAnswer(answer).Likes++;
+        }
+
+        #endregion
+
+        #region Send Data
+
+        public void SendPromptsToPlayers()
+        {
+            foreach (var player in Players)
             {
                 // Send prompt to player in lower-case.
                 var prompt = GetPrompt(player);
@@ -158,40 +171,42 @@ namespace Server.Drawesome
             }
         }
 
-        /// <summary>
-        /// Adds one decoy for every player that hasn't provided an answer.
-        /// </summary>
-        public void AddDecoys()
+        public void SendChoicesToPlayers()
         {
-            int decoyCount = 0;
-
+            // Find out how many players didn't answer
+            var playersWithNoAnswerCount = 0;
             foreach (var player in Players)
             {
                 if (!answers.Any(x => x.Author == player.Data) && player.Data != CurrentDrawing.Creator)
-                    decoyCount++;
+                    playersWithNoAnswerCount++;
             }
 
-            Console.WriteLine("{0} players did not submit an answer. Adding {0} decoys...", decoyCount);
+            // Add decoys for every player that didn't answer
+            var decoys = Settings.Drawesome.Decoys;
 
-            var rnd = new Random();
-            for (int i = 0; i < decoyCount; i++)
+            if (decoys.Count == 0)
             {
-                var decoy = Settings.Drawesome.Decoys[rnd.Next(0, Settings.Drawesome.Decoys.Count - 1)];
-                answers.Add(new AnswerData(decoy, GameAnswerType.Decoy));
-                Console.WriteLine("Add decoy: {0}", decoy);
+                Logger.Warn(this, "Can't add decoys as none are present in Drawesome's settings");
             }
+            else
+            {
+                var rnd = new Random();
+                for (int i = 0; i < playersWithNoAnswerCount; i++)
+                {
+                    var decoy = decoys[rnd.Next(0, decoys.Count - 1)];
+                    answers.Add(new AnswerData(decoy, GameAnswerType.Decoy));
+                    Console.WriteLine("Add decoy: {0}", decoy);
+                }
+            }
+
+            // Add actual answer
+            var answerData = new AnswerData(CurrentDrawing.Prompt.GetText(), GameAnswerType.ActualAnswer);
+            answers.Add(answerData);
+
+            Players.ForEach(x => x.SendChoices(CurrentDrawing.Creator, answers.ToList()));
         }
 
-        public void AddPlayerDrawing(Player player, byte[] image, PromptData prompt)
-        {
-            if (!drawings.Any(x => x.Creator.ID == player.Data.ID))
-                drawings.Enqueue(new DrawingData(player.Data, image, prompt));
-        }
-
-        public void AddLike(string answer)
-        {
-            GetAnswer(answer).Likes++;
-        }
+        #endregion
 
         public void OnNewRound()
         {
@@ -238,5 +253,25 @@ namespace Server.Drawesome
         {
             return answers.First(x => x.Answer == answer);
         }
+
+        public List<Player> GetAnsweringPlayers()
+        {
+            return Players.Where(x => x.Data.ID != CurrentDrawing.Creator.ID).ToList();
+        }
+
+        #region Helpers
+
+        public bool IsPrompt(string answer)
+        {
+            // TODO: Replace string with object
+            return prompts.Any(x => x.Value.GetText() == answer.ToLower());
+        }
+
+        public bool MatchesExistingAnswer(string answer)
+        {
+            return answers.Any(x => x.Answer.ToLower() == answer.ToLower());
+        }
+
+        #endregion
     }
 }
