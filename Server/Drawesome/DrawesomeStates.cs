@@ -20,23 +20,11 @@ namespace Server.Drawesome
             base.OnBegin();
             SetCountdownTimer("Begin Timer", GameData.Settings.Drawesome.RoundBeginTime, false);
         }
-
-        //protected override void OnEndState(GameStateEndReason reason)
-        //{
-        //    AddTransitionTimer(GameData.Settings.Drawesome.Transitions.RoundBeginToDrawing, GameTransition.RoundBeginToDrawing);
-        //}
     }
 
     public class StateDrawingPhase : State<DrawesomeGameData>
     {
         public override GameState Type { get { return GameState.Drawing; } }
-
-        ResponseHandler<Player> ResponseHandler { get; set; }
-
-        public StateDrawingPhase()
-        {
-            ResponseHandler = new ResponseHandler<Player>();
-        }
 
         protected override void OnBegin()
         {
@@ -48,10 +36,9 @@ namespace Server.Drawesome
             foreach (var player in GameData.Players)
             {
                 ResponseHandler.AddRespondant(player);
-
-                // Send prompt to player in lower-case
-                player.SendPrompt(GameData.GetPrompt(player).GetText().ToLower());
             }
+
+            GameData.SendPrompts(GameData.Players);
         }
 
         public override void HandleMessage(Player player, string json)
@@ -61,8 +48,7 @@ namespace Server.Drawesome
                 var prompt = GameData.SentPrompts[player];
 
                 // Update GameData
-                if (!GameData.Drawings.Any(x => x.Creator.ID == player.Data.ID))
-                    GameData.AddDrawing(new DrawingData(player.Data, data.Image, prompt));
+                GameData.AddPlayerDrawing(player, data.Image, prompt);
 
                 Console.WriteLine("Recieve image from {0} with {1} bytes for prompt {2}", player.Data.Name, data.Image.Length, prompt.GetText());
 
@@ -80,13 +66,6 @@ namespace Server.Drawesome
     public class StateAnsweringPhase : State<DrawesomeGameData>
     {
         public override GameState Type { get { return GameState.Answering; } }
-
-        ResponseHandler<Player> ResponseHandler { get; set; }
-
-        public StateAnsweringPhase()
-        {
-            ResponseHandler = new ResponseHandler<Player>();
-        }
 
         protected override void OnBegin()
         {
@@ -169,13 +148,6 @@ namespace Server.Drawesome
     {
         public override GameState Type { get { return GameState.Choosing; } }
 
-        ResponseHandler<Player> ResponseHandler { get; set; }
-
-        public StateChoosingPhase()
-        {
-            ResponseHandler = new ResponseHandler<Player>();
-        }
-
         protected override void OnBegin()
         {
             base.OnBegin();
@@ -219,7 +191,6 @@ namespace Server.Drawesome
         public override GameState Type { get { return GameState.Results; } }
 
         Queue<AnswerData> ChosenAnswersQueue { get; set; }
-        ResponseHandler<Player> ResponseHandler { get; set; }
 
         static readonly object _lock = new object();
 
@@ -231,8 +202,6 @@ namespace Server.Drawesome
         protected override void OnBegin()
         {
             base.OnBegin();
-
-            ResponseHandler = new ResponseHandler<Player>();
 
             // Sort chosen answers here...
             ChosenAnswersQueue = new Queue<AnswerData>();

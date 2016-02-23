@@ -148,6 +148,16 @@ namespace Server.Drawesome
             answerData.Choosers.Add(player.Data);
         }
 
+        public void SendPrompts(List<Player> players)
+        {
+            foreach (var player in players)
+            {
+                // Send prompt to player in lower-case.
+                var prompt = GetPrompt(player);
+                player.SendPrompt(prompt.GetText());
+            }
+        }
+
         /// <summary>
         /// Adds one decoy for every player that hasn't provided an answer.
         /// </summary>
@@ -172,9 +182,10 @@ namespace Server.Drawesome
             }
         }
 
-        public void AddDrawing(DrawingData drawing)
+        public void AddPlayerDrawing(Player player, byte[] image, PromptData prompt)
         {
-            drawings.Enqueue(drawing);
+            if (!drawings.Any(x => x.Creator.ID == player.Data.ID))
+                drawings.Enqueue(new DrawingData(player.Data, image, prompt));
         }
 
         public void AddLike(string answer)

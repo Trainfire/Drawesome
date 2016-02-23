@@ -34,7 +34,6 @@ namespace Server.Drawesome
         {
             base.StartNewRound();
             GameData = new DrawesomeGameData(GameData.Players, Settings);
-            Console.WriteLine(GameData.Answers.Count);
             SetState(GameState.Drawing, Settings.Drawesome.Transitions.RoundBeginToDrawing);
         }
 
