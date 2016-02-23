@@ -242,13 +242,6 @@ namespace Server.Drawesome
 
         #region Helpers
 
-        public Queue<AnswerData> GetResults(List<AnswerData> answers, DrawingData currentDrawing)
-        {
-            this.answers = answers;
-            this.CurrentDrawing = currentDrawing;
-            return GetResults();
-        }
-
         public Queue<AnswerData> GetResults()
         {
             var results = new Queue<AnswerData>();
@@ -261,9 +254,7 @@ namespace Server.Drawesome
             sortedAnswers.ForEach(x => results.Enqueue(x));
 
             // Append the actual answer to the queue
-            var actualAnswer = ChosenAnswers.FirstOrDefault(x => x.Type == GameAnswerType.ActualAnswer);
-            if (actualAnswer == null)
-                actualAnswer = new AnswerData(CurrentDrawing.Prompt.GetText(), GameAnswerType.ActualAnswer);
+            var actualAnswer = new AnswerData(CurrentDrawing.Prompt.GetText(), GameAnswerType.ActualAnswer);
             results.Enqueue(actualAnswer);
 
             return results;
