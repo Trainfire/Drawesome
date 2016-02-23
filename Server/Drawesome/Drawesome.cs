@@ -119,7 +119,10 @@ namespace Server.Drawesome
                     break;
 
                 case GameState.FinalScores:
+                    End();
                     Logger.Log(this, "Game Over!");
+
+                    SetState(GameState.PreGame, Settings.Drawesome.Transitions.ScoresToAnswering);
                     break;
 
                 default:
