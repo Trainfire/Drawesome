@@ -207,7 +207,7 @@ namespace Server
 
             Message.IsType<ClientMessage.SendChat>(json, (data) =>
             {
-                Logger.Log(this, "{0}: {1}", player.Data.Name, data.Message);
+                Logger.Log(this, "{0} said something", player.Data.Name);
                 // Echo chat to all clients
                 Players.ForEach(x => x.SendChat(player.Data, data.Message));
             });
