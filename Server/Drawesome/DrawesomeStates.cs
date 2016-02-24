@@ -193,8 +193,6 @@ namespace Server.Drawesome
         {
             base.OnBegin();
 
-            GameData.CalculateScores();
-
             ChosenAnswersQueue = GameData.GetResults();
 
             UpdateQueue();
