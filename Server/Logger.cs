@@ -1,12 +1,15 @@
 using System;
 using System.IO;
+using System.Threading;
 
 namespace Server
 {
     static class Logger
     {
         public static bool Enabled { get { return enabled; } set { enabled = value; } }
+
         static bool enabled = true;
+        static ReaderWriterLockSlim _readWriteLock = new ReaderWriterLockSlim();
 
         public static void Log(ILogger logger, string message, params object[] args)
         {
@@ -42,10 +45,20 @@ namespace Server
                 var newFile = File.CreateText(path);
             }
 
-            using (var sw = File.AppendText(path))
+            _readWriteLock.EnterWriteLock();
+            try
             {
-                sw.WriteLine(log);
+                using (var sw = File.AppendText(path))
+                {
+                    sw.WriteLine(log);
+                    sw.Close();
+                }
             }
+            finally
+            {
+                _readWriteLock.ExitWriteLock();
+            }
+            
         }
     }
 }
