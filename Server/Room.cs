@@ -16,11 +16,11 @@ namespace Server
 
         string ILogger.LogName { get { return string.Format("Room {0}", RoomData.ID); } }
 
+        ConnectionsHandler ConnectionsHandler { get; set; }
         Player Owner { get; set; }
         DrawesomeGame Game { get; set; }
         IdPool RoomIdPool { get; set; }
         Settings Settings { get; set; }
-
         GameTimer CountdownTimer { get; set; }
 
         const int MaxPlayers = 8; // TODO: Place in Server settings
@@ -32,6 +32,7 @@ namespace Server
 
         public Room(ConnectionsHandler connections, Player owner, Settings settings, string password = "")
         {
+            ConnectionsHandler = connections;
             connections.AddMessageListener(this);
 
             Settings = settings;
@@ -256,6 +257,13 @@ namespace Server
             {
                 // Remove room if no players remain
                 Game.End();
+
+                if (CountdownTimer != null)
+                    CountdownTimer.Stop();
+
+                Logger.Log(this, "Closing room {0} as it is empty", RoomData.ID);
+
+                ConnectionsHandler.RemoveMessageListener(this);
 
                 if (OnEmpty != null)
                     OnEmpty(this, this);

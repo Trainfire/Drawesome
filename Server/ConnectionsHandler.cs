@@ -35,6 +35,12 @@ namespace Server
                 Handlers.Add(handler);
         }
 
+        public void RemoveMessageListener(IConnectionMessageHandler handler)
+        {
+            if (Handlers.Contains(handler))
+                Handlers.Remove(handler);
+        }
+
         public void OnOpen(IWebSocketConnection socket)
         {
             Logger.Log(this, "A connection was opened");

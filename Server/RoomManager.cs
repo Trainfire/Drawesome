@@ -83,7 +83,6 @@ namespace Server
 
         void OnRoomEmpty(object sender, Room e)
         {
-            Logger.Log(this, "Closing room {0} as it is empty", e.RoomData.ID);
             e.OnEmpty -= OnRoomEmpty;
             Rooms.Remove(e);
         }
