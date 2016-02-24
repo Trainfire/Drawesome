@@ -62,6 +62,8 @@ namespace Server
             Game = new DrawesomeGame(connections, settings);
         }
 
+        #region Actions
+
         public void Join(Player joiningPlayer, string password = "")
         {
             Logger.Log(this, "Player {0} joined room {1}", joiningPlayer.Data.Name, RoomData.ID);
@@ -121,10 +123,45 @@ namespace Server
             OnPlayerConnectionClosed(this, new PlayerConnectionClosed(player, PlayerCloseReason.Left));
         }
 
-        public bool HasPlayer(PlayerData player)
+        /// <summary>
+        /// Begins a countdown timer. The game will begin if the timer reaches 0.
+        /// </summary>
+        void StartCountdown()
         {
-            return Players.Exists(x => x.Data.ID == player.ID);
+            // Notify players
+            Players.ForEach(x => x.NotifyRoomCountdownStart(5f));
+
+            // Start game when countdown reaches 0
+            CountdownTimer = new GameTimer("Countdown", 5f, () =>
+            {
+                Logger.Log(this, "{0} has started the game", Owner.Data.Name);
+                Game.Start(Players);
+                Game.OnEnd += OnGameEnd;
+            });
         }
+
+        void OnGameEnd(object sender, EventArgs e)
+        {
+            Game.OnEnd -= OnGameEnd;
+            RoomData.GameStarted = false;
+            SendUpdateToAll();
+        }
+
+        /// <summary>
+        /// Cancels the countdown timer.
+        /// </summary>
+        void CancelCountdown()
+        {
+            // Notify players
+            Players.ForEach(x => x.NotifyRoomCountdownCancel());
+
+            if (CountdownTimer != null)
+                CountdownTimer.Stop();
+
+            CountdownTimer = null;
+        }
+
+        #endregion
 
         void IConnectionMessageHandler.HandleMessage(Player player, string json)
         {
@@ -193,17 +230,17 @@ namespace Server
                     break;
             }
 
-            Players.Remove(e.Player);
-
+            // Remove player
             var data = RoomData.Players.Find(x => x.ID == e.Player.Data.ID);
             RoomData.Players.Remove(data);
+            Players.Remove(e.Player);
 
             // Return color to pool
             RoomIdPool.ReturnValue(e.Player.Data.RoomId);
 
-            // Assign a new owner
             if (Players.Count != 0)
             {
+                // Assign a new owner
                 if (Owner != Players[0])
                 {
                     Owner = Players[0];
@@ -237,41 +274,18 @@ namespace Server
 
         #endregion
 
+        #region Helpers
+
         bool IsOwner(PlayerData player)
         {
             return Owner.Data.ID == player.ID;
         }
 
-        void StartCountdown()
+        public bool HasPlayer(PlayerData player)
         {
-            // Notify players
-            Players.ForEach(x => x.NotifyRoomCountdownStart(5f));
-
-            // Start game when countdown reaches 0
-            CountdownTimer = new GameTimer("Countdown", 5f, () =>
-            {
-                Logger.Log(this, "{0} has started the game", Owner.Data.Name);
-                Game.Start(Players);
-                Game.OnEnd += Game_OnEnd;
-            });
+            return Players.Exists(x => x.Data.ID == player.ID);
         }
 
-        void Game_OnEnd(object sender, EventArgs e)
-        {
-            Game.OnEnd -= Game_OnEnd;
-            RoomData.GameStarted = false;
-            SendUpdateToAll();
-        }
-
-        void CancelCountdown()
-        {
-            // Notify players
-            Players.ForEach(x => x.NotifyRoomCountdownCancel());
-
-            if (CountdownTimer != null)
-                CountdownTimer.Stop();
-
-            CountdownTimer = null;
-        }
+        #endregion
     }
 }
