@@ -35,6 +35,8 @@ public class Game : MonoBehaviour, IClientHandler
 
     public void Initialise(Client client)
     {
+        Debug.Log("Initialise");
+
         Client = client;
         Client.MessageHandler.OnMessage += OnMessage;
 
@@ -162,6 +164,15 @@ public class Game : MonoBehaviour, IClientHandler
         });
     }
 
+    void OnDestroy()
+    {
+        if (Current != null)
+            Current.End();
+
+        if (Client != null)
+            Client.MessageHandler.OnMessage -= OnMessage;
+    }
+
     void Update()
     {
         if (Current != null)
@@ -206,8 +217,7 @@ public class Game : MonoBehaviour, IClientHandler
 
         public PreGameState(Client client, UiGameStatePreGame view) : base(client, view)
         {
-            view.Start.onClick.AddListener(() => client.Messenger.StartGame());
-            view.Cancel.onClick.AddListener(() => client.Messenger.CancelGameStart());
+            
         }
 
         protected override void OnBegin()
@@ -217,6 +227,8 @@ public class Game : MonoBehaviour, IClientHandler
 
             GetView<UiGameStatePreGame>((view) =>
             {
+                view.Start.onClick.AddListener(() => Client.Messenger.StartGame());
+                view.Cancel.onClick.AddListener(() => Client.Messenger.CancelGameStart());
                 view.Start.gameObject.SetActive(false);
                 view.Cancel.gameObject.SetActive(false);
             });
@@ -264,6 +276,15 @@ public class Game : MonoBehaviour, IClientHandler
                 view.CancelCountdown();
             });
         }
+
+        protected override void OnEnd()
+        {
+            GetView<UiGameStatePreGame>((view) =>
+            {
+                view.Start.onClick.RemoveAllListeners();
+                view.Cancel.onClick.RemoveAllListeners();
+            });
+        }
     }
 
     public class RoundBeginState : State, IGameState
@@ -292,24 +313,24 @@ public class Game : MonoBehaviour, IClientHandler
 
         public DrawingState(Client client, UiGameStateDrawing view) : base(client, view)
         {
-            view.InfoBox.Label.text = Strings.DrawingSubmitted;
-
-            // Send image on submit
-            view.Submit.onClick.AddListener(() =>
-            {
-                Client.Messenger.SendImage(Canvas.GetEncodedImage());
-                Canvas.AllowDrawing = false;
-                view.InfoBox.Show();
-                view.Submit.gameObject.SetActive(false);
-            });
+            
         }
 
         protected override void OnBegin()
         {
             GetView<UiGameStateDrawing>((view) =>
             {
+                view.InfoBox.Label.text = Strings.DrawingSubmitted;
                 view.InfoBox.Hide();
                 view.Submit.gameObject.SetActive(true);
+
+                view.Submit.onClick.AddListener(() =>
+                {
+                    Client.Messenger.SendImage(Canvas.GetEncodedImage());
+                    Canvas.AllowDrawing = false;
+                    view.InfoBox.Show();
+                    view.Submit.gameObject.SetActive(false);
+                });
             });
         }
 
@@ -330,10 +351,7 @@ public class Game : MonoBehaviour, IClientHandler
 
         public AnsweringState(Client client, UiGameStateAnswering view) : base(client, view)
         {
-            view.Submit.onClick.AddListener(() =>
-            {
-                Client.Messenger.SubmitAnswer(view.InputField.text);
-            });
+
         }
 
         protected override void OnBegin()
@@ -344,6 +362,10 @@ public class Game : MonoBehaviour, IClientHandler
                 view.InputField.text = Strings.PromptEnterGuess;
                 view.InputField.gameObject.SetActive(true);
                 view.Submit.gameObject.SetActive(true);
+                view.Submit.onClick.AddListener(() =>
+                {
+                    Client.Messenger.SubmitAnswer(view.InputField.text);
+                });
             });
         }
 
@@ -395,21 +417,26 @@ public class Game : MonoBehaviour, IClientHandler
 
         public ChoosingState(Client client, UiGameStateChoosing view) : base(client, view)
         {
-            view.OnChoiceSelected += (choice) =>
-            {
-                Client.Messenger.SubmitChosenAnswer(choice.Answer);
-            };
-
-            view.OnLike += (choice) =>
-            {
-                Client.Messenger.SubmitLike(choice.Answer);
-            };
+            
         }
 
         protected override void OnBegin()
         {
             base.OnBegin();
-            GetView<UiGameStateChoosing>().InfoBox.Hide();
+            GetView<UiGameStateChoosing>((view) =>
+            {
+                view.InfoBox.Hide();
+
+                view.OnChoiceSelected += (choice) =>
+                {
+                    Client.Messenger.SubmitChosenAnswer(choice.Answer);
+                };
+
+                view.OnLike += (choice) =>
+                {
+                    Client.Messenger.SubmitLike(choice.Answer);
+                };
+            });
         }
 
         protected override void OnMessage(string json)
@@ -436,10 +463,20 @@ public class Game : MonoBehaviour, IClientHandler
 
         public ResultsState(Client client, UiGameStateResults view) : base(client, view)
         {
-            view.OnFinishedShowingResult += () =>
+            
+        }
+
+        protected override void OnBegin()
+        {
+            base.OnBegin();
+
+            GetView<UiGameStateResults>((view) =>
             {
-                client.Messenger.FinishShowingResult();
-            };
+                view.OnFinishedShowingResult += () =>
+                {
+                    Client.Messenger.FinishShowingResult();
+                };
+            });
         }
 
         protected override void OnMessage(string json)

@@ -1,9 +1,12 @@
 using UnityEngine;
 using Protocol;
+using System;
 
 public class Messenger
 {
     Connection Connection { get; set; }
+
+    public event EventHandler OnLeaveRoom;
 
     public Messenger(Connection connection)
     {
@@ -24,6 +27,9 @@ public class Messenger
     public void LeaveRoom()
     {
         Connection.SendMessage(new ClientMessage.LeaveRoom(Connection.Player));
+
+        if (OnLeaveRoom != null)
+            OnLeaveRoom(this, null);
     }
 
     public void RequestRooms()

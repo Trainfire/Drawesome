@@ -10,10 +10,30 @@ public class UiRoom : UiBase
     public Text RoomId;
     public Text RoomPassword;
 
+    public GameObject GameContainer;
+    public Game GamePrototype;
+
+    Game GameInstance { get; set; }
+
     public override void Initialise(Client client)
     {
         base.Initialise(client);
         Leave.onClick.AddListener(() => Client.Messenger.LeaveRoom());
+        GamePrototype.gameObject.SetActive(false);
+    }
+
+    protected override void OnShow()
+    {
+        GameInstance = UiUtility.AddChild(GameContainer, GamePrototype, true);
+        var rect = (RectTransform)GameInstance.transform;
+        rect.sizeDelta = Vector2.zero;
+        GameInstance.Initialise(Client);
+    }
+
+    protected override void OnHide()
+    {
+        if (GameInstance != null)
+            Destroy(GameInstance.gameObject);
     }
 
     void Update()

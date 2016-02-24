@@ -164,7 +164,6 @@
     <Compile Include="Assets\Shared\ProtocolHelper.cs" />
     <Compile Include="Assets\Shared\ServerMessage.cs" />
     <Compile Include="Assets\Shared\StringFormatter.cs" />
-    <Compile Include="Assets\TestScoresServer.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\SyntaxTree\UnityVS\2015\UnityVS.CSharp.targets" />
 </Project>
