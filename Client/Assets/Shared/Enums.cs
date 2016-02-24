@@ -25,7 +25,7 @@ namespace Protocol
     }
 
     [Serializable]
-    public enum RoomError
+    public enum RoomNotice
     {
         None,
         InvalidPassword,
@@ -33,6 +33,13 @@ namespace Protocol
         RoomDoesNotExist,
         AlreadyInRoom,
         GameAlreadyStarted,
+    }
+
+    [Serializable]
+    public enum RoomLeaveReason
+    {
+        Normal,
+        Kicked,
     }
 
     [Serializable]

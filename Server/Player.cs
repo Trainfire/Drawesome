@@ -125,9 +125,15 @@ namespace Server
             Socket.Send(message.AsJson());
         }
 
-        public void SendRoomError(RoomError roomError)
+        public void SendRoomJoinNotice(RoomNotice roomNotice)
         {
-            var message = new ServerMessage.NotifyRoomError(roomError);
+            var message = new ServerMessage.NotifyRoomJoin(roomNotice);
+            Socket.Send(message.AsJson());
+        }
+
+        public void SendRoomLeaveReason(RoomLeaveReason reason)
+        {
+            var message = new ServerMessage.NotifyRoomLeave(reason);
             Socket.Send(message.AsJson());
         }
 

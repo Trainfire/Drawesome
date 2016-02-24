@@ -14,7 +14,8 @@ public class MessageHandler
     public event MessageEvent<ServerMessage.UpdatePlayerInfo> OnServerUpdatePlayerInfo;
     public event MessageEvent<ServerMessage.RoomList> OnRecieveRoomList;
     public event MessageEvent<ServerUpdate> OnServerUpdate;
-    public event MessageEvent<ServerMessage.NotifyRoomError> OnServerNotifyRoomError;
+    public event MessageEvent<ServerMessage.NotifyRoomJoin> OnServerNotifyRoomJoin;
+    public event MessageEvent<ServerMessage.NotifyRoomLeave> OnServerNotifyRoomLeave;
     public event MessageEvent<ServerMessage.NotifyPlayerAction> OnServerNotifyPlayerAction;
     public event MessageEvent<ServerMessage.NotifyChatMessage> OnChat;
     public event MessageEvent<ServerMessage.RoomUpdate> OnRoomUpdate;
@@ -49,7 +50,8 @@ public class MessageHandler
             Message.IsType<ServerMessage.UpdatePlayerInfo>(json, (data) => FireEvent(OnServerUpdatePlayerInfo, data));
             Message.IsType<ServerMessage.RoomUpdate>(json, (data) => FireEvent(OnRoomUpdate, data));
             Message.IsType<ServerMessage.RoomList>(json, (data) => FireEvent(OnRecieveRoomList, data));
-            Message.IsType<ServerMessage.NotifyRoomError>(json, (data) => FireEvent(OnServerNotifyRoomError, data));
+            Message.IsType<ServerMessage.NotifyRoomJoin>(json, (data) => FireEvent(OnServerNotifyRoomJoin, data));
+            Message.IsType<ServerMessage.NotifyRoomLeave>(json, (data) => FireEvent(OnServerNotifyRoomLeave, data));
             Message.IsType<ServerMessage.NotifyChatMessage>(json, (data) => FireEvent(OnChat, data));
             Message.IsType<ServerMessage.AssignRoomId>(json, (data) => FireEvent(OnRoomIdAssigned, data));
 

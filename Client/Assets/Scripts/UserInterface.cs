@@ -29,15 +29,17 @@ public class UserInterface : MonoBehaviour, IClientHandler
         ChangeMenu(ViewLogin);
 
         client.MessageHandler.OnServerConnectionSuccess += OnServerCompleteConnectionRequest;
-        client.MessageHandler.OnServerNotifyPlayerAction += OnServerNotifyPlayerAction;
-        client.MessageHandler.OnRoomUpdate += OnRoomUpdate;
+        client.MessageHandler.OnServerNotifyRoomJoin += OnServerNotifyRoomJoin;
+        client.MessageHandler.OnServerNotifyRoomLeave += OnServerNotifyRoomLeave;
     }
 
-    void OnServerNotifyPlayerAction(ServerMessage.NotifyPlayerAction message)
+    void OnServerNotifyRoomLeave(ServerMessage.NotifyRoomLeave message)
     {
-        // TODO: wtf?!?
-        if (message.Player.ID == Client.Connection.Player.ID)
-            ChangeMenu(ViewBrowser);
+        // TODO: Display popup notice
+        //if (message.Reason == RoomLeaveReason.Kicked)
+        //...
+
+        ChangeMenu(ViewBrowser);
     }
 
     void OnServerCompleteConnectionRequest(ServerMessage.NotifyConnectionSuccess message)
@@ -45,9 +47,10 @@ public class UserInterface : MonoBehaviour, IClientHandler
         ChangeMenu(ViewBrowser);
     }
 
-    void OnRoomUpdate(ServerMessage.RoomUpdate message)
+    void OnServerNotifyRoomJoin(ServerMessage.NotifyRoomJoin message)
     {
-        ChangeMenu(ViewRoom);
+        if (message.Notice == RoomNotice.None)
+            ChangeMenu(ViewRoom);
     }
 
     void OnDisconnect(object sender, EventArgs e)

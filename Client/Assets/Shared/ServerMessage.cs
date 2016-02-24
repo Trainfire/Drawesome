@@ -106,13 +106,23 @@ namespace Protocol
             }
         }
 
-        public class NotifyRoomError : Message
+        public class NotifyRoomJoin : Message
         {
-            public RoomError Notice;
+            public RoomNotice Notice;
 
-            public NotifyRoomError(RoomError notice)
+            public NotifyRoomJoin(RoomNotice notice)
             {
                 Notice = notice;
+            }
+        }
+
+        public class NotifyRoomLeave : Message
+        {
+            public RoomLeaveReason Reason;
+
+            public NotifyRoomLeave(RoomLeaveReason reason)
+            {
+                Reason = reason;
             }
         }
 

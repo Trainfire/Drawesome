@@ -72,7 +72,7 @@ namespace Server
             if (joiningPlayer.Data.ID != Owner.Data.ID && password != RoomData.Password)
             {
                 Logger.Log(this, "Player {0} provided incorrect password {1}. (Is {2})", joiningPlayer.Data.Name, password, RoomData.Password);
-                joiningPlayer.SendRoomError(RoomError.InvalidPassword);
+                joiningPlayer.SendRoomJoinNotice(RoomNotice.InvalidPassword);
                 return;
             }
 
@@ -80,7 +80,7 @@ namespace Server
             if (Players.Count == Settings.Server.MaxPlayers)
             {
                 Logger.Log(this, "Player {0} attempt to join the room {1} but that room is full", joiningPlayer.Data.Name, RoomData.ID);
-                joiningPlayer.SendRoomError(RoomError.RoomFull);
+                joiningPlayer.SendRoomJoinNotice(RoomNotice.RoomFull);
                 return;
             }
 
@@ -88,7 +88,7 @@ namespace Server
             if (RoomData.GameStarted)
             {
                 Logger.Log(this, "Player {0} attempt to join the room {1} but the game has already started", joiningPlayer.Data.Name, RoomData.ID);
-                joiningPlayer.SendRoomError(RoomError.GameAlreadyStarted);
+                joiningPlayer.SendRoomJoinNotice(RoomNotice.GameAlreadyStarted);
                 return;
             }
 
@@ -96,10 +96,12 @@ namespace Server
             {
                 // TODO: Handle player rejoining room after disconnection?
                 Logger.Log(this, "Already contains player {0}", joiningPlayer.Data.Name);
-                joiningPlayer.SendRoomError(RoomError.AlreadyInRoom);
+                joiningPlayer.SendRoomJoinNotice(RoomNotice.AlreadyInRoom);
             }
             else
             {
+                joiningPlayer.SendRoomJoinNotice(RoomNotice.None);
+
                 // Assign colour
                 var color = RoomIdPool.GetValue();
                 joiningPlayer.AssignRoomId(color);
@@ -117,9 +119,10 @@ namespace Server
             }
         }
 
-        public void Leave(PlayerData leavingPlayer)
+        public void Leave(PlayerData leavingPlayer, RoomLeaveReason reason = RoomLeaveReason.Normal)
         {
             var player = Players.Find(x => x.Data.ID == leavingPlayer.ID);
+            player.SendRoomLeaveReason(RoomLeaveReason.Normal);
             OnPlayerConnectionClosed(this, new PlayerConnectionClosed(player, PlayerCloseReason.Left));
         }
 

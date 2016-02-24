@@ -46,7 +46,7 @@ namespace Server
                 }
                 else
                 {
-                    player.SendRoomError(RoomError.RoomDoesNotExist);
+                    player.SendRoomJoinNotice(RoomNotice.RoomDoesNotExist);
                 }
             });
 
