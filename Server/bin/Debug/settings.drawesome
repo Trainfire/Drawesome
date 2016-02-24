@@ -1,5 +1,5 @@
 {
-  "RoundBeginTime": 5.0,
+  "RoundBeginTime": 0.0,
   "DrawTime": 60.0,
   "AnsweringTime": 30.0,
   "ChoosingTime": 30.0,
@@ -11,16 +11,16 @@
   "TimeToShowFinalResult": 10,
   "Decoys":
   [
-	  "astonpeel",
+	  "hammer & sickle",
 	  "i give up",
-	  "aliens",
-	  "horses",
+	  "you are here",
+	  "what",
 	  "memes",
   ],
   "Transitions": {
     "RoundBeginToDrawing": 1.0,
-    "DrawingToAnswering": 1.0,
-	"AnsweringToChoosing": 1.0,
+    "DrawingToAnswering": 3.0,
+	"AnsweringToChoosing": 3.0,
     "ChoosingtoResults": 0.0,
 	"ResultsToScores": 0,
 	"ScoresToAnswering": 1.0,
