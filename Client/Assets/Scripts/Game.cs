@@ -341,6 +341,14 @@ public class Game : MonoBehaviour, IClientHandler
                 GetView<UiGameStateDrawing>().SetPrompt(data.Prompt);
             });
         }
+
+        protected override void OnEnd()
+        {
+            GetView<UiGameStateDrawing>((view) =>
+            {
+                view.Submit.onClick.RemoveAllListeners();
+            });
+        }
     }
 
     public class AnsweringState : State, IGameState
@@ -364,7 +372,7 @@ public class Game : MonoBehaviour, IClientHandler
                 view.Submit.gameObject.SetActive(true);
                 view.Submit.onClick.AddListener(() =>
                 {
-                    Client.Messenger.SubmitAnswer(view.InputField.text);
+                    Client.Messenger.SubmitAnswer(view.InputField.textComponent.text);
                 });
             });
         }
@@ -407,6 +415,14 @@ public class Game : MonoBehaviour, IClientHandler
                 view.InfoBox.Show(Strings.AnswerSubmitted);
             });   
         }
+
+        protected override void OnEnd()
+        {
+            GetView<UiGameStateAnswering>((view) =>
+            {
+                view.Submit.onClick.RemoveAllListeners();
+            });
+        }
     }
 
     public class ChoosingState : State, IGameState
@@ -426,17 +442,19 @@ public class Game : MonoBehaviour, IClientHandler
             GetView<UiGameStateChoosing>((view) =>
             {
                 view.InfoBox.Hide();
-
-                view.OnChoiceSelected += (choice) =>
-                {
-                    Client.Messenger.SubmitChosenAnswer(choice.Answer);
-                };
-
-                view.OnLike += (choice) =>
-                {
-                    Client.Messenger.SubmitLike(choice.Answer);
-                };
+                view.OnChoiceSelected += OnChoiceSelected;
+                view.OnLike += OnLike;
             });
+        }
+
+        private void OnLike(AnswerData choice)
+        {
+            Client.Messenger.SubmitLike(choice.Answer);
+        }
+
+        void OnChoiceSelected(AnswerData choice)
+        {
+            Client.Messenger.SubmitChosenAnswer(choice.Answer);
         }
 
         protected override void OnMessage(string json)
@@ -451,6 +469,15 @@ public class Game : MonoBehaviour, IClientHandler
                     // Send to UI
                     view.ShowChoices(data.Creator, data.Choices);
                 });
+            });
+        }
+
+        protected override void OnEnd()
+        {
+            GetView<UiGameStateChoosing>((view) =>
+            {
+                view.OnChoiceSelected -= OnChoiceSelected;
+                view.OnLike -= OnLike;
             });
         }
     }
@@ -484,6 +511,14 @@ public class Game : MonoBehaviour, IClientHandler
             Message.IsType<ServerMessage.Game.SendResult>(json, (data) =>
             {
                 GetView<UiGameStateResults>().ShowAnswer(data.Answer);
+            });
+        }
+
+        protected override void OnEnd()
+        {
+            GetView<UiGameStateResults>((view) =>
+            {
+                view.OnFinishedShowingResult -= Client.Messenger.FinishShowingResult;
             });
         }
     }
