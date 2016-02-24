@@ -98,11 +98,13 @@ namespace Protocol
         {
             public PlayerData Player;
             public PlayerAction Action;
+            public PlayerActionContext Context;
 
-            public NotifyPlayerAction(PlayerData player, PlayerAction action)
+            public NotifyPlayerAction(PlayerData player, PlayerAction action, PlayerActionContext context)
             {
                 Player = player;
                 Action = action;
+                Context = context;
             }
         }
 

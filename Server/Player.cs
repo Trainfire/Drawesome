@@ -107,9 +107,9 @@ namespace Server
         /// </summary>
         /// <param name="actor">The player that committed the action.</param>
         /// <param name="action">The type of action.</param>
-        public void SendAction(PlayerData actor, PlayerAction action)
+        public void SendAction(PlayerData actor, PlayerAction action, PlayerActionContext context)
         {
-            var message = new ServerMessage.NotifyPlayerAction(actor, action);
+            var message = new ServerMessage.NotifyPlayerAction(actor, action, context);
             Socket.Send(message.AsJson());
         }
 

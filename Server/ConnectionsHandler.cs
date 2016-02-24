@@ -71,7 +71,7 @@ namespace Server
                         SendUpdateToAllClients();
 
                         // Send Player Joined message.
-                        SendToAll(new ServerMessage.NotifyPlayerAction(player.Data, PlayerAction.Connected));
+                        NotifyPlayerEvent(player, PlayerAction.Connected);
 
                         // Trigger event.
                         if (PlayerConnected != null)
@@ -109,7 +109,7 @@ namespace Server
 
                 Logger.Log(this, "Player {0} disconnected", player.Data.Name);
 
-                SendToAll(new ServerMessage.NotifyPlayerAction(player.Data, PlayerAction.Disconnected));
+                NotifyPlayerEvent(player, PlayerAction.Disconnected);
 
                 if (PlayerDisconnected != null)
                     PlayerDisconnected(this, player);
@@ -138,20 +138,9 @@ namespace Server
             return player;
         }
 
-        public void Send(Message message, Player player)
+        public void NotifyPlayerEvent(Player player, PlayerAction action)
         {
-            player.SendMessage(message);
-        }
-
-        public void SendToAll(Message message)
-        {
-            ConnectedPlayers.ForEach(x => x.SendMessage(message));
-        }
-
-        public void SendToAll(Message message, Player exception)
-        {
-            var players = ConnectedPlayers.Where(x => x != exception).ToList();
-            players.ForEach(x => x.SendMessage(message));
+            ConnectedPlayers.ForEach(x => x.SendAction(player.Data, action, PlayerActionContext.Global));
         }
 
         /// <summary>

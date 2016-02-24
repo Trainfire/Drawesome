@@ -3,6 +3,13 @@ using System;
 namespace Protocol
 {
     [Serializable]
+    public enum PlayerActionContext
+    {
+        Global,
+        Room,
+    }
+
+    [Serializable]
     public enum PlayerAction
     {
         None,

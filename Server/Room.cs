@@ -275,7 +275,7 @@ namespace Server
         void EchoActionToAll(PlayerData actor, PlayerAction action)
         {
             Logger.Log(this, "{0} ({1})", actor.Name, action);
-            Players.ForEach(x => x.SendAction(actor, action));
+            Players.ForEach(x => x.SendAction(actor, action, PlayerActionContext.Room));
         }
 
         void SendUpdateToAll()
