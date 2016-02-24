@@ -100,7 +100,6 @@
     <Compile Include="Server.cs" />
     <Compile Include="Settings.cs" />
     <Compile Include="StringFormatter.cs" />
-    <Compile Include="WebSocketBehaviour.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
