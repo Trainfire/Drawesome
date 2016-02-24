@@ -22,8 +22,20 @@ public class UiChat : UiBase
 
         Client.MessageHandler.OnChat += OnChat;
         Client.MessageHandler.OnServerNotifyPlayerAction += OnServerNotifyPlayerAction;
+        Client.MessageHandler.OnRoomCountdownCancel += OnRoomCountdownCancel;
+        Client.MessageHandler.OnRoomCountdownStart += OnRoomCountdownStart;
 
         Send.onClick.AddListener(() => OnSend());
+    }
+
+    void OnRoomCountdownStart(ServerMessage.NotifyRoomCountdown message)
+    {
+        AddMessage(Strings.CountdownStart, Client.Connection.Room.Owner.Name);
+    }
+
+    void OnRoomCountdownCancel(ServerMessage.NotifyRoomCountdownCancel message)
+    {
+        AddMessage(Strings.CountdownCancel, Client.Connection.Room.Owner.Name);
     }
 
     void OnServerNotifyPlayerAction(ServerMessage.NotifyPlayerAction message)

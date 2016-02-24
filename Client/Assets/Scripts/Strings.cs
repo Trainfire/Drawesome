@@ -18,4 +18,6 @@ public static class Strings
     public const string StateEndAnswering = "The answers are in";
     public const string StateEndChoosing = "What did everybody pick?";
     public const string Cancel = "Cancel";
+    public const string CountdownStart = "{0} has started the game";
+    public const string CountdownCancel = "{0} has cancelled the countdown";
 }

@@ -20,6 +20,8 @@ public class MessageHandler
     public event MessageEvent<ServerMessage.NotifyChatMessage> OnChat;
     public event MessageEvent<ServerMessage.RoomUpdate> OnRoomUpdate;
     public event MessageEvent<ServerMessage.AssignRoomId> OnRoomIdAssigned;
+    public event MessageEvent<ServerMessage.NotifyRoomCountdown> OnRoomCountdownStart;
+    public event MessageEvent<ServerMessage.NotifyRoomCountdownCancel> OnRoomCountdownCancel;
 
     public event MessageEvent<ServerMessage.Game.SendPrompt> OnReceivePrompt;
     public event MessageEvent<ServerMessage.Game.SendChoices> OnRecieveChoices;
@@ -54,6 +56,8 @@ public class MessageHandler
             Message.IsType<ServerMessage.NotifyRoomLeave>(json, (data) => FireEvent(OnServerNotifyRoomLeave, data));
             Message.IsType<ServerMessage.NotifyChatMessage>(json, (data) => FireEvent(OnChat, data));
             Message.IsType<ServerMessage.AssignRoomId>(json, (data) => FireEvent(OnRoomIdAssigned, data));
+            Message.IsType<ServerMessage.NotifyRoomCountdown>(json, (data) => FireEvent(OnRoomCountdownStart, data));
+            Message.IsType<ServerMessage.NotifyRoomCountdownCancel>(json, (data) => FireEvent(OnRoomCountdownCancel, data));
 
             #endregion
 
