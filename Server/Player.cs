@@ -34,20 +34,21 @@ namespace Server
         public event EventHandler<Message> OnMessage;
         public event EventHandler<string> OnMessageString;
 
-        public PlayerData Data { get; set; }
+        public PlayerData Data { get; private set; }
         public IWebSocketConnection Socket { get; private set; }
-        public bool IsAdmin { get; set; }
+        public bool IsAdmin { get; private set; }
 
         Settings Settings { get; set; }
 
         public Player(string playerName, IWebSocketConnection socket, Settings settings)
         {
             Settings = settings;
+            Socket = socket;
+
             Data = new PlayerData();
             Data.Name = playerName;
             Data.ID = Guid.NewGuid().ToString();
-            Socket = socket;
-            
+
             socket.OnClose += () =>
             {
                 if (OnConnectionClosed != null)
@@ -89,6 +90,13 @@ namespace Server
                 OnMessageString(this, json);
         }
 
+        public override string ToString()
+        {
+            return Data.Name != null ? Data.Name : "Unassigned Name";
+        }
+
+        #region Messaging
+
         public void SendMessage(Message message)
         {
             Socket.Send(message.AsJson());
@@ -102,12 +110,6 @@ namespace Server
         public void SendAction(PlayerData actor, PlayerAction action)
         {
             var message = new ServerMessage.NotifyPlayerAction(actor, action);
-            Socket.Send(message.AsJson());
-        }
-
-        public void AssignClientId(string id)
-        {
-            var message = new ServerMessage.AssignClientId(id);
             Socket.Send(message.AsJson());
         }
 
@@ -225,9 +227,6 @@ namespace Server
             Socket.Send(message.AsJson());
         }
 
-        public override string ToString()
-        {
-            return Data.Name != null ? Data.Name : "Unassigned Name";
-        }
+        #endregion
     }
 }
