@@ -70,9 +70,12 @@ public class UiChat : UiBase
 
     void OnSend()
     {
-        Client.Messenger.Say(InputField.text);
-        InputField.text = "";
-        InputField.Focus();
+        if (!string.IsNullOrEmpty(InputField.text))
+        {
+            Client.Messenger.Say(InputField.text);
+            InputField.text = "";
+            InputField.Focus();
+        }
     }
 
     void LateUpdate()
