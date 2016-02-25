@@ -200,7 +200,7 @@ namespace Server.Drawesome
 
         AnswerData GetAnswer(string answer)
         {
-            return answers.First(x => x.Answer == answer);
+            return answers.First(x => x.Answer.ToLower() == answer.ToLower());
         }
 
         #region Helpers
