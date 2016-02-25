@@ -5,4 +5,5 @@ public class UiPlayerListItem : UiBase
 {
     public Text Name;
     public GameObject Tick;
+    public GameObject DrawingIcon;
 }
