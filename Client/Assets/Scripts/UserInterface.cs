@@ -29,6 +29,7 @@ public class UserInterface : MonoBehaviour, IClientHandler
         ChangeMenu(ViewLogin);
 
         client.MessageHandler.OnServerConnectionSuccess += OnServerCompleteConnectionRequest;
+        client.Connection.ConnectionClosed += OnConnectionClosed;
         client.MessageHandler.OnServerNotifyRoomJoin += OnServerNotifyRoomJoin;
         client.MessageHandler.OnServerNotifyRoomLeave += OnServerNotifyRoomLeave;
     }
@@ -53,7 +54,7 @@ public class UserInterface : MonoBehaviour, IClientHandler
             ChangeMenu(ViewRoom);
     }
 
-    void OnDisconnect(object sender, EventArgs e)
+    void OnConnectionClosed(object sender, EventArgs e)
     {
         ChangeMenu(ViewLogin);
     }

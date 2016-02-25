@@ -9,7 +9,7 @@ public class Connection : MonoBehaviour
     public delegate void MessageDelegate(object sender, MessageEventArgs message);
     public event MessageDelegate MessageRecieved;
 
-    public event EventHandler<CloseEventArgs> ConnectionClosed;
+    public event EventHandler ConnectionClosed;
 
     public PlayerData Player { get; private set; }
     public RoomData Room { get; private set; }
@@ -19,6 +19,7 @@ public class Connection : MonoBehaviour
     WebSocket Socket { get; set; }
     string PlayerName { get; set; }
     Queue<MessageEventArgs> MessageQueue { get; set; }
+    bool IsDisconnecting { get; set; }
 
     void Awake()
     {
@@ -31,6 +32,13 @@ public class Connection : MonoBehaviour
     {
         if (MessageQueue.Count != 0 && MessageRecieved != null)
             MessageRecieved(this, MessageQueue.Dequeue());
+
+        if (IsDisconnecting)
+        {
+            if (ConnectionClosed != null)
+                ConnectionClosed(this, null);
+            IsDisconnecting = false;
+        }
 
         isRoomOwner = IsRoomOwner();
     }
@@ -97,8 +105,7 @@ public class Connection : MonoBehaviour
         Socket.OnClose -= OnClose;
         Socket.OnMessage -= OnMessage;
 
-        if (ConnectionClosed != null)
-            ConnectionClosed(this, e);
+        IsDisconnecting = true;
     }
 
     void OnApplicationQuit()
