@@ -113,6 +113,10 @@ namespace Server.Drawesome
                     Console.WriteLine("Player {0}'s answer matches an existing answer from another player!", player.Data.Name);
                     player.SendAnswerValidation(GameAnswerValidationResponse.AlreadyExists);
                 }
+                else if (data.Answer == string.Empty)
+                {
+                    player.SendAnswerValidation(GameAnswerValidationResponse.Empty);
+                }
                 else
                 {
                     player.SendAnswerValidation(GameAnswerValidationResponse.None);

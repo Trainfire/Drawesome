@@ -35,6 +35,9 @@ public class UiInfoBox : UiBase
             case GameAnswerValidationResponse.AlreadyExists:
                 Label.text = Strings.AnswerMatchesExisting;
                 break;
+            case GameAnswerValidationResponse.Empty:
+                Label.text = Strings.AnswerEmpty;
+                break;
             default:
                 break;
         }

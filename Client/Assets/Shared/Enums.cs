@@ -74,6 +74,7 @@ namespace Protocol
         None,
         MatchesPrompt,
         AlreadyExists,
+        Empty,
     }
 
     [Serializable]
