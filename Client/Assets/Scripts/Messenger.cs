@@ -69,6 +69,11 @@ public class Messenger
         Connection.SendMessage(new ClientMessage.Game.SendAction(Connection.Player, GameAction.StartNewRound));
     }
 
+    public void StartNewGame()
+    {
+        Connection.SendMessage(new ClientMessage.Game.SendAction(Connection.Player, GameAction.Restart));
+    }
+
     public void FinishShowingResult()
     {
         Connection.SendMessage(new ClientMessage.Game.SendAction(Connection.Player, GameAction.FinishShowingResult));

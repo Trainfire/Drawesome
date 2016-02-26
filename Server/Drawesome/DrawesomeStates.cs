@@ -273,7 +273,6 @@ namespace Server.Drawesome
         protected override void OnBegin()
         {
             base.OnBegin();
-            SetCountdownTimer("Show FInal Scores", 15f, false);
 
             // Send final scores
             GameData.Players.ForEach(x => x.SendScores(GameData.GetLatestScores(), true));

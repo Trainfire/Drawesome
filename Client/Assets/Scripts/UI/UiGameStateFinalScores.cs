@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.UI;
 using System.Collections.Generic;
 using System.Linq;
 using Protocol;
@@ -9,10 +10,12 @@ public class UiGameStateFinalScores : UiBase
 
     public UiFinalScoreRow RowProtoype;
     public GameObject RowContainer;
+    public Button StartNewGame;
 
     public float TimeBeforeFirst = 2f;
     public float TimeBetweenPlayers = 0.25f;
     public float TimeBeforeMostLikes = 2f;
+    public float TimeBeforeShowButton = 4f;
 
     void Awake()
     {
@@ -59,6 +62,9 @@ public class UiGameStateFinalScores : UiBase
 
         animController.AddDelay(TimeBeforeMostLikes);
         animController.AddAction("Show Most Likes", () => MostLikes.Show(scoreData));
+
+        animController.AddDelay(TimeBeforeShowButton);
+        animController.AddAnim(new UiAnimationFade(StartNewGame.gameObject, 0.2f, UiAnimationFade.FadeType.In));
 
         animController.PlayAnimations();
     }

@@ -571,6 +571,11 @@ public class Game : MonoBehaviour, IClientHandler
 
         }
 
+        protected override void OnBegin()
+        {
+            GetView<UiGameStateFinalScores>(view => view.StartNewGame.onClick.AddListener(() => Client.Messenger.StartNewGame()));
+        }
+
         protected override void OnMessage(string json)
         {
             Message.IsType<ServerMessage.Game.SendScores>(json, (data) =>
@@ -581,6 +586,24 @@ public class Game : MonoBehaviour, IClientHandler
 
                 GetView<UiGameStateFinalScores>().Show(scores);
             });
+        }
+
+        public override void Update()
+        {
+            base.Update();
+
+            // Too lazy to do this properly...
+            GetView<UiGameStateFinalScores>(view =>
+            {
+                if (view.gameObject.activeInHierarchy)
+                    view.StartNewGame.gameObject.SetActive(Client.Connection.IsRoomOwner());
+            });
+        }
+
+        protected override void OnEnd()
+        {
+            base.OnEnd();
+            GetView<UiGameStateFinalScores>(view => view.StartNewGame.onClick.RemoveAllListeners());
         }
     }
 
