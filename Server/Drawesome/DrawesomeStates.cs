@@ -248,7 +248,7 @@ namespace Server.Drawesome
             {
                 if (s.Value.AnswerGiven != null)
                 {
-                    Logger.Log("Player: {0}, Score: {1}, Answer Given: {2}", s.Key.Name, s.Value.Score, s.Value.AnswerGiven);
+                    Logger.Log("Player: {0}, Score: {1}, Answer Given: {2}, Likes: {3}", s.Key.Name, s.Value.Score, s.Value.AnswerGiven, s.Value.AnswerGiven.Likes);
                 }
                 else
                 {
@@ -257,7 +257,7 @@ namespace Server.Drawesome
             }
 
             GameData.Players.ForEach(x => x.SendScores(score));
-            SetCountdownTimer("Show Scores", 10f, false);
+            SetCountdownTimer("Show Scores", Settings.Drawesome.ScoresHoldTime, false);
         }
     }
 

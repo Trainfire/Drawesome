@@ -70,7 +70,7 @@ namespace Protocol
     {
         public PlayerData Author { get; set; }
         public string Answer { get; set; }
-        public int Likes { get; set; }
+        public int Likes { get; private set; }
         public List<PlayerData> Choosers { get; set; }
         public uint Points { get; set; }
         public GameAnswerType Type { get; set; }
@@ -79,9 +79,7 @@ namespace Protocol
         {
             Author = new PlayerData();
             Answer = string.Empty;
-            Likes = 0;
             Choosers = new List<PlayerData>();
-            Points = 0;
         }
 
         public AnswerData(string answer) : this()
@@ -98,6 +96,11 @@ namespace Protocol
         {
             Author = author;
             Answer = answer;
+        }
+
+        public void AddLike()
+        {
+            Likes += 1;
         }
     }
 
@@ -137,11 +140,13 @@ namespace Protocol
     public class ScoreData
     {
         public uint Score { get; private set; }
+        public uint Likes { get; private set; }
         public AnswerData AnswerGiven { get; private set; }
 
-        public ScoreData(uint score, AnswerData answerGiven)
+        public ScoreData(uint score, uint likes, AnswerData answerGiven)
         {
             Score = score;
+            Likes = likes;
             AnswerGiven = answerGiven;
         }
     }

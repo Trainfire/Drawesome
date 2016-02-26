@@ -12,7 +12,7 @@ namespace Server.Drawesome
         Queue<DrawingData> drawings = new Queue<DrawingData>();
         List<AnswerData> answers = new List<AnswerData>();
         Dictionary<Player, PromptData> prompts = new Dictionary<Player, PromptData>();
-        Dictionary<PlayerData, uint> scores;
+        Dictionary<PlayerData, DrawesomePlayer> playerInfo;
 
         string ILogger.LogName { get { return "Drawesome Game Controller"; } }
 
@@ -26,7 +26,8 @@ namespace Server.Drawesome
 
         public DrawesomeGameData(List<Player> players, Settings settings) : base(players, settings)
         {
-
+            playerInfo = new Dictionary<PlayerData, DrawesomePlayer>();
+            players.ForEach(x => playerInfo.Add(x.Data, new DrawesomePlayer()));
         }
 
         /// <summary>
@@ -47,10 +48,10 @@ namespace Server.Drawesome
 
             // Try and get the player's answer, if they gave one
             var scoreData = new Dictionary<PlayerData, ScoreData>();
-            foreach (var score in scores)
+            foreach (var score in playerInfo)
             {
                 var answer = playersWhoAnswered.FirstOrDefault(x => x.Key == score.Key).Value;
-                scoreData.Add(score.Key, new ScoreData(score.Value, answer));
+                scoreData.Add(score.Key, new ScoreData(score.Value.Score, score.Value.Likes, answer));
             }
 
             return scoreData;
@@ -70,24 +71,18 @@ namespace Server.Drawesome
 
             Console.WriteLine("Player {0} chose {1}", player.Data.Name, answer.Answer);
 
-            if (scores == null)
-            {
-                scores = new Dictionary<PlayerData, uint>();
-                Players.ForEach(x => scores.Add(x.Data, 0));
-            }
-
             if (answer.Type == GameAnswerType.ActualAnswer)
             {
                 // Give the drawing's creator points
-                scores[CurrentDrawing.Creator] += Settings.Drawesome.PointsToDrawerForCorrectAnswer;
+                playerInfo[CurrentDrawing.Creator].AddScore(Settings.Drawesome.PointsToDrawerForCorrectAnswer);
 
                 // Give the choosers points
-                scores[player.Data] += Settings.Drawesome.PointsForCorrectAnswer;
+                playerInfo[player.Data].AddScore(Settings.Drawesome.PointsForCorrectAnswer);
             }
             else if (answer.Type == GameAnswerType.Player)
             {
                 // Give the answer's author points
-                scores[answer.Author] += Settings.Drawesome.PointsForFakeAnswer;
+                playerInfo[answer.Author].AddScore(Settings.Drawesome.PointsForFakeAnswer);
 
                 // Assign points earned into answer. This value will be displayed for each result.
                 answer.Points += Settings.Drawesome.PointsForFakeAnswer;
@@ -109,7 +104,12 @@ namespace Server.Drawesome
 
         public void SubmitLike(string answer)
         {
-            GetAnswer(answer).Likes++;
+            var answerData = GetAnswer(answer);
+            if (answerData.Type == GameAnswerType.Player)
+            {
+                answerData.AddLike();
+                playerInfo[answerData.Author].AddLike();
+            }
         }
 
         #endregion
