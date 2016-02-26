@@ -136,12 +136,12 @@ namespace Protocol
 
     public class ScoreData
     {
-        public uint CurrentScore { get; private set; }
+        public uint Score { get; private set; }
         public AnswerData AnswerGiven { get; private set; }
 
         public ScoreData(uint currentScore, AnswerData answerGiven)
         {
-            CurrentScore = currentScore;
+            Score = currentScore;
             AnswerGiven = answerGiven;
         }
     }

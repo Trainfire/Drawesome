@@ -28,7 +28,7 @@ public class UiGameStateFinalScores : UiBase
             var instance = UiUtility.AddChild(RowContainer, RowProtoype, true);
 
             instance.PlayerName.text = score.Key.Name;
-            instance.Points.text = score.Value.CurrentScore.ToString();
+            instance.Points.text = score.Value.Score.ToString();
 
             views.Add(instance);
         }

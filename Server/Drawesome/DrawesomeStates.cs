@@ -248,11 +248,11 @@ namespace Server.Drawesome
             {
                 if (s.Value.AnswerGiven != null)
                 {
-                    Logger.Log("Player: {0}, Score: {1}, Answer Given: {2}", s.Key.Name, s.Value.CurrentScore, s.Value.AnswerGiven);
+                    Logger.Log("Player: {0}, Score: {1}, Answer Given: {2}", s.Key.Name, s.Value.Score, s.Value.AnswerGiven);
                 }
                 else
                 {
-                    Logger.Log("Player: {0}, Score: {1}, Answer Given: None", s.Key.Name, s.Value.CurrentScore);
+                    Logger.Log("Player: {0}, Score: {1}, Answer Given: None", s.Key.Name, s.Value.Score);
                 }
             }
 

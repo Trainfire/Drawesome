@@ -256,7 +256,7 @@ namespace Protocol
                             pairs.Add(new KeyValuePair<PlayerData, ScoreData>(Players[i], Scores[i]));
                         }
 
-                        pairs = pairs.OrderByDescending(x => x.Value.CurrentScore).ToList();
+                        pairs = pairs.OrderByDescending(x => x.Value.Score).ToList();
 
                         Players = pairs.Select(x => x.Key).ToList();
                         Scores = pairs.Select(x => x.Value).ToList();

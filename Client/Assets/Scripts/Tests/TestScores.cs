@@ -44,13 +44,8 @@ public class TestScores : MonoBehaviour
             if (!scoreCache.ContainsKey(serverScore.Key))
                 scoreCache.Add(serverScore.Key, new GameScore(serverScore.Value));
 
-            // Cache previous score
-            scoreCache[serverScore.Key].PreviousScore = scoreCache[serverScore.Key].CurrentScore;
-
-            Debug.LogFormat("{0}'s previous score is {1}", serverScore.Key.Name, scoreCache[serverScore.Key].PreviousScore);
-
-            // Set current score
-            scoreCache[serverScore.Key].CurrentScore = serverScore.Value.CurrentScore;
+            // Update score
+            scoreCache[serverScore.Key].UpdateScore(serverScore.Value);
         }
 
         // Show values on UI

@@ -549,13 +549,8 @@ public class Game : MonoBehaviour, IClientHandler
                     if (!scoreCache.ContainsKey(score.Key))
                         scoreCache.Add(score.Key, new GameScore(score.Value));
 
-                    // Cache previous score
-                    scoreCache[score.Key].PreviousScore = scoreCache[score.Key].CurrentScore;
-
-                    Debug.LogFormat("{0}'s previous score is {1}", score.Key.Name, scoreCache[score.Key].PreviousScore);
-
                     // Set current score
-                    scoreCache[score.Key].CurrentScore = score.Value.CurrentScore;
+                    scoreCache[score.Key].UpdateScore(score.Value);
                 }
 
                 GetView<UiGameStateScores>().ShowScores(scoreCache);

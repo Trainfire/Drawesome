@@ -36,7 +36,8 @@ public static class TestUtility
             player.Name = "Player " + i;
 
             var score = (uint)Random.Range(0, 2000);
-            var scoreData = new ScoreData(score, new AnswerData("random answer"));
+            var scoreData = new ScoreData(score, new AnswerData(Random.Range(0, 1000).ToString()));
+            scoreData.AnswerGiven.Likes = Random.Range(0, 5);
             data.Add(player, scoreData);
         }
         return data;
