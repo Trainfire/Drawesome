@@ -107,7 +107,7 @@ namespace Protocol
     public class PromptData
     {
         public int Id { get; set; }
-        public string Text { private get; set; }
+        public string Text { get; set; }
 
         // Replaces any tokens such as "random player name" appropriately replaced.
         public string ReplaceTokens(PlayerData player, List<PlayerData> players)
@@ -139,9 +139,9 @@ namespace Protocol
 
     public class ScoreData
     {
-        public uint Score { get; private set; }
-        public uint Likes { get; private set; }
-        public AnswerData AnswerGiven { get; private set; }
+        public uint Score { get; set; }
+        public uint Likes { get; set; }
+        public AnswerData AnswerGiven { get; set; }
 
         public ScoreData(uint score, uint likes, AnswerData answerGiven)
         {
