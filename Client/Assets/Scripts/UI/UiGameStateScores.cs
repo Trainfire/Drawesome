@@ -50,7 +50,7 @@ public class UiGameStateScores : UiBase
             var temp = score;
             AnimController.AddAction("Show Previous Scores", () =>
             {
-                view.Score.text = temp.Value.PreviousScoreData.Score.ToString();
+                view.Score.text = temp.Value.PreviousScore.ToString();
                 view.PointsEarned.text = "";
                 view.Likes.gameObject.SetActive(false);
             });
@@ -106,7 +106,7 @@ public class UiGameStateScores : UiBase
 
         foreach (var score in newScores)
         {
-            if (score.Value.CurrentScoreData.AnswerGiven.Likes != 0)
+            if (score.Value.CurrentScoreData.AnswerGiven != null && score.Value.CurrentScoreData.AnswerGiven.Likes != 0)
             {
                 var view = AddOrGetView(score.Key, score.Value);
                 var temp = score;

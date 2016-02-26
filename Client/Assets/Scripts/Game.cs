@@ -549,6 +549,8 @@ public class Game : MonoBehaviour, IClientHandler
                     if (!scoreCache.ContainsKey(score.Key))
                         scoreCache.Add(score.Key, new GameScore(score.Value));
 
+                    Debug.LogFormat("Player: {0}, Score: {1}", score.Key.Name, score.Value.Score);
+
                     // Set current score
                     scoreCache[score.Key].UpdateScore(score.Value);
                 }

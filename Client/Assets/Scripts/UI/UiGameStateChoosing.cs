@@ -49,12 +49,12 @@ public class UiGameStateChoosing : UiBase
 
             // Don't allow button presses if the drawing creator is the player
             instance.Button.interactable = !isPlayer && !isCreator;
-            instance.Like.interactable = !isPlayer;
+            instance.Like.gameObject.SetActive(!isPlayer);
+
+            var tempChoice = choices[i];
 
             if (!isPlayer && !isCreator)
             {
-                var tempChoice = choices[i];
-
                 instance.Button.onClick.AddListener(() =>
                 {
                     if (OnChoiceSelected != null)
@@ -64,13 +64,16 @@ public class UiGameStateChoosing : UiBase
 
                     InfoBox.Show(Strings.ChoiceSubmitted);
                 });
-
-                instance.Like.onClick.AddListener(() =>
-                {
-                    if (OnLike != null)
-                        OnLike(tempChoice);
-                });
             }
+
+            // Likes
+            instance.Like.onClick.AddListener(() =>
+            {
+                if (OnLike != null)
+                    OnLike(tempChoice);
+
+                instance.Like.gameObject.SetActive(false);
+            });
 
             Views.Add(instance);
         }
