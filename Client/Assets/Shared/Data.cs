@@ -139,9 +139,9 @@ namespace Protocol
         public uint Score { get; private set; }
         public AnswerData AnswerGiven { get; private set; }
 
-        public ScoreData(uint currentScore, AnswerData answerGiven)
+        public ScoreData(uint score, AnswerData answerGiven)
         {
-            Score = currentScore;
+            Score = score;
             AnswerGiven = answerGiven;
         }
     }
