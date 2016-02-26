@@ -21,4 +21,5 @@ public static class Strings
     public const string Cancel = "Cancel";
     public const string CountdownStart = "{0} has started the game";
     public const string CountdownCancel = "{0} has cancelled the countdown";
+    public const string Winner = "Winner!";
 }

@@ -13,14 +13,14 @@ public class TestFinalScores : MonoBehaviour
     void Awake()
     {
         View = GetComponent<UiGameStateFinalScores>();
-        players = TestUtility.GetPlayerData();
+        players = TestUtility.GetPlayerData(3);
     }
 
     void LateUpdate()
     {
         if (Input.GetKeyUp(KeyCode.Space))
         {
-            HandleScores(TestUtility.GetPlayerScores());
+            HandleScores(TestUtility.GetPlayerScores(3));
         }
     }
 

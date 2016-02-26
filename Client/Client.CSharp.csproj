@@ -117,12 +117,14 @@
     <Compile Include="Assets\Scripts\UI\Anims\UiAnimationDelay.cs" />
     <Compile Include="Assets\Scripts\UI\Anims\UiAnimationFade.cs" />
     <Compile Include="Assets\Scripts\UI\Anims\UiAnimationScale.cs" />
+    <Compile Include="Assets\Scripts\UI\Anims\UiAnimationShake.cs" />
     <Compile Include="Assets\Scripts\UI\UiBase.cs" />
     <Compile Include="Assets\Scripts\UI\UiBrowser.cs" />
     <Compile Include="Assets\Scripts\UI\UiBrowserItem.cs" />
     <Compile Include="Assets\Scripts\UI\UiChat.cs" />
     <Compile Include="Assets\Scripts\UI\UiChoice.cs" />
     <Compile Include="Assets\Scripts\UI\UiDrawingCanvas.cs" />
+    <Compile Include="Assets\Scripts\UI\UiFinalScoreLikesRow.cs" />
     <Compile Include="Assets\Scripts\UI\UiFinalScoreRow.cs" />
     <Compile Include="Assets\Scripts\UI\UiGame.cs" />
     <Compile Include="Assets\Scripts\UI\UiGameState.cs" />
@@ -137,6 +139,7 @@
     <Compile Include="Assets\Scripts\UI\UiGameStateScores.cs" />
     <Compile Include="Assets\Scripts\UI\UiInfoBox.cs" />
     <Compile Include="Assets\Scripts\UI\UiLogin.cs" />
+    <Compile Include="Assets\Scripts\UI\UiMostLikes.cs" />
     <Compile Include="Assets\Scripts\UI\UiOrderedList.cs" />
     <Compile Include="Assets\Scripts\UI\UiPlayerList.cs" />
     <Compile Include="Assets\Scripts\UI\UiPlayerListItem.cs" />
@@ -164,6 +167,7 @@
     <Compile Include="Assets\Shared\ProtocolHelper.cs" />
     <Compile Include="Assets\Shared\ServerMessage.cs" />
     <Compile Include="Assets\Shared\StringFormatter.cs" />
+    <Compile Include="Assets\UiStamp.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\SyntaxTree\UnityVS\2015\UnityVS.CSharp.targets" />
 </Project>

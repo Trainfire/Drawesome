@@ -5,11 +5,14 @@ using Protocol;
 
 public class UiGameStateFinalScores : UiBase
 {
+    public UiMostLikes MostLikes;
+
     public UiFinalScoreRow RowProtoype;
     public GameObject RowContainer;
 
     public float TimeBeforeFirst = 2f;
     public float TimeBetweenPlayers = 0.25f;
+    public float TimeBeforeMostLikes = 2f;
 
     void Awake()
     {
@@ -49,9 +52,13 @@ public class UiGameStateFinalScores : UiBase
             // If showing final player...
             if (i == (views.Count - 1))
             {
-
+                views[i].Position.text = Strings.Winner;
+                animController.AddAnim(new UiAnimationScale(views[i].gameObject, Vector3.one * 5, Vector3.one, 0.5f));
             }
         }
+
+        animController.AddDelay(TimeBeforeMostLikes);
+        animController.AddAction("Show Most Likes", () => MostLikes.Show(scoreData));
 
         animController.PlayAnimations();
     }
