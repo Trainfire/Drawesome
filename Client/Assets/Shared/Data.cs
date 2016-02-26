@@ -70,7 +70,7 @@ namespace Protocol
     {
         public PlayerData Author { get; set; }
         public string Answer { get; set; }
-        public int Likes { get; private set; }
+        public int Likes { get; set; }
         public List<PlayerData> Choosers { get; set; }
         public uint Points { get; set; }
         public GameAnswerType Type { get; set; }
