@@ -100,39 +100,13 @@ namespace Server.Drawesome
             Message.IsType<ClientMessage.Game.SubmitAnswer>(json, (data) =>
             {
                 Console.WriteLine("{0} submitted '{1}'", player.Data.Name, data.Answer);
-
-                var answer = StringFormatter.FormatAnswer(data.Answer);
-
-                if (GameData.IsPrompt(answer))
+                GameData.SubmitAnswer(player, data.Answer, () =>
                 {
-                    Console.WriteLine("Player {0}'s answer matches prompt!", player.Data.Name);
-                    player.SendAnswerValidation(GameAnswerValidationResponse.MatchesPrompt);
-                }
-                else if (GameData.MatchesExistingAnswer(answer))
-                {
-                    Console.WriteLine("Player {0}'s answer matches an existing answer from another player!", player.Data.Name);
-                    player.SendAnswerValidation(GameAnswerValidationResponse.AlreadyExists);
-                }
-                else if (data.Answer == string.Empty)
-                {
-                    player.SendAnswerValidation(GameAnswerValidationResponse.Empty);
-                }
-                else
-                {
-                    player.SendAnswerValidation(GameAnswerValidationResponse.None);
-
-                    // Add answer here
-                    GameData.SubmitAnswer(new AnswerData(player.Data, answer));
-
-                    // Tell all clients that player has submitted answer
-                    GameData.Players.ForEach(x => x.NotifyPlayerGameAction(player.Data, GamePlayerAction.AnswerSubmitted));
-
-                    // Register response
                     ResponseHandler.Register(player);
 
                     if (ResponseHandler.AllResponded())
                         EndState();
-                }
+                });
             });
         }        
     }

@@ -59,10 +59,37 @@ namespace Server.Drawesome
 
         #region Submission Handlers
 
-        public void SubmitAnswer(AnswerData answer)
+        public void SubmitAnswer(Player player, string answer, Action onSuccess)
         {
-            Console.WriteLine("Add answer: {0}", answer.Answer);
-            answers.Add(answer);
+            if (IsPrompt(answer))
+            {
+                Console.WriteLine("Player {0}'s answer matches prompt!", player.Data.Name);
+                player.SendAnswerValidation(GameAnswerValidationResponse.MatchesPrompt);
+            }
+            else if (MatchesExistingAnswer(answer))
+            {
+                Console.WriteLine("Player {0}'s answer matches an existing answer from another player!", player.Data.Name);
+                player.SendAnswerValidation(GameAnswerValidationResponse.AlreadyExists);
+            }
+            else if (string.IsNullOrWhiteSpace(answer))
+            {
+                player.SendAnswerValidation(GameAnswerValidationResponse.Empty);
+            }
+            else
+            {
+                player.SendAnswerValidation(GameAnswerValidationResponse.None);
+
+                // Add answer here
+                var answerData = new AnswerData(player.Data, answer.Trim());
+                Console.WriteLine("Add answer: {0}", answerData.Answer);
+                answers.Add(answerData);
+
+                // Tell all clients that player has submitted answer
+                Players.ForEach(x => x.NotifyPlayerGameAction(player.Data, GamePlayerAction.AnswerSubmitted));
+
+                if (onSuccess != null)
+                    onSuccess();
+            }
         }
 
         public void SubmitChoice(string chosenAnswer, Player player)
