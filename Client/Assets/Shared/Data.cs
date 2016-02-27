@@ -121,7 +121,7 @@ namespace Protocol
         public string ReplaceTokens(PlayerData player, List<PlayerData> players)
         {
             // TODO: Move somewhere more appropriate.
-            var tokenPlayerName = "<RANDOM PLAYER NAME>";
+            var tokenPlayerName = "<RANDOM_PLAYER_NAME>";
 
             if (Text.Contains(tokenPlayerName))
             {
