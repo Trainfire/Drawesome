@@ -57,14 +57,17 @@ namespace Protocol
     [Serializable]
     public class DrawingData
     {
+        /// <summary>
+        /// The image encoded as a base64 string.
+        /// </summary>
+        public string Image;
         public PlayerData Creator;
-        public byte[] Image;
         public PromptData Prompt;
 
         public DrawingData(PlayerData creator, byte[] image, PromptData prompt)
         {
             Creator = creator;
-            Image = image;
+            Image = Convert.ToBase64String(image);
             Prompt = prompt;
         }
     }

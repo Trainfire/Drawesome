@@ -39,7 +39,8 @@ public class DrawingCanvas : Game.IGameStateHandler
     public void SetImage(DrawingData drawing)
     {
         SetBrushColor(drawing.Creator.RoomId);
-        SetImage(drawing.Image);
+        var image = Convert.FromBase64String(drawing.Image);
+        SetImage(image);
     }
 
     public void Clear()
