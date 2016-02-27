@@ -14,6 +14,9 @@ namespace Server.Game
         public abstract GameState Type { get; } // TODO: Move into interface or different base class
         public T GameData { get; protected set; }
 
+        protected ResponseHandler<Player> ResponseHandler { get; private set; }
+        protected Settings Settings { get; private set; }
+
         GameTimer Timer { get; set; }
 
         public class StateEventArgs : EventArgs
@@ -26,6 +29,12 @@ namespace Server.Game
                 GameData = gameData;
                 EndReason = endReason;
             }
+        }
+
+        public State(Settings settings)
+        {
+            Settings = settings;
+            ResponseHandler = new ResponseHandler<Player>();
         }
 
         public void Begin(T gameData)
@@ -56,6 +65,8 @@ namespace Server.Game
 
         public void EndState(GameStateEndReason reason, bool fireOnEnd = true)
         {
+            ResponseHandler.Clear();
+
             if (Timer != null)
                 Timer.Stop();
 

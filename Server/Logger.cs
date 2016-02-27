@@ -1,14 +1,15 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using System.IO;
+using System.Threading;
 
 namespace Server
 {
     static class Logger
     {
         public static bool Enabled { get { return enabled; } set { enabled = value; } }
+
         static bool enabled = true;
+        static ReaderWriterLockSlim _readWriteLock = new ReaderWriterLockSlim();
 
         public static void Log(ILogger logger, string message, params object[] args)
         {
@@ -28,7 +29,36 @@ namespace Server
         static void Log(string message)
         {
             if (enabled)
-                Console.WriteLine(DateTime.Now + " - " + message);
+            {
+                var str = string.Format("{0} - {1}", DateTime.Now, message);
+                Console.WriteLine(str);
+                WriteToFile(str);
+            }
+        }
+
+        static void WriteToFile(string log)
+        {
+            var path = AppDomain.CurrentDomain.BaseDirectory + "log";
+
+            if (!File.Exists(path))
+            {
+                var newFile = File.CreateText(path);
+            }
+
+            _readWriteLock.EnterWriteLock();
+            try
+            {
+                using (var sw = File.AppendText(path))
+                {
+                    sw.WriteLine(log);
+                    sw.Close();
+                }
+            }
+            finally
+            {
+                _readWriteLock.ExitWriteLock();
+            }
+            
         }
     }
 }

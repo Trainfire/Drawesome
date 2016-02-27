@@ -52,6 +52,7 @@ public class UiGameStateScores : UiBase
             {
                 view.Score.text = temp.Value.PreviousScore.ToString();
                 view.PointsEarned.text = "";
+                view.Likes.gameObject.SetActive(false);
             });
             AnimController.AddAnim(new UiAnimationFade(view.gameObject, revealScores, UiAnimationFade.FadeType.In));
         }
@@ -77,10 +78,17 @@ public class UiGameStateScores : UiBase
         {
             var view = AddOrGetView(score.Key, score.Value);
             var temp = score;
-            AnimController.AddAnim(new UiAnimationFade(view.PointsEarned.gameObject, 0.1f, UiAnimationFade.FadeType.Out));
+
+            // Fade in the points earned text displayed on right side as + 1234
+            AnimController.AddAnim(new UiAnimationFade(view.PointsEarned.gameObject, 0.1f, UiAnimationFade.FadeType.Out), false);
+
+            // Reveal player's answer underneath if they gave one
+            view.Answer.text = temp.Value.CurrentScoreData.AnswerGiven != null ? temp.Value.CurrentScoreData.AnswerGiven.Answer : "";
+
+            // Show the player's current score
             AnimController.AddAction("Update Scores", () =>
             {
-                view.Score.text = temp.Value.CurrentScore.ToString();
+                view.Score.text = temp.Value.CurrentScoreData.Score.ToString();
             });
         }
 
@@ -90,8 +98,27 @@ public class UiGameStateScores : UiBase
         // Reorder list
         AnimController.AddAction("Reorder List", () =>
         {
-            List.OrderBy<GameScore>((a, b) => a.CurrentScore.CompareTo(b.CurrentScore));
+            List.OrderBy<GameScore>((a, b) => a.CurrentScoreData.Score.CompareTo(b.CurrentScoreData.Score));
         });
+
+        // Show likes
+        AnimController.AddDelay(2f);
+
+        foreach (var score in newScores)
+        {
+            if (score.Value.CurrentScoreData.AnswerGiven != null && score.Value.CurrentScoreData.AnswerGiven.Likes != 0)
+            {
+                var view = AddOrGetView(score.Key, score.Value);
+                var temp = score;
+                AnimController.AddAction("Update Likes", () =>
+                {
+                    view.Likes.gameObject.SetActive(true);
+                    view.LikesEarned.text = "+" + temp.Value.CurrentScoreData.AnswerGiven.Likes.ToString();
+                });
+
+                AnimController.AddAnim(new UiAnimationFade(view.Likes, 0.1f, UiAnimationFade.FadeType.In), false);
+            }
+        }
 
         AnimController.PlayAnimations();
     }

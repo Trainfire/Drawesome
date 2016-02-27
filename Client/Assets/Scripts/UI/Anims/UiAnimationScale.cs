@@ -34,6 +34,7 @@ public class UiAnimationScale : UiAnimationComponent
 
         tweener.Play(() =>
         {
+            Canvas.transform.localScale = tweener.To;
             Done();
         });
     }

@@ -22,13 +22,26 @@ public class UiChat : UiBase
 
         Client.MessageHandler.OnChat += OnChat;
         Client.MessageHandler.OnServerNotifyPlayerAction += OnServerNotifyPlayerAction;
+        Client.MessageHandler.OnRoomCountdownCancel += OnRoomCountdownCancel;
+        Client.MessageHandler.OnRoomCountdownStart += OnRoomCountdownStart;
 
         Send.onClick.AddListener(() => OnSend());
     }
 
+    void OnRoomCountdownStart(ServerMessage.NotifyRoomCountdown message)
+    {
+        AddMessage(Strings.CountdownStart, Client.Connection.Room.Owner.Name);
+    }
+
+    void OnRoomCountdownCancel(ServerMessage.NotifyRoomCountdownCancel message)
+    {
+        AddMessage(Strings.CountdownCancel, Client.Connection.Room.Owner.Name);
+    }
+
     void OnServerNotifyPlayerAction(ServerMessage.NotifyPlayerAction message)
     {
-        AddMessage(StringFormatter.FormatPlayerAction(message, Client.Connection.Player));
+        if (message.Context == PlayerActionContext.Room)
+            AddMessage(StringFormatter.FormatPlayerAction(message, Client.Connection.Player));
     }
 
     void OnChat(ServerMessage.NotifyChatMessage message)
@@ -57,9 +70,12 @@ public class UiChat : UiBase
 
     void OnSend()
     {
-        Client.Messenger.Say(InputField.text);
-        InputField.text = "";
-        InputField.Focus();
+        if (!string.IsNullOrEmpty(InputField.text))
+        {
+            Client.Messenger.Say(InputField.text);
+            InputField.text = "";
+            InputField.Focus();
+        }
     }
 
     void LateUpdate()

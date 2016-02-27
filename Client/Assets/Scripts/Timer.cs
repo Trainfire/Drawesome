@@ -15,7 +15,6 @@ public class Timer : MonoBehaviour, Game.IGameStateHandler, Game.IGameMessageHan
     {
         Duration = 30f;
         CurrentTime = Duration;
-        Hide();
     }
 
     void Show()

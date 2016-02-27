@@ -3,6 +3,7 @@ using System.Linq;
 using System.Collections.Generic;
 using Protocol;
 using Server.Drawesome;
+using Server.Game;
 
 namespace Server
 {
@@ -15,10 +16,12 @@ namespace Server
 
         string ILogger.LogName { get { return string.Format("Room {0}", RoomData.ID); } }
 
+        ConnectionsHandler ConnectionsHandler { get; set; }
         Player Owner { get; set; }
         DrawesomeGame Game { get; set; }
         IdPool RoomIdPool { get; set; }
         Settings Settings { get; set; }
+        GameTimer CountdownTimer { get; set; }
 
         const int MaxPlayers = 8; // TODO: Place in Server settings
 
@@ -29,6 +32,7 @@ namespace Server
 
         public Room(ConnectionsHandler connections, Player owner, Settings settings, string password = "")
         {
+            ConnectionsHandler = connections;
             connections.AddMessageListener(this);
 
             Settings = settings;
@@ -59,6 +63,8 @@ namespace Server
             Game = new DrawesomeGame(connections, settings);
         }
 
+        #region Actions
+
         public void Join(Player joiningPlayer, string password = "")
         {
             Logger.Log(this, "Player {0} joined room {1}", joiningPlayer.Data.Name, RoomData.ID);
@@ -67,7 +73,7 @@ namespace Server
             if (joiningPlayer.Data.ID != Owner.Data.ID && password != RoomData.Password)
             {
                 Logger.Log(this, "Player {0} provided incorrect password {1}. (Is {2})", joiningPlayer.Data.Name, password, RoomData.Password);
-                joiningPlayer.SendRoomError(RoomError.InvalidPassword);
+                joiningPlayer.SendRoomJoinNotice(RoomNotice.InvalidPassword);
                 return;
             }
 
@@ -75,7 +81,7 @@ namespace Server
             if (Players.Count == Settings.Server.MaxPlayers)
             {
                 Logger.Log(this, "Player {0} attempt to join the room {1} but that room is full", joiningPlayer.Data.Name, RoomData.ID);
-                joiningPlayer.SendRoomError(RoomError.RoomFull);
+                joiningPlayer.SendRoomJoinNotice(RoomNotice.RoomFull);
                 return;
             }
 
@@ -83,7 +89,7 @@ namespace Server
             if (RoomData.GameStarted)
             {
                 Logger.Log(this, "Player {0} attempt to join the room {1} but the game has already started", joiningPlayer.Data.Name, RoomData.ID);
-                joiningPlayer.SendRoomError(RoomError.GameAlreadyStarted);
+                joiningPlayer.SendRoomJoinNotice(RoomNotice.GameAlreadyStarted);
                 return;
             }
 
@@ -91,10 +97,12 @@ namespace Server
             {
                 // TODO: Handle player rejoining room after disconnection?
                 Logger.Log(this, "Already contains player {0}", joiningPlayer.Data.Name);
-                joiningPlayer.SendRoomError(RoomError.AlreadyInRoom);
+                joiningPlayer.SendRoomJoinNotice(RoomNotice.AlreadyInRoom);
             }
             else
             {
+                joiningPlayer.SendRoomJoinNotice(RoomNotice.None);
+
                 // Assign colour
                 var color = RoomIdPool.GetValue();
                 joiningPlayer.AssignRoomId(color);
@@ -112,16 +120,52 @@ namespace Server
             }
         }
 
-        public void Leave(PlayerData leavingPlayer)
+        public void Leave(PlayerData leavingPlayer, RoomLeaveReason reason = RoomLeaveReason.Normal)
         {
             var player = Players.Find(x => x.Data.ID == leavingPlayer.ID);
+            player.SendRoomLeaveReason(RoomLeaveReason.Normal);
             OnPlayerConnectionClosed(this, new PlayerConnectionClosed(player, PlayerCloseReason.Left));
         }
 
-        public bool HasPlayer(PlayerData player)
+        /// <summary>
+        /// Begins a countdown timer. The game will begin if the timer reaches 0.
+        /// </summary>
+        void StartCountdown()
         {
-            return Players.Exists(x => x.Data.ID == player.ID);
+            // Notify players
+            Players.ForEach(x => x.NotifyRoomCountdownStart(5f));
+
+            // Start game when countdown reaches 0
+            CountdownTimer = new GameTimer("Countdown", 5f, () =>
+            {
+                Logger.Log(this, "{0} has started the game", Owner.Data.Name);
+                Game.Start(Players);
+                Game.OnEnd += OnGameEnd;
+            });
         }
+
+        void OnGameEnd(object sender, EventArgs e)
+        {
+            Game.OnEnd -= OnGameEnd;
+            RoomData.GameStarted = false;
+            SendUpdateToAll();
+        }
+
+        /// <summary>
+        /// Cancels the countdown timer.
+        /// </summary>
+        void CancelCountdown()
+        {
+            // Notify players
+            Players.ForEach(x => x.NotifyRoomCountdownCancel());
+
+            if (CountdownTimer != null)
+                CountdownTimer.Stop();
+
+            CountdownTimer = null;
+        }
+
+        #endregion
 
         void IConnectionMessageHandler.HandleMessage(Player player, string json)
         {
@@ -134,25 +178,36 @@ namespace Server
                         case GameAction.Start:
                             Logger.Log(this, "{0} has started the game", Owner.Data.Name);
                             RoomData.GameStarted = true;
-                            Game.Start(Players);
+                            StartCountdown();
                             break;
+
+                        case GameAction.CancelStart:
+                            Logger.Log(this, "{0} has cancelled the game from starting", Owner.Data.Name);
+                            RoomData.GameStarted = false;
+                            CancelCountdown();
+                            break;
+
                         case GameAction.Restart:
                             Logger.Log(this, "{0} has restarted the game", Owner.Data.Name);
                             Game.Restart();
                             break;
+
                         case GameAction.StartNewRound:
                             Logger.Log(this, "{0} has started a new round", Owner.Data.Name);
                             Game.StartNewRound();
                             break;
+
                         default:
                             break;
                     }
+
+                    SendUpdateToAll();
                 }
             });
 
             Message.IsType<ClientMessage.SendChat>(json, (data) =>
             {
-                Logger.Log(this, "{0}: {1}", player.Data.Name, data.Message);
+                Logger.Log(this, "{0} said something", player.Data.Name);
                 // Echo chat to all clients
                 Players.ForEach(x => x.SendChat(player.Data, data.Message));
             });
@@ -179,17 +234,17 @@ namespace Server
                     break;
             }
 
-            Players.Remove(e.Player);
-
+            // Remove player
             var data = RoomData.Players.Find(x => x.ID == e.Player.Data.ID);
             RoomData.Players.Remove(data);
+            Players.Remove(e.Player);
 
             // Return color to pool
             RoomIdPool.ReturnValue(e.Player.Data.RoomId);
 
-            // Assign a new owner
             if (Players.Count != 0)
             {
+                // Assign a new owner
                 if (Owner != Players[0])
                 {
                     Owner = Players[0];
@@ -203,6 +258,13 @@ namespace Server
                 // Remove room if no players remain
                 Game.End();
 
+                if (CountdownTimer != null)
+                    CountdownTimer.Stop();
+
+                Logger.Log(this, "Closing room {0} as it is empty", RoomData.ID);
+
+                ConnectionsHandler.RemoveMessageListener(this);
+
                 if (OnEmpty != null)
                     OnEmpty(this, this);
             }
@@ -213,7 +275,7 @@ namespace Server
         void EchoActionToAll(PlayerData actor, PlayerAction action)
         {
             Logger.Log(this, "{0} ({1})", actor.Name, action);
-            Players.ForEach(x => x.SendAction(actor, action));
+            Players.ForEach(x => x.SendAction(actor, action, PlayerActionContext.Room));
         }
 
         void SendUpdateToAll()
@@ -223,9 +285,18 @@ namespace Server
 
         #endregion
 
+        #region Helpers
+
         bool IsOwner(PlayerData player)
         {
             return Owner.Data.ID == player.ID;
         }
+
+        public bool HasPlayer(PlayerData player)
+        {
+            return Players.Exists(x => x.Data.ID == player.ID);
+        }
+
+        #endregion
     }
 }

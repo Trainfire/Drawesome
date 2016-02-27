@@ -3,13 +3,21 @@ using Protocol;
 
 namespace Protocol
 {
-    [Serializable]
     public class ClientMessage : Message
     {
-        [Serializable]
+        public class RequestAdmin : Message
+        {
+            public string Password { get; private set; }
+
+            public RequestAdmin(string password)
+            {
+                Password = password;
+            }
+        }
+
         public class GiveName : Message
         {
-            public string Name;
+            public string Name { get; private set; }
 
             public GiveName(string name)
             {
@@ -17,10 +25,9 @@ namespace Protocol
             }
         }
 
-        [Serializable]
         public class CreateRoom : Message
         {
-            public string Password;
+            public string Password { get; private set; }
 
             public CreateRoom(PlayerData playerInfo, string password)
             {
@@ -28,11 +35,10 @@ namespace Protocol
             }
         }
 
-        [Serializable]
         public class JoinRoom : Message
         {
-            public string RoomId;
-            public string Password;
+            public string RoomId { get; private set; }
+            public string Password { get; private set; }
 
             public JoinRoom(PlayerData playerInfo, string roomId, string password = "")
             {
@@ -41,7 +47,6 @@ namespace Protocol
             }
         }
 
-        [Serializable]
         public class LeaveRoom : Message
         {
             public LeaveRoom(PlayerData playerInfo)
@@ -50,7 +55,6 @@ namespace Protocol
             }
         }
 
-        [Serializable]
         public class RequestRoomList : Message
         {
             public RequestRoomList(PlayerData playerInfo)
@@ -59,10 +63,9 @@ namespace Protocol
             }
         }
 
-        [Serializable]
         public class SendChat : Message
         {
-            public string Message;
+            public string Message { get; private set; }
 
             public SendChat(string message)
             {
@@ -72,13 +75,11 @@ namespace Protocol
 
         #region Game
 
-        [Serializable]
         public class Game
         {
-            [Serializable]
             public class SendImage : Message
             {
-                public byte[] Image;
+                public byte[] Image { get; private set; }
 
                 public SendImage(byte[] image)
                 {
@@ -86,10 +87,9 @@ namespace Protocol
                 }
             }
 
-            [Serializable]
             public class SubmitAnswer : Message
             {
-                public string Answer;
+                public string Answer { get; private set; }
 
                 public SubmitAnswer(string answer)
                 {
@@ -97,10 +97,9 @@ namespace Protocol
                 }
             }
 
-            [Serializable]
             public class SubmitChoice : Message
             {
-                public string ChosenAnswer;
+                public string ChosenAnswer { get; private set; }
 
                 public SubmitChoice(string chosenAnswer)
                 {
@@ -108,10 +107,9 @@ namespace Protocol
                 }
             }
 
-            [Serializable]
             public class LikeAnswer : Message
             {
-                public string Answer;
+                public string Answer { get; set; }
 
                 public LikeAnswer(string answer)
                 {
@@ -119,7 +117,6 @@ namespace Protocol
                 }
             }
 
-            [Serializable]
             public class SkipPhase : Message
             {
                 public SkipPhase()
@@ -128,11 +125,10 @@ namespace Protocol
                 }
             }
 
-            [Serializable]
             public class SendAction : Message
             {
-                public PlayerData Player;
-                public GameAction Action;
+                public PlayerData Player { get; private set; }
+                public GameAction Action { get; private set; }
 
                 public SendAction(PlayerData player, GameAction action)
                 {

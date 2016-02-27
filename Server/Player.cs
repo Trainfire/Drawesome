@@ -2,7 +2,7 @@ using Fleck;
 using Protocol;
 using System.Collections.Generic;
 using System;
-using System.Text;
+using System.Linq;
 
 namespace Server
 {
@@ -26,7 +26,7 @@ namespace Server
         }
     }
 
-    public class Player : ServerMessage.Game.ISendScores
+    public class Player
     {
         public event EventHandler<PlayerConnectionClosed> OnConnectionClosed;
         public event EventHandler<SharedMessage.Chat> OnChat;
@@ -34,51 +34,68 @@ namespace Server
         public event EventHandler<Message> OnMessage;
         public event EventHandler<string> OnMessageString;
 
-        public PlayerData Data { get; set; }
+        public PlayerData Data { get; private set; }
         public IWebSocketConnection Socket { get; private set; }
+        public bool IsAdmin { get; private set; }
 
-        public Player(string playerName, IWebSocketConnection socket)
+        Settings Settings { get; set; }
+
+        public Player(string playerName, IWebSocketConnection socket, Settings settings)
         {
+            Settings = settings;
+            Socket = socket;
+
             Data = new PlayerData();
             Data.Name = playerName;
             Data.ID = Guid.NewGuid().ToString();
-            Socket = socket;
-            
+
             socket.OnClose += () =>
             {
                 if (OnConnectionClosed != null)
                     OnConnectionClosed(this, new PlayerConnectionClosed(this, PlayerCloseReason.Disconnected));
             };
 
-            socket.OnBinary += (binary) =>
-            {
-                var decoded = Encoding.UTF8.GetString(binary);
-                OnPlayerMessage(decoded);
-            };
+            socket.OnMessage += (json) => OnPlayerMessage(json);
         }
 
-        void OnPlayerMessage(string message)
+        void OnPlayerMessage(string json)
         {
-            var obj = JsonHelper.FromJson<Message>(message);
+            Message.IsType<ClientMessage.RequestAdmin>(json, (data) =>
+            {
+                if (data.Password == Settings.Server.AdminPassword)
+                {
+                    Logger.Log("Admin granted to {0}", Data.Name);
+                    IsAdmin = true;
+                }
+            });
 
-            Message.IsType<SharedMessage.Chat>(message, (data) =>
+            Message.IsType<SharedMessage.Chat>(json, (data) =>
             {
                 if (OnChat != null)
                     OnChat(this, data);
             });
 
-            Message.IsType<ClientMessage.Game.SendAction>(message, (data) =>
+            Message.IsType<ClientMessage.Game.SendAction>(json, (data) =>
             {
                 if (OnGameAction != null)
                     OnGameAction(this, data);
             });
 
+            var obj = JsonHelper.FromJson<Message>(json);
+
             if (OnMessage != null)
                 OnMessage(this, obj);
 
             if (OnMessageString != null)
-                OnMessageString(this, message);
+                OnMessageString(this, json);
         }
+
+        public override string ToString()
+        {
+            return Data.Name != null ? Data.Name : "Unassigned Name";
+        }
+
+        #region Messaging
 
         public void SendMessage(Message message)
         {
@@ -90,34 +107,33 @@ namespace Server
         /// </summary>
         /// <param name="actor">The player that committed the action.</param>
         /// <param name="action">The type of action.</param>
-        public void SendAction(PlayerData actor, PlayerAction action)
+        public void SendAction(PlayerData actor, PlayerAction action, PlayerActionContext context)
         {
-            var message = new ServerMessage.NotifyPlayerAction(actor, action);
-            Socket.Send(message.AsJson());
-        }
-
-        public void AssignClientId(string id)
-        {
-            var message = new ServerMessage.AssignClientId(id);
+            var message = new ServerMessage.NotifyPlayerAction(actor, action, context);
             Socket.Send(message.AsJson());
         }
 
         public void RequestClientName()
         {
-            Logger.Log("RequestClientName");
             var message = new ServerMessage.RequestClientName();
             Socket.Send(message.AsJson());
         }
 
         public void UpdatePlayerInfo(PlayerData playerData)
         {
-            var message = new ServerMessage.UpdatePlayerInfo(2, playerData);
+            var message = new ServerMessage.UpdatePlayerInfo(playerData);
             Socket.Send(message.AsJson());
         }
 
-        public void SendRoomError(RoomError roomError)
+        public void SendRoomJoinNotice(RoomNotice roomNotice)
         {
-            var message = new ServerMessage.NotifyRoomError(roomError);
+            var message = new ServerMessage.NotifyRoomJoin(roomNotice);
+            Socket.Send(message.AsJson());
+        }
+
+        public void SendRoomLeaveReason(RoomLeaveReason reason)
+        {
+            var message = new ServerMessage.NotifyRoomLeave(reason);
             Socket.Send(message.AsJson());
         }
 
@@ -145,6 +161,12 @@ namespace Server
             Socket.Send(message.AsJson());
         }
 
+        public void SendConnectionError(ConnectionError connectionError)
+        {
+            var message = new ServerMessage.SendConnectionError(connectionError);
+            Socket.Send(message.AsJson());
+        }
+
         public void NotifyConnectionSuccess()
         {
             var message = new ServerMessage.NotifyConnectionSuccess();
@@ -154,6 +176,18 @@ namespace Server
         public void NotifyPlayerGameAction(PlayerData actor, GamePlayerAction action)
         {
             var message = new ServerMessage.Game.PlayerAction(actor, action);
+            Socket.Send(message.AsJson());
+        }
+
+        public void NotifyRoomCountdownStart(float duration)
+        {
+            var message = new ServerMessage.NotifyRoomCountdown(duration);
+            Socket.Send(message.AsJson());
+        }
+
+        public void NotifyRoomCountdownCancel()
+        {
+            var message = new ServerMessage.NotifyRoomCountdownCancel();
             Socket.Send(message.AsJson());
         }
 
@@ -187,9 +221,9 @@ namespace Server
             Console.WriteLine("Send update to " + Data.Name);
         }
 
-        public void SendScores(Dictionary<PlayerData, uint> playerScores)
+        public void SendScores(Dictionary<PlayerData, ScoreData> playerScores, bool orderByDescending = false)
         {
-            var message = new ServerMessage.Game.SendScores(playerScores);
+            var message = new ServerMessage.Game.SendScores(playerScores, orderByDescending);
             Socket.Send(message.AsJson());
         }
 
@@ -199,9 +233,6 @@ namespace Server
             Socket.Send(message.AsJson());
         }
 
-        public override string ToString()
-        {
-            return Data.Name != null ? Data.Name : "Unassigned Name";
-        }
+        #endregion
     }
 }

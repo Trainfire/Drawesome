@@ -9,60 +9,56 @@ namespace Server.Drawesome
     public class StatePreGame : State<DrawesomeGameData>
     {
         public override GameState Type { get { return GameState.PreGame; } }
+
+        public StatePreGame(Settings settings) : base(settings)
+        {
+
+        }
     }
 
     public class StateRoundBegin : State<DrawesomeGameData>
     {
         public override GameState Type { get { return GameState.RoundBegin; } }
 
+        public StateRoundBegin(Settings settings) : base(settings)
+        {
+
+        }
+
         protected override void OnBegin()
         {
             base.OnBegin();
-            SetCountdownTimer("Begin Timer", GameData.Settings.Drawesome.RoundBeginTime, true);
+            SetCountdownTimer("Begin Timer", GameData.Settings.Drawesome.RoundBeginTime, false);
         }
-
-        //protected override void OnEndState(GameStateEndReason reason)
-        //{
-        //    AddTransitionTimer(GameData.Settings.Drawesome.Transitions.RoundBeginToDrawing, GameTransition.RoundBeginToDrawing);
-        //}
     }
 
     public class StateDrawingPhase : State<DrawesomeGameData>
     {
         public override GameState Type { get { return GameState.Drawing; } }
 
-        ResponseHandler<Player> ResponseHandler { get; set; }
-
-        public StateDrawingPhase()
+        public StateDrawingPhase(Settings settings) : base(settings)
         {
-            ResponseHandler = new ResponseHandler<Player>();
+
         }
 
         protected override void OnBegin()
         {
             SetCountdownTimer("Drawing Timer", GameData.Settings.Drawesome.DrawTime, true);
 
-            ResponseHandler.Clear();
-
             // Send random prompts to players
             foreach (var player in GameData.Players)
             {
                 ResponseHandler.AddRespondant(player);
-                player.SendPrompt(GameData.GetPrompt(player).Text);
             }
+
+            GameData.SendPromptsToPlayers();
         }
 
         public override void HandleMessage(Player player, string json)
         {
             Message.IsType<ClientMessage.Game.SendImage>(json, (data) =>
             {
-                var prompt = GameData.SentPrompts[player];
-
-                // Update GameData
-                if (!GameData.Drawings.Any(x => x.Creator.ID == player.Data.ID))
-                    GameData.AddDrawing(new DrawingData(player.Data, data.Image, prompt));
-
-                Console.WriteLine("Recieve image from {0} with {1} bytes for prompt {2}", player.Data.Name, data.Image.Length, prompt.Text);
+                GameData.SubmitDrawing(player, data.Image);
 
                 // Tell all clients that player has submitted drawing
                 GameData.Players.ForEach(x => x.NotifyPlayerGameAction(player.Data, GamePlayerAction.DrawingSubmitted));
@@ -79,11 +75,9 @@ namespace Server.Drawesome
     {
         public override GameState Type { get { return GameState.Answering; } }
 
-        ResponseHandler<Player> ResponseHandler { get; set; }
-
-        public StateAnsweringPhase()
+        public StateAnsweringPhase(Settings settings) : base(settings)
         {
-            ResponseHandler = new ResponseHandler<Player>();
+
         }
 
         protected override void OnBegin()
@@ -92,15 +86,8 @@ namespace Server.Drawesome
 
             if (GameData.HasDrawings())
             {
-                var drawing = GameData.GetDrawing();
-
-                GameData.Players.ForEach(x => x.SendImage(GameData.GetDrawing()));
-
-                ResponseHandler.Clear();
-
-                // Create a list of players excluding the drawing's creator
-                var players = GameData.Players.Where(x => x.Data.ID != drawing.Creator.ID).ToList();
-                players.ForEach(x => ResponseHandler.AddRespondant(x));
+                GameData.SendDrawingToPlayers();
+                GameData.GetAnsweringPlayers().ForEach(x => ResponseHandler.AddRespondant(x));
             }
             else
             {
@@ -116,22 +103,26 @@ namespace Server.Drawesome
 
                 var answer = StringFormatter.FormatAnswer(data.Answer);
 
-                if (IsPrompt(answer))
+                if (GameData.IsPrompt(answer))
                 {
                     Console.WriteLine("Player {0}'s answer matches prompt!", player.Data.Name);
                     player.SendAnswerValidation(GameAnswerValidationResponse.MatchesPrompt);
                 }
-                else if (MatchesExistingAnswer(answer))
+                else if (GameData.MatchesExistingAnswer(answer))
                 {
                     Console.WriteLine("Player {0}'s answer matches an existing answer from another player!", player.Data.Name);
                     player.SendAnswerValidation(GameAnswerValidationResponse.AlreadyExists);
+                }
+                else if (data.Answer == string.Empty)
+                {
+                    player.SendAnswerValidation(GameAnswerValidationResponse.Empty);
                 }
                 else
                 {
                     player.SendAnswerValidation(GameAnswerValidationResponse.None);
 
                     // Add answer here
-                    GameData.AddAnswer(new AnswerData(player.Data, answer));
+                    GameData.SubmitAnswer(new AnswerData(player.Data, answer));
 
                     // Tell all clients that player has submitted answer
                     GameData.Players.ForEach(x => x.NotifyPlayerGameAction(player.Data, GamePlayerAction.AnswerSubmitted));
@@ -143,35 +134,16 @@ namespace Server.Drawesome
                         EndState();
                 }
             });
-        }
-
-        protected override void OnEndState(GameStateEndReason reason)
-        {
-            GameData.AddDecoys();
-            GameData.AddActualAnswer();
-            base.OnEndState(reason);
-        }
-
-        bool IsPrompt(string answer)
-        {
-            return GameData.SentPrompts.Any(x => x.Value.Text.ToLower() == answer.ToLower());
-        }
-
-        bool MatchesExistingAnswer(string answer)
-        {
-            return GameData.Answers.Any(x => x.Answer.ToLower() == answer.ToLower());
-        }
+        }        
     }
 
     public class StateChoosingPhase : State<DrawesomeGameData>
     {
         public override GameState Type { get { return GameState.Choosing; } }
 
-        ResponseHandler<Player> ResponseHandler { get; set; }
-
-        public StateChoosingPhase()
+        public StateChoosingPhase(Settings settings) : base(settings)
         {
-            ResponseHandler = new ResponseHandler<Player>();
+
         }
 
         protected override void OnBegin()
@@ -180,12 +152,10 @@ namespace Server.Drawesome
 
             SetCountdownTimer("Choosing Timer", GameData.Settings.Drawesome.ChoosingTime);
 
-            GameData.Players.ForEach(x => x.SendChoices(GameData.CurrentDrawing.Creator, GameData.Answers.ToList()));
+            GameData.SendChoicesToPlayers();
 
             // Handle responses from every player except the one that drew the image
-            ResponseHandler.Clear();
-            var players = GameData.Players.Where(x => x.Data.ID != GameData.CurrentDrawing.Creator.ID).ToList();
-            players.ForEach(x => ResponseHandler.AddRespondant(x));
+            GameData.GetAnsweringPlayers().ForEach(x => ResponseHandler.AddRespondant(x));
         }
 
         public override void HandleMessage(Player player, string json)
@@ -195,7 +165,7 @@ namespace Server.Drawesome
             Message.IsType<ClientMessage.Game.SubmitChoice>(json, (data) =>
             {
                 Console.WriteLine("Player {0} chose {1}", player.Data.Name, data.ChosenAnswer);
-                GameData.AddChosenAnswer(data.ChosenAnswer, player);
+                GameData.SubmitChoice(data.ChosenAnswer, player);
                 GameData.Players.ForEach(x => x.NotifyPlayerGameAction(player.Data, GamePlayerAction.ChoiceChosen));
                 ResponseHandler.Register(player);
 
@@ -207,7 +177,7 @@ namespace Server.Drawesome
             Message.IsType<ClientMessage.Game.LikeAnswer>(json, (data) =>
             {
                 // Add like
-                GameData.AddLike(data.Answer);
+                GameData.SubmitLike(data.Answer);
             });
         }
     }
@@ -217,11 +187,8 @@ namespace Server.Drawesome
         public override GameState Type { get { return GameState.Results; } }
 
         Queue<AnswerData> ChosenAnswersQueue { get; set; }
-        ResponseHandler<Player> ResponseHandler { get; set; }
 
-        static readonly object _lock = new object();
-
-        public StateResultsPhase()
+        public StateResultsPhase(Settings settings) : base(settings)
         {
 
         }
@@ -230,58 +197,18 @@ namespace Server.Drawesome
         {
             base.OnBegin();
 
-            ResponseHandler = new ResponseHandler<Player>();
-
-            // Sort chosen answers here...
-            ChosenAnswersQueue = new Queue<AnswerData>();
-
-            GameData.CalculateScores();
-
-            // Queue up player answers and decoys by order of least chosen to most chosen
-            var sortedAnswers = GameData.ChosenAnswers
-                .Where(x => x.Type != GameAnswerType.ActualAnswer)
-                .OrderBy(x => x.Choosers.Count)
-                .ToList();
-            sortedAnswers.ForEach(x => ChosenAnswersQueue.Enqueue(x));
-
-            // Queue the actual answer
-            var actualAnswer = GameData.ChosenAnswers.FirstOrDefault(x => x.Type == GameAnswerType.ActualAnswer);
-            if (actualAnswer == null)
-                actualAnswer = new AnswerData(GameData.CurrentDrawing.Prompt.Text, GameAnswerType.ActualAnswer);
-            ChosenAnswersQueue.Enqueue(actualAnswer);
+            ChosenAnswersQueue = GameData.GetResults();
 
             UpdateQueue();
         }
 
-        public override void HandleMessage(Player player, string json)
-        {
-            lock (_lock)
-            {
-                // TODO: lmao. Make this server-authoritive.
-                Message.IsType<ClientMessage.Game.SendAction>(json, (data) =>
-                {
-                    if (data.Action == GameAction.FinishShowingResult)
-                    {
-                        ResponseHandler.Register(player);
-
-                        Console.WriteLine("Have all responded? {0}", ResponseHandler.AllResponded());
-
-                        if (ResponseHandler.AllResponded())
-                            UpdateQueue();
-                    }
-                });
-            }
-        }
-
         void UpdateQueue()
         {
-            ResponseHandler.Clear();
-
             // Loop through all results until empty
             if (ChosenAnswersQueue.Count != 0)
             {
                 GameData.Players.ForEach(x => ResponseHandler.AddRespondant(x));
-                ShowNextResult();
+                ShowNextResult(ChosenAnswersQueue.Count == 1);
             }
             else
             {
@@ -289,12 +216,16 @@ namespace Server.Drawesome
             }
         }
 
-        void ShowNextResult()
+        void ShowNextResult(bool isFinalResult)
         {
             // Send choice to client and remove from queue
             var chosenAnswer = ChosenAnswersQueue.Dequeue();
             var message = new ServerMessage.Game.SendResult(chosenAnswer);
             GameData.Players.ForEach(x => x.SendMessage(message));
+
+            float duration = isFinalResult ? Settings.Drawesome.TimeToShowFinalResult : Settings.Drawesome.TimeToShowResult;
+            string name = isFinalResult ? "Display actual answer" : "Display player answer";
+            var timer = new GameTimer(name, duration, () => UpdateQueue());
         }
     }
 
@@ -302,18 +233,60 @@ namespace Server.Drawesome
     {
         public override GameState Type { get { return GameState.Scores; } }
 
+        public StateScores(Settings settings) : base(settings)
+        {
+
+        }
+
         protected override void OnBegin()
         {
             base.OnBegin();
-            var score = GameData.Scores.ToDictionary(x => x.Key, y => y.Value);
+
+            var score = GameData.GetLatestScores();
+
+            foreach (var s in score)
+            {
+                if (s.Value.AnswerGiven != null)
+                {
+                    Logger.Log("Player: {0}, Score: {1}, Answer Given: {2}, Likes: {3}", s.Key.Name, s.Value.Score, s.Value.AnswerGiven, s.Value.AnswerGiven.Likes);
+                }
+                else
+                {
+                    Logger.Log("Player: {0}, Score: {1}, Answer Given: None", s.Key.Name, s.Value.Score);
+                }
+            }
+
             GameData.Players.ForEach(x => x.SendScores(score));
-            SetCountdownTimer("Show Scores", 10f, false);
+            SetCountdownTimer("Show Scores", Settings.Drawesome.ScoresHoldTime, false);
         }
     }
 
-    public class StateRoundEnd : State<DrawesomeGameData>
+    public class StateFinalScores : State<DrawesomeGameData>
+    {
+        public override GameState Type { get { return GameState.FinalScores; } }
+
+        public StateFinalScores(Settings settings) : base(settings)
+        {
+
+        }
+
+        protected override void OnBegin()
+        {
+            base.OnBegin();
+
+            // Send final scores
+            GameData.Players.ForEach(x => x.SendScores(GameData.GetLatestScores(), true));
+        }
+    }
+
+    public class StateGameOver : State<DrawesomeGameData>
     {
         public override GameState Type { get { return GameState.GameOver; } }
+
+        public StateGameOver(Settings settings) : base(settings)
+        {
+
+        }
 
         protected override void OnBegin()
         {

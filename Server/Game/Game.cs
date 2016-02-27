@@ -10,6 +10,8 @@ namespace Server.Game
     /// <typeparam name="TData">The GameData associated with this Game.</typeparam>
     public abstract class Game<TData> : IConnectionMessageHandler, ILogger where TData : GameData, new()
     {
+        public event EventHandler OnEnd;
+
         protected TData GameData { get; set; }
         protected Settings Settings { get; private set; }
 
@@ -29,10 +31,7 @@ namespace Server.Game
         public virtual void Start(List<Player> players)
         {
             Logger.Log(this, "Started");
-            GameData = new TData();
-            GameData.Settings = Settings;
-            GameData.Players = new List<Player>();
-            GameData.Players = players;
+            GameData = new GameData(players, Settings) as TData;
         }
 
         public virtual void StartNewRound()
@@ -49,8 +48,12 @@ namespace Server.Game
         public void End()
         {
             Logger.Log(this, "Ended");
+
             if (CurrentState != null)
                 CurrentState.EndState(GameStateEndReason.GameEnded, false);
+
+            if (OnEnd != null)
+                OnEnd(this, null);
         }        
 
         protected virtual void OnGameOver()
@@ -63,7 +66,8 @@ namespace Server.Game
             // Skip current state
             Message.IsType<ClientMessage.Game.SkipPhase>(json, (data) =>
             {
-                SkipState();
+                if (player.IsAdmin)
+                    SkipState();
             });
 
             if (CurrentState != null)

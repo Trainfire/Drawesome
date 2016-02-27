@@ -3,6 +3,13 @@ using System;
 namespace Protocol
 {
     [Serializable]
+    public enum PlayerActionContext
+    {
+        Global,
+        Room,
+    }
+
+    [Serializable]
     public enum PlayerAction
     {
         None,
@@ -17,7 +24,15 @@ namespace Protocol
     }
 
     [Serializable]
-    public enum RoomError
+    public enum ConnectionError
+    {
+        None,
+        InvalidNameLength,
+        MatchesExistingName,
+    }
+
+    [Serializable]
+    public enum RoomNotice
     {
         None,
         InvalidPassword,
@@ -28,12 +43,20 @@ namespace Protocol
     }
 
     [Serializable]
+    public enum RoomLeaveReason
+    {
+        Normal,
+        Kicked,
+    }
+
+    [Serializable]
     public enum GameAction
     {
         Start,
         Restart,
         StartNewRound,
         FinishShowingResult,
+        CancelStart,
     }
 
     [Serializable]
@@ -51,6 +74,7 @@ namespace Protocol
         None,
         MatchesPrompt,
         AlreadyExists,
+        Empty,
     }
 
     [Serializable]
@@ -63,6 +87,7 @@ namespace Protocol
         Choosing,
         Results,
         Scores,
+        FinalScores,
         GameOver,
     }
 

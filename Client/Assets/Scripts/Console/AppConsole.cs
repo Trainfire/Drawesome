@@ -17,7 +17,7 @@ public class AppConsole : MonoBehaviour, IClientHandler
         View.SetConsole(Controller);
 
         // General
-        Controller.RegisterCommand(new ConsoleCommand("enablelog", EnableLog));
+        Controller.RegisterCommand(new ConsoleCommand("admin", RequestAdmin, "[Password] You must be *this* cool to use this command"));
         Controller.RegisterCommand(new ConsoleCommand("join", Join, "[RoomID] (Joins a room with the specified ID)"));
         Controller.RegisterCommand(new ConsoleCommand("connect", Connect, "[Name]"));
         Controller.RegisterCommand(new ConsoleCommand("requestrooms", RequestRooms, "[RoomID] (Returns a list of rooms on the server)"));
@@ -41,11 +41,15 @@ public class AppConsole : MonoBehaviour, IClientHandler
 
     #region General
 
-    void EnableLog(ConsoleCommand command, string[] args)
+    void RequestAdmin(ConsoleCommand command, string[] args)
     {
-        if (args.Length != 0)
+        if (args.Length == 1)
         {
-            Client.EnableLogging = StringAsBool(args[0]);
+            Client.Messenger.RequestAdmin(args[0]);
+        }
+        else
+        {
+            Controller.PrintError(command);
         }
     }
 
@@ -115,8 +119,12 @@ public class AppConsole : MonoBehaviour, IClientHandler
         }
         else if (args.Length == 2)
         {
-            Debug.LogFormat("Connect with name {0} to URL {1}", args[0], args[1]);
+            Debug.LogFormat("Connect with name {0} to {1}", args[0], args[1]);
             Client.Connection.Connect(args[0], args[1]);
+        }
+        else
+        {
+            Controller.PrintError(command);
         }
     }
 
@@ -212,7 +220,7 @@ public class AppConsole : MonoBehaviour, IClientHandler
 
     #endregion	
 
-    bool StringAsBool(string str)
+    bool StringToBool(string str)
     {
         return str == "1";
     }

@@ -12,14 +12,15 @@ namespace Server.Drawesome
 
         public DrawesomeGame(ConnectionsHandler connections, Settings settings) : base(connections, settings)
         {
-            AddState(GameState.PreGame, new StatePreGame());
-            AddState(GameState.RoundBegin, new StateRoundBegin());
-            AddState(GameState.Drawing, new StateDrawingPhase());
-            AddState(GameState.Answering, new StateAnsweringPhase());
-            AddState(GameState.Choosing, new StateChoosingPhase());
-            AddState(GameState.Results, new StateResultsPhase());
-            AddState(GameState.Scores, new StateScores());
-            AddState(GameState.GameOver, new StateRoundEnd());
+            AddState(GameState.PreGame, new StatePreGame(settings));
+            AddState(GameState.RoundBegin, new StateRoundBegin(settings));
+            AddState(GameState.Drawing, new StateDrawingPhase(settings));
+            AddState(GameState.Answering, new StateAnsweringPhase(settings));
+            AddState(GameState.Choosing, new StateChoosingPhase(settings));
+            AddState(GameState.Results, new StateResultsPhase(settings));
+            AddState(GameState.Scores, new StateScores(settings));
+            AddState(GameState.FinalScores, new StateFinalScores(settings));
+            AddState(GameState.GameOver, new StateGameOver(settings));
         }
 
         public override void Start(List<Player> players)
@@ -33,7 +34,6 @@ namespace Server.Drawesome
         {
             base.StartNewRound();
             GameData = new DrawesomeGameData(GameData.Players, Settings);
-            Console.WriteLine(GameData.Answers.Count);
             SetState(GameState.Drawing, Settings.Drawesome.Transitions.RoundBeginToDrawing);
         }
 
@@ -96,25 +96,32 @@ namespace Server.Drawesome
                     break;
 
                 case GameState.Results:
-                    GameData.OnNewRound();
+                    Logger.Log(this, "{0} drawings remain", GameData.Drawings.Count);
                     if (GameData.HasDrawings())
                     {
+                        // Show the scores as normal
                         SetState(GameState.Scores, Settings.Drawesome.Transitions.ScoresToAnswering);
                     }
                     else
                     {
-                        // TODO: Add new transition timer for end game
-                        SetState(GameState.GameOver, Settings.Drawesome.Transitions.ScoresToAnswering);
+                        // Show the final scores
+                        SetState(GameState.FinalScores, Settings.Drawesome.Transitions.ScoresToAnswering);
                     }
                     break;
 
                 case GameState.Scores:
+                    // Clear data for the next round
+                    GameData.OnNewRound();
+
                     // After scores, return to Answering phase for remaining drawings
                     SetState(GameState.Answering, Settings.Drawesome.Transitions.ScoresToAnswering);
                     break;
 
-                case GameState.GameOver:
+                case GameState.FinalScores:
+                    End();
                     Logger.Log(this, "Game Over!");
+
+                    SetState(GameState.PreGame, Settings.Drawesome.Transitions.ScoresToAnswering);
                     break;
 
                 default:

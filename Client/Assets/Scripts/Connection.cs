@@ -1,11 +1,12 @@
 using UnityEngine;
 using System;
+using WebSocketSharp;
 using Protocol;
 using System.Collections.Generic;
 
 public class Connection : MonoBehaviour
 {
-    public delegate void MessageDelegate(string json);
+    public delegate void MessageDelegate(object sender, MessageEventArgs message);
     public event MessageDelegate MessageRecieved;
 
     public event EventHandler ConnectionClosed;
@@ -17,128 +18,106 @@ public class Connection : MonoBehaviour
 
     WebSocket Socket { get; set; }
     string PlayerName { get; set; }
-    Queue<string> MessageQueue { get; set; }
+    Queue<MessageEventArgs> MessageQueue { get; set; }
+    bool IsDisconnecting { get; set; }
 
     void Awake()
     {
         Player = new PlayerData();
         Room = new RoomData();
-        MessageQueue = new Queue<string>();
+        MessageQueue = new Queue<MessageEventArgs>();
     }
 
     void Update()
     {
-        if (Socket != null)
-        {
-            var message = Socket.RecvString();
-
-            if (message != null)
-                OnMessage(message);
-
-            if (Socket.error != null)
-            {
-                OnError(Socket.error);
-            }
-        }
-
         if (MessageQueue.Count != 0 && MessageRecieved != null)
-            MessageRecieved(MessageQueue.Dequeue());
+            MessageRecieved(this, MessageQueue.Dequeue());
+
+        if (IsDisconnecting)
+        {
+            if (ConnectionClosed != null)
+                ConnectionClosed(this, null);
+            IsDisconnecting = false;
+        }
 
         isRoomOwner = IsRoomOwner();
     }
 
     public void Connect(string playerName)
     {
-        //Connect(playerName, SettingsLoader.Settings.HostUrl);
-        Connect(playerName, "ws://127.0.0.1:8181");
+        var url = Debug.isDebugBuild ? "ws://127.0.0.1:8181" : SettingsLoader.Settings.HostUrl;
+        Connect(playerName, url);
     }
 
     public void Connect(string playerName, string url)
     {
         PlayerName = playerName;
 
-        Debug.LogFormat("Connect to: {0}", url);
+        if (Socket != null)
+            Disconnect();
 
-        // Make sure existing connection is closed and events are unhooked.
-        Disconnect();
+        Socket = new WebSocket(url);
 
-        Socket = new WebSocket(new Uri(url));
-        //Socket.RecvString();
-        //Socket.OnClose += OnClose;
-        //Socket.OnError += OnError;
-        StartCoroutine(Socket.Connect());
+        Socket.OnMessage += OnMessage;
+        Socket.OnClose += OnClose;
+        Socket.Connect();
     }
 
     public void Disconnect()
     {
-        Disconnect("");
+        Socket.Close();
     }
 
-    public void Disconnect(string reason)
+    public void Disconnect(CloseStatusCode closeStatus, string reason = "")
     {
-        if (Socket != null)
-            Socket.Close();
+        Socket.Close(closeStatus, reason);
     }
 
-    void OnMessage(string json)
+    void OnMessage(object sender, MessageEventArgs e)
     {
-        Message.IsType<ServerMessage.RequestClientName>(json, (data) =>
+        Message.IsType<ServerMessage.RequestClientName>(e.Data, (data) =>
         {
-            //var message = new ClientMessage.GiveName("SomeName");
-            //var s = JsonUtility.ToJson(message);
-            //Debug.Log(s);
-            //Socket.SendString(s);
-
             SendMessage(new ClientMessage.GiveName(PlayerName));
         });
 
-        Message.IsType<ServerMessage.UpdatePlayerInfo>(json, (data) =>
+        Message.IsType<ServerMessage.UpdatePlayerInfo>(e.Data, (data) =>
         {
             Player = data.PlayerData;
         });
 
-        Message.IsType<ServerMessage.AssignRoomId>(json, (data) =>
+        Message.IsType<ServerMessage.AssignRoomId>(e.Data, (data) =>
         {
             Player.RoomId = data.RoomId;
 
             Debug.LogFormat("Recieved Room ID: {0}", data.RoomId);
         });
 
-        Message.IsType<ServerMessage.RoomUpdate>(json, (data) =>
+        Message.IsType<ServerMessage.RoomUpdate>(e.Data, (data) =>
         {
             Room = data.RoomData;
         });
 
-        MessageQueue.Enqueue(json);
+        MessageQueue.Enqueue(e);
     }
 
-    void OnError(string error)
+    void OnClose(object sender, CloseEventArgs e)
     {
-        //Debug.LogErrorFormat("Error: {0}", error);
-    }
+        Socket.OnClose -= OnClose;
+        Socket.OnMessage -= OnMessage;
 
-    void OnClose(object sender)
-    {
-        if (ConnectionClosed != null)
-            ConnectionClosed(this, null);
+        IsDisconnecting = true;
     }
 
     void OnApplicationQuit()
     {
-        Disconnect("Application Quit");
+        Disconnect(CloseStatusCode.Normal, "Application Quit");
     }
 
     public void SendMessage(Message message)
     {
-        var json = JsonUtility.ToJson(message);
-        Socket.Send(System.Text.Encoding.UTF8.GetBytes(json));
+        var json = JsonHelper.ToJson(message);
+        Socket.Send(json);
     }
-
-    //public void SendMessage(Message message)
-    //{
-    //    var json = JsonHelper.ToJson(message);
-    //    Socket.SendString(json);
-    //}
 
     public bool IsRoomOwner()
     {

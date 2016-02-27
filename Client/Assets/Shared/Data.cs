@@ -1,14 +1,14 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Protocol
 {
-    [Serializable]
     public class PlayerData
     {
-        public uint RoomId;
-        public string ID;
-        public string Name;
+        public uint RoomId { get; set; }
+        public string ID { get; set; }
+        public string Name { get; set; }
 
         public PlayerData()
         {
@@ -34,14 +34,13 @@ namespace Protocol
         }
     }
 
-    [Serializable]
     public class RoomData
     {
-        public string ID;
-        public string Password;
-        public PlayerData Owner;
-        public List<PlayerData> Players;
-        public bool GameStarted;
+        public string ID { get; set; }
+        public string Password { get; set; }
+        public PlayerData Owner { get; set; }
+        public List<PlayerData> Players { get; set; }
+        public bool GameStarted { get; set; }
 
         public RoomData()
         {
@@ -53,12 +52,11 @@ namespace Protocol
         }
     }
 
-    [Serializable]
     public class DrawingData
     {
-        public PlayerData Creator;
-        public byte[] Image;
-        public PromptData Prompt;
+        public PlayerData Creator { get; set; }
+        public byte[] Image { get; set; }
+        public PromptData Prompt { get; set; }
 
         public DrawingData(PlayerData creator, byte[] image, PromptData prompt)
         {
@@ -68,23 +66,20 @@ namespace Protocol
         }
     }
 
-    [Serializable]
     public class AnswerData
     {
-        public PlayerData Author;
-        public string Answer;
-        public int Likes;
-        public List<PlayerData> Choosers;
-        public uint Points;
-        public GameAnswerType Type;
+        public PlayerData Author { get; set; }
+        public string Answer { get; set; }
+        public int Likes { get; set; }
+        public List<PlayerData> Choosers { get; set; }
+        public uint Points { get; set; }
+        public GameAnswerType Type { get; set; }
 
         public AnswerData()
         {
             Author = new PlayerData();
             Answer = string.Empty;
-            Likes = 0;
             Choosers = new List<PlayerData>();
-            Points = 0;
         }
 
         public AnswerData(string answer) : this()
@@ -102,12 +97,57 @@ namespace Protocol
             Author = author;
             Answer = answer;
         }
+
+        public void AddLike()
+        {
+            Likes += 1;
+        }
     }
 
-    [Serializable]
     public class PromptData
     {
-        public int Id;
-        public string Text;
+        public int Id { get; set; }
+        public string Text { get; set; }
+
+        // Replaces any tokens such as "random player name" appropriately replaced.
+        public string ReplaceTokens(PlayerData player, List<PlayerData> players)
+        {
+            // TODO: Move somewhere more appropriate.
+            var tokenPlayerName = "<RANDOM PLAYER NAME>";
+
+            if (Text.Contains(tokenPlayerName))
+            {
+                // Replace with random player that isn't this player
+                var playersExceptOwner = players.Where(x => x != player).ToList();
+
+                var rnd = new Random().Next(playersExceptOwner.Count);
+                Text = Text.Replace(tokenPlayerName, playersExceptOwner[rnd].Name.ToLower());
+            }
+
+            return Text;
+        }
+
+        /// <summary>
+        /// Returns the text formatted to lower case.
+        /// </summary>
+        /// <returns></returns>
+        public string GetText()
+        {
+            return Text.ToLower();
+        }
+    }
+
+    public class ScoreData
+    {
+        public uint Score { get; set; }
+        public uint Likes { get; set; }
+        public AnswerData AnswerGiven { get; set; }
+
+        public ScoreData(uint score, uint likes, AnswerData answerGiven)
+        {
+            Score = score;
+            Likes = likes;
+            AnswerGiven = answerGiven;
+        }
     }
 }

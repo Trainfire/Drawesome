@@ -1,0 +1,5 @@
+{
+  "HostUrl": "ws://188.166.145.195:8181",
+  "NameMinChars": 3,
+  "NameMaxChars": 32
+}

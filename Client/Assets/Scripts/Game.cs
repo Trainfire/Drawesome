@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Protocol;
 using System.Linq;
 using System;
+using System.Collections;
 
 public class Game : MonoBehaviour, IClientHandler
 {
@@ -18,6 +19,7 @@ public class Game : MonoBehaviour, IClientHandler
     public UiGameStateChoosing ChoosingView;
     public UiGameStateResults ResultsView;
     public UiGameStateScores ScoresView;
+    public UiGameStateFinalScores FinalScoresView;
     public UiGameStateGameOver RoundEndView;
 
     Client Client { get; set; }
@@ -33,6 +35,8 @@ public class Game : MonoBehaviour, IClientHandler
 
     public void Initialise(Client client)
     {
+        Debug.Log("Initialise");
+
         Client = client;
         Client.MessageHandler.OnMessage += OnMessage;
 
@@ -44,6 +48,7 @@ public class Game : MonoBehaviour, IClientHandler
         AddState(new ChoosingState(client, ChoosingView));
         AddState(new ResultsState(client, ResultsView));
         AddState(new ScoresState(client, ScoresView));
+        AddState(new FinalScoresState(client, FinalScoresView));
         AddState(new GameOverState(client, RoundEndView));
 
         // Drawing canvas
@@ -159,6 +164,15 @@ public class Game : MonoBehaviour, IClientHandler
         });
     }
 
+    void OnDestroy()
+    {
+        if (Current != null)
+            Current.End();
+
+        if (Client != null)
+            Client.MessageHandler.OnMessage -= OnMessage;
+    }
+
     void Update()
     {
         if (Current != null)
@@ -199,23 +213,77 @@ public class Game : MonoBehaviour, IClientHandler
         public GameState Type { get { return GameState.PreGame; } }
         public DrawingCanvas Canvas { private get; set; }
 
+        bool IsCountingDown { get; set; }
+
         public PreGameState(Client client, UiGameStatePreGame view) : base(client, view)
         {
-            view.Start.onClick.AddListener(() => client.Messenger.StartGame());
+            
         }
 
         protected override void OnBegin()
         {
             base.OnBegin();
             Canvas.Clear();
+
+            GetView<UiGameStatePreGame>((view) =>
+            {
+                view.Start.onClick.AddListener(() => Client.Messenger.StartGame());
+                view.Cancel.onClick.AddListener(() => Client.Messenger.CancelGameStart());
+                view.Start.gameObject.SetActive(false);
+                view.Cancel.gameObject.SetActive(false);
+            });
         }
 
         public override void Update()
         {
             var view = GetView<UiGameStatePreGame>();
-            bool isClientOwner = Client.Connection.IsRoomOwner();
-            view.Start.gameObject.SetActive(isClientOwner);
-            view.InfoLabel.text = isClientOwner ? Strings.StartGame : string.Format(Strings.WaitingForRoomOwner, Client.Connection.Room.Owner.Name);
+
+            // Show info box "Waiting for Room Owner" if player is NOT the room owner
+            view.InfoLabel.text = Client.Connection.IsRoomOwner() ? Strings.StartGame : string.Format(Strings.WaitingForRoomOwner, Client.Connection.Room.Owner.Name);
+
+            // Show Start button if room owner
+            view.Start.gameObject.SetActive(Client.Connection.IsRoomOwner() && !Client.Connection.Room.GameStarted);
+
+            // Enable info box if game hasn't started, disable it if it has
+            view.InfoBox.SetActive(!Client.Connection.Room.GameStarted);
+        }
+
+        protected override void OnMessage(string json)
+        {
+            var view = GetView<UiGameStatePreGame>();
+
+            // Hide Start button, show Cancel button if room owner
+            Message.IsType<ServerMessage.NotifyRoomCountdown>(json, (data) =>
+            {
+                if (Client.Connection.IsRoomOwner())
+                {
+                    view.Start.gameObject.SetActive(false);
+                    view.Cancel.gameObject.SetActive(true);
+                }
+
+                view.SetCountdown(data.Duration);
+            });
+
+            // Show Start button, hide Cancel button if room owner
+            Message.IsType<ServerMessage.NotifyRoomCountdownCancel>(json, (data) =>
+            {
+                if (Client.Connection.IsRoomOwner())
+                {
+                    view.Start.gameObject.SetActive(true);
+                    view.Cancel.gameObject.SetActive(false);
+                }
+
+                view.CancelCountdown();
+            });
+        }
+
+        protected override void OnEnd()
+        {
+            GetView<UiGameStatePreGame>((view) =>
+            {
+                view.Start.onClick.RemoveAllListeners();
+                view.Cancel.onClick.RemoveAllListeners();
+            });
         }
     }
 
@@ -245,24 +313,24 @@ public class Game : MonoBehaviour, IClientHandler
 
         public DrawingState(Client client, UiGameStateDrawing view) : base(client, view)
         {
-            view.InfoBox.Label.text = Strings.DrawingSubmitted;
-
-            // Send image on submit
-            view.Submit.onClick.AddListener(() =>
-            {
-                Client.Messenger.SendImage(Canvas.GetEncodedImage());
-                Canvas.AllowDrawing = false;
-                view.InfoBox.Show();
-                view.Submit.gameObject.SetActive(false);
-            });
+            
         }
 
         protected override void OnBegin()
         {
             GetView<UiGameStateDrawing>((view) =>
             {
+                view.InfoBox.Label.text = Strings.DrawingSubmitted;
                 view.InfoBox.Hide();
                 view.Submit.gameObject.SetActive(true);
+
+                view.Submit.onClick.AddListener(() =>
+                {
+                    Client.Messenger.SendImage(Canvas.GetEncodedImage());
+                    Canvas.AllowDrawing = false;
+                    view.InfoBox.Show();
+                    view.Submit.gameObject.SetActive(false);
+                });
             });
         }
 
@@ -271,6 +339,14 @@ public class Game : MonoBehaviour, IClientHandler
             Message.IsType<ServerMessage.Game.SendPrompt>(json, (data) =>
             {
                 GetView<UiGameStateDrawing>().SetPrompt(data.Prompt);
+            });
+        }
+
+        protected override void OnEnd()
+        {
+            GetView<UiGameStateDrawing>((view) =>
+            {
+                view.Submit.onClick.RemoveAllListeners();
             });
         }
     }
@@ -283,10 +359,7 @@ public class Game : MonoBehaviour, IClientHandler
 
         public AnsweringState(Client client, UiGameStateAnswering view) : base(client, view)
         {
-            view.Submit.onClick.AddListener(() =>
-            {
-                Client.Messenger.SubmitAnswer(view.InputField.text);
-            });
+
         }
 
         protected override void OnBegin()
@@ -297,6 +370,10 @@ public class Game : MonoBehaviour, IClientHandler
                 view.InputField.text = Strings.PromptEnterGuess;
                 view.InputField.gameObject.SetActive(true);
                 view.Submit.gameObject.SetActive(true);
+                view.Submit.onClick.AddListener(() =>
+                {
+                    Client.Messenger.SubmitAnswer(view.InputField.textComponent.text);
+                });
             });
         }
 
@@ -338,6 +415,14 @@ public class Game : MonoBehaviour, IClientHandler
                 view.InfoBox.Show(Strings.AnswerSubmitted);
             });   
         }
+
+        protected override void OnEnd()
+        {
+            GetView<UiGameStateAnswering>((view) =>
+            {
+                view.Submit.onClick.RemoveAllListeners();
+            });
+        }
     }
 
     public class ChoosingState : State, IGameState
@@ -348,21 +433,28 @@ public class Game : MonoBehaviour, IClientHandler
 
         public ChoosingState(Client client, UiGameStateChoosing view) : base(client, view)
         {
-            view.OnChoiceSelected += (choice) =>
-            {
-                Client.Messenger.SubmitChosenAnswer(choice.Answer);
-            };
-
-            view.OnLike += (choice) =>
-            {
-                Client.Messenger.SubmitLike(choice.Answer);
-            };
+            
         }
 
         protected override void OnBegin()
         {
             base.OnBegin();
-            GetView<UiGameStateChoosing>().InfoBox.Hide();
+            GetView<UiGameStateChoosing>((view) =>
+            {
+                view.InfoBox.Hide();
+                view.OnChoiceSelected += OnChoiceSelected;
+                view.OnLike += OnLike;
+            });
+        }
+
+        private void OnLike(AnswerData choice)
+        {
+            Client.Messenger.SubmitLike(choice.Answer);
+        }
+
+        void OnChoiceSelected(AnswerData choice)
+        {
+            Client.Messenger.SubmitChosenAnswer(choice.Answer);
         }
 
         protected override void OnMessage(string json)
@@ -371,8 +463,21 @@ public class Game : MonoBehaviour, IClientHandler
             {
                 GetView<UiGameStateChoosing>((view) =>
                 {
+                    // Randomise order of choices before showing on UI
+                    data.Choices.Shuffle();
+
+                    // Send to UI
                     view.ShowChoices(data.Creator, data.Choices);
                 });
+            });
+        }
+
+        protected override void OnEnd()
+        {
+            GetView<UiGameStateChoosing>((view) =>
+            {
+                view.OnChoiceSelected -= OnChoiceSelected;
+                view.OnLike -= OnLike;
             });
         }
     }
@@ -385,10 +490,20 @@ public class Game : MonoBehaviour, IClientHandler
 
         public ResultsState(Client client, UiGameStateResults view) : base(client, view)
         {
-            view.OnFinishedShowingResult += () =>
+            
+        }
+
+        protected override void OnBegin()
+        {
+            base.OnBegin();
+
+            GetView<UiGameStateResults>((view) =>
             {
-                client.Messenger.FinishShowingResult();
-            };
+                view.OnFinishedShowingResult += () =>
+                {
+                    Client.Messenger.FinishShowingResult();
+                };
+            });
         }
 
         protected override void OnMessage(string json)
@@ -396,6 +511,14 @@ public class Game : MonoBehaviour, IClientHandler
             Message.IsType<ServerMessage.Game.SendResult>(json, (data) =>
             {
                 GetView<UiGameStateResults>().ShowAnswer(data.Answer);
+            });
+        }
+
+        protected override void OnEnd()
+        {
+            GetView<UiGameStateResults>((view) =>
+            {
+                view.OnFinishedShowingResult -= Client.Messenger.FinishShowingResult;
             });
         }
     }
@@ -424,19 +547,63 @@ public class Game : MonoBehaviour, IClientHandler
                 foreach (var score in scores)
                 {
                     if (!scoreCache.ContainsKey(score.Key))
-                        scoreCache.Add(score.Key, new GameScore());
+                        scoreCache.Add(score.Key, new GameScore(score.Value));
 
-                    // Cache previous score
-                    scoreCache[score.Key].PreviousScore = scoreCache[score.Key].CurrentScore;
-
-                    Debug.LogFormat("{0}'s previous score is {1}", score.Key.Name, scoreCache[score.Key].PreviousScore);
+                    Debug.LogFormat("Player: {0}, Score: {1}", score.Key.Name, score.Value.Score);
 
                     // Set current score
-                    scoreCache[score.Key].CurrentScore = score.Value;
+                    scoreCache[score.Key].UpdateScore(score.Value);
                 }
 
                 GetView<UiGameStateScores>().ShowScores(scoreCache);
             });
+        }
+    }
+
+    public class FinalScoresState : State, IGameState
+    {
+        public State State { get { return this; } }
+        public GameState Type { get { return GameState.FinalScores; } }
+        public DrawingCanvas Canvas { private get; set; }
+
+        public FinalScoresState(Client client, UiGameStateFinalScores view) : base(client, view)
+        {
+
+        }
+
+        protected override void OnBegin()
+        {
+            GetView<UiGameStateFinalScores>(view => view.StartNewGame.onClick.AddListener(() => Client.Messenger.StartNewGame()));
+        }
+
+        protected override void OnMessage(string json)
+        {
+            Message.IsType<ServerMessage.Game.SendScores>(json, (data) =>
+            {
+                // Make dictionary mapping players to scores.
+                var scores = Enumerable.Range(0, data.Players.Count)
+                .ToDictionary(i => data.Players[i], i => data.Scores[i]);
+
+                GetView<UiGameStateFinalScores>().Show(scores);
+            });
+        }
+
+        public override void Update()
+        {
+            base.Update();
+
+            // Too lazy to do this properly...
+            GetView<UiGameStateFinalScores>(view =>
+            {
+                if (view.gameObject.activeInHierarchy)
+                    view.StartNewGame.gameObject.SetActive(Client.Connection.IsRoomOwner());
+            });
+        }
+
+        protected override void OnEnd()
+        {
+            base.OnEnd();
+            GetView<UiGameStateFinalScores>(view => view.StartNewGame.onClick.RemoveAllListeners());
         }
     }
 

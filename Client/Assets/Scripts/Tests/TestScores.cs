@@ -20,7 +20,7 @@ public class TestScores : MonoBehaviour
         }
     }
 
-    Dictionary<PlayerData, ScoreWrapper> scoreCache = new Dictionary<PlayerData, ScoreWrapper>();
+    Dictionary<PlayerData, GameScore> scoreCache = new Dictionary<PlayerData, GameScore>();
     List<PlayerData> players = new List<PlayerData>();
 
     void Awake()
@@ -37,23 +37,18 @@ public class TestScores : MonoBehaviour
         }
     }
 
-    void HandleScores(Dictionary<PlayerData, uint> serverScores)
+    void HandleScores(Dictionary<PlayerData, ScoreData> serverScores)
     {
         foreach (var serverScore in serverScores)
         {
             if (!scoreCache.ContainsKey(serverScore.Key))
-                scoreCache.Add(serverScore.Key, new ScoreWrapper());
+                scoreCache.Add(serverScore.Key, new GameScore(serverScore.Value));
 
-            // Cache previous score
-            scoreCache[serverScore.Key].PreviousScore = scoreCache[serverScore.Key].CurrentScore;
-
-            Debug.LogFormat("{0}'s previous score is {1}", serverScore.Key.Name, scoreCache[serverScore.Key].PreviousScore);
-
-            // Set current score
-            scoreCache[serverScore.Key].CurrentScore = serverScore.Value;
+            // Update score
+            scoreCache[serverScore.Key].UpdateScore(serverScore.Value);
         }
 
         // Show values on UI
-        //View.ShowScores(scoreCache);
+        View.ShowScores(scoreCache);
     }
 }

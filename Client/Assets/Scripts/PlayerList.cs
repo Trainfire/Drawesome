@@ -25,6 +25,12 @@ public class PlayerList : Game.IGameStateHandler, Game.IGameMessageHandler
         }
     }
 
+    void ShowDrawingIcon(PlayerData player)
+    {
+        if (Players.ContainsKey(player))
+            Players[player].DrawingIcon.SetActive(true);
+    }
+
     void AddPlayer(PlayerData player)
     {
         if (!Players.ContainsKey(player))
@@ -50,6 +56,14 @@ public class PlayerList : Game.IGameStateHandler, Game.IGameMessageHandler
         }
     }
 
+    void ClearDrawingIcons()
+    {
+        foreach (var player in Players)
+        {
+            player.Value.DrawingIcon.SetActive(false);
+        }
+    }
+
     void Clear()
     {
         foreach (var player in Players)
@@ -63,6 +77,7 @@ public class PlayerList : Game.IGameStateHandler, Game.IGameMessageHandler
     void Game.IGameStateHandler.HandleState(GameState state)
     {
         ClearTicks();
+        ClearDrawingIcons();
 
         switch (state)
         {
@@ -91,6 +106,12 @@ public class PlayerList : Game.IGameStateHandler, Game.IGameMessageHandler
         Message.IsType<ServerMessage.Game.PlayerAction>(json, (data) =>
         {
             SetTick(data.Actor, true);
+        });
+
+        // Shows drawing icon if currently displayed drawing belongs to client
+        Message.IsType<ServerMessage.Game.SendImage>(json, (data) =>
+        {
+            ShowDrawingIcon(data.Drawing.Creator);
         });
     }
 }

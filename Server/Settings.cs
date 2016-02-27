@@ -88,7 +88,10 @@ namespace Server
     public class ServerSettings
     {
         public string HostUrl = "ws://0.0.0.0:8080";
+        public string AdminPassword = "doubleButts.exe"; // TODO: Generate this everytime the server runs?
         public int MaxPlayers = 1;
+        public int NameMinChars = 3;
+        public int NameMaxChars = 24;
     }
 
     public class DrawesomeSettings
@@ -98,9 +101,14 @@ namespace Server
         public float AnsweringTime = 30f;
         public float ChoosingTime = 30f;
         public float ResultTimeBetween = 10f;
+        public float ScoresHoldTime = 12f;
+
         public uint PointsForFakeAnswer = 100;
         public uint PointsForCorrectAnswer = 200;
         public uint PointsToDrawerForCorrectAnswer = 1000;
+
+        public float TimeToShowResult = 8f;
+        public float TimeToShowFinalResult = 10f;
 
         public List<string> Decoys = new List<string>();
 

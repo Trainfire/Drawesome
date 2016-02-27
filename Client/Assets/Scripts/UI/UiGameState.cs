@@ -23,9 +23,4 @@ public class UiGameState : UiBase
     {
 
     }
-
-    public virtual void RemoveAllListeners()
-    {
-
-    }
 }

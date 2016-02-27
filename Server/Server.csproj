@@ -78,8 +78,9 @@
     </Compile>
     <Compile Include="Drawesome\Drawesome.cs" />
     <Compile Include="Drawesome\DrawesomeGameData.cs" />
+    <Compile Include="Drawesome\DrawesomePlayer.cs" />
     <Compile Include="Drawesome\DrawesomeStates.cs" />
-    <Compile Include="Drawesome\ResponseHandler.cs" />
+    <Compile Include="Game\ResponseHandler.cs" />
     <Compile Include="Game\GameData.cs" />
     <Compile Include="Game\Game.cs" />
     <Compile Include="Game\GameTimer.cs" />
@@ -98,7 +99,6 @@
     <Compile Include="Server.cs" />
     <Compile Include="Settings.cs" />
     <Compile Include="StringFormatter.cs" />
-    <Compile Include="WebSocketBehaviour.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

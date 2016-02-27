@@ -6,13 +6,11 @@ using Newtonsoft.Json;
 
 namespace Protocol
 {
-    [Serializable]
     public class ServerMessage
     {
-        [Serializable]
         public class AssignClientId : Message
         {
-            public string ID;
+            public string ID { get; private set; }
 
             public AssignClientId(string id)
             {
@@ -20,7 +18,16 @@ namespace Protocol
             }
         }
 
-        [Serializable]
+        public class SendConnectionError : Message
+        {
+            public ConnectionError Error { get; private set; }
+
+            public SendConnectionError(ConnectionError error)
+            {
+                Error = error;
+            }
+        }
+
         public class NotifyConnectionSuccess : Message
         {
             public NotifyConnectionSuccess()
@@ -29,7 +36,6 @@ namespace Protocol
             }
         }
 
-        [Serializable]
         public class RequestClientName : Message
         {
             public RequestClientName()
@@ -38,23 +44,19 @@ namespace Protocol
             }
         }
 
-        [Serializable]
         public class UpdatePlayerInfo : Message
         {
-            public int SomeInt;
-            public PlayerData PlayerData;
+            public PlayerData PlayerData { get; private set; }
 
-            public UpdatePlayerInfo(int someInt, PlayerData playerData)
+            public UpdatePlayerInfo(PlayerData playerData)
             {
-                SomeInt = someInt;
                 PlayerData = playerData;
             }
         }
 
-        [Serializable]
         public class RoomList : Message
         {
-            public List<RoomData> Rooms;
+            public List<RoomData> Rooms { get; private set; }
 
             public RoomList(List<RoomData> rooms)
             {
@@ -62,11 +64,28 @@ namespace Protocol
             }
         }
 
-        [Serializable]
+        public class NotifyRoomCountdown : Message
+        {
+            public float Duration { get; private set; }
+
+            public NotifyRoomCountdown(float duration)
+            {
+                Duration = duration;
+            }
+        }
+
+        public class NotifyRoomCountdownCancel : Message
+        {
+            public NotifyRoomCountdownCancel()
+            {
+
+            }
+        }
+
         public class NotifyChatMessage : Message
         {
-            public PlayerData Player;
-            public string Message;
+            public PlayerData Player { get; private set; }
+            public string Message { get; private set; }
 
             public NotifyChatMessage(PlayerData player, string message)
             {
@@ -75,31 +94,40 @@ namespace Protocol
             }
         }
 
-        [Serializable]
         public class NotifyPlayerAction : Message
         {
             public PlayerData Player;
             public PlayerAction Action;
+            public PlayerActionContext Context;
 
-            public NotifyPlayerAction(PlayerData player, PlayerAction action)
+            public NotifyPlayerAction(PlayerData player, PlayerAction action, PlayerActionContext context)
             {
                 Player = player;
                 Action = action;
+                Context = context;
             }
         }
 
-        [Serializable]
-        public class NotifyRoomError : Message
+        public class NotifyRoomJoin : Message
         {
-            public RoomError Notice;
+            public RoomNotice Notice;
 
-            public NotifyRoomError(RoomError notice)
+            public NotifyRoomJoin(RoomNotice notice)
             {
                 Notice = notice;
             }
         }
 
-        [Serializable]
+        public class NotifyRoomLeave : Message
+        {
+            public RoomLeaveReason Reason;
+
+            public NotifyRoomLeave(RoomLeaveReason reason)
+            {
+                Reason = reason;
+            }
+        }
+
         public class RoomUpdate : Message
         {
             public RoomData RoomData;
@@ -110,7 +138,6 @@ namespace Protocol
             }
         }
 
-        [Serializable]
         public class AssignRoomId : Message
         {
             public uint RoomId;
@@ -123,13 +150,11 @@ namespace Protocol
 
         #region Game
 
-        [Serializable]
         public class Game
         {
-            [Serializable]
             public class ChangeState : Message
             {
-                public GameState GameState;
+                public GameState GameState { get; private set; }
 
                 public ChangeState(GameState gameState)
                 {
@@ -137,10 +162,9 @@ namespace Protocol
                 }
             }
 
-            [Serializable]
             public class EndState : Message
             {
-                public GameStateEndReason Reason;
+                public GameStateEndReason Reason { get; private set; }
 
                 public EndState(GameStateEndReason reason)
                 {
@@ -148,10 +172,9 @@ namespace Protocol
                 }
             }
 
-            [Serializable]
             public class SendTransitionPeriod : Message
             {
-                public float Duration;
+                public float Duration { get; private set; }
 
                 public SendTransitionPeriod(float duration)
                 {
@@ -159,10 +182,9 @@ namespace Protocol
                 }
             }
 
-            [Serializable]
             public class SendImage : Message
             {
-                public DrawingData Drawing;
+                public DrawingData Drawing { get; private set; }
 
                 public SendImage(DrawingData drawing)
                 {
@@ -170,10 +192,9 @@ namespace Protocol
                 }
             }
 
-            [Serializable]
             public class SendPrompt : Message
             {
-                public string Prompt;
+                public string Prompt { get; private set; }
 
                 public SendPrompt(string prompt)
                 {
@@ -181,7 +202,6 @@ namespace Protocol
                 }
             }
 
-            [Serializable]
             public class SendChoices : Message
             {
                 public PlayerData Creator;
@@ -194,7 +214,6 @@ namespace Protocol
                 }
             }
 
-            [Serializable]
             public class SendResult : Message
             {
                 public AnswerData Answer;
@@ -210,30 +229,47 @@ namespace Protocol
                 void SendScores(Dictionary<PlayerData, uint> playerScores);
             }
 
-            [Serializable]
             public class SendScores : Message
             {
-                public List<PlayerData> Players;
-                public List<uint> Scores;
+                public List<PlayerData> Players = new List<PlayerData>();
+                public List<ScoreData> Scores = new List<ScoreData>();
+                public bool IsOrderedByDescending;
 
-                public SendScores(Dictionary<PlayerData, uint> playerScores)
+                public SendScores()
                 {
-                    Players = new List<PlayerData>();
-                    Scores = new List<uint>();
 
-                    if (playerScores != null)
+                }
+
+                public SendScores(Dictionary<PlayerData, ScoreData> playerScores, bool orderByDescending = false)
+                {
+                    IsOrderedByDescending = orderByDescending;
+
+                    Players = playerScores.Keys.ToList();
+                    Scores = playerScores.Values.ToList();
+
+                    if (orderByDescending)
                     {
-                        Players = playerScores.Keys.ToList();
-                        Scores = playerScores.Values.ToList();
-                    }   
+                        var pairs = new List<KeyValuePair<PlayerData, ScoreData>>();
+
+                        for (int i = 0; i < playerScores.Count; i++)
+                        {
+                            pairs.Add(new KeyValuePair<PlayerData, ScoreData>(Players[i], Scores[i]));
+                        }
+
+                        pairs = pairs.OrderByDescending(x => x.Value.Score).ToList();
+
+                        Players = pairs.Select(x => x.Key).ToList();
+                        Scores = pairs.Select(x => x.Value).ToList();
+
+                        IsOrderedByDescending = true;
+                    } 
                 }
             }
 
-            [Serializable]
             public class PlayerAction : Message
             {
-                public PlayerData Actor;
-                public GamePlayerAction Action;
+                public PlayerData Actor { get; private set; }
+                public GamePlayerAction Action { get; private set; }
 
                 public PlayerAction(PlayerData actor, GamePlayerAction action)
                 {
@@ -242,10 +278,9 @@ namespace Protocol
                 }
             }
 
-            [Serializable]
             public class AddTimer : Message
             {
-                public float Duration;
+                public float Duration { get; private set; }
 
                 public AddTimer(float duration)
                 {
@@ -253,10 +288,9 @@ namespace Protocol
                 }
             }
 
-            [Serializable]
             public class SetTimer : Message
             {
-                public float CurrentTime;
+                public float CurrentTime { get; private set; }
 
                 public SetTimer(float currentTime)
                 {
@@ -264,10 +298,9 @@ namespace Protocol
                 }
             }
 
-            [Serializable]
             public class SendAnswerValidation : Message
             {
-                public GameAnswerValidationResponse Response;
+                public GameAnswerValidationResponse Response { get; private set; }
 
                 public SendAnswerValidation(GameAnswerValidationResponse response)
                 {
@@ -275,7 +308,6 @@ namespace Protocol
                 }
             }
 
-            [Serializable]
             public class SendActualAnswer : Message
             {
                 public AnswerData Answer;
