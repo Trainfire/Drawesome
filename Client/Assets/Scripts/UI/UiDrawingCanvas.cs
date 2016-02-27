@@ -11,7 +11,7 @@ public class UiDrawingCanvas : MonoBehaviour
     public int EraserSize = 8; // TODO: Load from settings
     public bool AllowDrawing;
 
-    Vector2 CurrentMousePosition { get; set; }
+    RectTransform Rect { get; set; }
 
     Vector2 previousMousePosition = Vector2.zero;
     Vector2 PreviousMousePosition
@@ -57,8 +57,8 @@ public class UiDrawingCanvas : MonoBehaviour
     void Start()
     {
         // Make sure anchor is set to top right, otherwise drawing will be very broken
-        var rect = (RectTransform)transform;
-        rect.pivot = new Vector2(0f, 1f);
+        Rect = (RectTransform)transform;
+        Rect.pivot = new Vector2(0f, 1f);
     }
 
     Texture2D GenerateTexture()
@@ -105,6 +105,11 @@ public class UiDrawingCanvas : MonoBehaviour
     {
         Vector2 result;
         RectTransformUtility.ScreenPointToLocalPointInRectangle((RectTransform)transform, Input.mousePosition, null, out result);
+
+        // When building for WebGL, the y position of the mouse is offset by the height of the screen. This fixes that.
+        if (Client.IsWebGL())
+            result.y += Rect.rect.height;
+
         return result;
     }
 

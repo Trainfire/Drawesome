@@ -36,8 +36,21 @@ public class Client : MonoBehaviour
             Debug.LogFormat("{0} - Recieved Message - Type: {1}, Json: {2}", DateTime.Now.ToShortTimeString(), message.Identity, message.AsJson());
     }
 
+    #region Helpers
+
     public bool IsPlayer(PlayerData otherPlayerData)
     {
         return PlayerData.ID == otherPlayerData.ID;
     }
+
+    public static bool IsWebGL()
+    {
+        #if UNITY_WEBGL
+            return true;
+        #else
+            return false;
+        #endif
+    }
+
+#endregion
 }
