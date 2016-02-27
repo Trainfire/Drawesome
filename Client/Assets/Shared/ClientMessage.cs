@@ -7,7 +7,7 @@ namespace Protocol
     {
         public class RequestAdmin : Message
         {
-            public string Password { get; private set; }
+            public string Password;
 
             public RequestAdmin(string password)
             {
@@ -17,7 +17,7 @@ namespace Protocol
 
         public class GiveName : Message
         {
-            public string Name { get; private set; }
+            public string Name;
 
             public GiveName(string name)
             {
@@ -27,7 +27,7 @@ namespace Protocol
 
         public class CreateRoom : Message
         {
-            public string Password { get; private set; }
+            public string Password;
 
             public CreateRoom(PlayerData playerInfo, string password)
             {
@@ -37,8 +37,8 @@ namespace Protocol
 
         public class JoinRoom : Message
         {
-            public string RoomId { get; private set; }
-            public string Password { get; private set; }
+            public string RoomId;
+            public string Password;
 
             public JoinRoom(PlayerData playerInfo, string roomId, string password = "")
             {
@@ -65,7 +65,7 @@ namespace Protocol
 
         public class SendChat : Message
         {
-            public string Message { get; private set; }
+            public string Message;
 
             public SendChat(string message)
             {
@@ -79,7 +79,7 @@ namespace Protocol
         {
             public class SendImage : Message
             {
-                public byte[] Image { get; private set; }
+                public byte[] Image;
 
                 public SendImage(byte[] image)
                 {
@@ -89,7 +89,7 @@ namespace Protocol
 
             public class SubmitAnswer : Message
             {
-                public string Answer { get; private set; }
+                public string Answer;
 
                 public SubmitAnswer(string answer)
                 {
@@ -99,7 +99,7 @@ namespace Protocol
 
             public class SubmitChoice : Message
             {
-                public string ChosenAnswer { get; private set; }
+                public string ChosenAnswer;
 
                 public SubmitChoice(string chosenAnswer)
                 {
@@ -109,7 +109,7 @@ namespace Protocol
 
             public class LikeAnswer : Message
             {
-                public string Answer { get; set; }
+                public string Answer;
 
                 public LikeAnswer(string answer)
                 {
@@ -127,8 +127,8 @@ namespace Protocol
 
             public class SendAction : Message
             {
-                public PlayerData Player { get; private set; }
-                public GameAction Action { get; private set; }
+                public PlayerData Player;
+                public GameAction Action;
 
                 public SendAction(PlayerData player, GameAction action)
                 {

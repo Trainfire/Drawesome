@@ -3,6 +3,7 @@ using Protocol;
 using System.Collections.Generic;
 using System;
 using System.Linq;
+using System.Text;
 
 namespace Server
 {
@@ -31,8 +32,7 @@ namespace Server
         public event EventHandler<PlayerConnectionClosed> OnConnectionClosed;
         public event EventHandler<SharedMessage.Chat> OnChat;
         public event EventHandler<ClientMessage.Game.SendAction> OnGameAction;
-        public event EventHandler<Message> OnMessage;
-        public event EventHandler<string> OnMessageString;
+        public event EventHandler<string> OnMessage;
 
         public PlayerData Data { get; private set; }
         public IWebSocketConnection Socket { get; private set; }
@@ -55,10 +55,11 @@ namespace Server
                     OnConnectionClosed(this, new PlayerConnectionClosed(this, PlayerCloseReason.Disconnected));
             };
 
-            socket.OnMessage += (json) => OnPlayerMessage(json);
+            socket.OnMessage += (json) => OnRecieveMessage(json);
+            socket.OnBinary += (bytes) => OnRecieveMessage(Encoding.UTF8.GetString(bytes));
         }
 
-        void OnPlayerMessage(string json)
+        void OnRecieveMessage(string json)
         {
             Message.IsType<ClientMessage.RequestAdmin>(json, (data) =>
             {
@@ -84,10 +85,7 @@ namespace Server
             var obj = JsonHelper.FromJson<Message>(json);
 
             if (OnMessage != null)
-                OnMessage(this, obj);
-
-            if (OnMessageString != null)
-                OnMessageString(this, json);
+                OnMessage(this, json);
         }
 
         public override string ToString()

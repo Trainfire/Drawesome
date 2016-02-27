@@ -58,6 +58,11 @@ public class WebSocket
 
 	int m_NativeRef = 0;
 
+    public void Send(string str)
+    {
+        
+    }
+
 	public void Send(byte[] buffer)
 	{
 		SocketSend (m_NativeRef, buffer, buffer.Length);
@@ -100,7 +105,7 @@ public class WebSocket
 		}
 	}
 #else
-	WebSocketSharp.WebSocket m_Socket;
+    WebSocketSharp.WebSocket m_Socket;
 	Queue<byte[]> m_Messages = new Queue<byte[]>();
 	bool m_IsConnected = false;
 	string m_Error = null;

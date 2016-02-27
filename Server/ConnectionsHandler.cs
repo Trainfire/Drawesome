@@ -82,7 +82,7 @@ namespace Server
                             PlayerConnected(this, player);
 
                         // Assign callback
-                        player.OnMessageString += OnPlayerMessage;
+                        player.OnMessage += OnPlayerMessage;
                     }
                     else
                     {

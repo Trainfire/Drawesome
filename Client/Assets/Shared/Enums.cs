@@ -2,14 +2,18 @@ using System;
 
 namespace Protocol
 {
-    [Serializable]
+    public enum MessageDataType
+    {
+        JSON,
+        Binary,
+    }
+
     public enum PlayerActionContext
     {
         Global,
         Room,
     }
 
-    [Serializable]
     public enum PlayerAction
     {
         None,
@@ -23,7 +27,6 @@ namespace Protocol
         Unready,
     }
 
-    [Serializable]
     public enum ConnectionError
     {
         None,
@@ -31,7 +34,6 @@ namespace Protocol
         MatchesExistingName,
     }
 
-    [Serializable]
     public enum RoomNotice
     {
         None,
@@ -42,14 +44,12 @@ namespace Protocol
         GameAlreadyStarted,
     }
 
-    [Serializable]
     public enum RoomLeaveReason
     {
         Normal,
         Kicked,
     }
 
-    [Serializable]
     public enum GameAction
     {
         Start,
@@ -59,7 +59,6 @@ namespace Protocol
         CancelStart,
     }
 
-    [Serializable]
     public enum GamePlayerAction
     {
         None,
@@ -68,7 +67,6 @@ namespace Protocol
         ChoiceChosen,
     }
 
-    [Serializable]
     public enum GameAnswerValidationResponse
     {
         None,
@@ -77,7 +75,6 @@ namespace Protocol
         Empty,
     }
 
-    [Serializable]
     public enum GameState
     {
         PreGame,
@@ -91,7 +88,6 @@ namespace Protocol
         GameOver,
     }
 
-    [Serializable]
     public enum GameTransition
     {
         RoundBeginToDrawing,
@@ -102,7 +98,6 @@ namespace Protocol
         ScoresToAnswering,
     }
 
-    [Serializable]
     public enum GameStateEndReason
     {
         Normal,
@@ -111,7 +106,6 @@ namespace Protocol
         GameEnded,
     }
 
-    [Serializable]
     public enum GameAnswerType
     {
         Player,

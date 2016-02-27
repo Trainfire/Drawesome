@@ -1,12 +1,11 @@
 using UnityEngine;
 using System;
-using WebSocketSharp;
 using Protocol;
 using System.Collections.Generic;
 
 public class Connection : MonoBehaviour
 {
-    public delegate void MessageDelegate(object sender, MessageEventArgs message);
+    public delegate void MessageDelegate(string json);
     public event MessageDelegate MessageRecieved;
 
     public event EventHandler ConnectionClosed;
@@ -18,20 +17,28 @@ public class Connection : MonoBehaviour
 
     WebSocket Socket { get; set; }
     string PlayerName { get; set; }
-    Queue<MessageEventArgs> MessageQueue { get; set; }
+    Queue<string> MessageQueue { get; set; }
     bool IsDisconnecting { get; set; }
 
     void Awake()
     {
         Player = new PlayerData();
         Room = new RoomData();
-        MessageQueue = new Queue<MessageEventArgs>();
+        MessageQueue = new Queue<string>();
     }
 
     void Update()
     {
+        if (Socket != null)
+        {
+            var str = Socket.RecvString();
+
+            if (str != null)
+                OnMessage(str);
+        }
+
         if (MessageQueue.Count != 0 && MessageRecieved != null)
-            MessageRecieved(this, MessageQueue.Dequeue());
+            MessageRecieved(MessageQueue.Dequeue());
 
         if (IsDisconnecting)
         {
@@ -56,67 +63,57 @@ public class Connection : MonoBehaviour
         if (Socket != null)
             Disconnect();
 
-        Socket = new WebSocket(url);
-
-        Socket.OnMessage += OnMessage;
-        Socket.OnClose += OnClose;
-        Socket.Connect();
+        Socket = new WebSocket(new Uri(url));
+        StartCoroutine(Socket.Connect());
     }
 
     public void Disconnect()
     {
+        Disconnect("");
+    }
+
+    public void Disconnect(string reason)
+    {
+        Debug.LogFormat("Disconnected: {0}", reason);
         Socket.Close();
     }
 
-    public void Disconnect(CloseStatusCode closeStatus, string reason = "")
+    void OnMessage(string json)
     {
-        Socket.Close(closeStatus, reason);
-    }
-
-    void OnMessage(object sender, MessageEventArgs e)
-    {
-        Message.IsType<ServerMessage.RequestClientName>(e.Data, (data) =>
+        Message.IsType<ServerMessage.RequestClientName>(json, (data) =>
         {
             SendMessage(new ClientMessage.GiveName(PlayerName));
         });
 
-        Message.IsType<ServerMessage.UpdatePlayerInfo>(e.Data, (data) =>
+        Message.IsType<ServerMessage.UpdatePlayerInfo>(json, (data) =>
         {
             Player = data.PlayerData;
         });
 
-        Message.IsType<ServerMessage.AssignRoomId>(e.Data, (data) =>
+        Message.IsType<ServerMessage.AssignRoomId>(json, (data) =>
         {
             Player.RoomId = data.RoomId;
 
             Debug.LogFormat("Recieved Room ID: {0}", data.RoomId);
         });
 
-        Message.IsType<ServerMessage.RoomUpdate>(e.Data, (data) =>
+        Message.IsType<ServerMessage.RoomUpdate>(json, (data) =>
         {
             Room = data.RoomData;
         });
 
-        MessageQueue.Enqueue(e);
-    }
-
-    void OnClose(object sender, CloseEventArgs e)
-    {
-        Socket.OnClose -= OnClose;
-        Socket.OnMessage -= OnMessage;
-
-        IsDisconnecting = true;
+        MessageQueue.Enqueue(json);
     }
 
     void OnApplicationQuit()
     {
-        Disconnect(CloseStatusCode.Normal, "Application Quit");
+        Disconnect("Application Quit");
     }
 
     public void SendMessage(Message message)
     {
         var json = JsonHelper.ToJson(message);
-        Socket.Send(json);
+        Socket.SendString(json);
     }
 
     public bool IsRoomOwner()

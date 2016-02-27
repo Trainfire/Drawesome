@@ -10,7 +10,7 @@ namespace Protocol
     {
         public class AssignClientId : Message
         {
-            public string ID { get; private set; }
+            public string ID;
 
             public AssignClientId(string id)
             {
@@ -20,7 +20,7 @@ namespace Protocol
 
         public class SendConnectionError : Message
         {
-            public ConnectionError Error { get; private set; }
+            public ConnectionError Error;
 
             public SendConnectionError(ConnectionError error)
             {
@@ -46,7 +46,7 @@ namespace Protocol
 
         public class UpdatePlayerInfo : Message
         {
-            public PlayerData PlayerData { get; private set; }
+            public PlayerData PlayerData;
 
             public UpdatePlayerInfo(PlayerData playerData)
             {
@@ -56,7 +56,7 @@ namespace Protocol
 
         public class RoomList : Message
         {
-            public List<RoomData> Rooms { get; private set; }
+            public List<RoomData> Rooms;
 
             public RoomList(List<RoomData> rooms)
             {
@@ -66,7 +66,7 @@ namespace Protocol
 
         public class NotifyRoomCountdown : Message
         {
-            public float Duration { get; private set; }
+            public float Duration;
 
             public NotifyRoomCountdown(float duration)
             {
@@ -84,8 +84,8 @@ namespace Protocol
 
         public class NotifyChatMessage : Message
         {
-            public PlayerData Player { get; private set; }
-            public string Message { get; private set; }
+            public PlayerData Player;
+            public string Message;
 
             public NotifyChatMessage(PlayerData player, string message)
             {
@@ -154,7 +154,7 @@ namespace Protocol
         {
             public class ChangeState : Message
             {
-                public GameState GameState { get; private set; }
+                public GameState GameState;
 
                 public ChangeState(GameState gameState)
                 {
@@ -164,7 +164,7 @@ namespace Protocol
 
             public class EndState : Message
             {
-                public GameStateEndReason Reason { get; private set; }
+                public GameStateEndReason Reason;
 
                 public EndState(GameStateEndReason reason)
                 {
@@ -174,7 +174,7 @@ namespace Protocol
 
             public class SendTransitionPeriod : Message
             {
-                public float Duration { get; private set; }
+                public float Duration;
 
                 public SendTransitionPeriod(float duration)
                 {
@@ -184,7 +184,7 @@ namespace Protocol
 
             public class SendImage : Message
             {
-                public DrawingData Drawing { get; private set; }
+                public DrawingData Drawing;
 
                 public SendImage(DrawingData drawing)
                 {
@@ -194,7 +194,7 @@ namespace Protocol
 
             public class SendPrompt : Message
             {
-                public string Prompt { get; private set; }
+                public string Prompt;
 
                 public SendPrompt(string prompt)
                 {
@@ -268,8 +268,8 @@ namespace Protocol
 
             public class PlayerAction : Message
             {
-                public PlayerData Actor { get; private set; }
-                public GamePlayerAction Action { get; private set; }
+                public PlayerData Actor;
+                public GamePlayerAction Action;
 
                 public PlayerAction(PlayerData actor, GamePlayerAction action)
                 {
@@ -280,7 +280,7 @@ namespace Protocol
 
             public class AddTimer : Message
             {
-                public float Duration { get; private set; }
+                public float Duration;
 
                 public AddTimer(float duration)
                 {
@@ -290,7 +290,7 @@ namespace Protocol
 
             public class SetTimer : Message
             {
-                public float CurrentTime { get; private set; }
+                public float CurrentTime;
 
                 public SetTimer(float currentTime)
                 {
@@ -300,7 +300,7 @@ namespace Protocol
 
             public class SendAnswerValidation : Message
             {
-                public GameAnswerValidationResponse Response { get; private set; }
+                public GameAnswerValidationResponse Response;
 
                 public SendAnswerValidation(GameAnswerValidationResponse response)
                 {

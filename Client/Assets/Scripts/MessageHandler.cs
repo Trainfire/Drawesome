@@ -1,4 +1,3 @@
-using WebSocketSharp;
 using Protocol;
 using System;
 
@@ -38,49 +37,44 @@ public class MessageHandler
         connection.MessageRecieved += HandleMessage;
     }
 
-    void HandleMessage(object sender, MessageEventArgs message)
+    void HandleMessage(string json)
     {
-        if (message.Type == Opcode.Text)
-        {
-            var json = message.Data;
+        #region General
 
-            #region General
+        Message.IsType<ServerMessage.SendConnectionError>(json, (data) => FireEvent(OnConnectionError, data));
+        Message.IsType<ServerMessage.NotifyConnectionSuccess>(json, (data) => FireEvent(OnServerConnectionSuccess, data));
+        Message.IsType<ServerMessage.NotifyPlayerAction>(json, (data) => FireEvent(OnServerNotifyPlayerAction, data));
+        Message.IsType<ServerMessage.UpdatePlayerInfo>(json, (data) => FireEvent(OnServerUpdatePlayerInfo, data));
+        Message.IsType<ServerMessage.RoomUpdate>(json, (data) => FireEvent(OnRoomUpdate, data));
+        Message.IsType<ServerMessage.RoomList>(json, (data) => FireEvent(OnRecieveRoomList, data));
+        Message.IsType<ServerMessage.NotifyRoomJoin>(json, (data) => FireEvent(OnServerNotifyRoomJoin, data));
+        Message.IsType<ServerMessage.NotifyRoomLeave>(json, (data) => FireEvent(OnServerNotifyRoomLeave, data));
+        Message.IsType<ServerMessage.NotifyChatMessage>(json, (data) => FireEvent(OnChat, data));
+        Message.IsType<ServerMessage.AssignRoomId>(json, (data) => FireEvent(OnRoomIdAssigned, data));
+        Message.IsType<ServerMessage.NotifyRoomCountdown>(json, (data) => FireEvent(OnRoomCountdownStart, data));
+        Message.IsType<ServerMessage.NotifyRoomCountdownCancel>(json, (data) => FireEvent(OnRoomCountdownCancel, data));
 
-            Message.IsType<ServerMessage.SendConnectionError>(json, (data) => FireEvent(OnConnectionError, data));
-            Message.IsType<ServerMessage.NotifyConnectionSuccess>(json, (data) => FireEvent(OnServerConnectionSuccess, data));
-            Message.IsType<ServerMessage.NotifyPlayerAction>(json, (data) => FireEvent(OnServerNotifyPlayerAction, data));
-            Message.IsType<ServerMessage.UpdatePlayerInfo>(json, (data) => FireEvent(OnServerUpdatePlayerInfo, data));
-            Message.IsType<ServerMessage.RoomUpdate>(json, (data) => FireEvent(OnRoomUpdate, data));
-            Message.IsType<ServerMessage.RoomList>(json, (data) => FireEvent(OnRecieveRoomList, data));
-            Message.IsType<ServerMessage.NotifyRoomJoin>(json, (data) => FireEvent(OnServerNotifyRoomJoin, data));
-            Message.IsType<ServerMessage.NotifyRoomLeave>(json, (data) => FireEvent(OnServerNotifyRoomLeave, data));
-            Message.IsType<ServerMessage.NotifyChatMessage>(json, (data) => FireEvent(OnChat, data));
-            Message.IsType<ServerMessage.AssignRoomId>(json, (data) => FireEvent(OnRoomIdAssigned, data));
-            Message.IsType<ServerMessage.NotifyRoomCountdown>(json, (data) => FireEvent(OnRoomCountdownStart, data));
-            Message.IsType<ServerMessage.NotifyRoomCountdownCancel>(json, (data) => FireEvent(OnRoomCountdownCancel, data));
+        #endregion
 
-            #endregion
+        #region Game
 
-            #region Game
+        Message.IsType<ServerMessage.Game.SendChoices>(json, (data) => FireEvent(OnRecieveChoices, data));
+        Message.IsType<ServerMessage.Game.SendImage>(json, (data) => FireEvent(OnRecieveImage, data));
+        Message.IsType<ServerMessage.Game.SendPrompt>(json, (data) => FireEvent(OnReceivePrompt, data));
+        Message.IsType<ServerMessage.Game.SendResult>(json, (data) => FireEvent(OnRecieveResult, data));
+        Message.IsType<ServerMessage.Game.ChangeState>(json, (data) => FireEvent(OnStateChange, data));
+        Message.IsType<ServerMessage.Game.SendAnswerValidation>(json, (data) => FireEvent(OnAnswerError, data));
+        Message.IsType<ServerMessage.Game.AddTimer>(json, (data) => FireEvent(OnAddTimer, data));
+        Message.IsType<ServerMessage.Game.SetTimer>(json, (data) => FireEvent(OnSetTimer, data));
+        Message.IsType<ServerMessage.Game.SetTimer>(json, (data) => FireEvent(OnSetTimer, data));
 
-            Message.IsType<ServerMessage.Game.SendChoices>(json, (data) => FireEvent(OnRecieveChoices, data));
-            Message.IsType<ServerMessage.Game.SendImage>(json, (data) => FireEvent(OnRecieveImage, data));
-            Message.IsType<ServerMessage.Game.SendPrompt>(json, (data) => FireEvent(OnReceivePrompt, data));
-            Message.IsType<ServerMessage.Game.SendResult>(json, (data) => FireEvent(OnRecieveResult, data));
-            Message.IsType<ServerMessage.Game.ChangeState>(json, (data) => FireEvent(OnStateChange, data));
-            Message.IsType<ServerMessage.Game.SendAnswerValidation>(json, (data) => FireEvent(OnAnswerError, data));
-            Message.IsType<ServerMessage.Game.AddTimer>(json, (data) => FireEvent(OnAddTimer, data));
-            Message.IsType<ServerMessage.Game.SetTimer>(json, (data) => FireEvent(OnSetTimer, data));
-            Message.IsType<ServerMessage.Game.SetTimer>(json, (data) => FireEvent(OnSetTimer, data));
+        #endregion
 
-            #endregion
+        if (OnAny != null)
+            OnAny(JsonHelper.FromJson<Message>(json));
 
-            if (OnAny != null)
-                OnAny(JsonHelper.FromJson<Message>(message.Data));
-
-            if (OnMessage != null)
-                OnMessage(message.Data);
-        }
+        if (OnMessage != null)
+            OnMessage(json);
     }
 
     void FireEvent<T>(MessageEvent<T> messageEvent, T data) where T : Message

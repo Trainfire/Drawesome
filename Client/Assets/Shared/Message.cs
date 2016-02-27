@@ -7,6 +7,7 @@ namespace Protocol
     [Serializable]
     public class Message
     {
+        public MessageDataType DataType;
         public string Identity;
         public string LogMessage;
 

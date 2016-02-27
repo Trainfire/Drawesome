@@ -4,11 +4,12 @@ using System.Linq;
 
 namespace Protocol
 {
+    [Serializable]
     public class PlayerData
     {
-        public uint RoomId { get; set; }
-        public string ID { get; set; }
-        public string Name { get; set; }
+        public uint RoomId;
+        public string ID;
+        public string Name;
 
         public PlayerData()
         {
@@ -34,13 +35,14 @@ namespace Protocol
         }
     }
 
+    [Serializable]
     public class RoomData
     {
-        public string ID { get; set; }
-        public string Password { get; set; }
-        public PlayerData Owner { get; set; }
-        public List<PlayerData> Players { get; set; }
-        public bool GameStarted { get; set; }
+        public string ID;
+        public string Password;
+        public PlayerData Owner;
+        public List<PlayerData> Players;
+        public bool GameStarted;
 
         public RoomData()
         {
@@ -52,11 +54,12 @@ namespace Protocol
         }
     }
 
+    [Serializable]
     public class DrawingData
     {
-        public PlayerData Creator { get; set; }
-        public byte[] Image { get; set; }
-        public PromptData Prompt { get; set; }
+        public PlayerData Creator;
+        public byte[] Image;
+        public PromptData Prompt;
 
         public DrawingData(PlayerData creator, byte[] image, PromptData prompt)
         {
@@ -66,14 +69,15 @@ namespace Protocol
         }
     }
 
+    [Serializable]
     public class AnswerData
     {
-        public PlayerData Author { get; set; }
-        public string Answer { get; set; }
-        public int Likes { get; set; }
-        public List<PlayerData> Choosers { get; set; }
-        public uint Points { get; set; }
-        public GameAnswerType Type { get; set; }
+        public PlayerData Author;
+        public string Answer;
+        public int Likes;
+        public List<PlayerData> Choosers;
+        public uint Points;
+        public GameAnswerType Type;
 
         public AnswerData()
         {
@@ -104,10 +108,11 @@ namespace Protocol
         }
     }
 
+    [Serializable]
     public class PromptData
     {
-        public int Id { get; set; }
-        public string Text { get; set; }
+        public int Id;
+        public string Text;
 
         // Replaces any tokens such as "random player name" appropriately replaced.
         public string ReplaceTokens(PlayerData player, List<PlayerData> players)
@@ -137,11 +142,12 @@ namespace Protocol
         }
     }
 
+    [Serializable]
     public class ScoreData
     {
-        public uint Score { get; set; }
-        public uint Likes { get; set; }
-        public AnswerData AnswerGiven { get; set; }
+        public uint Score;
+        public uint Likes;
+        public AnswerData AnswerGiven;
 
         public ScoreData(uint score, uint likes, AnswerData answerGiven)
         {
