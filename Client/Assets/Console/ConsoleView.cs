@@ -8,7 +8,8 @@ public class ConsoleView : MonoBehaviour
     public GameObject View;
     public InputField InputField;
     public RectTransform LogView;
-    public Text LogText;
+    public ConsoleLogView LogViewItem;
+    public RectTransform LogItemContainer;
     public ScrollRect LogScrollView;
 
     ConsoleController Console { get; set; }
@@ -16,6 +17,7 @@ public class ConsoleView : MonoBehaviour
     string log = "";
     const float LogHeight = 250f;
     const float LogToggleTime = 0.2f;
+    const float LogTimeToLive = 60f;
     AnimationCurve LogAnimCurve = AnimationCurve.EaseInOut(0f, 0f, 1f, 1f);
 
     enum State
@@ -29,7 +31,7 @@ public class ConsoleView : MonoBehaviour
     {
         Console = console;
 
-        LogText.text = "";
+        LogViewItem.gameObject.SetActive(false);
         InputField.text = "";
         LogView.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, 0f);
 
@@ -41,30 +43,34 @@ public class ConsoleView : MonoBehaviour
 
     void OnLogMessageRecieved(string condition, string stackTrace, LogType type)
     {
+        var logView = Instantiate(LogViewItem);
+        logView.transform.SetParent(LogItemContainer);
+
+        string log = "";
         switch (type)
         {
             case LogType.Error:
-                log += "<color=#f00>Error: " + condition + "</color>\r\n";
+                log += "<color=#f00>Error: " + condition + "</color>";
                 break;
             case LogType.Assert:
-                log += "<color=#f00>Assert: " + condition + "</color>\r\n";
+                log += "<color=#f00>Assert: " + condition + "</color>";
                 break;
             case LogType.Warning:
                 break;
             case LogType.Log:
-                log += condition + "\r\n";
+                log += condition;
                 break;
             case LogType.Exception:
                 break;
             default:
                 break;
         }
+
+        logView.SetText(log, LogTimeToLive);
     }
 
     void Update()
     {
-        LogText.text = log;
-
         // Scroll to bottom
         LogScrollView.ScrollToBottom();
     }

@@ -30,7 +30,8 @@ public class ConsoleController
 
     public void SubmitInput(string input)
     {
-        ParseInput(input);
+        if (input != string.Empty)
+            ParseInput(input);
     }
 
     public void RegisterCommand(ConsoleCommand action)
