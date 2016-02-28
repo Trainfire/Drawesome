@@ -20,8 +20,8 @@
   ],
   "Transitions": {
     "RoundBeginToDrawing": 1.0,
-    "DrawingToAnswering": 3.0,
-	"AnsweringToChoosing": 3.0,
+    "DrawingToAnswering": 4.0,
+	"AnsweringToChoosing": 4.0,
     "ChoosingtoResults": 0.0,
 	"ResultsToScores": 0,
 	"ScoresToAnswering": 1.0,
