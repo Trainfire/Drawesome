@@ -262,15 +262,15 @@ namespace Server.Drawesome
             return results;
         }
 
-        public bool IsPrompt(string answer)
+        bool IsPrompt(string answer)
         {
             // TODO: Replace string with object
-            return prompts.Any(x => x.Value.GetText() == answer.ToLower());
+            return prompts.Any(x => x.Value.GetText() == answer.Trim().ToLower());
         }
 
-        public bool MatchesExistingAnswer(string answer)
+        bool MatchesExistingAnswer(string answer)
         {
-            return answers.Any(x => x.Answer.ToLower() == answer.ToLower());
+            return answers.Any(x => x.Answer.ToLower() == answer.Trim().ToLower());
         }
 
         public ReadOnlyCollection<AnswerData> ChosenAnswers
