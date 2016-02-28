@@ -124,7 +124,7 @@ namespace Server.Drawesome
         {
             base.OnBegin();
 
-            SetCountdownTimer("Choosing Timer", GameData.Settings.Drawesome.ChoosingTime);
+            SetCountdownTimer("Choosing Timer", GameData.Settings.Drawesome.ChoosingTime, true);
 
             GameData.SendChoicesToPlayers();
 
