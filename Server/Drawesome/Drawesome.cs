@@ -20,7 +20,6 @@ namespace Server.Drawesome
             AddState(GameState.Results, new StateResultsPhase(settings));
             AddState(GameState.Scores, new StateScores(settings));
             AddState(GameState.FinalScores, new StateFinalScores(settings));
-            AddState(GameState.GameOver, new StateGameOver(settings));
         }
 
         public override void Start(List<Player> players)
@@ -48,9 +47,9 @@ namespace Server.Drawesome
         /// Determine what to do when the current state ends.
         /// </summary>
         /// <param name="gameData"></param>
-        protected override void OnEndState(GameState endingState)
+        protected override void OnEndState(GameState previousState)
         {
-            switch (endingState)
+            switch (previousState)
             {
                 case GameState.PreGame:
                     SetState(GameState.RoundBegin, Settings.Drawesome.Transitions.RoundBeginToDrawing);
@@ -96,7 +95,9 @@ namespace Server.Drawesome
                     break;
 
                 case GameState.Results:
+
                     Logger.Log(this, "{0} drawings remain", GameData.Drawings.Count);
+
                     if (GameData.HasDrawings())
                     {
                         // Show the scores as normal
@@ -110,6 +111,7 @@ namespace Server.Drawesome
                     break;
 
                 case GameState.Scores:
+
                     // Clear data for the next round
                     GameData.OnNewRound();
 
@@ -118,10 +120,8 @@ namespace Server.Drawesome
                     break;
 
                 case GameState.FinalScores:
-                    End();
-                    Logger.Log(this, "Game Over!");
 
-                    SetState(GameState.PreGame, Settings.Drawesome.Transitions.ScoresToAnswering);
+                    End();
                     break;
 
                 default:

@@ -251,21 +251,4 @@ namespace Server.Drawesome
             GameData.Players.ForEach(x => x.SendScores(GameData.GetLatestScores(), true));
         }
     }
-
-    public class StateGameOver : State<DrawesomeGameData>
-    {
-        public override GameState Type { get { return GameState.GameOver; } }
-
-        public StateGameOver(Settings settings) : base(settings)
-        {
-
-        }
-
-        protected override void OnBegin()
-        {
-            base.OnBegin();
-            GameData.OnNewRound();
-            EndState();
-        }
-    }
 }

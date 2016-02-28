@@ -17,15 +17,19 @@ namespace Server.Game
 
         public abstract string LogName { get; }
 
+        ConnectionsHandler ConnectionsHandler { get; set; }
         State<TData> CurrentState { get; set; }
         Dictionary<GameState, State<TData>> States { get; set; }
 
         public Game(ConnectionsHandler connectionsHandler, Settings settings)
         {
             Logger.Log(this, "Initialised");
+
+            ConnectionsHandler = connectionsHandler;
+            connectionsHandler.AddMessageListener(this);
+
             Settings = settings;
             States = new Dictionary<GameState, State<TData>>();
-            connectionsHandler.AddMessageListener(this);
         }
 
         public virtual void Start(List<Player> players)
@@ -48,6 +52,8 @@ namespace Server.Game
         public void End()
         {
             Logger.Log(this, "Ended");
+
+            ConnectionsHandler.RemoveMessageListener(this);
 
             if (CurrentState != null)
                 CurrentState.EndState(GameStateEndReason.GameEnded, false);

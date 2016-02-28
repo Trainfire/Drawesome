@@ -59,8 +59,6 @@ namespace Server
             }
 
             Join(Owner);
-
-            Game = new DrawesomeGame(connections, settings);
         }
 
         #region Actions
@@ -139,6 +137,7 @@ namespace Server
             CountdownTimer = new GameTimer("Countdown", 5f, () =>
             {
                 Logger.Log(this, "{0} has started the game", Owner.Data.Name);
+                Game = new DrawesomeGame(ConnectionsHandler, Settings);
                 Game.Start(Players);
                 Game.OnEnd += OnGameEnd;
             });
@@ -256,7 +255,8 @@ namespace Server
             else
             {
                 // Remove room if no players remain
-                Game.End();
+                if (Game != null)
+                    Game.End();
 
                 if (CountdownTimer != null)
                     CountdownTimer.Stop();

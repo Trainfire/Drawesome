@@ -224,11 +224,6 @@ namespace Protocol
                 }
             }
 
-            public interface ISendScores
-            {
-                void SendScores(Dictionary<PlayerData, uint> playerScores);
-            }
-
             public class SendScores : Message
             {
                 public List<PlayerData> Players = new List<PlayerData>();
