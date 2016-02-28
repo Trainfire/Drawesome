@@ -29,7 +29,7 @@ public class UiGameStateFinalScores : UiBase
         var views = new List<UiFinalScoreRow>();
 
         // Add rows
-        foreach (var score in scoreData)
+        foreach (var score in scoreData.Take(3).ToList())
         {
             var instance = UiUtility.AddChild(RowContainer, RowProtoype, true);
 
