@@ -24,16 +24,37 @@ public class UiRoom : UiBase
 
     protected override void OnShow()
     {
-        GameInstance = UiUtility.AddChild(GameContainer, GamePrototype, true);
-        var rect = (RectTransform)GameInstance.transform;
-        rect.sizeDelta = Vector2.zero;
-        GameInstance.Initialise(Client);
+        MakeInstance();
     }
 
     protected override void OnHide()
     {
+        RemoveInstance();
+    }
+
+    void MakeInstance()
+    {
+        GameInstance = UiUtility.AddChild(GameContainer, GamePrototype, true);
+        var rect = (RectTransform)GameInstance.transform;
+        rect.sizeDelta = Vector2.zero;
+
+        GameInstance.Initialise(Client);
+        GameInstance.OnGameEnd += OnGameEnd;
+    }
+
+    void OnGameEnd(object sender, System.EventArgs e)
+    {
+        RemoveInstance();
+        MakeInstance();
+    }
+
+    void RemoveInstance()
+    {
         if (GameInstance != null)
+        {
+            GameInstance.OnGameEnd -= OnGameEnd;
             Destroy(GameInstance.gameObject);
+        }
     }
 
     void Update()

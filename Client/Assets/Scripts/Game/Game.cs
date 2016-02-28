@@ -1,9 +1,12 @@
 using UnityEngine;
 using System.Collections.Generic;
 using Protocol;
+using System;
 
 public class Game : MonoBehaviour, IClientHandler
 {
+    public event EventHandler OnGameEnd;
+
     public Timer Timer;
     public Transition Transition;
     public UiGame View;
@@ -87,6 +90,12 @@ public class Game : MonoBehaviour, IClientHandler
                 s.Canvas = Canvas;
                 s.State.Begin();
             }
+        }
+
+        if (nextState == GameState.PreGame)
+        {
+            if (OnGameEnd != null)
+                OnGameEnd(this, null);
         }
 
         StateHandlers.ForEach(x => x.HandleState(nextState));
