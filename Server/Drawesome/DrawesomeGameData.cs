@@ -63,12 +63,12 @@ namespace Server.Drawesome
         {
             if (IsPrompt(answer))
             {
-                Console.WriteLine("Player {0}'s answer matches prompt!", player.Data.Name);
+                Logger.Log(this, "Player {0}'s answer matches prompt!", player.Data.Name);
                 player.SendAnswerValidation(GameAnswerValidationResponse.MatchesPrompt);
             }
             else if (MatchesExistingAnswer(answer))
             {
-                Console.WriteLine("Player {0}'s answer matches an existing answer from another player!", player.Data.Name);
+                Logger.Log(this, "Player {0}'s answer matches an existing answer from another player!", player.Data.Name);
                 player.SendAnswerValidation(GameAnswerValidationResponse.AlreadyExists);
             }
             else if (string.IsNullOrWhiteSpace(answer))
@@ -81,7 +81,7 @@ namespace Server.Drawesome
 
                 // Add answer here
                 var answerData = new AnswerData(player.Data, answer.Trim());
-                Console.WriteLine("Add answer: {0}", answerData.Answer);
+                Logger.Log(this, "Add answer: {0}", answerData.Answer);
                 answers.Add(answerData);
 
                 // Tell all clients that player has submitted answer
@@ -96,7 +96,7 @@ namespace Server.Drawesome
         {
             var answer = GetAnswer(chosenAnswer);
 
-            Console.WriteLine("Player {0} chose {1}", player.Data.Name, answer.Answer);
+            Logger.Log(this, "Player {0} chose {1}", player.Data.Name, answer.Answer);
 
             if (answer.Type == GameAnswerType.ActualAnswer)
             {
@@ -123,7 +123,7 @@ namespace Server.Drawesome
             // Find the prompt that was sent to the player
             var prompt = prompts[player];
 
-            Console.WriteLine("Recieve image from {0} with {1} bytes for prompt {2}", player.Data.Name, image.Length, prompt.GetText());
+            Logger.Log(this, "Recieve image from {0} with {1} bytes for prompt {2}", player.Data.Name, image.Length, prompt.GetText());
 
             if (!drawings.Any(x => x.Creator.ID == player.Data.ID))
                 drawings.Enqueue(new DrawingData(player.Data, image, prompt));

@@ -138,7 +138,6 @@ namespace Server.Drawesome
 
             Message.IsType<ClientMessage.Game.SubmitChoice>(json, (data) =>
             {
-                Console.WriteLine("Player {0} chose {1}", player.Data.Name, data.ChosenAnswer);
                 GameData.SubmitChoice(data.ChosenAnswer, player);
                 GameData.Players.ForEach(x => x.NotifyPlayerGameAction(player.Data, GamePlayerAction.ChoiceChosen));
                 ResponseHandler.Register(player);
