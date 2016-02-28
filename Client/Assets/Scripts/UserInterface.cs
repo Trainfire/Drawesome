@@ -61,13 +61,22 @@ public class UserInterface : MonoBehaviour, IClientHandler
 
     void ChangeMenu(UiBase viewNext)
     {
+        var animController = gameObject.GetOrAddComponent<UiAnimationController>();
+
         foreach (var view in views)
         {
             if (view != viewNext)
-                view.Hide();
+            {
+                var temp = view;
+                animController.AddAnim(new UiAnimationFade(view.gameObject, 0.2f, UiAnimationFade.FadeType.Out), false);
+                animController.AddAction("", () => temp.Hide());
+            }
         }
 
-        viewNext.Show();
+        animController.AddAnim(new UiAnimationFade(viewNext.gameObject, 0.2f, UiAnimationFade.FadeType.In), false);
+        animController.AddAction("", () => viewNext.Show());
+
+        animController.PlayAnimations();
     }
 
     void Log(string message, params object[] args)

@@ -14,11 +14,23 @@ public class Transition : MonoBehaviour, Game.IGameStateEndHandler, Game.IGameSt
 
     void Game.IGameStateEndHandler.HandleStateEnd(GameState currentState, GameStateEndReason reason)
     {
-        if (currentState == GameState.Drawing)
+        string title = reason == GameStateEndReason.TimerExpired ? Strings.TimesUp : Strings.AllPlayersDone;
+        string message = "";
+
+        switch (currentState)
         {
-            var title = reason == GameStateEndReason.TimerExpired ? Strings.TimesUp : Strings.AllPlayersDone;
-            View.Show(title, Strings.StateEndDrawing);
+            case GameState.Drawing:
+                message = Strings.StateEndDrawing;
+                break;
+            case GameState.Answering:
+                message = Strings.StateEndAnswering;
+                break;
+            default:
+                break;
         }
+
+        if (!string.IsNullOrEmpty(message))
+            View.Show(title, message);
     }
 
     void Game.IGameStateHandler.HandleState(GameState state)
