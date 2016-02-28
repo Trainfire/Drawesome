@@ -18,7 +18,6 @@ public class Connection : MonoBehaviour
     WebSocket Socket { get; set; }
     string PlayerName { get; set; }
     Queue<string> MessageQueue { get; set; }
-    bool IsDisconnecting { get; set; }
 
     void Awake()
     {
@@ -35,17 +34,22 @@ public class Connection : MonoBehaviour
 
             if (str != null)
                 OnMessage(str);
+
+            // Dumb hack for dumb plugin...
+            if (Socket.error != null)
+            {
+                Debug.LogErrorFormat("Socket Error: {0}", Socket.error);
+
+                Socket.Close();
+                Socket = null;
+
+                if (ConnectionClosed != null)
+                    ConnectionClosed(this, null);
+            }
         }
 
         if (MessageQueue.Count != 0 && MessageRecieved != null)
             MessageRecieved(MessageQueue.Dequeue());
-
-        if (IsDisconnecting)
-        {
-            if (ConnectionClosed != null)
-                ConnectionClosed(this, null);
-            IsDisconnecting = false;
-        }
 
         isRoomOwner = IsRoomOwner();
     }
