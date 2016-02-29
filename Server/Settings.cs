@@ -25,6 +25,10 @@ namespace Server
             var server = Load<ServerSettings>(Server);
             var drawesome = Load<DrawesomeSettings>(Drawesome);
             var prompts = Load<PromptSettings>(Prompts);
+
+            Console.WriteLine("Decoys: {0}", drawesome.Decoys.Count);
+            Console.WriteLine("Prompts: {0}", prompts.Items.Count);
+
             return new Settings(server, drawesome, prompts);
         }
 

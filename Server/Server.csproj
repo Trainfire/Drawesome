@@ -97,6 +97,7 @@
     <Compile Include="Room.cs" />
     <Compile Include="RoomManager.cs" />
     <Compile Include="Server.cs" />
+    <Compile Include="CommandHandler.cs" />
     <Compile Include="Settings.cs" />
     <Compile Include="StringFormatter.cs" />
   </ItemGroup>
