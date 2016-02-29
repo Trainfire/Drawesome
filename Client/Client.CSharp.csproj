@@ -98,7 +98,6 @@
     <Compile Include="Assets\Scripts\GameScore.cs" />
     <Compile Include="Assets\Scripts\Interfaces\IClientHandler.cs" />
     <Compile Include="Assets\Scripts\JsonHelper.cs" />
-    <Compile Include="Assets\Scripts\Lazy.cs" />
     <Compile Include="Assets\Scripts\MessageHandler.cs" />
     <Compile Include="Assets\Scripts\Messenger.cs" />
     <Compile Include="Assets\Scripts\PlayerList.cs" />
@@ -122,7 +121,6 @@
     <Compile Include="Assets\Scripts\Tests\TestFinalScores.cs" />
     <Compile Include="Assets\Scripts\Tests\TestMessage.cs" />
     <Compile Include="Assets\Scripts\Tests\TestOrderedList.cs" />
-    <Compile Include="Assets\Scripts\Tests\TestPopup.cs" />
     <Compile Include="Assets\Scripts\Tests\TestPreGame.cs" />
     <Compile Include="Assets\Scripts\Tests\TestResults.cs" />
     <Compile Include="Assets\Scripts\Tests\TestScores.cs" />
