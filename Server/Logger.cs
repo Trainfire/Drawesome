@@ -26,7 +26,7 @@ namespace Server
             Log(string.Format(message, args));
         }
 
-        static void Log(string message)
+        public static void Log(string message)
         {
             if (enabled)
             {

@@ -1,5 +1,7 @@
 {
   "HostUrl": "ws://0.0.0.0:8181",
+  "PromptsUrl": "http://drawesome.trainfire.net/settings.prompts",
+  "DrawesomeSettingsUrl": "http://drawesome.trainfire.net/settings.drawesome",
   "MaxPlayers": 8,
   "NameMinChars": 3,
   "NameMaxChars": 24,

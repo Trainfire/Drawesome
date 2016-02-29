@@ -1,5 +1,6 @@
 using System;
 using Fleck;
+using Newtonsoft.Json;
 
 namespace Server
 {
@@ -40,7 +41,7 @@ namespace Server
                 socket.OnClose += () => ConnectionsHandler.OnClose(socket);
             });
 
-            while(Active)
+            while (Active)
             {
                 CommandHandler.ParseCommand(Console.ReadLine());
             }

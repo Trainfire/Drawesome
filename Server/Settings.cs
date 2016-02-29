@@ -3,15 +3,15 @@ using System.IO;
 using System.Collections.Generic;
 using Newtonsoft.Json;
 using Protocol;
+using System.Net;
 
 namespace Server
 {
     public class SettingsLoader
     {
         const string Server = "server";
-        const string Drawesome = "drawesome";
         const string Prompts = "prompts";
-
+        const string Drawesome = "drawesome";
         const string Prefix = "settings";
         string RootDirectory { get; set; }
 
@@ -23,8 +23,8 @@ namespace Server
         public Settings Load()
         {
             var server = Load<ServerSettings>(Server);
-            var drawesome = Load<DrawesomeSettings>(Drawesome);
-            var prompts = Load<PromptSettings>(Prompts);
+            var drawesome = LoadFromUrl<DrawesomeSettings>(server.DrawesomeSettingsUrl, Drawesome);
+            var prompts = LoadFromUrl<PromptSettings>(server.PromptsUrl, Prompts);
 
             Console.WriteLine("Decoys: {0}", drawesome.Decoys.Count);
             Console.WriteLine("Prompts: {0}", prompts.Items.Count);
@@ -45,6 +45,22 @@ namespace Server
             {
                 Console.WriteLine("Failed to find '{0}'. Making default...", fileName);
                 return MakeDefault<T>(fileName);
+            }
+        }
+
+        T LoadFromUrl<T>(string url, string fileName)
+        {
+            using (WebClientEx wc = new WebClientEx())
+            {
+                try
+                {
+                    var json = wc.DownloadString(url);
+                    return JsonConvert.DeserializeObject<T>(json);
+                }
+                catch
+                {
+                    return MakeDefault<T>(fileName);
+                }
             }
         }
 
@@ -92,6 +108,8 @@ namespace Server
     public class ServerSettings
     {
         public string HostUrl = "ws://0.0.0.0:8080";
+        public string PromptsUrl = "";
+        public string DrawesomeSettingsUrl = "";
         public string AdminPassword = "doubleButts.exe"; // TODO: Generate this everytime the server runs?
         public int MaxPlayers = 1;
         public int NameMinChars = 3;
