@@ -3,11 +3,12 @@ using System;
 
 public class PopupFactory : MonoBehaviour
 {
-    public UiPopup Popup;
+    public UiPopupMessage PopupMessage;
+    public UiPopupInput PopupInput;
 
-    public Popup MakePopup(string message, Action onOkay = null)
+    T MakePopup<T>(T prototype) where T : UiPopupBase
     {
-        var instance = UiUtility.AddChild(gameObject, Popup);
+        var instance = UiUtility.AddChild(gameObject, prototype);
 
         var rect = (RectTransform)instance.transform;
         rect.sizeDelta = Vector2.one;
@@ -15,6 +16,16 @@ public class PopupFactory : MonoBehaviour
         // Bring to front
         instance.transform.SetAsLastSibling();
 
-        return new Popup(instance, message, onOkay);
+        return instance;
+    }
+
+    public Popup MakeMessagePopup(string message, Action onOkay = null)
+    {
+        return new PopupMessage(MakePopup(PopupMessage), message, onOkay);
+    }
+
+    public Popup MakeInputPopup(string title, Action<string> onSubmit = null)
+    {
+        return new PopupInput(MakePopup(PopupInput), title, onSubmit);
     }
 }

@@ -1,11 +1,8 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-public class UiPopup : UiBase
-{
-    public Button ButtonOkay;
-    public Text Message;    
-
+public class UiPopupBase : UiBase
+{   
     protected override void OnShow()
     {
         AnimController.ClearQueue();

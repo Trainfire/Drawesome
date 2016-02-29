@@ -158,7 +158,9 @@
     <Compile Include="Assets\Scripts\UI\UiOrderedList.cs" />
     <Compile Include="Assets\Scripts\UI\UiPlayerList.cs" />
     <Compile Include="Assets\Scripts\UI\UiPlayerListItem.cs" />
-    <Compile Include="Assets\Scripts\UI\UiPopup.cs" />
+    <Compile Include="Assets\Scripts\UI\UiPopupBase.cs" />
+    <Compile Include="Assets\Scripts\UI\UiPopupInput.cs" />
+    <Compile Include="Assets\Scripts\UI\UiPopupMessage.cs" />
     <Compile Include="Assets\Scripts\UI\UiResultRow.cs" />
     <Compile Include="Assets\Scripts\UI\UiRoom.cs" />
     <Compile Include="Assets\Scripts\UI\UiTimer.cs" />

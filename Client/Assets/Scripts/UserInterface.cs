@@ -57,7 +57,7 @@ public class UserInterface : MonoBehaviour, IClientHandler
 
     void OnConnectionClosed(object sender, EventArgs e)
     {
-        PopupFactory.MakePopup(Strings.Popups.ConnectionError, () => ChangeMenu(ViewLogin)).Show();
+        PopupFactory.MakeMessagePopup(Strings.Popups.ConnectionError, () => ChangeMenu(ViewLogin)).Show();
     }
 
     void ChangeMenu(UiBase viewNext)
