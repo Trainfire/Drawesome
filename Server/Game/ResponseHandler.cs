@@ -21,7 +21,7 @@ namespace Server.Game
                 Respondants.Add(respondant, false);
         }
 
-        public void Register(T respondant)
+        public void RegisterResponse(T respondant)
         {
             if (Respondants.ContainsKey(respondant) && Respondants[respondant] == false)
                 Respondants[respondant] = true;

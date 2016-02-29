@@ -63,10 +63,7 @@ namespace Server.Drawesome
                 // Tell all clients that player has submitted drawing
                 GameData.Players.ForEach(x => x.NotifyPlayerGameAction(player.Data, GamePlayerAction.DrawingSubmitted));
 
-                ResponseHandler.Register(player);
-
-                if (ResponseHandler.AllResponded())
-                    EndState();
+                UpdateState(player);
             });
         }
     }
@@ -100,13 +97,7 @@ namespace Server.Drawesome
             Message.IsType<ClientMessage.Game.SubmitAnswer>(json, (data) =>
             {
                 Console.WriteLine("{0} submitted '{1}'", player.Data.Name, data.Answer);
-                GameData.SubmitAnswer(player, data.Answer, () =>
-                {
-                    ResponseHandler.Register(player);
-
-                    if (ResponseHandler.AllResponded())
-                        EndState();
-                });
+                GameData.SubmitAnswer(player, data.Answer, () => UpdateState(player));
             });
         }        
     }
@@ -140,11 +131,7 @@ namespace Server.Drawesome
             {
                 GameData.SubmitChoice(data.ChosenAnswer, player);
                 GameData.Players.ForEach(x => x.NotifyPlayerGameAction(player.Data, GamePlayerAction.ChoiceChosen));
-                ResponseHandler.Register(player);
-
-                // End state if all players have chosen
-                if (ResponseHandler.AllResponded())
-                    EndState();
+                UpdateState(player);
             });
 
             Message.IsType<ClientMessage.Game.LikeAnswer>(json, (data) =>

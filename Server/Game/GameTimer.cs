@@ -3,10 +3,12 @@ using System.Timers;
 
 namespace Server.Game
 {
-    public class GameTimer
+    public class GameTimer : ILogger
     {
         public event EventHandler Tick;
         public event EventHandler Finish;
+
+        string ILogger.LogName { get { return Name; } }
 
         Timer Timer { get; set; }
         string Name { get; set; }
@@ -57,7 +59,7 @@ namespace Server.Game
 
         void OnTimerElapsed(object sender, ElapsedEventArgs e)
         {
-            Console.WriteLine("{0}: Time remaining: {1}", Name, Duration - ElapsedTime);
+            Logger.Log(this, "Time remaining: {0}", Duration - ElapsedTime);
 
             if (Tick != null)
                 Tick(this, null);

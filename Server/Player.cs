@@ -30,6 +30,7 @@ namespace Server
     public class Player
     {
         public event EventHandler<PlayerConnectionClosed> OnConnectionClosed;
+        public event EventHandler OnLeaveRoom;
         public event EventHandler<SharedMessage.Chat> OnChat;
         public event EventHandler<ClientMessage.Game.SendAction> OnGameAction;
         public event EventHandler<string> OnMessage;
@@ -61,6 +62,12 @@ namespace Server
 
         void OnRecieveMessage(string json)
         {
+            Message.IsType<ClientMessage.LeaveRoom>(json, (data) =>
+            {
+                if (OnLeaveRoom != null)
+                    OnLeaveRoom(this, null);
+            });
+
             Message.IsType<ClientMessage.RequestAdmin>(json, (data) =>
             {
                 if (data.Password == Settings.Server.AdminPassword)

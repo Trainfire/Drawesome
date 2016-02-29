@@ -40,8 +40,36 @@ namespace Server.Game
         public void Begin(T gameData)
         {
             GameData = gameData;
+
+            foreach (var player in gameData.Players)
+            {
+                player.OnConnectionClosed += OnPlayerConnectionClosed;
+                player.OnLeaveRoom += OnPlayerLeaveRoom;
+            }
+            GameData.Players.ForEach(x => x.OnConnectionClosed += OnPlayerConnectionClosed);
+
             Timer = new GameTimer();
             OnBegin();
+        }
+
+        void OnPlayerLeaveRoom(object sender, EventArgs e)
+        {
+            var player = sender as Player;
+            player.OnLeaveRoom -= OnPlayerLeaveRoom;
+            UpdateState(player);
+        }
+
+        void OnPlayerConnectionClosed(object sender, PlayerConnectionClosed e)
+        {
+            var player = sender as Player;
+            player.OnConnectionClosed -= OnPlayerConnectionClosed;
+            UpdateState(player);
+        }
+
+        void RemovePlayerListeners(Player player)
+        {
+            player.OnConnectionClosed -= OnPlayerConnectionClosed;
+            player.OnLeaveRoom -= OnPlayerLeaveRoom;
         }
 
         protected virtual void OnBegin()
@@ -101,6 +129,16 @@ namespace Server.Game
         void OnTimerTick(object sender, EventArgs e)
         {
             GameData.Players.ForEach(x => x.SetTimer(Timer.Duration - Timer.ElapsedTime));
+        }
+
+        protected void UpdateState(Player player)
+        {
+            RemovePlayerListeners(player);
+
+            ResponseHandler.RegisterResponse(player);
+
+            if (ResponseHandler.AllResponded())
+                EndState();
         }
     }
 }

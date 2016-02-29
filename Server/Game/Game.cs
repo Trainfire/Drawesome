@@ -20,6 +20,8 @@ namespace Server.Game
         ConnectionsHandler ConnectionsHandler { get; set; }
         State<TData> CurrentState { get; set; }
         Dictionary<GameState, State<TData>> States { get; set; }
+        GameTimer TransitionTimer { get; set; }
+        bool GameEnded { get; set; }
 
         public Game(ConnectionsHandler connectionsHandler, Settings settings)
         {
@@ -53,18 +55,13 @@ namespace Server.Game
         {
             Logger.Log(this, "Ended");
 
-            ConnectionsHandler.RemoveMessageListener(this);
+            GameEnded = true;
 
-            if (CurrentState != null)
-                CurrentState.EndState(GameStateEndReason.GameEnded, false);
+            CancelTransitionTimer();
+            ConnectionsHandler.RemoveMessageListener(this);
 
             if (OnEnd != null)
                 OnEnd(this, null);
-        }        
-
-        protected virtual void OnGameOver()
-        {
-            Logger.Log(this, "Game Over!");
         }
 
         public void HandleMessage(Player player, string json)
@@ -94,7 +91,7 @@ namespace Server.Game
             CurrentState = States[state];
 
             // Add transition before moving onto next state
-            var transitionTimer = new GameTimer("Transition", transitionTime, () =>
+            TransitionTimer = new GameTimer("Transition", transitionTime, () =>
             {
                 Logger.Log(this, "{0}: {1}", "Change state to", CurrentState.Type.ToString());
 
@@ -105,7 +102,7 @@ namespace Server.Game
                 CurrentState.Begin(GameData);
             });
 
-            GameData.Players.ForEach(x => x.SendTransitionPeriod(transitionTimer.Duration));
+            GameData.Players.ForEach(x => x.SendTransitionPeriod(TransitionTimer.Duration));
         }
 
         protected TState AddState<TState>(GameState stateType, TState stateInstance) where TState : State<TData>
@@ -114,6 +111,12 @@ namespace Server.Game
                 States.Add(stateType, stateInstance);
 
             return stateInstance;
+        }
+
+        void CancelTransitionTimer()
+        {
+            if (TransitionTimer != null)
+                TransitionTimer.Stop();
         }
 
         void SkipState()
@@ -126,7 +129,7 @@ namespace Server.Game
         {
             var state = sender as State<TData>;
 
-            if (!IsGameOver())
+            if (!GameEnded)
             {
                 var log = string.Format("End state '{0}'. (Reason: {1})", state.Type.ToString(), args.EndReason.ToString());
                 Logger.Log(this, log);
@@ -134,13 +137,8 @@ namespace Server.Game
                 GameData.Players.ForEach(x => x.SendMessage(new ServerMessage.Game.EndState(args.EndReason)));
                 OnEndState(state.Type);
             }
-            else
-            {
-                OnGameOver();
-            }
         }
 
         protected abstract void OnEndState(GameState endingState);
-        protected abstract bool IsGameOver();
     }
 }

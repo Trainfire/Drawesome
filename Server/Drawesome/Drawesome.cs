@@ -128,10 +128,5 @@ namespace Server.Drawesome
                     break;
             }
         }
-
-        protected override bool IsGameOver()
-        {
-            return false;
-        }
     }
 }
