@@ -8,12 +8,6 @@ public class UiLogin : UiBase
     public UiInfoBox InfoBox;
     public Button Login;
 
-    enum ValidationResult
-    {
-        Success,
-        InvalidCharacterLength,
-    }
-
     public override void Initialise(Client client)
     {
         base.Initialise(client);
@@ -45,6 +39,7 @@ public class UiLogin : UiBase
         else
         {
             InfoBox.Show(message.Error);
+            Login.interactable = true;
         }
     }
 

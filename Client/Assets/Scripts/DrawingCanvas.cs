@@ -3,25 +3,28 @@ using System.Collections;
 using Protocol;
 using System;
 
-public class DrawingCanvas : Game.IGameStateHandler
+public class DrawingCanvas : MonoBehaviour, Game.IGameStateHandler
 {
     UiDrawingCanvas Canvas { get; set; }
     Client Client { get; set; }
 
-    public DrawingCanvas(UiDrawingCanvas view)
-    {
-        Canvas = view;
-        AllowDrawing = false;
-    }
+    uint BrushSize { get; set; }
 
-    public DrawingCanvas(Client client, UiDrawingCanvas view) : this(view)
+    public void Initialise(Client client, UiDrawingCanvas view)
     {
         Client = client;
+        Canvas = view;
+        SetBrushSize(SettingsLoader.Settings.BrushSize);
     }
 
     public byte[] GetEncodedImage()
     {
         return Canvas.Texture.EncodeToPNG();
+    }
+
+    public void SetBrushSize(int size)
+    {
+        Canvas.BrushSize = (int)Mathf.Clamp(size, 1f, 5f);
     }
 
     public void SetBrushColor(uint colorId)
@@ -95,5 +98,21 @@ public class DrawingCanvas : Game.IGameStateHandler
                 AllowDrawing = false;
                 break;
         }
+    }
+
+    void LateUpdate()
+    {
+        float delta = Input.GetAxis("Mouse ScrollWheel");
+
+        if (delta > 0.1f)
+        {
+            Canvas.BrushSize++;
+        }
+        else if (delta < -0.1f)
+        {
+            Canvas.BrushSize--;
+        }
+
+        SetBrushSize(Canvas.BrushSize);
     }
 }

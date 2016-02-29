@@ -23,7 +23,7 @@ public class DrawingCanvasEditor : Editor
         get
         {
             if (controller == null)
-                controller = new DrawingCanvas(Instance);
+                controller = Instance.GetComponent<DrawingCanvas>();
             return controller;
         }
     }

@@ -53,7 +53,8 @@ public class Game : MonoBehaviour, IClientHandler
         States.Add(new GameOverState(client, RoundEndView));
 
         // Drawing canvas
-        Canvas = new DrawingCanvas(client, CanvasView);
+        Canvas = CanvasView.gameObject.AddComponent<DrawingCanvas>();
+        Canvas.Initialise(Client, CanvasView);
         StateHandlers.Add(Canvas);
 
         // Player List that appears on the right
