@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-public class UiPopupBase : UiBase
+public abstract class UiPopupBase : UiBase
 {   
     protected override void OnShow()
     {
