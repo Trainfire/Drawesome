@@ -21,12 +21,19 @@ public class UiLogin : UiBase
         Login.onClick.AddListener(() =>
         {
             var name = ValidateInput(InputName.text);
+            Login.interactable = false;
             Client.Connection.Connect(name);
         });
 
         InfoBox.Hide();
 
         client.MessageHandler.OnConnectionError += OnConnectionError;
+        client.Connection.ConnectionClosed += OnConnectionClosed;
+    }
+
+    void OnConnectionClosed(object sender, System.EventArgs e)
+    {
+        Login.interactable = true;    
     }
 
     void OnConnectionError(ServerMessage.SendConnectionError message)
