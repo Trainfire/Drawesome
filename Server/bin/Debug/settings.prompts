@@ -1,4027 +1,3021 @@
 {
   "Items": [
     {
-      "Id": 17805,
       "Text": "car envy"
     },
     {
-      "Id": 17804,
       "Text": "building code violation"
     },
     {
-      "Id": 17803,
       "Text": "homeplate scarecrow"
     },
     {
-      "Id": 17802,
       "Text": "surprise tape worm"
     },
     {
-      "Id": 17801,
       "Text": "This magic carpet is filthy"
     },
     {
-      "Id": 17800,
       "Text": "pharmacy"
     },
     {
-      "Id": 17786,
       "Text": "complete garbage drawing of a cat"
     },
     {
-      "Id": 17785,
       "Text": "Geese"
     },
     {
-      "Id": 17784,
       "Text": "Five words"
     },
     {
-      "Id": 17783,
       "Text": "star magnet puppy hat"
     },
     {
-      "Id": 17782,
       "Text": "Red haired kid"
     },
     {
-      "Id": 17781,
       "Text": "Just eyes"
     },
     {
-      "Id": 17780,
       "Text": "Twitch"
     },
     {
-      "Id": 17779,
       "Text": "Toast!!!!!!"
     },
     {
-      "Id": 17778,
       "Text": "Slap fight"
     },
     {
-      "Id": 17777,
       "Text": "Law firm"
     },
     {
-      "Id": 17776,
       "Text": "Smirking"
     },
     {
-      "Id": 17775,
       "Text": "fart bomb"
     },
     {
-      "Id": 17774,
       "Text": "Leg punch"
     },
     {
-      "Id": 17773,
       "Text": "Losers"
     },
     {
-      "Id": 17772,
       "Text": "Look out!! Nerds!!!"
     },
     {
-      "Id": 17771,
       "Text": "Bank heist"
     },
     {
-      "Id": 17770,
       "Text": "Snake in a washing machine"
     },
     {
-      "Id": 17769,
       "Text": "Feral child"
     },
     {
-      "Id": 17768,
       "Text": "English as a second language"
     },
     {
-      "Id": 17767,
       "Text": "Going commando"
     },
     {
-      "Id": 17766,
       "Text": "Playing seven minutes in heaven"
     },
     {
-      "Id": 17765,
       "Text": "Spin the bottle"
     },
     {
-      "Id": 17764,
       "Text": "candyman"
     },
     {
-      "Id": 17763,
       "Text": "Big tobacco"
     },
     {
-      "Id": 17762,
       "Text": "Love song"
     },
     {
-      "Id": 17761,
       "Text": "x-files"
     },
     {
-      "Id": 17760,
       "Text": "Alone with my thoughts"
     },
     {
-      "Id": 17759,
       "Text": "Space mountain"
     },
     {
-      "Id": 17758,
       "Text": "Half horse half nurse"
     },
     {
-      "Id": 17757,
       "Text": "Mayhem"
     },
     {
-      "Id": 17756,
       "Text": "Love and basketball"
     },
     {
-      "Id": 17755,
       "Text": "Pie fest"
     },
     {
-      "Id": 17754,
       "Text": "Roast beef"
     },
     {
-      "Id": 17753,
       "Text": "Cougar"
     },
     {
-      "Id": 17752,
       "Text": "Going out in sweatpants"
     },
     {
-      "Id": 17751,
       "Text": "Wax museum"
     },
     {
-      "Id": 17750,
       "Text": "Police sketch of a killer"
     },
     {
-      "Id": 17749,
       "Text": "Really big package"
     },
     {
-      "Id": 17748,
       "Text": "Snail with an envelope"
     },
     {
-      "Id": 17747,
       "Text": "Waiting room"
     },
     {
-      "Id": 17745,
       "Text": "Family helicopter"
     },
     {
-      "Id": 17744,
       "Text": "Flying seal"
     },
     {
-      "Id": 17743,
       "Text": "I give up"
     },
     {
-      "Id": 17742,
       "Text": "The land before time"
     },
     {
-      "Id": 17741,
       "Text": "Avatar"
     },
     {
-      "Id": 17740,
       "Text": "Disco nap"
     },
     {
-      "Id": 17739,
       "Text": "Bad behavior "
     },
     {
-      "Id": 17738,
-      "Text": "A person that doesn\u2019t pick up their dog\u2019s poop"
+      "Text": "A person that doesn’t pick up their dog’s poop"
     },
     {
-      "Id": 17737,
       "Text": "Rewind"
     },
     {
-      "Id": 17736,
-      "Text": "You\u2019re fired!"
+      "Text": "You’re fired!"
     },
     {
-      "Id": 17735,
       "Text": "Internet movie database"
     },
     {
-      "Id": 17734,
       "Text": "Wiggling"
     },
     {
-      "Id": 17733,
       "Text": "Guy with pretzels sticking out of his nose"
     },
     {
-      "Id": 17732,
       "Text": "Buried prince"
     },
     {
-      "Id": 17731,
       "Text": "Deadwood"
     },
     {
-      "Id": 17730,
-      "Text": "It\u2019s raining heads"
+      "Text": "It’s raining heads"
     },
     {
-      "Id": 17729,
       "Text": "Exit stage left"
     },
     {
-      "Id": 17728,
-      "Text": "Can\u2019t sleep because of birds"
+      "Text": "Can’t sleep because of birds"
     },
     {
-      "Id": 17727,
       "Text": "Working from home"
     },
     {
-      "Id": 17726,
       "Text": "Bitter candy"
     },
     {
-      "Id": 17725,
       "Text": "Standing desk"
     },
     {
-      "Id": 17724,
       "Text": "Movie agent"
     },
     {
-      "Id": 17722,
       "Text": "Bag with scary teeth"
     },
     {
-      "Id": 17721,
       "Text": "Shadow monster"
     },
     {
-      "Id": 17720,
       "Text": "Giant with a tiny baby"
     },
     {
-      "Id": 17719,
       "Text": "Cool babysitter"
     },
     {
-      "Id": 17718,
       "Text": "Spying on Germany"
     },
     {
-      "Id": 17717,
       "Text": "Fake ID"
     },
     {
-      "Id": 17716,
       "Text": "Hiding whale"
     },
     {
-      "Id": 17715,
       "Text": "The game of Life"
     },
     {
-      "Id": 17714,
       "Text": "cinnamon roll bracelet"
     },
     {
-      "Id": 17713,
       "Text": "Losing at hangman"
     },
     {
-      "Id": 17712,
       "Text": "Identical twins"
     },
     {
-      "Id": 17711,
-      "Text": "Child\u2019s drawing of his family"
+      "Text": "Child’s drawing of his family"
     },
     {
-      "Id": 17710,
       "Text": "Extreme snowman"
     },
     {
-      "Id": 17709,
       "Text": "Philosopher"
     },
     {
-      "Id": 17708,
       "Text": "Breakfast in bed"
     },
     {
-      "Id": 17707,
       "Text": "Hide and seek"
     },
     {
-      "Id": 17706,
       "Text": "Blue man group"
     },
     {
-      "Id": 17705,
       "Text": "Those guys in the car from those Sonic commercials"
     },
     {
-      "Id": 17704,
       "Text": "The desolation of smaug"
     },
     {
-      "Id": 17703,
       "Text": "Beautiful elephant"
     },
     {
-      "Id": 17702,
       "Text": "Liam Neeson"
     },
     {
-      "Id": 17701,
       "Text": "Arbor day"
     },
     {
-      "Id": 17700,
       "Text": "Smelly lotion"
     },
     {
-      "Id": 17699,
       "Text": "Half a clock with arrow pointing at it"
     },
     {
-      "Id": 17698,
       "Text": "Butterfly eating"
     },
     {
-      "Id": 17697,
-      "Text": "You\u2019re not my dad!"
+      "Text": "You’re not my dad!"
     },
     {
-      "Id": 17696,
       "Text": "Get well soon"
     },
     {
-      "Id": 17695,
       "Text": "Lots of flowers"
     },
     {
-      "Id": 17694,
       "Text": "Hippo with a bazooka"
     },
     {
-      "Id": 17693,
       "Text": "Kitchen accident"
     },
     {
-      "Id": 17692,
       "Text": "Angry man under bed"
     },
     {
-      "Id": 17691,
       "Text": "Wolf with giant magnet"
     },
     {
-      "Id": 17690,
       "Text": "Networking"
     },
     {
-      "Id": 17689,
       "Text": "Orchestra"
     },
     {
-      "Id": 17688,
       "Text": "The sky"
     },
     {
-      "Id": 17687,
       "Text": "Red drink"
     },
     {
-      "Id": 17686,
       "Text": "Great parking spot"
     },
     {
-      "Id": 17685,
       "Text": "Fabio"
     },
     {
-      "Id": 17684,
       "Text": "Scandal"
     },
     {
-      "Id": 17683,
       "Text": "Red carpet interview"
     },
     {
-      "Id": 17682,
       "Text": "Car salesman with beard"
     },
     {
-      "Id": 17681,
       "Text": "Escape pod"
     },
     {
-      "Id": 17680,
       "Text": "Fantasy football"
     },
     {
-      "Id": 17679,
       "Text": "Tearaway pants"
     },
     {
-      "Id": 17678,
       "Text": "Dummy"
     },
     {
-      "Id": 17677,
       "Text": "Reusable grocery bag"
     },
     {
-      "Id": 17676,
       "Text": "nap time"
     },
     {
-      "Id": 17675,
       "Text": "Trail mix"
     },
     {
-      "Id": 17674,
       "Text": "Rental car"
     },
     {
-      "Id": 17673,
       "Text": "Looking at a painting of yourself"
     },
     {
-      "Id": 17672,
       "Text": "Rye bread"
     },
     {
-      "Id": 17671,
       "Text": "trying to be cool even though you peed your pants"
     },
     {
-      "Id": 17670,
       "Text": "Bad boy corner"
     },
     {
-      "Id": 17669,
       "Text": "Socks with animals on them"
     },
     {
-      "Id": 17668,
       "Text": "A late night talk show hosted by a woman"
     },
     {
-      "Id": 17667,
-      "Text": "You\u2019re out of the band"
+      "Text": "You’re out of the band"
     },
     {
-      "Id": 17666,
       "Text": "American Horror Story"
     },
     {
-      "Id": 17665,
       "Text": "Call from a murderer"
     },
     {
-      "Id": 17664,
       "Text": "Push button receive bacon"
     },
     {
-      "Id": 17663,
       "Text": "Public bathroom"
     },
     {
-      "Id": 17662,
-      "Text": "Can\u2019t find the baby"
+      "Text": "Can’t find the baby"
     },
     {
-      "Id": 17661,
-      "Text": "Oh no, we don\u2019t have insurance!"
+      "Text": "Oh no, we don’t have insurance!"
     },
     {
-      "Id": 17660,
       "Text": "Jazz hands"
     },
     {
-      "Id": 17659,
-      "Text": "Titanic\u2019s last moments"
+      "Text": "Titanic’s last moments"
     },
     {
-      "Id": 17658,
       "Text": "My past is haunting me"
     },
     {
-      "Id": 17657,
       "Text": "Funny tshirt"
     },
     {
-      "Id": 17656,
       "Text": "Candy stuck in vending machine"
     },
     {
-      "Id": 17655,
       "Text": "Skittles"
     },
     {
-      "Id": 17654,
       "Text": "Key airplane snail circles"
     },
     {
-      "Id": 17653,
       "Text": "Garbage disposal"
     },
     {
-      "Id": 17652,
       "Text": "Baseball glove burning my hand"
     },
     {
-      "Id": 17651,
       "Text": "Loud mime"
     },
     {
-      "Id": 17650,
       "Text": "Esp "
     },
     {
-      "Id": 17649,
       "Text": "I hate that lamp"
     },
     {
-      "Id": 17648,
       "Text": "Clown doorbell"
     },
     {
-      "Id": 17647,
       "Text": "too small shovel"
     },
     {
-      "Id": 17646,
       "Text": "Consumerism"
     },
     {
-      "Id": 17645,
       "Text": "A jerk"
     },
     {
-      "Id": 17644,
       "Text": "Glowing mushroom nub"
     },
     {
-      "Id": 17643,
       "Text": "Cookie drum"
     },
     {
-      "Id": 17642,
       "Text": "Emo duck"
     },
     {
-      "Id": 17641,
       "Text": "Night church"
     },
     {
-      "Id": 17640,
       "Text": "Pointy clothing"
     },
     {
-      "Id": 17639,
       "Text": "Sleepy saxophone player"
     },
     {
-      "Id": 17638,
       "Text": "I have too much money so I bought this car"
     },
     {
-      "Id": 17637,
       "Text": "Impaled with stars"
     },
     {
-      "Id": 17636,
       "Text": "Poisoning remorse"
     },
     {
-      "Id": 17635,
       "Text": "Why is there a horse on my farm?"
     },
     {
-      "Id": 17634,
       "Text": "Frenemy"
     },
     {
-      "Id": 17633,
       "Text": "Scary statue"
     },
     {
-      "Id": 17632,
       "Text": "Death lasers"
     },
     {
-      "Id": 17631,
       "Text": "Gross thumbs"
     },
     {
-      "Id": 17630,
       "Text": "The ending of LOST"
     },
     {
-      "Id": 17629,
       "Text": "My netflix queue"
     },
     {
-      "Id": 17628,
       "Text": "Making a balloon animal"
     },
     {
-      "Id": 17627,
       "Text": "New Years resolution"
     },
     {
-      "Id": 17626,
       "Text": "Strong man pulling a truck"
     },
     {
-      "Id": 17625,
       "Text": "Internet video of kittens"
     },
     {
-      "Id": 17624,
       "Text": "Winking fish"
     },
     {
-      "Id": 17623,
-      "Text": "We shouldn\u2019t have bought this house"
+      "Text": "We shouldn’t have bought this house"
     },
     {
-      "Id": 17622,
       "Text": "Rat mummy"
     },
     {
-      "Id": 17621,
       "Text": "Puking on a baby"
     },
     {
-      "Id": 17620,
       "Text": "Yes officer thats the man that robbed me!"
     },
     {
-      "Id": 17619,
       "Text": "Unfrozen caveman lawyer"
     },
     {
-      "Id": 17618,
       "Text": "Worm soup"
     },
     {
-      "Id": 17617,
       "Text": "Bangs"
     },
     {
-      "Id": 17616,
       "Text": "Words"
     },
     {
-      "Id": 17615,
       "Text": "Pepper"
     },
     {
-      "Id": 17614,
       "Text": "Can you find the bird in this picture?"
     },
     {
-      "Id": 17613,
       "Text": "Cool scar"
     },
     {
-      "Id": 17612,
       "Text": "selling plasma"
     },
     {
-      "Id": 17611,
       "Text": "Hungover ninja"
     },
     {
-      "Id": 17610,
       "Text": "Steam"
     },
     {
-      "Id": 17609,
       "Text": "Tub of caviar"
     },
     {
-      "Id": 17608,
       "Text": "Tractor race"
     },
     {
-      "Id": 17607,
       "Text": "Volcano cats"
     },
     {
-      "Id": 17606,
       "Text": "Bottom half of the statue of liberty"
     },
     {
-      "Id": 17605,
       "Text": "Black and white"
     },
     {
-      "Id": 17604,
       "Text": "The bends"
     },
     {
-      "Id": 17603,
       "Text": "Big rock about to squish a guy"
     },
     {
-      "Id": 17602,
       "Text": "Harvard"
     },
     {
-      "Id": 17601,
       "Text": "Hansel and Gretel"
     },
     {
-      "Id": 17600,
       "Text": "Fairy tale"
     },
     {
-      "Id": 17599,
       "Text": "Glassblower"
     },
     {
-      "Id": 17598,
       "Text": "Bedazzled"
     },
     {
-      "Id": 17597,
-      "Text": "She\u2019s a saint"
+      "Text": "She’s a saint"
     },
     {
-      "Id": 17596,
       "Text": "Bad mayo"
     },
     {
-      "Id": 17595,
       "Text": "Skunk exercising"
     },
     {
-      "Id": 17594,
       "Text": "Lizard sniper"
     },
     {
-      "Id": 17593,
       "Text": "Baritone"
     },
     {
-      "Id": 17592,
       "Text": "Cold front coming in from the west"
     },
     {
-      "Id": 17591,
       "Text": "Kids in a muscial"
     },
     {
-      "Id": 17590,
       "Text": "Escaping from underground prison"
     },
     {
-      "Id": 17589,
       "Text": "Jumper"
     },
     {
-      "Id": 17588,
       "Text": "Smelly CEO"
     },
     {
-      "Id": 17587,
       "Text": "Illuminati"
     },
     {
-      "Id": 17586,
       "Text": "Big park in a city"
     },
     {
-      "Id": 17585,
       "Text": "Napkin with a tree drawn on it"
     },
     {
-      "Id": 17583,
       "Text": "Mouse roadtrip"
     },
     {
-      "Id": 17582,
       "Text": "Good guys"
     },
     {
-      "Id": 17581,
       "Text": "Pajama party"
     },
     {
-      "Id": 17580,
       "Text": "Jetski with wheels"
     },
     {
-      "Id": 17579,
       "Text": "Almost kissing"
     },
     {
-      "Id": 17578,
       "Text": "Wet paint"
     },
     {
-      "Id": 17577,
       "Text": "Chess with no bishops"
     },
     {
-      "Id": 17576,
       "Text": "King of Las Vegas"
     },
     {
-      "Id": 17575,
       "Text": "Pope lifting weights"
     },
     {
-      "Id": 17574,
       "Text": "Downton Abbey"
     },
     {
-      "Id": 17573,
       "Text": "a million with a comma in the wrong place"
     },
     {
-      "Id": 17572,
       "Text": "Three way street"
     },
     {
-      "Id": 17571,
       "Text": "a woman and a second place trophy"
     },
     {
-      "Id": 17570,
       "Text": "Scanners"
     },
     {
-      "Id": 17569,
       "Text": "The Shining"
     },
     {
-      "Id": 17568,
       "Text": "Think thank"
     },
     {
-      "Id": 17563,
       "Text": "Dead body in a hammock"
     },
     {
-      "Id": 17562,
       "Text": "Stick figure with real hands"
     },
     {
-      "Id": 17561,
       "Text": "Shot of pickle juice"
     },
     {
-      "Id": 17560,
       "Text": "Young nanny"
     },
     {
-      "Id": 17559,
-      "Text": "Hey man, don\u2019t be sad about traffic"
+      "Text": "Hey man, don’t be sad about traffic"
     },
     {
-      "Id": 17558,
       "Text": "Pizza time run!"
     },
     {
-      "Id": 17557,
       "Text": "Tiny dragon bite"
     },
     {
-      "Id": 17556,
       "Text": "How I got this hickey"
     },
     {
-      "Id": 17555,
-      "Text": "Oh god, I\u2019m old!"
+      "Text": "Oh god, I’m old!"
     },
     {
-      "Id": 17554,
       "Text": "A world without weekends"
     },
     {
-      "Id": 17553,
       "Text": "Hulk have new pants!!!"
     },
     {
-      "Id": 17552,
       "Text": "Intercom party"
     },
     {
-      "Id": 17551,
       "Text": "Sloth dentist"
     },
     {
-      "Id": 17550,
       "Text": "Game show for giants"
     },
     {
-      "Id": 17549,
       "Text": "Outie bellybutton"
     },
     {
-      "Id": 17548,
       "Text": "biscuits and gravy poison"
     },
     {
-      "Id": 17547,
       "Text": "Carsick Sherlock Holmes"
     },
     {
-      "Id": 17546,
       "Text": "hamster eating a skyscraper"
     },
     {
-      "Id": 17545,
       "Text": "snake panties"
     },
     {
-      "Id": 17544,
       "Text": "Here comes the pickle train!"
     },
     {
-      "Id": 17543,
       "Text": "Spatulas of death"
     },
     {
-      "Id": 17542,
       "Text": "These toads are obese!"
     },
     {
-      "Id": 17541,
       "Text": "the saddest sombrero in Mexico"
     },
     {
-      "Id": 17540,
       "Text": "book on tape on rhinos"
     },
     {
-      "Id": 17539,
       "Text": "eggmobile"
     },
     {
-      "Id": 17538,
       "Text": "Hey guys! Wait up!"
     },
     {
-      "Id": 17537,
       "Text": "Cucumber Western"
     },
     {
-      "Id": 17536,
       "Text": "Pick up my pants!"
     },
     {
-      "Id": 17535,
       "Text": "Marshmallow rides"
     },
     {
-      "Id": 17534,
       "Text": "Dumb waiter"
     },
     {
-      "Id": 17533,
       "Text": "My wifi password"
     },
     {
-      "Id": 17532,
       "Text": "Midlife crisis"
     },
     {
-      "Id": 17531,
       "Text": "Poo coils"
     },
     {
-      "Id": 17530,
       "Text": "Pillow getting the death penalty"
     },
     {
-      "Id": 17529,
       "Text": "Having just an okay time"
     },
     {
-      "Id": 17528,
       "Text": "My, what big kidneys you have!"
     },
     {
-      "Id": 17527,
       "Text": "Pumping"
     },
     {
-      "Id": 17526,
       "Text": "Saturn is missing"
     },
     {
-      "Id": 17525,
       "Text": "Speed walking"
     },
     {
-      "Id": 17524,
       "Text": "Stop staring at my tentacles."
     },
     {
-      "Id": 17523,
       "Text": "broccoli enema"
     },
     {
-      "Id": 17522,
       "Text": "wiener dog golfer"
     },
     {
-      "Id": 17521,
       "Text": "banjo funeral"
     },
     {
-      "Id": 17520,
       "Text": "bag of Nixons"
     },
     {
-      "Id": 17519,
       "Text": "Dolphin bullies"
     },
     {
-      "Id": 17518,
       "Text": "leprechaun chauffeur"
     },
     {
-      "Id": 17517,
       "Text": "Mark Twain just farted"
     },
     {
-      "Id": 17516,
       "Text": "Ugly toaster"
     },
     {
-      "Id": 17515,
       "Text": "What if the alphabet looked totally different"
     },
     {
-      "Id": 17514,
       "Text": "Murdering using only thoughts"
     },
     {
-      "Id": 17513,
       "Text": "Sad ball"
     },
     {
-      "Id": 17512,
       "Text": "Human zoo"
     },
     {
-      "Id": 17511,
       "Text": "Constipation"
     },
     {
-      "Id": 17509,
       "Text": "Lumberjack nightmare"
     },
     {
-      "Id": 17508,
       "Text": "Tom Hanks"
     },
     {
-      "Id": 17507,
       "Text": "Nude descending a staircase"
     },
     {
-      "Id": 17506,
       "Text": "Waffle jump"
     },
     {
-      "Id": 17505,
       "Text": "Counting Crows guy farts arrows"
     },
     {
-      "Id": 17504,
       "Text": "Mrs. Doubtfire"
     },
     {
-      "Id": 17503,
       "Text": "After party"
     },
     {
-      "Id": 17502,
       "Text": "Killer in the rearview mirror"
     },
     {
-      "Id": 17501,
       "Text": "Stakeout"
     },
     {
-      "Id": 17500,
       "Text": "Space camp"
     },
     {
-      "Id": 17499,
       "Text": "Beard of bees"
     },
     {
-      "Id": 17498,
       "Text": "Old maid"
     },
     {
-      "Id": 17497,
       "Text": "Merlot"
     },
     {
-      "Id": 17496,
       "Text": "Running for mayor"
     },
     {
-      "Id": 17495,
       "Text": "Scared of spin the bottle"
     },
     {
-      "Id": 17494,
       "Text": "Laundry night"
     },
     {
-      "Id": 17493,
       "Text": "Laser sword"
     },
     {
-      "Id": 17492,
       "Text": "Friends with benefits"
     },
     {
-      "Id": 17491,
       "Text": "Covered in glitter"
     },
     {
-      "Id": 17490,
       "Text": "Refill"
     },
     {
-      "Id": 17489,
       "Text": "Woman in triangle dress"
     },
     {
-      "Id": 17488,
       "Text": "Fringe crime"
     },
     {
-      "Id": 17487,
       "Text": "Werewolf College"
     },
     {
-      "Id": 17486,
       "Text": "Total dirtbags"
     },
     {
-      "Id": 17485,
       "Text": "Shame"
     },
     {
-      "Id": 17484,
       "Text": "Where missing socks go."
     },
     {
-      "Id": 17483,
       "Text": "Dinner bell"
     },
     {
-      "Id": 17482,
       "Text": "The wizard from Harry Potter"
     },
     {
-      "Id": 17481,
       "Text": "Stopping a wedding"
     },
     {
-      "Id": 17480,
       "Text": "Bermuda triangle"
     },
     {
-      "Id": 17479,
       "Text": "Human chess"
     },
     {
-      "Id": 17478,
       "Text": "Remembering when I had friends"
     },
     {
-      "Id": 17477,
       "Text": "A new type of noodle"
     },
     {
-      "Id": 17476,
       "Text": "Living hair"
     },
     {
-      "Id": 17475,
       "Text": "Mighty ducks"
     },
     {
-      "Id": 17474,
       "Text": "Coat check ticket"
     },
     {
-      "Id": 17473,
       "Text": "Lady centaur"
     },
     {
-      "Id": 17472,
       "Text": "Captain hat"
     },
     {
-      "Id": 17471,
       "Text": "Missing button"
     },
     {
-      "Id": 17470,
       "Text": "Twins fight twins"
     },
     {
-      "Id": 17469,
       "Text": "Bacon in bed"
     },
     {
-      "Id": 17468,
       "Text": "Bazooka kitten"
     },
     {
-      "Id": 17467,
       "Text": "Hot bartender"
     },
     {
-      "Id": 17466,
       "Text": "Baby Wolverine"
     },
     {
-      "Id": 17465,
       "Text": "Blowing up the moon"
     },
     {
-      "Id": 17464,
       "Text": "Robot musical"
     },
     {
-      "Id": 17463,
       "Text": "Casino games"
     },
     {
-      "Id": 17462,
       "Text": "Wedding cake for cockroaches"
     },
     {
-      "Id": 17461,
       "Text": "Some of the Great Lakes"
     },
     {
-      "Id": 17460,
       "Text": "They Might Be Giants"
     },
     {
-      "Id": 17459,
       "Text": "Lazy tree"
     },
     {
-      "Id": 17458,
-      "Text": "Happy birthday! Here\u2019s my finger!"
+      "Text": "Happy birthday! Here’s my finger!"
     },
     {
-      "Id": 17457,
       "Text": "Foosball man"
     },
     {
-      "Id": 17456,
       "Text": "Festivus"
     },
     {
-      "Id": 17455,
       "Text": "Pickle thief "
     },
     {
-      "Id": 17454,
       "Text": "Cthulhu"
     },
     {
-      "Id": 17453,
       "Text": "Sideways three with wazy lines coming out of it"
     },
     {
-      "Id": 17452,
       "Text": "Pecs that look like a face"
     },
     {
-      "Id": 17451,
       "Text": "IKEA tool"
     },
     {
-      "Id": 17450,
       "Text": "Eating people to stay alive"
     },
     {
-      "Id": 17449,
       "Text": "Alcatraz"
     },
     {
-      "Id": 17448,
       "Text": "Aquarium crime scene"
     },
     {
-      "Id": 17447,
       "Text": "Pretzel bum"
     },
     {
-      "Id": 17446,
       "Text": "Cee-lo"
     },
     {
-      "Id": 17445,
       "Text": "Sunday night TV"
     },
     {
-      "Id": 17444,
       "Text": "Downloading music and a movie"
     },
     {
-      "Id": 17443,
       "Text": "Our next president"
     },
     {
-      "Id": 17442,
       "Text": "Beyonce video"
     },
     {
-      "Id": 17441,
       "Text": "Hercules"
     },
     {
-      "Id": 17440,
       "Text": "Wolf parade"
     },
     {
-      "Id": 17439,
       "Text": "Dressed in leather"
     },
     {
-      "Id": 17438,
       "Text": "Thin Grimace"
     },
     {
-      "Id": 17437,
       "Text": "Oh no! Draculas!"
     },
     {
-      "Id": 17436,
       "Text": "Scary wallpaper"
     },
     {
-      "Id": 17435,
       "Text": "Pocket Full of Kryptonite"
     },
     {
-      "Id": 17433,
       "Text": "I forgot a parachute!"
     },
     {
-      "Id": 17432,
       "Text": "Ancient times"
     },
     {
-      "Id": 17431,
       "Text": "Just failed a lie detector"
     },
     {
-      "Id": 17430,
       "Text": "Family Circus"
     },
     {
-      "Id": 17429,
       "Text": "Map of Narnia"
     },
     {
-      "Id": 17428,
       "Text": "Polar bear drinking a beer"
     },
     {
-      "Id": 17427,
       "Text": "Koala writing a novel"
     },
     {
-      "Id": 17426,
       "Text": "Money machine"
     },
     {
-      "Id": 17425,
-      "Text": "I \u201clove\u201d you"
+      "Text": "I “love” you"
     },
     {
-      "Id": 17424,
       "Text": "For sale: baby shoes, never worn"
     },
     {
-      "Id": 17423,
       "Text": "Surf or die!"
     },
     {
-      "Id": 17422,
       "Text": "Lucky Charms without the marshmallows "
     },
     {
-      "Id": 17421,
       "Text": "Frosted Mini Wheats"
     },
     {
-      "Id": 17420,
       "Text": "Pomegranate."
     },
     {
-      "Id": 17419,
       "Text": "Discover card"
     },
     {
-      "Id": 17418,
       "Text": "Woman holding giant fork"
     },
     {
-      "Id": 17417,
       "Text": "Three years ago?"
     },
     {
-      "Id": 17416,
       "Text": "Mayan calendar"
     },
     {
-      "Id": 17415,
       "Text": "Mattress sale"
     },
     {
-      "Id": 17414,
       "Text": "Jaguar"
     },
     {
-      "Id": 17413,
       "Text": "That paperclip guy from Microsoft Word"
     },
     {
-      "Id": 17412,
       "Text": "Tea bag"
     },
     {
-      "Id": 17411,
       "Text": "I need coffee!"
     },
     {
-      "Id": 17410,
       "Text": "Cat living in a dog house"
     },
     {
-      "Id": 17409,
       "Text": "Alphabetical order"
     },
     {
-      "Id": 17408,
       "Text": "Horse with seat belts"
     },
     {
-      "Id": 17407,
       "Text": "Floating eyes"
     },
     {
-      "Id": 17406,
       "Text": "Caveman haircut"
     },
     {
-      "Id": 17405,
-      "Text": "Don\u2019t touch it!"
+      "Text": "Don’t touch it!"
     },
     {
-      "Id": 17404,
       "Text": "Puffy pants"
     },
     {
-      "Id": 17403,
       "Text": "This comic is awful"
     },
     {
-      "Id": 17402,
       "Text": "Wicked"
     },
     {
-      "Id": 17401,
       "Text": "Dirty money"
     },
     {
-      "Id": 17400,
       "Text": "Plate on head"
     },
     {
-      "Id": 17399,
-      "Text": "World\u2019s greatest dad"
+      "Text": "World’s greatest dad"
     },
     {
-      "Id": 17398,
       "Text": "Brave ant"
     },
     {
-      "Id": 17397,
       "Text": "Imaginary friend"
     },
     {
-      "Id": 17396,
       "Text": "Rat in a cocoon "
     },
     {
-      "Id": 17395,
       "Text": "Antique shop"
     },
     {
-      "Id": 17394,
       "Text": "Insane waiter"
     },
     {
-      "Id": 17393,
       "Text": "The people upstairs are too loud"
     },
     {
-      "Id": 17392,
       "Text": "Panda with muscles"
     },
     {
-      "Id": 17391,
       "Text": "Greedy puppet"
     },
     {
-      "Id": 17390,
       "Text": "Egg breath"
     },
     {
-      "Id": 17389,
       "Text": "Cannibal Christmas"
     },
     {
-      "Id": 17388,
       "Text": "Promise ring"
     },
     {
-      "Id": 17387,
       "Text": "Cobra pie"
     },
     {
-      "Id": 17386,
       "Text": "Doctor giggles"
     },
     {
-      "Id": 17385,
       "Text": "Bucket of circles"
     },
     {
-      "Id": 17384,
       "Text": "Troll shirt"
     },
     {
-      "Id": 17383,
       "Text": "Cheating at tic tac toe"
     },
     {
-      "Id": 17382,
       "Text": "Cuddly bat"
     },
     {
-      "Id": 17381,
       "Text": "Painful soup"
     },
     {
-      "Id": 17380,
       "Text": "Humidity"
     },
     {
-      "Id": 17379,
       "Text": "So funny"
     },
     {
-      "Id": 17378,
       "Text": "Dangerous intersection"
     },
     {
-      "Id": 17377,
       "Text": "Mild salsa"
     },
     {
-      "Id": 17376,
-      "Text": "This dog\u2019s butt"
+      "Text": "This dog’s butt"
     },
     {
-      "Id": 17375,
       "Text": "Beastmode cowboy"
     },
     {
-      "Id": 17374,
       "Text": "Missing tractor"
     },
     {
-      "Id": 17373,
       "Text": "pretending to read"
     },
     {
-      "Id": 17372,
       "Text": "Leftovers"
     },
     {
-      "Id": 17371,
       "Text": "Mom and dad kissing"
     },
     {
-      "Id": 17370,
       "Text": "Flying toaster"
     },
     {
-      "Id": 17369,
       "Text": "Dry socket"
     },
     {
-      "Id": 17368,
       "Text": "Price is Right"
     },
     {
-      "Id": 17367,
       "Text": "Flying train"
     },
     {
-      "Id": 17366,
       "Text": "Sexy bagpipes"
     },
     {
-      "Id": 17365,
       "Text": "Jack the ripper"
     },
     {
-      "Id": 17364,
       "Text": "Person with a whip"
     },
     {
-      "Id": 17363,
       "Text": "All you can eat buffet "
     },
     {
-      "Id": 17362,
       "Text": "Bounce castle"
     },
     {
-      "Id": 17361,
       "Text": "Saturday morning"
     },
     {
-      "Id": 17360,
       "Text": "Bored therapist"
     },
     {
-      "Id": 17359,
       "Text": "Wild man on the radio"
     },
     {
-      "Id": 17358,
       "Text": "Poison ivy"
     },
     {
-      "Id": 17357,
       "Text": "Truck driver with a top hat"
     },
     {
-      "Id": 17356,
       "Text": "Lego Moses"
     },
     {
-      "Id": 17355,
       "Text": "50 Shades of Grey"
     },
     {
-      "Id": 17354,
       "Text": "Sweet 16"
     },
     {
-      "Id": 17353,
       "Text": "Dentist nightmare"
     },
     {
-      "Id": 17352,
       "Text": "Moldy swimsuit "
     },
     {
-      "Id": 17351,
       "Text": "The View"
     },
     {
-      "Id": 17350,
       "Text": "Mermaid hospital"
     },
     {
-      "Id": 17349,
       "Text": "Sleepy butler"
     },
     {
-      "Id": 17348,
       "Text": "Grumble grumble"
     },
     {
-      "Id": 17347,
       "Text": "Expensive skinny jeans"
     },
     {
-      "Id": 17346,
       "Text": "Mister Tickle"
     },
     {
-      "Id": 17345,
       "Text": "Honeymoon in space"
     },
     {
-      "Id": 17344,
       "Text": "Toenail clippings"
     },
     {
-      "Id": 17343,
       "Text": "sleepgolfing"
     },
     {
-      "Id": 17342,
       "Text": "Watching the sunset"
     },
     {
-      "Id": 17341,
       "Text": "Hummingbird saddle"
     },
     {
-      "Id": 17340,
       "Text": "Backyard wrestling"
     },
     {
-      "Id": 17339,
       "Text": "Prophet"
     },
     {
-      "Id": 17338,
       "Text": "Smooth moves"
     },
     {
-      "Id": 17337,
       "Text": "Perfect circle"
     },
     {
-      "Id": 17336,
       "Text": "Boring fireworks"
     },
     {
-      "Id": 17335,
       "Text": "Deep thoughts"
     },
     {
-      "Id": 17334,
       "Text": "Granite countertop"
     },
     {
-      "Id": 17333,
       "Text": "Moose poison"
     },
     {
-      "Id": 17332,
       "Text": "Bacon lettuce pickle sandwich no mustard"
     },
     {
-      "Id": 17331,
       "Text": "Barfing bees"
     },
     {
-      "Id": 17330,
       "Text": "Minotaur gravestone"
     },
     {
-      "Id": 17329,
       "Text": "Treehouse phone call"
     },
     {
-      "Id": 17328,
       "Text": "Burger time"
     },
     {
-      "Id": 17327,
       "Text": "Boyband"
     },
     {
-      "Id": 17326,
       "Text": "Acupuncture clown"
     },
     {
-      "Id": 17325,
       "Text": "A drawing on a phone"
     },
     {
-      "Id": 17324,
       "Text": "Rice"
     },
     {
-      "Id": 17323,
       "Text": "Milk pool"
     },
     {
-      "Id": 17322,
       "Text": "A suitcase full of smoke"
     },
     {
-      "Id": 17321,
       "Text": "Baseball player hitting a gong"
     },
     {
-      "Id": 17320,
       "Text": "Drawn on eyebrows"
     },
     {
-      "Id": 17319,
       "Text": "Spork face"
     },
     {
-      "Id": 17318,
       "Text": "The dog is watching us"
     },
     {
-      "Id": 17317,
       "Text": "Homeless genie"
     },
     {
-      "Id": 17316,
-      "Text": "Grandpa\u2019s ashes"
+      "Text": "Grandpa’s ashes"
     },
     {
-      "Id": 17315,
       "Text": "How to tie a bowtie"
     },
     {
-      "Id": 17314,
       "Text": "Creamy vs chunky"
     },
     {
-      "Id": 17313,
       "Text": "Alien taxi"
     },
     {
-      "Id": 17312,
       "Text": "Dropped phone in the toilet"
     },
     {
-      "Id": 17311,
       "Text": "Face hammer"
     },
     {
-      "Id": 17310,
       "Text": "Sheep murder"
     },
     {
-      "Id": 17309,
       "Text": "The picture came with the frame"
     },
     {
-      "Id": 17308,
       "Text": "A blender and a bunch of other stuff"
     },
     {
-      "Id": 17307,
       "Text": "Let it go! Let it go!"
     },
     {
-      "Id": 17306,
       "Text": "Frozen knife"
     },
     {
-      "Id": 17305,
       "Text": "Rhino in make-up"
     },
     {
-      "Id": 17304,
       "Text": "Dancing lion"
     },
     {
-      "Id": 17303,
       "Text": "Season two of the Wire"
     },
     {
-      "Id": 17302,
       "Text": "sarcastic ape"
     },
     {
-      "Id": 17301,
       "Text": "Prune juice"
     },
     {
-      "Id": 17300,
       "Text": "Cyclops picnic"
     },
     {
-      "Id": 17299,
       "Text": "that fortune teller box from Big"
     },
     {
-      "Id": 17298,
       "Text": "Looks like Stephen King"
     },
     {
-      "Id": 17297,
       "Text": "Accidental retweet"
     },
     {
-      "Id": 17296,
       "Text": "Elvis skeleton"
     },
     {
-      "Id": 17295,
       "Text": "In love with a fern"
     },
     {
-      "Id": 17294,
       "Text": "Lamp attack"
     },
     {
-      "Id": 17293,
       "Text": "Giant fish looking through porthole"
     },
     {
-      "Id": 17292,
       "Text": "I hate 3D"
     },
     {
-      "Id": 17291,
       "Text": "Dangerous puzzle"
     },
     {
-      "Id": 17290,
       "Text": "Peahen eggs"
     },
     {
-      "Id": 17289,
       "Text": "NSFW"
     },
     {
-      "Id": 17288,
-      "Text": "Can\u2019t open the pdf"
+      "Text": "Can’t open the pdf"
     },
     {
-      "Id": 17287,
       "Text": "Monster manual"
     },
     {
-      "Id": 17286,
       "Text": "Bugbears"
     },
     {
-      "Id": 17285,
       "Text": "Winter cactus"
     },
     {
-      "Id": 17284,
       "Text": "Pledge allegiance with wrong hand"
     },
     {
-      "Id": 17283,
       "Text": "Deadly moths"
     },
     {
-      "Id": 17282,
       "Text": "My list of demands"
     },
     {
-      "Id": 17281,
       "Text": "Casual drinker"
     },
     {
-      "Id": 17280,
       "Text": "Intense swimmer"
     },
     {
-      "Id": 17279,
       "Text": "My eyes are up here!"
     },
     {
-      "Id": 17278,
       "Text": "Palindrome"
     },
     {
-      "Id": 17277,
       "Text": "Taco cat"
     },
     {
-      "Id": 17276,
       "Text": "Addicted to coffee"
     },
     {
-      "Id": 17275,
-      "Text": "I\u2019m going to eat these puppies!"
+      "Text": "I’m going to eat these puppies!"
     },
     {
-      "Id": 17274,
       "Text": "Vampire and onion"
     },
     {
-      "Id": 17273,
       "Text": "Cave tourist"
     },
     {
-      "Id": 17272,
       "Text": "Cake on instagram"
     },
     {
-      "Id": 17271,
       "Text": "Inflation"
     },
     {
-      "Id": 17270,
       "Text": "Poutine"
     },
     {
-      "Id": 17269,
       "Text": "Turducken"
     },
     {
-      "Id": 17268,
       "Text": "Steampunk baby"
     },
     {
-      "Id": 17267,
       "Text": "Catfished"
     },
     {
-      "Id": 17266,
       "Text": "Autocorrect accident"
     },
     {
-      "Id": 17265,
       "Text": "Photobomb"
     },
     {
-      "Id": 17264,
       "Text": "Polar vortex"
     },
     {
-      "Id": 17263,
       "Text": "Loving the party sub"
     },
     {
-      "Id": 17262,
       "Text": "This means war"
     },
     {
-      "Id": 17261,
       "Text": "Dutch oven"
     },
     {
-      "Id": 17260,
       "Text": "Walrus man"
     },
     {
-      "Id": 17259,
       "Text": "Squaredancing"
     },
     {
-      "Id": 17258,
       "Text": "Swiss cheese with no holes"
     },
     {
-      "Id": 17257,
       "Text": "Lobster with nunchucks"
     },
     {
-      "Id": 17256,
       "Text": "Not enough oxygen"
     },
     {
-      "Id": 17255,
       "Text": "Zester"
     },
     {
-      "Id": 17254,
       "Text": "Bravo"
     },
     {
-      "Id": 17253,
       "Text": "Losing a leg"
     },
     {
-      "Id": 17252,
       "Text": "Very zen"
     },
     {
-      "Id": 17250,
       "Text": "Funemployed"
     },
     {
-      "Id": 17249,
       "Text": "Nasty gossip"
     },
     {
-      "Id": 17248,
       "Text": "winner of a giant check"
     },
     {
-      "Id": 17247,
       "Text": "Calling shotgun"
     },
     {
-      "Id": 17246,
       "Text": "Blurred lines"
     },
     {
-      "Id": 17245,
       "Text": "Not good magician"
     },
     {
-      "Id": 17244,
       "Text": "Mosquito ballerina"
     },
     {
-      "Id": 17243,
-      "Text": "I\u2019m choking!!!1"
+      "Text": "I’m choking!!!1"
     },
     {
-      "Id": 17242,
       "Text": "Haunted sauna"
     },
     {
-      "Id": 17241,
       "Text": "Pig locker room"
     },
     {
-      "Id": 17240,
       "Text": "Subtitles?"
     },
     {
-      "Id": 17239,
       "Text": "Phantom of the Opera takes a shower"
     },
     {
-      "Id": 17238,
       "Text": "Broadway audition"
     },
     {
-      "Id": 17237,
       "Text": "Kilt and stilts"
     },
     {
-      "Id": 17236,
       "Text": "Zombie on the moon"
     },
     {
-      "Id": 17235,
       "Text": "Mullets are back in!"
     },
     {
-      "Id": 17234,
       "Text": "Comedy bang bang"
     },
     {
-      "Id": 17233,
       "Text": "Podcasts"
     },
     {
-      "Id": 17232,
-      "Text": "This doesn\u2019t look like a wig but it is"
+      "Text": "This doesn’t look like a wig but it is"
     },
     {
-      "Id": 17231,
-      "Text": "I can\u2019t control my evil hand!"
+      "Text": "I can’t control my evil hand!"
     },
     {
-      "Id": 17230,
-      "Text": "Help! I\u2019m covered in leeches!"
+      "Text": "Help! I’m covered in leeches!"
     },
     {
-      "Id": 17229,
       "Text": "A dog dreaming about ghosts"
     },
     {
-      "Id": 17228,
       "Text": "Paper or plastic?"
     },
     {
-      "Id": 17227,
       "Text": "Architect"
     },
     {
-      "Id": 17226,
       "Text": "Bellybutton lint"
     },
     {
-      "Id": 17225,
       "Text": "Getting rid of the hiccups"
     },
     {
-      "Id": 17224,
       "Text": "Napoleon riding a squirrel "
     },
     {
-      "Id": 17223,
       "Text": "Female James Bond"
     },
     {
-      "Id": 17222,
       "Text": "Euro Disney"
     },
     {
-      "Id": 17221,
       "Text": "How the world ends"
     },
     {
-      "Id": 17220,
       "Text": "CIA surveillence"
     },
     {
-      "Id": 17219,
       "Text": "Everybody survived"
     },
     {
-      "Id": 17218,
       "Text": "Roman numerals for 94"
     },
     {
-      "Id": 17217,
       "Text": "Science fiction bedroom"
     },
     {
-      "Id": 17216,
       "Text": "Using a QR code"
     },
     {
-      "Id": 17215,
       "Text": "I regret this tattoo"
     },
     {
-      "Id": 17214,
       "Text": "War on drugs"
     },
     {
-      "Id": 17213,
       "Text": "Kidney stones"
     },
     {
-      "Id": 17212,
       "Text": "United Nations"
     },
     {
-      "Id": 17211,
       "Text": "Final Jeopardy"
     },
     {
-      "Id": 17210,
       "Text": "Colonel Mustard in the library with the rope"
     },
     {
-      "Id": 17209,
       "Text": "Trampoline in space"
     },
     {
-      "Id": 17208,
       "Text": "Sad Justin Bieber"
     },
     {
-      "Id": 17207,
-      "Text": "Special Victim\u2019s Unit"
+      "Text": "Special Victim’s Unit"
     },
     {
-      "Id": 17206,
-      "Text": "my pager\u2019s blowing up"
+      "Text": "my pager’s blowing up"
     },
     {
-      "Id": 17205,
       "Text": "RV race"
     },
     {
-      "Id": 17204,
       "Text": "Kentucky derby winner"
     },
     {
-      "Id": 17203,
       "Text": "what everyone thinks of <RANDOM_PLAYER_NAME>"
     },
     {
-      "Id": 17202,
       "Text": "<RANDOM_PLAYER_NAME> is the worst"
     },
     {
-      "Id": 17201,
       "Text": "<RANDOM_PLAYER_NAME>"
     },
     {
-      "Id": 17200,
       "Text": "Adventure time"
     },
     {
-      "Id": 17199,
       "Text": "Neat freak"
     },
     {
-      "Id": 17198,
       "Text": "Unicorn war"
     },
     {
-      "Id": 17197,
       "Text": "Farting out the window"
     },
     {
-      "Id": 17196,
       "Text": "Giant cat head attacks a church"
     },
     {
-      "Id": 17195,
       "Text": "Urine"
     },
     {
-      "Id": 17194,
       "Text": "Glass half empty but still festive"
     },
     {
-      "Id": 17193,
       "Text": "Soap opera"
     },
     {
-      "Id": 17192,
       "Text": "Trust fall"
     },
     {
-      "Id": 17191,
       "Text": "The other side of a black hole"
     },
     {
-      "Id": 17190,
       "Text": "Giant broccoli"
     },
     {
-      "Id": 17189,
       "Text": "Atlantis food"
     },
     {
-      "Id": 17188,
       "Text": "Checkmate"
     },
     {
-      "Id": 17187,
       "Text": "Tornado machine"
     },
     {
-      "Id": 17186,
       "Text": "Morning commute"
     },
     {
-      "Id": 17185,
       "Text": "Fun with handcuffs"
     },
     {
-      "Id": 17184,
       "Text": "Brain surgery is easy!"
     },
     {
-      "Id": 17183,
       "Text": "Lottery losers"
     },
     {
-      "Id": 17182,
       "Text": "Man cave"
     },
     {
-      "Id": 17181,
       "Text": "Statue of Liberty vs Godzilla"
     },
     {
-      "Id": 17180,
       "Text": "Stunt double"
     },
     {
-      "Id": 17179,
       "Text": "The person in the mirror is evil"
     },
     {
-      "Id": 17178,
       "Text": "#throwbackthurs"
     },
     {
-      "Id": 17177,
-      "Text": "This is the world\u2019s tiniest violin playing a sad song for you"
+      "Text": "This is the world’s tiniest violin playing a sad song for you"
     },
     {
-      "Id": 17176,
       "Text": "Peter pan sells cars"
     },
     {
-      "Id": 17175,
       "Text": "Fun exorcism"
     },
     {
-      "Id": 17174,
       "Text": "Geometry, I think?"
     },
     {
-      "Id": 17173,
       "Text": "Undead penguin"
     },
     {
-      "Id": 17172,
       "Text": "Prom fight"
     },
     {
-      "Id": 17171,
       "Text": "Pick up sticks"
     },
     {
-      "Id": 17170,
       "Text": "Deep tissue massage"
     },
     {
-      "Id": 17169,
       "Text": "Some nerd"
     },
     {
-      "Id": 17168,
       "Text": "WTF, grandma?!!"
     },
     {
-      "Id": 17167,
       "Text": "Daft Punk getting ice cream"
     },
     {
-      "Id": 17166,
       "Text": "Roygbiv"
     },
     {
-      "Id": 17165,
       "Text": "Meat flavored dog food"
     },
     {
-      "Id": 17164,
       "Text": "Drops of Jupiter by Train"
     },
     {
-      "Id": 17163,
       "Text": "Tiki curse"
     },
     {
-      "Id": 17162,
       "Text": "Most boring band ever"
     },
     {
-      "Id": 17161,
       "Text": "Terrible drawing of a turtle"
     },
     {
-      "Id": 17160,
       "Text": "Weird Al"
     },
     {
-      "Id": 17159,
       "Text": "This room needs a waterbed!"
     },
     {
-      "Id": 17158,
       "Text": "Banana castle"
     },
     {
-      "Id": 17157,
       "Text": "Left handed cat"
     },
     {
-      "Id": 17156,
       "Text": "No one likes this guy at the gym"
     },
     {
-      "Id": 17155,
       "Text": "Falling out of love"
     },
     {
-      "Id": 17154,
       "Text": "Opera haters"
     },
     {
-      "Id": 17153,
       "Text": "Cockroach living in an ear"
     },
     {
-      "Id": 17152,
       "Text": "Good body odor"
     },
     {
-      "Id": 17151,
       "Text": "Friendly graffiti"
     },
     {
-      "Id": 17150,
       "Text": "Cabbage patch tweens"
     },
     {
-      "Id": 17149,
       "Text": "Double rainbow"
     },
     {
-      "Id": 17148,
       "Text": "Feminism"
     },
     {
-      "Id": 17147,
-      "Text": "Dr Frankenstein\u2019s office"
+      "Text": "Dr Frankenstein’s office"
     },
     {
-      "Id": 17146,
       "Text": "Extreme sports"
     },
     {
-      "Id": 17145,
       "Text": "Dog with X-ray vision"
     },
     {
-      "Id": 17144,
       "Text": "Shag carpet"
     },
     {
-      "Id": 17143,
       "Text": "Family values"
     },
     {
-      "Id": 17142,
       "Text": "Old grenade"
     },
     {
-      "Id": 17141,
       "Text": "Moving in with Santa"
     },
     {
-      "Id": 17140,
       "Text": "Sweet school shoes"
     },
     {
-      "Id": 17139,
       "Text": "New job"
     },
     {
-      "Id": 17138,
       "Text": "Turkey burglar"
     },
     {
-      "Id": 17137,
       "Text": "Hula hoop hot dog party"
     },
     {
-      "Id": 17136,
       "Text": "Motor boating"
     },
     {
-      "Id": 17135,
       "Text": "Greasy kid"
     },
     {
-      "Id": 17134,
       "Text": "Butt tattoo"
     },
     {
-      "Id": 17133,
       "Text": "Squid love"
     },
     {
-      "Id": 17132,
       "Text": "Improv group"
     },
     {
-      "Id": 17131,
       "Text": "Gillotine accident"
     },
     {
-      "Id": 17130,
       "Text": "Mic check"
     },
     {
-      "Id": 17129,
-      "Text": "Don\u2019t eat the cookies"
+      "Text": "Don’t eat the cookies"
     },
     {
-      "Id": 17128,
       "Text": "Horse Comb Over"
     },
     {
-      "Id": 17127,
       "Text": "Chair fighting with a table"
     },
     {
-      "Id": 17126,
       "Text": "Vegan dinner"
     },
     {
-      "Id": 17125,
       "Text": "Basketball fan"
     },
     {
-      "Id": 17124,
       "Text": "Prison shiv"
     },
     {
-      "Id": 17123,
       "Text": "Real Housewives"
     },
     {
-      "Id": 17122,
       "Text": "Dexter"
     },
     {
-      "Id": 17121,
       "Text": "Sweater sale"
     },
     {
-      "Id": 17120,
       "Text": "Knight playing guitar"
     },
     {
-      "Id": 17119,
       "Text": "Sleeping doctor"
     },
     {
-      "Id": 17118,
       "Text": "Turtle in a coma"
     },
     {
-      "Id": 17117,
       "Text": "Striped Horse"
     },
     {
-      "Id": 17116,
       "Text": "Three wishes"
     },
     {
-      "Id": 17115,
       "Text": "Tired of spooning"
     },
     {
-      "Id": 17114,
       "Text": "Staring at soup on the stove"
     },
     {
-      "Id": 17113,
       "Text": "Knock knock joke"
     },
     {
-      "Id": 17112,
       "Text": "Fog"
     },
     {
-      "Id": 17111,
       "Text": "Just some guy in a cape"
     },
     {
-      "Id": 17110,
       "Text": "Bikini office"
     },
     {
-      "Id": 17109,
       "Text": "Popcorn explosion"
     },
     {
-      "Id": 17108,
       "Text": "Old man flying a kite"
     },
     {
-      "Id": 17107,
       "Text": "Tshirt gun"
     },
     {
-      "Id": 17106,
       "Text": "computer virus"
     },
     {
-      "Id": 17105,
       "Text": "Ice sculpture"
     },
     {
-      "Id": 17104,
       "Text": "Kickstarter bacon"
     },
     {
-      "Id": 17103,
       "Text": "The floor is lava"
     },
     {
-      "Id": 17102,
       "Text": "Horror"
     },
     {
-      "Id": 17101,
       "Text": "Crying and eating"
     },
     {
-      "Id": 17100,
       "Text": "Gandolf getting married"
     },
     {
-      "Id": 17099,
       "Text": "Vacation priest"
     },
     {
-      "Id": 17098,
       "Text": "Coin licking"
     },
     {
-      "Id": 17097,
       "Text": "Face stab"
     },
     {
-      "Id": 17096,
       "Text": "School picture with lasers background"
     },
     {
-      "Id": 17095,
       "Text": "that Sylvester Stallone arm wrestling movie"
     },
     {
-      "Id": 17094,
       "Text": "Underwear wolves"
     },
     {
-      "Id": 17093,
       "Text": "Everyone knows your bald"
     },
     {
-      "Id": 17092,
       "Text": "Crazy laughing guy"
     },
     {
-      "Id": 17091,
       "Text": "Take your daughter to work day"
     },
     {
-      "Id": 17090,
       "Text": "Rats hugging"
     },
     {
-      "Id": 17089,
       "Text": "Messed up clone"
     },
     {
-      "Id": 17088,
       "Text": "Madonna"
     },
     {
-      "Id": 17087,
       "Text": "Twerking king"
     },
     {
-      "Id": 17086,
       "Text": "Prehistoric rabbits"
     },
     {
-      "Id": 17085,
       "Text": "Teeth whitening"
     },
     {
-      "Id": 17084,
       "Text": "Mystery train"
     },
     {
-      "Id": 17083,
       "Text": "Cloud that looks like Darth Vader"
     },
     {
-      "Id": 17082,
       "Text": "Ducks in a sword fight"
     },
     {
-      "Id": 17081,
       "Text": "Magic the Gathering"
     },
     {
-      "Id": 17080,
       "Text": "Giant rap battle"
     },
     {
-      "Id": 17079,
       "Text": "Death trap"
     },
     {
-      "Id": 17078,
       "Text": "Witch with no money"
     },
     {
-      "Id": 17077,
       "Text": "Balloon monster"
     },
     {
-      "Id": 17076,
       "Text": "Facebook friends"
     },
     {
-      "Id": 17075,
       "Text": "Shopping maniac"
     },
     {
-      "Id": 17074,
       "Text": "Bobsled family"
     },
     {
-      "Id": 17073,
       "Text": "tequilla"
     },
     {
-      "Id": 17072,
       "Text": "Broken nuts"
     },
     {
-      "Id": 17071,
       "Text": "Snow people"
     },
     {
-      "Id": 17070,
       "Text": "Mouse pizza"
     },
     {
-      "Id": 17069,
       "Text": "Paparazzi"
     },
     {
-      "Id": 17068,
       "Text": "Purse sniffer"
     },
     {
-      "Id": 17066,
       "Text": "Wooden rollercoaster"
     },
     {
-      "Id": 17065,
       "Text": "Text from Mom"
     },
     {
-      "Id": 17064,
       "Text": "Hot yoga"
     },
     {
-      "Id": 17063,
       "Text": "Robocop dance"
     },
     {
-      "Id": 17062,
       "Text": "Darkness"
     },
     {
-      "Id": 17061,
       "Text": "Smiley Parasite"
     },
     {
-      "Id": 17060,
       "Text": "Business time"
     },
     {
-      "Id": 17059,
       "Text": "A prank gone wrong"
     },
     {
-      "Id": 17058,
       "Text": "Some kind of cheese???"
     },
     {
-      "Id": 17057,
       "Text": "If snakes wore bow ties?"
     },
     {
-      "Id": 17056,
       "Text": "This guy ate all the popcorn!"
     },
     {
-      "Id": 17055,
       "Text": "House with two windows and no door"
     },
     {
-      "Id": 17054,
       "Text": "Three guys wearing hats and one guy not wearing a hat"
     },
     {
-      "Id": 17053,
       "Text": "Weird guy at work"
     },
     {
-      "Id": 17052,
       "Text": "Kissable face"
     },
     {
-      "Id": 17051,
       "Text": "Go kart valet"
     },
     {
-      "Id": 17050,
       "Text": "Interrupting a wedding"
     },
     {
-      "Id": 17049,
       "Text": "Tea party"
     },
     {
-      "Id": 17048,
       "Text": "Allergic to cats"
     },
     {
-      "Id": 17047,
       "Text": "Guy that wants a hug"
     },
     {
-      "Id": 17046,
       "Text": "Law and Order"
     },
     {
-      "Id": 17045,
       "Text": "Lonely High Five"
     },
     {
-      "Id": 17044,
       "Text": "Space chef"
     },
     {
-      "Id": 17043,
-      "Text": "I\u2019m so sorry"
+      "Text": "I’m so sorry"
     },
     {
-      "Id": 17042,
       "Text": "Ugly princess"
     },
     {
-      "Id": 17041,
       "Text": "Singles cruise"
     },
     {
-      "Id": 17040,
       "Text": "Monster selfie"
     },
     {
-      "Id": 17039,
       "Text": "Uh... helllo?!!!"
     },
     {
-      "Id": 17038,
       "Text": "Supreme Court"
     },
     {
-      "Id": 17037,
       "Text": "Rollerblading clown"
     },
     {
-      "Id": 17036,
       "Text": "Hater skater"
     },
     {
-      "Id": 17035,
       "Text": "Justice"
     },
     {
-      "Id": 17034,
       "Text": "Extra virgin olive oil"
     },
     {
-      "Id": 17033,
       "Text": "P90X"
     },
     {
-      "Id": 17032,
       "Text": "Purple"
     },
     {
-      "Id": 17031,
       "Text": "The 80s"
     },
     {
-      "Id": 17030,
       "Text": "Bed Thief"
     },
     {
-      "Id": 17029,
       "Text": "Missing cookies"
     },
     {
-      "Id": 17028,
       "Text": "Perfect vision"
     },
     {
-      "Id": 17027,
       "Text": "Awkward conversation"
     },
     {
-      "Id": 17026,
       "Text": "Apps"
     },
     {
-      "Id": 17025,
       "Text": "Afraid of wind"
     },
     {
-      "Id": 17024,
       "Text": "Cell phone"
     },
     {
-      "Id": 17023,
       "Text": "Evil thoughts"
     },
     {
-      "Id": 17022,
       "Text": "Everyone in this room"
     },
     {
-      "Id": 17021,
       "Text": "Sad Hipster"
     },
     {
-      "Id": 17020,
       "Text": "C Student"
     },
     {
-      "Id": 17019,
       "Text": "Mouse walker"
     },
     {
-      "Id": 17018,
       "Text": "George Clooney"
     },
     {
-      "Id": 17017,
       "Text": "New Yorker cartoon"
     },
     {
-      "Id": 17016,
       "Text": "Empire Strikes Back"
     },
     {
-      "Id": 17015,
       "Text": "World Cup"
     },
     {
-      "Id": 17014,
       "Text": ":-D"
     },
     {
-      "Id": 17013,
       "Text": "Pure stank"
     },
     {
-      "Id": 17012,
       "Text": "Baby Car"
     },
     {
-      "Id": 17011,
-      "Text": "You Don\u2019t Know Jack"
+      "Text": "You Don’t Know Jack"
     },
     {
-      "Id": 17010,
       "Text": "Asterisks"
     },
     {
-      "Id": 17009,
       "Text": "Pedestrian"
     },
     {
-      "Id": 17008,
       "Text": "Pebbles"
     },
     {
-      "Id": 17007,
       "Text": "Yay! Books!"
     },
     {
-      "Id": 17006,
       "Text": "Expensive outhouse"
     },
     {
-      "Id": 17005,
       "Text": "Messed up house"
     },
     {
-      "Id": 17004,
       "Text": "Worst State Ever"
     },
     {
-      "Id": 17003,
       "Text": "Birth"
     },
     {
-      "Id": 17002,
       "Text": "Spider Nursery"
     },
     {
-      "Id": 17001,
       "Text": "Faceless Man"
     },
     {
-      "Id": 17000,
       "Text": "Furniture"
     },
     {
-      "Id": 16999,
       "Text": "Turd Jenga"
     },
     {
-      "Id": 16998,
       "Text": "Child dressed as Lincoln"
     },
     {
-      "Id": 16997,
       "Text": "Wyoming"
     },
     {
-      "Id": 16996,
       "Text": "Too many eels"
     },
     {
-      "Id": 16995,
       "Text": "Coyote ugly"
     },
     {
-      "Id": 16994,
       "Text": "Puppy pillow"
     },
     {
-      "Id": 16993,
       "Text": "Knick knacks"
     },
     {
-      "Id": 16992,
       "Text": "Horse in diguise"
     },
     {
-      "Id": 16991,
       "Text": "Swirly circle"
     },
     {
-      "Id": 16990,
       "Text": "Stinker"
     },
     {
-      "Id": 16989,
       "Text": "Spam"
     },
     {
-      "Id": 16988,
       "Text": "Neutered dragon"
     },
     {
-      "Id": 16987,
       "Text": "Hokey pokey"
     },
     {
-      "Id": 16986,
       "Text": "Trivia"
     },
     {
-      "Id": 16985,
       "Text": "Acceptable amount of poop"
     },
     {
-      "Id": 16984,
       "Text": "Rocky4"
     },
     {
-      "Id": 16983,
       "Text": "Cat in mittens"
     },
     {
-      "Id": 16982,
       "Text": "Aalkdjfaf"
     },
     {
-      "Id": 16981,
-      "Text": "Honk if you\u2019re horny"
+      "Text": "Honk if you’re horny"
     },
     {
-      "Id": 16980,
       "Text": "Babies with babies"
     },
     {
-      "Id": 16979,
       "Text": "Blind sun"
     },
     {
-      "Id": 16978,
       "Text": "Jobs"
     },
     {
-      "Id": 16977,
       "Text": "Nice people"
     },
     {
-      "Id": 16976,
       "Text": "Golden girls"
     },
     {
-      "Id": 16975,
       "Text": "Dead Garfield"
     },
     {
-      "Id": 16974,
-      "Text": "I don\u2019t like you"
+      "Text": "I don’t like you"
     },
     {
-      "Id": 16973,
       "Text": "Animal marriage"
     },
     {
-      "Id": 16972,
       "Text": "Grower not a shower"
     },
     {
-      "Id": 16971,
       "Text": "Canadian ham"
     },
     {
-      "Id": 16970,
       "Text": "15 candles"
     },
     {
-      "Id": 16969,
       "Text": "Rat pack"
     },
     {
-      "Id": 16968,
       "Text": "Push up bra"
     },
     {
-      "Id": 16967,
       "Text": "Martha Washington"
     },
     {
-      "Id": 16966,
       "Text": "Tennis toilet"
     },
     {
-      "Id": 16965,
       "Text": "Key party"
     },
     {
-      "Id": 16964,
       "Text": "Scary emoticons"
     },
     {
-      "Id": 16963,
       "Text": "Linux"
     },
     {
-      "Id": 16962,
       "Text": "Drinking problem"
     },
     {
-      "Id": 16961,
       "Text": "Bears on a train"
     },
     {
-      "Id": 16960,
       "Text": "Barf"
     },
     {
-      "Id": 16959,
       "Text": "A lot of wasps"
     },
     {
-      "Id": 16958,
       "Text": "Can of bacon"
     },
     {
-      "Id": 16957,
       "Text": "Not enough gravy"
     },
     {
-      "Id": 16956,
       "Text": "Prog rock"
     },
     {
-      "Id": 16955,
       "Text": "Halftime show"
     },
     {
-      "Id": 16954,
       "Text": "Jealousy"
     },
     {
-      "Id": 16953,
       "Text": "Candy shirt"
     },
     {
-      "Id": 16952,
       "Text": "The dark ages"
     },
     {
-      "Id": 16951,
       "Text": "Renessance man"
     },
     {
-      "Id": 16950,
       "Text": "Jean shorts"
     },
     {
-      "Id": 16949,
       "Text": "Collect them all"
     },
     {
-      "Id": 16948,
       "Text": "Turtle smell"
     },
     {
-      "Id": 16947,
       "Text": "Pizza cat house gun"
     },
     {
-      "Id": 16946,
       "Text": "Good morning death"
     },
     {
-      "Id": 16945,
       "Text": "Sidekick"
     },
     {
-      "Id": 16944,
       "Text": "Splat"
     },
     {
-      "Id": 16943,
       "Text": "Bubble boy"
     },
     {
-      "Id": 16942,
       "Text": "Con man"
     },
     {
-      "Id": 16941,
       "Text": "Pet insurance"
     },
     {
-      "Id": 16940,
       "Text": "Nothing"
     },
     {
-      "Id": 16939,
       "Text": "Taxes"
     },
     {
-      "Id": 16938,
       "Text": "Pile of staples"
     },
     {
-      "Id": 16937,
       "Text": "Space shoes"
     },
     {
-      "Id": 16936,
       "Text": "Internet dating"
     },
     {
-      "Id": 16935,
       "Text": "Astronaut hot tub"
     },
     {
-      "Id": 16934,
       "Text": "Nervous dinosaur"
     },
     {
-      "Id": 16933,
       "Text": "Shaky legs"
     },
     {
-      "Id": 16932,
       "Text": "Layover"
     },
     {
-      "Id": 16931,
       "Text": "Jam hands"
     },
     {
-      "Id": 16930,
       "Text": "Cleveland"
     },
     {
-      "Id": 16929,
       "Text": "Accountant"
     },
     {
-      "Id": 16928,
       "Text": "Face swap"
     },
     {
-      "Id": 16927,
-      "Text": "Burger King\u2019s skeleton"
+      "Text": "Burger King’s skeleton"
     },
     {
-      "Id": 16926,
       "Text": "Haunted grocery store"
     },
     {
-      "Id": 16925,
       "Text": "Taco salad"
     },
     {
-      "Id": 16924,
-      "Text": "Batman\u2019s neighbor"
+      "Text": "Batman’s neighbor"
     },
     {
-      "Id": 16923,
       "Text": "Bad tipper"
     },
     {
-      "Id": 16922,
       "Text": "Time travel"
     },
     {
-      "Id": 16921,
       "Text": "Funky cloud"
     },
     {
-      "Id": 16920,
       "Text": "Junk drawer"
     },
     {
-      "Id": 16919,
       "Text": "Vampire football"
     },
     {
-      "Id": 16918,
       "Text": "Really good art"
     },
     {
-      "Id": 16917,
       "Text": "Stomach on the outside"
     },
     {
-      "Id": 16916,
       "Text": "Home theater"
     },
     {
-      "Id": 16915,
       "Text": "Panic room"
     },
     {
-      "Id": 16914,
       "Text": "Mimosa"
     },
     {
-      "Id": 16913,
       "Text": "Former werewolf"
     },
     {
-      "Id": 16912,
       "Text": "Elves"
     },
     {
-      "Id": 16911,
       "Text": "Tuna"
     },
     {
-      "Id": 16910,
       "Text": "Super Mario Sisters"
     },
     {
-      "Id": 16909,
       "Text": "Hidden dragon"
     },
     {
-      "Id": 16908,
       "Text": "Nun bus"
     },
     {
-      "Id": 16907,
       "Text": "Surf goat"
     },
     {
-      "Id": 16906,
       "Text": "Spider attack"
     },
     {
-      "Id": 16905,
       "Text": "Da bomb"
     },
     {
-      "Id": 16904,
       "Text": "New underwear"
     },
     {
-      "Id": 16903,
       "Text": "Gremlins 2"
     },
     {
-      "Id": 16902,
       "Text": "1%"
     },
     {
-      "Id": 16901,
-      "Text": "Dad\u2019s ties"
+      "Text": "Dad’s ties"
     },
     {
-      "Id": 16900,
       "Text": "Hashtags"
     },
     {
-      "Id": 16899,
       "Text": "Laserdiscs"
     },
     {
-      "Id": 16898,
       "Text": "Bad emoji"
     },
     {
-      "Id": 16897,
       "Text": "Helpful ghost"
     },
     {
-      "Id": 16895,
       "Text": "Pudding"
     },
     {
-      "Id": 16894,
       "Text": "The Disney Vault"
     },
     {
-      "Id": 16893,
       "Text": "Wooden nickels"
     },
     {
-      "Id": 16892,
       "Text": "Sassy gerbil"
     },
     {
-      "Id": 16891,
       "Text": "$$$"
     },
     {
-      "Id": 16890,
       "Text": "Pirate love"
     },
     {
-      "Id": 16889,
       "Text": "Mardi Gras"
     },
     {
-      "Id": 16888,
       "Text": "Corduroys"
     },
     {
-      "Id": 16887,
       "Text": "Butt problem"
     },
     {
-      "Id": 16886,
       "Text": "Fast food"
     },
     {
-      "Id": 16885,
       "Text": "Sumo baby"
     },
     {
-      "Id": 16884,
       "Text": "Dr Cop"
     },
     {
-      "Id": 16883,
       "Text": "Cowboy debate"
     },
     {
-      "Id": 16882,
       "Text": "Secret robot"
     },
     {
-      "Id": 16881,
-      "Text": "Ninja\u2019s closet"
+      "Text": "Ninja’s closet"
     },
     {
-      "Id": 16880,
       "Text": "Mall cop"
     },
     {
-      "Id": 16879,
       "Text": "Wishful thinking"
     },
     {
-      "Id": 16878,
       "Text": "Break dancing"
     },
     {
-      "Id": 16877,
       "Text": "Denzel Washington"
     },
     {
-      "Id": 16876,
       "Text": "Hip hop"
     },
     {
-      "Id": 16875,
       "Text": "Autobiography"
     },
     {
-      "Id": 16874,
       "Text": "Brain in a box"
     },
     {
-      "Id": 16873,
       "Text": "Headless giraffe"
     },
     {
-      "Id": 16872,
       "Text": "Magic shoes"
     },
     {
-      "Id": 16871,
       "Text": "Secret Identity"
     },
     {
-      "Id": 16870,
       "Text": "Banana pants"
     },
     {
-      "Id": 16869,
-      "Text": "Ugh it\u2019s Monday!"
+      "Text": "Ugh it’s Monday!"
     },
     {
-      "Id": 16868,
       "Text": "Pizza Pac Man"
     },
     {
-      "Id": 16867,
       "Text": "Book club"
     },
     {
-      "Id": 16866,
       "Text": "Bros"
     },
     {
-      "Id": 16865,
       "Text": "Science"
     },
     {
-      "Id": 16864,
       "Text": "Keyboard solo"
     },
     {
-      "Id": 16863,
       "Text": "Very old frog"
     },
     {
-      "Id": 16862,
       "Text": "Jazz brunch"
     },
     {
-      "Id": 16861,
       "Text": "Vampire weekend"
     },
     {
-      "Id": 16860,
       "Text": "Toothbrush prank"
     },
     {
-      "Id": 16859,
       "Text": "Booger with legs"
     },
     {
-      "Id": 16858,
       "Text": "Capri pants"
     },
     {
-      "Id": 16857,
       "Text": "Cow attack"
     },
     {
-      "Id": 16856,
       "Text": "Pilates"
     },
     {
-      "Id": 16855,
       "Text": "Fancy toilet"
     },
     {
-      "Id": 16854,
       "Text": "Mad skillz"
     },
     {
-      "Id": 16853,
       "Text": "Sleeping monks"
     },
     {
-      "Id": 16852,
       "Text": "Dream within a dream"
     },
     {
-      "Id": 16851,
       "Text": "Not a square"
     },
     {
-      "Id": 16850,
       "Text": "Liver"
     },
     {
-      "Id": 16849,
       "Text": "Mom on Facebook"
     },
     {
-      "Id": 16848,
       "Text": "Ahhhhh!!!"
     },
     {
-      "Id": 16847,
       "Text": "Snob"
     },
     {
-      "Id": 16846,
       "Text": "Cabin fever"
     },
     {
-      "Id": 16845,
       "Text": "Tiny clock"
     },
     {
-      "Id": 16844,
       "Text": "Invisible car"
     },
     {
-      "Id": 16843,
       "Text": "Mortality"
     },
     {
-      "Id": 16842,
       "Text": "Stinky butts"
     },
     {
-      "Id": 16841,
       "Text": "Cousins"
     },
     {
-      "Id": 16840,
       "Text": "Camel toe"
     },
     {
-      "Id": 16839,
       "Text": "Angry hot dog"
     },
     {
-      "Id": 16838,
       "Text": "Five lines"
     },
     {
-      "Id": 16837,
       "Text": "Hairy nipples"
     },
     {
-      "Id": 16836,
       "Text": "Me in the future"
     },
     {
-      "Id": 16835,
-      "Text": "I don\u2019t know"
+      "Text": "I don’t know"
     },
     {
-      "Id": 16834,
       "Text": "Cantelope"
     },
     {
-      "Id": 16833,
       "Text": "Christmas vacation"
     },
     {
-      "Id": 16832,
       "Text": "Angry fish"
     },
     {
-      "Id": 16831,
       "Text": "Flash mob"
     },
     {
-      "Id": 16830,
       "Text": "Buried alive"
     },
     {
-      "Id": 16829,
       "Text": "Twitter"
     },
     {
-      "Id": 16828,
       "Text": "Shark fedora"
     },
     {
-      "Id": 16827,
       "Text": "Tampa"
     },
     {
-      "Id": 16826,
       "Text": "Nice hair"
     },
     {
-      "Id": 16825,
       "Text": "First date"
     },
     {
-      "Id": 16824,
       "Text": "Uranus"
     },
     {
-      "Id": 16823,
-      "Text": "Satan\u2019s house"
+      "Text": "Satan’s house"
     },
     {
-      "Id": 16822,
       "Text": "Fungus"
     },
     {
-      "Id": 16821,
       "Text": "Jogging without pants"
     },
     {
-      "Id": 16820,
       "Text": "Diabetes"
     },
     {
-      "Id": 16819,
       "Text": "porcupine school"
     },
     {
-      "Id": 16818,
       "Text": "Plastic surgery"
     },
     {
-      "Id": 16817,
       "Text": "Unfair fight"
     },
     {
-      "Id": 16816,
       "Text": "Blood"
     },
     {
-      "Id": 16815,
       "Text": "Stuff"
     },
     {
-      "Id": 16814,
       "Text": "Cool mustache"
     },
     {
-      "Id": 16813,
       "Text": "Mime fight"
     },
     {
-      "Id": 16812,
       "Text": "Graduation"
     },
     {
-      "Id": 16811,
       "Text": "Face farts"
     },
     {
-      "Id": 16810,
       "Text": "Inception"
     },
     {
-      "Id": 16809,
       "Text": "Face that is happy and sad"
     },
     {
-      "Id": 16808,
       "Text": "Cool Dog"
     },
     {
-      "Id": 16807,
       "Text": "French Man"
     },
     {
-      "Id": 16806,
       "Text": "Poet"
     },
     {
-      "Id": 16805,
       "Text": "Baby mama"
     },
     {
-      "Id": 16804,
       "Text": "Junior High"
     },
     {
-      "Id": 16803,
       "Text": "Ben Franklin"
     },
     {
-      "Id": 16802,
       "Text": "Some of the Beatles"
     },
     {
-      "Id": 16801,
       "Text": "Rent"
     },
     {
-      "Id": 16800,
       "Text": "Mad Men"
     },
     {
-      "Id": 16799,
       "Text": "Game of Thrones"
     },
     {
-      "Id": 16798,
       "Text": "Pervert"
     },
     {
-      "Id": 16797,
       "Text": "Awesome party"
     },
     {
-      "Id": 16796,
       "Text": "Baby car"
     },
     {
-      "Id": 16795,
       "Text": "Just a mess"
     },
     {
-      "Id": 16794,
       "Text": "You are here!"
     },
     {
-      "Id": 16793,
       "Text": "Puberty"
     },
     {
-      "Id": 16792,
       "Text": "Math wizard"
     },
     {
-      "Id": 16791,
       "Text": "Hitler without mustache"
     },
     {
-      "Id": 16790,
       "Text": "Lady ghost"
     },
     {
-      "Id": 16789,
       "Text": "Leap year"
     },
     {
-      "Id": 16788,
       "Text": "Fancy booger"
     },
     {
-      "Id": 16787,
       "Text": "Indigo Girls"
     },
     {
-      "Id": 16786,
       "Text": "Beefs"
     },
     {
-      "Id": 16785,
       "Text": "Disco Dad"
     },
     {
-      "Id": 16784,
       "Text": "Scary prison"
     },
     {
-      "Id": 16783,
       "Text": "Warm buns"
     },
     {
-      "Id": 16782,
       "Text": "Nerd Fort"
     },
     {
-      "Id": 16781,
       "Text": "GIF"
     },
     {
-      "Id": 16780,
       "Text": "Trail of turds"
     },
     {
-      "Id": 16779,
-      "Text": "You\u2019re the worst"
+      "Text": "You’re the worst"
     },
     {
-      "Id": 16778,
       "Text": "Awful Christmas"
     },
     {
-      "Id": 16777,
       "Text": "Photo negative"
     },
     {
-      "Id": 16776,
       "Text": "French chimney sweep"
     },
     {
-      "Id": 16775,
       "Text": "Face with arrow pointing at nose"
     }
   ]

@@ -114,7 +114,6 @@ namespace Protocol
     [Serializable]
     public class PromptData
     {
-        public int Id;
         public string Text;
 
         // Replaces any tokens such as "random player name" appropriately replaced.
