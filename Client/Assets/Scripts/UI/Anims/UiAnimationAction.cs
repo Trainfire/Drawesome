@@ -21,7 +21,6 @@ public class UiAnimationAction : UiAnimationComponent
         }
         else
         {
-            Debug.LogFormat("Play action: {0}", Name);
             Action();
         }
 

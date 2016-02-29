@@ -4,7 +4,7 @@ using System;
 
 public class UiAnimationController : MonoBehaviour
 {
-    public bool ShowDebug = true;
+    public bool ShowDebug = false;
 
     List<UiAnimationComponent> Animations = new List<UiAnimationComponent>();
     Queue<IAnimatable> Queue = new Queue<IAnimatable>();
@@ -19,14 +19,14 @@ public class UiAnimationController : MonoBehaviour
 
     public void AddAnim(UiAnimationComponent anim, bool waitForCompletion = true)
     {
-        Debug.LogFormat("Add anim: {0}", anim.Name);
+        Log("Add anim: {0}", anim.Name);
         anim.WaitForCompletion = waitForCompletion;
         Animations.Add(anim);
     }
 
     public void AddDelay(float delay, bool waitForCompletion = true)
     {
-        Debug.LogFormat("Add delay: {0}", delay);
+        Log("Add delay: {0}", delay);
         var anim = new UiAnimationDelay(this, delay);
         anim.WaitForCompletion = waitForCompletion;
         Animations.Add(anim);
@@ -65,7 +65,7 @@ public class UiAnimationController : MonoBehaviour
 
             var name = string.IsNullOrEmpty(currentAnim.Name) ? "Unnamed Anim" : currentAnim.Name;
 
-            Debug.LogFormat("Play anim: {0}", name);
+            Log("Play anim: {0}", name);
 
             if (currentAnim.WaitForCompletion)
                 currentAnim.OnDone += UpdateQueue;
@@ -77,7 +77,7 @@ public class UiAnimationController : MonoBehaviour
         }
         else
         {
-            Debug.LogFormat("Finished playing anims!");
+            Log("Finished playing anims!");
             ClearQueue();
         }
     }
@@ -88,5 +88,11 @@ public class UiAnimationController : MonoBehaviour
     void PlayAnim(IAnimatable anim)
     {
         anim.Play();
+    }
+
+    void Log(string message, params object[] args)
+    {
+        if (ShowDebug)
+            Debug.LogFormat(message, args);
     }
 }
