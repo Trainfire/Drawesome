@@ -28,7 +28,7 @@ public class Timer : MonoBehaviour, Game.IGameStateHandler, Game.IGameMessageHan
         StopAllCoroutines();
     }
 
-    void SetDuration(float duration)
+    public void SetDuration(float duration)
     {
         Duration = duration;
         CurrentTime = duration;
@@ -36,10 +36,18 @@ public class Timer : MonoBehaviour, Game.IGameStateHandler, Game.IGameMessageHan
         shouldLerp = false;
     }
 
-    void SetTime(float currentTime)
+    public void SetTime(float currentTime)
     {
         CurrentTime = currentTime;
         shouldLerp = true;
+
+        if (currentTime < 11f)
+        {
+            var anim = View.gameObject.GetOrAddComponent<UiAnimationController>();
+            anim.AddAnim(new UiAnimationScale(View.gameObject, Vector3.one, Vector3.one * 1.25f, 0.25f));
+            anim.AddAnim(new UiAnimationScale(View.gameObject, Vector3.one * 1.25f, Vector3.one, 0.25f));
+            anim.PlayAnimations();
+        }
     }
 
     void Update()
