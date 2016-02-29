@@ -13,17 +13,6 @@ public class UiGameStatePreGame : UiBase
     public Text ReadyTitle;
     public Text ReadyTimer;
 
-    UiAnimationController animController;
-    UiAnimationController AnimController
-    {
-        get
-        {
-            if (animController == null)
-                animController = gameObject.GetOrAddComponent<UiAnimationController>();
-            return animController;
-        }
-    }
-
     protected override void OnShow()
     {
         base.OnShow();

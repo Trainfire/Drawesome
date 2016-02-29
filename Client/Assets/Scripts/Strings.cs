@@ -22,4 +22,9 @@ public static class Strings
     public const string CountdownStart = "{0} has started the game";
     public const string CountdownCancel = "{0} has cancelled the countdown";
     public const string Winner = "Winner!";
+
+    public static class Popups
+    {
+        public const string ConnectionError = "There was a problem connecting to the server.";
+    }
 }

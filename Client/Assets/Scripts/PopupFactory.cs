@@ -1,15 +1,20 @@
 using UnityEngine;
-using System.Collections;
 using System;   
 
-public class PopupFactory : Singleton<PopupFactory>
+public class PopupFactory : MonoBehaviour
 {
     public UiPopup Popup;
 
     public Popup MakePopup(string message, Action onOkay = null)
     {
-        var instance = UiUtility.AddChild<UiPopup>(gameObject, Popup);
-        instance.transform.position = instance.transform.position + new Vector3(0, 0, 1f);
+        var instance = UiUtility.AddChild(gameObject, Popup);
+
+        var rect = (RectTransform)instance.transform;
+        rect.sizeDelta = Vector2.one;
+
+        // Bring to front
+        instance.transform.SetAsLastSibling();
+
         return new Popup(instance, message, onOkay);
     }
 }
