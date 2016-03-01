@@ -131,6 +131,8 @@ namespace Server
         /// </summary>
         void StartCountdown()
         {
+            RoomData.GameStarted = true;
+
             // Notify players
             Players.ForEach(x => x.NotifyRoomCountdownStart(5f));
 
@@ -179,13 +181,11 @@ namespace Server
                     {
                         case GameAction.Start:
                             Logger.Log(this, "{0} has started the game", Owner.Data.Name);
-                            RoomData.GameStarted = true;
                             StartCountdown();
                             break;
 
                         case GameAction.CancelStart:
                             Logger.Log(this, "{0} has cancelled the game from starting", Owner.Data.Name);
-                            RoomData.GameStarted = false;
                             CancelCountdown();
                             break;
 
@@ -197,6 +197,11 @@ namespace Server
                         case GameAction.StartNewRound:
                             Logger.Log(this, "{0} has started a new round", Owner.Data.Name);
                             Game.StartNewRound();
+                            break;
+
+                        case GameAction.ForceStart:
+                            if (player.IsAdmin)
+                                StartCountdown();
                             break;
 
                         default:

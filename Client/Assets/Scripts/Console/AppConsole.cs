@@ -28,6 +28,7 @@ public class AppConsole : MonoBehaviour, IClientHandler
 
         // Game
         Controller.RegisterCommand(new ConsoleCommand("start", StartGame, "(Starts the game if you're the room owner)"));
+        Controller.RegisterCommand(new ConsoleCommand("forcestart", ForceStartGame, "(Force starts the game if you're the room owner and have admin permissions)"));
         Controller.RegisterCommand(new ConsoleCommand("restart", RestartGame, "(Restarts the game if you're the room owner)"));
         Controller.RegisterCommand(new ConsoleCommand("startnewround", StartNewRound, "(Starts a new round of the game if you're the room owner)"));
         Controller.RegisterCommand(new ConsoleCommand("sendimage", SendImage));
@@ -158,6 +159,11 @@ public class AppConsole : MonoBehaviour, IClientHandler
     void StartGame(ConsoleCommand command, string[] args)
     {
         Client.Messenger.StartGame();
+    }
+
+    void ForceStartGame(ConsoleCommand command, string[] args)
+    {
+        Client.Messenger.ForceStartGame();
     }
 
     void RestartGame(ConsoleCommand command, string[] args)

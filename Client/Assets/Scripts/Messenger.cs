@@ -54,6 +54,11 @@ public class Messenger
         Connection.SendMessage(new ClientMessage.Game.SendAction(Connection.Player, GameAction.Start));
     }
 
+    public void ForceStartGame()
+    {
+        Connection.SendMessage(new ClientMessage.Game.SendAction(Connection.Player, GameAction.ForceStart));
+    }
+
     public void CancelGameStart()
     {
         Connection.SendMessage(new ClientMessage.Game.SendAction(Connection.Player, GameAction.CancelStart));

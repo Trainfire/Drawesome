@@ -58,6 +58,7 @@ namespace Protocol
         StartNewRound,
         FinishShowingResult,
         CancelStart,
+        ForceStart,
     }
 
     public enum GamePlayerAction
