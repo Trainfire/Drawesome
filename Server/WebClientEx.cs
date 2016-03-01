@@ -12,7 +12,7 @@ namespace Server
         protected override WebRequest GetWebRequest(Uri address)
         {
             var w = base.GetWebRequest(address);
-            w.Timeout = 5000;
+            w.Timeout = 10000;
             return w;
         }
     }
