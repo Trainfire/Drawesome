@@ -1,89 +1,8 @@
-using System;
-using System.IO;
 using System.Collections.Generic;
-using Newtonsoft.Json;
 using Protocol;
-using System.Net;
 
 namespace Server
 {
-    public class SettingsLoader
-    {
-        const string Server = "server";
-        const string Prompts = "prompts";
-        const string Drawesome = "drawesome";
-        const string Prefix = "settings";
-        string RootDirectory { get; set; }
-
-        public SettingsLoader()
-        {
-            RootDirectory = AppDomain.CurrentDomain.BaseDirectory;
-        }
-
-        public Settings Load()
-        {
-            var server = Load<ServerSettings>(Server);
-            var drawesome = LoadFromUrl<DrawesomeSettings>(server.DrawesomeSettingsUrl, Drawesome);
-            var prompts = LoadFromUrl<PromptSettings>(server.PromptsUrl, Prompts);
-
-            Console.WriteLine("Decoys: {0}", drawesome.Decoys.Count);
-            Console.WriteLine("Prompts: {0}", prompts.Items.Count);
-
-            return new Settings(server, drawesome, prompts);
-        }
-
-        T Load<T>(string fileName)
-        {
-            var path = Path.Combine(RootDirectory, GetFileName(fileName));
-
-            if (File.Exists(path))
-            {
-                var file = File.ReadAllText(path);
-                return JsonConvert.DeserializeObject<T>(file);
-            }
-            else
-            {
-                Console.WriteLine("Failed to find '{0}'. Making default...", fileName);
-                return MakeDefault<T>(fileName);
-            }
-        }
-
-        T LoadFromUrl<T>(string url, string fileName)
-        {
-            using (WebClientEx wc = new WebClientEx())
-            {
-                try
-                {
-                    var json = wc.DownloadString(url);
-                    return JsonConvert.DeserializeObject<T>(json);
-                }
-                catch
-                {
-                    return MakeDefault<T>(fileName);
-                }
-            }
-        }
-
-        void Save<T>(T data, string fileName)
-        {
-            var json = JsonConvert.SerializeObject(data, Formatting.Indented);
-            File.WriteAllText(RootDirectory + GetFileName(fileName), json);
-        }
-
-        T MakeDefault<T>(string fileName)
-        {
-            T data = Activator.CreateInstance<T>();
-            var json = JsonConvert.SerializeObject(data, Formatting.Indented);
-            File.WriteAllText(GetFileName(fileName), json);
-            return data;
-        }
-
-        string GetFileName(string fileName)
-        {
-            return Prefix + "." + fileName;
-        }
-    }
-
     public class Settings
     {
         public ServerSettings Server { get; private set; }

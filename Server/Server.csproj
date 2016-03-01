@@ -98,7 +98,8 @@
     <Compile Include="RoomManager.cs" />
     <Compile Include="Server.cs" />
     <Compile Include="CommandHandler.cs" />
-    <Compile Include="Settings.cs" />
+    <Compile Include="Settings\Settings.cs" />
+    <Compile Include="Settings\SettingsLoader.cs" />
     <Compile Include="StringFormatter.cs" />
     <Compile Include="WebClientEx.cs">
       <SubType>Component</SubType>

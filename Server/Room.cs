@@ -7,6 +7,9 @@ using Server.Game;
 
 namespace Server
 {
+    /// <summary>
+    /// Massive REALLY messy class that needs some love.
+    /// </summary>
     public class Room : IConnectionMessageHandler, ILogger
     {
         public event EventHandler<Room> OnEmpty;
@@ -20,7 +23,7 @@ namespace Server
         Player Owner { get; set; }
         DrawesomeGame Game { get; set; }
         IdPool RoomIdPool { get; set; }
-        Settings Settings { get; set; }
+        SettingsLoader Settings { get; set; }
         GameTimer CountdownTimer { get; set; }
 
         const int MaxPlayers = 8; // TODO: Place in Server settings
@@ -30,12 +33,13 @@ namespace Server
         /// </summary>
         const int GuidSize = 4;
 
-        public Room(ConnectionsHandler connections, Player owner, Settings settings, string password = "")
+        public Room(ConnectionsHandler connections, Player owner, SettingsLoader settings, string password = "")
         {
             ConnectionsHandler = connections;
             connections.AddMessageListener(this);
 
             Settings = settings;
+            Settings.OnSettingsChanged += OnSettingsChanged;
 
             Owner = owner;
 
@@ -46,7 +50,7 @@ namespace Server
             RoomData.Password = password;
             RoomData.Players = new List<PlayerData>();
             RoomData.Owner = Owner.Data;
-            RoomData.MinPlayers = settings.Server.MinPlayers;
+            RoomData.MinPlayers = settings.Values.Server.MinPlayers;
 
             Players = new List<Player>();
 
@@ -77,7 +81,7 @@ namespace Server
             }
 
             // Prevent join if room is full
-            if (Players.Count == Settings.Server.MaxPlayers)
+            if (Players.Count == Settings.Values.Server.MaxPlayers)
             {
                 Logger.Log(this, "Player {0} attempt to join the room {1} but that room is full", joiningPlayer.Data.Name, RoomData.ID);
                 joiningPlayer.SendRoomJoinNotice(RoomNotice.RoomFull);
@@ -140,7 +144,7 @@ namespace Server
             CountdownTimer = new GameTimer("Countdown", 5f, () =>
             {
                 Logger.Log(this, "{0} has started the game", Owner.Data.Name);
-                Game = new DrawesomeGame(ConnectionsHandler, Settings);
+                Game = new DrawesomeGame(ConnectionsHandler, Settings.Values);
                 Game.Start(Players);
                 Game.OnEnd += OnGameEnd;
             });
@@ -170,6 +174,8 @@ namespace Server
         }
 
         #endregion
+
+        #region Handlers
 
         void IConnectionMessageHandler.HandleMessage(Player player, string json)
         {
@@ -259,7 +265,7 @@ namespace Server
                     EchoActionToAll(Owner.Data, PlayerAction.PromotedToOwner);
                 }
 
-                if (Players.Count < Settings.Server.MinPlayers)
+                if (Players.Count < Settings.Values.Server.MinPlayers)
                     CancelCountdown();
 
                 SendUpdateToAll();
@@ -281,6 +287,14 @@ namespace Server
                     OnEmpty(this, this);
             }
         }
+
+        void OnSettingsChanged(object sender, EventArgs e)
+        {
+            RoomData.MinPlayers = Settings.Values.Server.MinPlayers;
+            SendUpdateToAll();
+        }
+
+        #endregion
 
         #region Messaging
 

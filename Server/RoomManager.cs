@@ -7,16 +7,16 @@ namespace Server
 {
     public class RoomManager : IConnectionMessageHandler, ILogger
     {
-        Settings Settings { get; set; }
+        SettingsLoader SettingsLoader { get; set; }
         List<Room> Rooms { get; set; }
         ConnectionsHandler ConnectionsHandler { get; set; }
 
         public string LogName { get { return "Room Manager"; } }
 
-        public RoomManager(ConnectionsHandler connectionHandler, Settings settings)
+        public RoomManager(ConnectionsHandler connectionHandler, SettingsLoader settings)
         {
             Rooms = new List<Room>();
-            Settings = settings;
+            SettingsLoader = settings;
             ConnectionsHandler = connectionHandler;
             ConnectionsHandler.AddMessageListener(this);
         }
@@ -67,7 +67,7 @@ namespace Server
 
             Message.IsType<ClientMessage.CreateRoom>(json, (data) =>
             {
-                if (Rooms.Count != Settings.Server.MaxRooms)
+                if (Rooms.Count != SettingsLoader.Values.Server.MaxRooms)
                 {
                     Logger.Log(this, "Create room for {0} with password {1}", player, data.Password);
 
@@ -75,7 +75,7 @@ namespace Server
                     if (playerCurrentRoom != null)
                         playerCurrentRoom.Leave(player.Data);
 
-                    var room = new Room(ConnectionsHandler, player, Settings, data.Password);
+                    var room = new Room(ConnectionsHandler, player, SettingsLoader, data.Password);
 
                     room.OnEmpty += OnRoomEmpty;
 

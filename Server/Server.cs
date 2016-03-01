@@ -6,20 +6,19 @@ namespace Server
 {
     public class Server : ILogger
     {
-        public event EventHandler<Settings> OnReloadSettings;
-
         ConnectionsHandler ConnectionsHandler { get; set; }
         WebSocketServer SocketServer { get; set; }
         RoomManager RoomManager { get; set; }
         CommandHandler CommandHandler { get; set; }
 
-        public Settings Settings { get; private set; }
-        public bool Active { get; private set; }
+        SettingsLoader SettingsLoader { get; set; }
+        bool Active { get; set; }
 
         string ILogger.LogName { get { return "Server"; } }
 
         public Server()
         {
+            SettingsLoader = new SettingsLoader();
             LoadSettings();
 
             CommandHandler = new CommandHandler();
@@ -33,9 +32,9 @@ namespace Server
 
             Active = true;
 
-            SocketServer = new WebSocketServer(Settings.Server.HostUrl);
-            ConnectionsHandler = new ConnectionsHandler(Settings);
-            RoomManager = new RoomManager(ConnectionsHandler, Settings);
+            SocketServer = new WebSocketServer(SettingsLoader.Values.Server.HostUrl);
+            ConnectionsHandler = new ConnectionsHandler(SettingsLoader);
+            RoomManager = new RoomManager(ConnectionsHandler, SettingsLoader);
 
             SocketServer.Start(socket =>
             {
@@ -59,15 +58,7 @@ namespace Server
         void LoadSettings()
         {
             Logger.Log(this, "Loading settings");
-            var settings = new SettingsLoader().Load();
-
-            if (settings != null)
-            {
-                Settings = settings;
-
-                if (OnReloadSettings != null)
-                    OnReloadSettings(this, settings);
-            }
+            SettingsLoader.Load();
         }
     }
 }

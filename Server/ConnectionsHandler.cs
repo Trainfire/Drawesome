@@ -20,13 +20,13 @@ namespace Server
 
         List<IConnectionMessageHandler> Handlers { get; set; }
         List<Player> ConnectedPlayers { get; set; }
-        Settings Settings { get; set; }
+        SettingsLoader SettingsLoader { get; set; }
 
         static readonly object _lock = new object();
 
-        public ConnectionsHandler(Settings settings)
+        public ConnectionsHandler(SettingsLoader settings)
         {
-            Settings = settings;
+            SettingsLoader = settings;
             Handlers = new List<IConnectionMessageHandler>();
         }
 
@@ -58,7 +58,7 @@ namespace Server
 
                 Message.IsType<ClientMessage.GiveName>(message, (data) =>
                 {
-                    if (data.Name.Length >= Settings.Server.NameMinChars && data.Name.Length <= Settings.Server.NameMaxChars)
+                    if (data.Name.Length >= SettingsLoader.Values.Server.NameMinChars && data.Name.Length <= SettingsLoader.Values.Server.NameMaxChars)
                     {
                         // Assign the requested name and send the final Server copy of the player data
                         player.Data.SetName(data.Name);
@@ -129,7 +129,7 @@ namespace Server
 
             if (player == null)
             {
-                player = new Player("N/A", socket, Settings);
+                player = new Player("N/A", socket, SettingsLoader.Values);
                 player.Data.ID = Guid.NewGuid().ToString();
 
                 ConnectedPlayers.Add(player);
