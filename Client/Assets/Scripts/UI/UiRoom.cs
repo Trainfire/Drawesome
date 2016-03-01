@@ -18,7 +18,7 @@ public class UiRoom : UiBase
     public override void Initialise(Client client)
     {
         base.Initialise(client);
-        Leave.onClick.AddListener(() => Client.Messenger.LeaveRoom());
+        Leave.onClick.AddListener(() => OnLeave());
         GamePrototype.gameObject.SetActive(false);
     }
 
@@ -65,5 +65,10 @@ public class UiRoom : UiBase
         RoomOwner.text = string.Format("Owner: {0}", roomData.Owner.Name);
         RoomPassword.text = string.Format("Password: {0}", roomData.Password);
         RoomPassword.enabled = !string.IsNullOrEmpty(roomData.Password);
+    }
+
+    void OnLeave()
+    {
+        Client.UserInterface.Popups.MakeConfirmationPopup(Strings.Popups.ConfirmLeave, () => Client.Messenger.LeaveRoom()).Show();
     }
 }

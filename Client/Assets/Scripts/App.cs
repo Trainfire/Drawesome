@@ -8,7 +8,7 @@ public class App : MonoBehaviour
 
     void Awake()
     {
-        Client.Initialise();
+        Client.Initialise(Interface);
 
         // Inject dependencies here
         Interface.Initialise(Client);

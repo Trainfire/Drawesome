@@ -33,8 +33,9 @@ public class UiBrowser : UiBase
         base.Initialise(client);
 
         Client.MessageHandler.OnRecieveRoomList += OnRecieveRoomList;
+        Client.MessageHandler.OnServerNotifyRoomJoin += OnServerNotifyRoomJoin;
 
-        Create.onClick.AddListener(() => Client.Messenger.CreateRoom());
+        Create.onClick.AddListener(() => OnCreate());
         Refresh.onClick.AddListener(() => OnRefresh());
         Join.onClick.AddListener(() => OnJoin());
     }
@@ -76,10 +77,52 @@ public class UiBrowser : UiBase
             browserItems[0].Toggle.isOn = true;
     }
 
+    void OnCreate()
+    {
+        Client.UserInterface.Popups.MakeInputPopup("Enter an optional password", (password) => Client.Messenger.CreateRoom(password)).Show();
+    }
+
     void OnJoin()
     {
         if (selectedRoom != null)
-            Client.Messenger.JoinRoom(selectedRoom.ID);
+        {
+            if (!string.IsNullOrEmpty(selectedRoom.Password))
+            {
+                Client.UserInterface.Popups.MakeInputPopup("Enter the password", (password) => Client.Messenger.JoinRoom(selectedRoom.ID, password)).Show();
+            }
+            else
+            {
+                Client.Messenger.JoinRoom(selectedRoom.ID);
+            }
+        }
+    }
+
+    void OnServerNotifyRoomJoin(ServerMessage.NotifyRoomJoin data)
+    {
+        string message = "";
+
+        switch (data.Notice)
+        {
+            case RoomNotice.None:
+                break;
+            case RoomNotice.InvalidPassword:
+                message = Strings.Popups.InvalidPassword;
+                break;
+            case RoomNotice.RoomFull:
+                message = Strings.Popups.RoomFull;
+                break;
+            case RoomNotice.RoomDoesNotExist:
+                message = Strings.Popups.RoomDoesNotExist;
+                break;
+            case RoomNotice.GameAlreadyStarted:
+                message = Strings.Popups.GameAlreadyStarted;
+                break;
+            default:
+                break;
+        }
+
+        if (!string.IsNullOrEmpty(message))
+            Client.UserInterface.Popups.MakeMessagePopup(message).Show();
     }
 
     void Update()

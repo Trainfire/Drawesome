@@ -20,9 +20,11 @@ public class Client : MonoBehaviour
     public MessageHandler MessageHandler { get; private set; }
     public Messenger Messenger { get; private set; }
     public Settings Settings { get; private set; }
+    public UserInterface UserInterface { get; private set; }
 
-    public void Initialise()
+    public void Initialise(UserInterface userInterface)
     {
+        UserInterface = userInterface;
         Connection = gameObject.AddComponent<Connection>();
         MessageHandler = new MessageHandler(Connection);
         Messenger = new Messenger(Connection);

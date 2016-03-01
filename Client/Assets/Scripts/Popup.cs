@@ -9,7 +9,7 @@ public abstract class Popup
     public Popup(UiPopupBase view)
     {
         View = view;
-        View.Hide();
+        View.gameObject.SetActive(false);
     }
 
     public void Show()
@@ -34,18 +34,38 @@ public class PopupMessage : Popup
     }
 }
 
+public class PopupConfirm : Popup
+{
+    public PopupConfirm(UiPopupConfirm view, string message, Action onConfirm = null) : base(view)
+    {
+        view.ButtonConfirm.onClick.AddListener(() =>
+        {
+            if (onConfirm != null)
+                onConfirm();
+
+            view.Hide();
+        });
+
+        view.ButtonCancel.onClick.AddListener(() => view.Hide());
+
+        view.Message.text = message;
+    }
+}
+
 public class PopupInput : Popup
 {
     public PopupInput(UiPopupInput view, string title, Action<string> onSubmit = null) : base(view)
     {
         view.Title.text = title;
 
-        view.Submit.onClick.AddListener(() =>
+        view.Okay.onClick.AddListener(() =>
         {
             if (onSubmit != null)
                 onSubmit(view.Input.text);
 
             view.Hide();
         });
+
+        view.Cancel.onClick.AddListener(() => view.Hide());
     }
 }

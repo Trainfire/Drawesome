@@ -9,7 +9,10 @@ public class UserInterface : MonoBehaviour, IClientHandler
     public UiBrowser ViewBrowser;
     public UiRoom ViewRoom;
     public UiChat ViewChat;
-    public PopupFactory PopupFactory;
+
+    [SerializeField]
+    PopupFactory popupFactory;
+    public PopupFactory Popups { get { return popupFactory; } }
 
     Client Client { get; set; }
 
@@ -57,7 +60,7 @@ public class UserInterface : MonoBehaviour, IClientHandler
 
     void OnConnectionClosed(object sender, EventArgs e)
     {
-        PopupFactory.MakeMessagePopup(Strings.Popups.ConnectionError, () => ChangeMenu(ViewLogin)).Show();
+        Popups.MakeMessagePopup(Strings.Popups.ConnectionError, () => ChangeMenu(ViewLogin)).Show();
     }
 
     void ChangeMenu(UiBase viewNext)

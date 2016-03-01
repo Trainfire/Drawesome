@@ -4562,7 +4562,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 134274, guid: 6dfcf72bb64951b498e4cb4807ce0270, type: 2}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 11468860, guid: 6dfcf72bb64951b498e4cb4807ce0270, type: 2}
@@ -5565,7 +5565,7 @@ MonoBehaviour:
   ViewBrowser: {fileID: 967815270}
   ViewRoom: {fileID: 1676279054}
   ViewChat: {fileID: 1440245134}
-  PopupFactory: {fileID: 552071424}
+  popupFactory: {fileID: 552071424}
 --- !u!114 &552071424
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5579,6 +5579,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   PopupMessage: {fileID: 11451090, guid: 1998676badd98264897383967002df15, type: 2}
   PopupInput: {fileID: 11484212, guid: a66c0d679f1169347917d6222d1d6cf8, type: 2}
+  PopupConfirm: {fileID: 11477994, guid: 8d115daa7b36cea48b3151f070e23a75, type: 2}
 --- !u!1 &553177669
 GameObject:
   m_ObjectHideFlags: 0
@@ -9398,7 +9399,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1011439893
 RectTransform:
   m_ObjectHideFlags: 0
@@ -9411,10 +9412,10 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 199456522}
   m_RootOrder: 1
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 533.5605, y: -25.5}
+  m_SizeDelta: {x: 1067.121, y: 1}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1011439894
 MonoBehaviour:

@@ -26,5 +26,10 @@ public static class Strings
     public static class Popups
     {
         public const string ConnectionError = "There was a problem connecting to the server.";
+        public const string InvalidPassword = "The password you entered was invalid";
+        public const string RoomFull = "The room you joined is full";
+        public const string RoomDoesNotExist = "The room you joined no longer exists";
+        public const string GameAlreadyStarted = "The room's game has already started";
+        public const string ConfirmLeave = "Are you sure you want to leave?";
     }
 }

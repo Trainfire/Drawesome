@@ -5,5 +5,6 @@ public class UiPopupInput : UiPopupBase
 {
     public Text Title;
     public InputField Input;
-    public Button Submit;
+    public Button Cancel;
+    public Button Okay;
 }

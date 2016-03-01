@@ -5,6 +5,7 @@ public class PopupFactory : MonoBehaviour
 {
     public UiPopupMessage PopupMessage;
     public UiPopupInput PopupInput;
+    public UiPopupConfirm PopupConfirm;
 
     T MakePopup<T>(T prototype) where T : UiPopupBase
     {
@@ -27,5 +28,10 @@ public class PopupFactory : MonoBehaviour
     public Popup MakeInputPopup(string title, Action<string> onSubmit = null)
     {
         return new PopupInput(MakePopup(PopupInput), title, onSubmit);
+    }
+
+    public Popup MakeConfirmationPopup(string title, Action onConfirm = null)
+    {
+        return new PopupConfirm(MakePopup(PopupConfirm), title, onConfirm);
     }
 }
