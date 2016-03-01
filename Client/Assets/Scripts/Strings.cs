@@ -30,6 +30,7 @@ public static class Strings
         public const string RoomFull = "The room you joined is full";
         public const string RoomDoesNotExist = "The room you joined no longer exists";
         public const string GameAlreadyStarted = "The room's game has already started";
+        public const string RoomLimitReached = "The maximum number of rooms has been reached";
         public const string ConfirmLeave = "Are you sure you want to leave?";
     }
 }

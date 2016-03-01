@@ -117,6 +117,9 @@ public class UiBrowser : UiBase
             case RoomNotice.GameAlreadyStarted:
                 message = Strings.Popups.GameAlreadyStarted;
                 break;
+            case RoomNotice.MaxRoomsLimitReached:
+                message = Strings.Popups.RoomLimitReached;
+                break;
             default:
                 break;
         }
