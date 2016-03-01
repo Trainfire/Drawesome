@@ -111,7 +111,8 @@ namespace Server
         public string PromptsUrl = "";
         public string DrawesomeSettingsUrl = "";
         public string AdminPassword = "doubleButts.exe"; // TODO: Generate this everytime the server runs?
-        public int MaxPlayers = 1;
+        public int MaxPlayers = 8;
+        public int MaxRooms = 1;
         public int NameMinChars = 3;
         public int NameMaxChars = 24;
     }

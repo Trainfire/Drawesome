@@ -42,6 +42,7 @@ namespace Protocol
         RoomDoesNotExist,
         AlreadyInRoom,
         GameAlreadyStarted,
+        MaxRoomsLimitReached
     }
 
     public enum RoomLeaveReason

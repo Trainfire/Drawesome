@@ -67,17 +67,25 @@ namespace Server
 
             Message.IsType<ClientMessage.CreateRoom>(json, (data) =>
             {
-                Logger.Log(this, "Create room for {0} with password {1}", player, data.Password);
+                if (Rooms.Count != Settings.Server.MaxRooms)
+                {
+                    Logger.Log(this, "Create room for {0} with password {1}", player, data.Password);
 
-                var playerCurrentRoom = FindRoomContainingPlayer(player.Data);
-                if (playerCurrentRoom != null)
-                    playerCurrentRoom.Leave(player.Data);
+                    var playerCurrentRoom = FindRoomContainingPlayer(player.Data);
+                    if (playerCurrentRoom != null)
+                        playerCurrentRoom.Leave(player.Data);
 
-                var room = new Room(ConnectionsHandler, player, Settings, data.Password);
+                    var room = new Room(ConnectionsHandler, player, Settings, data.Password);
 
-                room.OnEmpty += OnRoomEmpty;
+                    room.OnEmpty += OnRoomEmpty;
 
-                Rooms.Add(room);
+                    Rooms.Add(room);
+                }
+                else
+                {
+                    Logger.Log(this, "Cannot create room for {0} as the maximum room limit has been reached", player);
+                    player.SendRoomJoinNotice(RoomNotice.MaxRoomsLimitReached);
+                }
             });
         }
 
