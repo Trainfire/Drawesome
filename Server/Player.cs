@@ -70,7 +70,7 @@ namespace Server
 
             Message.IsType<ClientMessage.RequestAdmin>(json, (data) =>
             {
-                if (data.Password == Settings.Server.AdminPassword)
+                if (data.Password == Settings.Config.AdminPassword)
                 {
                     Logger.Log("Admin granted to {0}", Data.Name);
                     IsAdmin = true;

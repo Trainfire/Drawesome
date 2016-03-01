@@ -5,31 +5,42 @@ namespace Server
 {
     public class Settings
     {
+        public ConfigSettings Config { get; private set; }
         public ServerSettings Server { get; private set; }
         public DrawesomeSettings Drawesome { get; private set; }
         public PromptSettings Prompts { get; private set; }
 
         public Settings()
         {
+            Config = new ConfigSettings();
             Server = new ServerSettings();
             Drawesome = new DrawesomeSettings();
             Prompts = new PromptSettings();
         }
 
-        public Settings(ServerSettings server, DrawesomeSettings drawesome, PromptSettings prompts)
+        public Settings(ConfigSettings config, ServerSettings server, DrawesomeSettings drawesome, PromptSettings prompts)
         {
+            Config = config;
             Server = server;
             Drawesome = drawesome;
             Prompts = prompts;
         }
     }
 
+    /// <summary>
+    /// Settings file that must be hosted alongside the server.
+    /// </summary>
+    public class ConfigSettings
+    {
+        public string AdminPassword = "1111";
+        public string ServerSettingsUrl = "http://drawesome.trainfire.net/server.settings";
+        public string PromptsUrl = "http://drawesome.trainfire.net/prompts.settings";
+        public string DrawesomeSettingsUrl = "http://drawesome.trainfire.net/drawesome.settings";
+    }
+
     public class ServerSettings
     {
         public string HostUrl = "ws://0.0.0.0:8080";
-        public string PromptsUrl = "";
-        public string DrawesomeSettingsUrl = "";
-        public string AdminPassword = "doubleButts.exe"; // TODO: Generate this everytime the server runs?
         public int MinPlayers = 3;
         public int MaxPlayers = 8;
         public int MaxRooms = 1;

@@ -10,10 +10,11 @@ namespace Server
 
         public Settings Values { get; private set; }
 
+        const string Config = "config";
         const string Server = "server";
         const string Prompts = "prompts";
         const string Drawesome = "drawesome";
-        const string Prefix = "settings";
+        const string Suffix = "settings";
 
         string RootDirectory { get; set; }
 
@@ -26,9 +27,10 @@ namespace Server
 
         public void Load()
         {
-            var server = Load<ServerSettings>(Server);
-            var drawesome = LoadFromUrl<DrawesomeSettings>(server.DrawesomeSettingsUrl, Drawesome);
-            var prompts = LoadFromUrl<PromptSettings>(server.PromptsUrl, Prompts);
+            var config = Load<ConfigSettings>(Config);
+            var server = LoadFromUrl<ServerSettings>(config.ServerSettingsUrl, Server);
+            var drawesome = LoadFromUrl<DrawesomeSettings>(config.DrawesomeSettingsUrl, Drawesome);
+            var prompts = LoadFromUrl<PromptSettings>(config.PromptsUrl, Prompts);
 
             Logger.Log(this, "Decoys: {0}", drawesome.Decoys.Count);
             Logger.Log(this, "Prompts: {0}", prompts.Items.Count);
@@ -36,7 +38,7 @@ namespace Server
             Logger.Log(this, "Max Players: {0}", server.MaxPlayers);
             Logger.Log(this, "Max Rooms: {0}", server.MaxRooms);
 
-            Values = new Settings(server, drawesome, prompts);
+            Values = new Settings(config, server, drawesome, prompts);
 
             if (OnSettingsChanged != null)
                 OnSettingsChanged(this, null);
@@ -58,18 +60,20 @@ namespace Server
             }
         }
 
-        T LoadFromUrl<T>(string url, string fileName)
+        T LoadFromUrl<T>(string url, string defaultFileName)
         {
             using (WebClientEx wc = new WebClientEx())
             {
                 try
                 {
                     var json = wc.DownloadString(url);
+                    Logger.Log("Loading '{0}' from URL '{1}'...", GetFileName(defaultFileName), url);
                     return JsonConvert.DeserializeObject<T>(json);
                 }
                 catch
                 {
-                    return MakeDefault<T>(fileName);
+                    Logger.Warn(this, "Failed to load '{0}' from URL '{1}'", GetFileName(defaultFileName), url);
+                    return MakeDefault<T>(defaultFileName);
                 }
             }
         }
@@ -90,7 +94,7 @@ namespace Server
 
         string GetFileName(string fileName)
         {
-            return Prefix + "." + fileName;
+            return fileName + "." + Suffix;
         }
     }
 }
