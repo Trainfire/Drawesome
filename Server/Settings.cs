@@ -118,32 +118,39 @@ namespace Server
 
     public class DrawesomeSettings
     {
-        public float RoundBeginTime = 5f;
+        public float RoundBeginTime = 0f;
         public float DrawTime = 60f;
         public float AnsweringTime = 30f;
         public float ChoosingTime = 30f;
-        public float ResultTimeBetween = 10f;
+        public float ResultTimeBetween = 15f;
         public float ScoresHoldTime = 12f;
 
-        public uint PointsForFakeAnswer = 100;
-        public uint PointsForCorrectAnswer = 200;
+        public uint PointsForFakeAnswer = 500;
+        public uint PointsForCorrectAnswer = 1000;
         public uint PointsToDrawerForCorrectAnswer = 1000;
 
         public float TimeToShowResult = 8f;
         public float TimeToShowFinalResult = 10f;
 
-        public List<string> Decoys = new List<string>();
+        public List<string> Decoys = new List<string>()
+        {
+            "hammer & sickle",
+            "i give up",
+            "you are here",
+            "what",
+            "memes",
+        };
 
         public TransitionData Transitions = new TransitionData();
 
         public class TransitionData
         {
-            public float RoundBeginToDrawing;
-            public float DrawingToAnswering;
-            public float AnsweringToChoosing;
-            public float ChoosingtoResults;
-            public float ResultsToScores;
-            public float ScoresToAnswering;
+            public float RoundBeginToDrawing = 1f;
+            public float DrawingToAnswering = 4f;
+            public float AnsweringToChoosing = 4f;
+            public float ChoosingtoResults = 0f;
+            public float ResultsToScores = 0f;
+            public float ScoresToAnswering = 1f;
         }
     }
 
