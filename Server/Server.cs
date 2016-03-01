@@ -6,6 +6,8 @@ namespace Server
 {
     public class Server : ILogger
     {
+        public event EventHandler<Settings> OnReloadSettings;
+
         ConnectionsHandler ConnectionsHandler { get; set; }
         WebSocketServer SocketServer { get; set; }
         RoomManager RoomManager { get; set; }
@@ -60,7 +62,12 @@ namespace Server
             var settings = new SettingsLoader().Load();
 
             if (settings != null)
+            {
                 Settings = settings;
+
+                if (OnReloadSettings != null)
+                    OnReloadSettings(this, settings);
+            }
         }
     }
 }

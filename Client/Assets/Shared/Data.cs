@@ -43,6 +43,7 @@ namespace Protocol
         public PlayerData Owner;
         public List<PlayerData> Players;
         public bool GameStarted;
+        public int MinPlayers;
 
         public RoomData()
         {
@@ -51,6 +52,16 @@ namespace Protocol
             Owner = new PlayerData();
             Players = new List<PlayerData>();
             GameStarted = false;
+        }
+
+        public bool HasMinimumPlayers()
+        {
+            return Players.Count >= MinPlayers;
+        }
+
+        public int PlayersNeeded()
+        {
+            return MinPlayers - Players.Count;
         }
     }
 

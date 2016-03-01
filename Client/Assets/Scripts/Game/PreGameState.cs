@@ -31,11 +31,19 @@ public class PreGameState : State, Game.IGameState
     {
         var view = GetView<UiGameStatePreGame>();
 
-        // Show info box "Waiting for Room Owner" if player is NOT the room owner
-        view.InfoLabel.text = Client.Connection.IsRoomOwner() ? Strings.StartGame : string.Format(Strings.WaitingForRoomOwner, Client.Connection.Room.Owner.Name);
+        if (!Client.Connection.Room.HasMinimumPlayers())
+        {
+            // Show players required to start game
+            view.InfoLabel.text = string.Format(Strings.WaitingForPlayers, Client.Connection.Room.PlayersNeeded());
+        }
+        else
+        {
+            // Show info box "Waiting for Room Owner" if player is NOT the room owner
+            view.InfoLabel.text = Client.Connection.IsRoomOwner() ? Strings.StartGame : string.Format(Strings.WaitingForRoomOwner, Client.Connection.Room.Owner.Name);
+        }
 
-        // Show Start button if room owner
-        view.Start.gameObject.SetActive(Client.Connection.IsRoomOwner() && !Client.Connection.Room.GameStarted);
+        // Show Start button if room owner and min players reached
+        view.Start.gameObject.SetActive(Client.Connection.IsRoomOwner() && !Client.Connection.Room.GameStarted && Client.Connection.Room.HasMinimumPlayers());
 
         // Enable info box if game hasn't started, disable it if it has
         view.InfoBox.SetActive(!Client.Connection.Room.GameStarted);

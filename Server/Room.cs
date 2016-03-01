@@ -46,6 +46,7 @@ namespace Server
             RoomData.Password = password;
             RoomData.Players = new List<PlayerData>();
             RoomData.Owner = Owner.Data;
+            RoomData.MinPlayers = settings.Server.MinPlayers;
 
             Players = new List<Player>();
 
@@ -155,6 +156,8 @@ namespace Server
         /// </summary>
         void CancelCountdown()
         {
+            RoomData.GameStarted = false;
+
             // Notify players
             Players.ForEach(x => x.NotifyRoomCountdownCancel());
 
@@ -249,8 +252,12 @@ namespace Server
                     Owner = Players[0];
                     RoomData.Owner = Owner.Data;
                     EchoActionToAll(Owner.Data, PlayerAction.PromotedToOwner);
-                    SendUpdateToAll();
                 }
+
+                if (Players.Count < Settings.Server.MinPlayers)
+                    CancelCountdown();
+
+                SendUpdateToAll();
             }
             else
             {
