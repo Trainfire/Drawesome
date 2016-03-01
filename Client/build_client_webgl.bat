@@ -1,0 +1,1 @@
+"F:\Program Files\Unity\Editor\Unity.exe" -quit -batchmode -executeMethod WebGLBuilder.build
