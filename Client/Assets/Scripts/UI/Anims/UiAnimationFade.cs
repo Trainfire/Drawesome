@@ -17,7 +17,6 @@ public class UiAnimationFade : UiAnimationComponent
     public UiAnimationFade(GameObject gameobject, float duration, FadeType fadeType) : base(gameobject)
     {
         Canvas = gameobject.GetOrAddComponent<CanvasGroup>();
-        Canvas.alpha = 0f;
         Duration = duration;
         Fade = fadeType;
     }
