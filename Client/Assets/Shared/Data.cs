@@ -7,6 +7,7 @@ namespace Protocol
     [Serializable]
     public class PlayerData
     {
+        public uint ProtocolVersion;
         public uint RoomId;
         public string ID;
         public string Name;

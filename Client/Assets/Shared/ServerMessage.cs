@@ -36,9 +36,9 @@ namespace Protocol
             }
         }
 
-        public class RequestClientName : Message
+        public class RequestClientInfo : Message
         {
-            public RequestClientName()
+            public RequestClientInfo()
             {
 
             }

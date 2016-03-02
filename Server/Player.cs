@@ -118,9 +118,9 @@ namespace Server
             Socket.Send(message.AsJson());
         }
 
-        public void RequestClientName()
+        public void RequestClientInfo()
         {
-            var message = new ServerMessage.RequestClientName();
+            var message = new ServerMessage.RequestClientInfo();
             Socket.Send(message.AsJson());
         }
 

@@ -32,6 +32,7 @@ namespace Protocol
         None,
         InvalidNameLength,
         MatchesExistingName,
+        ProtocolMismatch,
     }
 
     public enum RoomNotice

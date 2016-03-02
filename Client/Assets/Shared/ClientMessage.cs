@@ -15,13 +15,15 @@ namespace Protocol
             }
         }
 
-        public class GiveName : Message
+        public class GiveClientInfo : Message
         {
             public string Name;
+            public uint ProtocolVersion;
 
-            public GiveName(string name)
+            public GiveClientInfo(string name, uint protocolVersion)
             {
                 Name = name;
+                ProtocolVersion = protocolVersion;
             }
         }
 

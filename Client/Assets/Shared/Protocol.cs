@@ -3,6 +3,11 @@ using System.Collections.Generic;
 
 namespace Protocol
 {
+    public class ProtocolInfo
+    {
+        public const uint Version = 1;
+    }
+
     public class Log : Message
     {
         public string Message;

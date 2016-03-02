@@ -48,7 +48,7 @@ namespace Server
 
             // Respond to a join request by assigning a unique ID to the connection and sending it back to the client
             var player = AddPlayer(socket);
-            player.RequestClientName();
+            player.RequestClientInfo();
 
             // Wait for player reponse with their name
             player.Socket.OnBinary += (binary) =>
@@ -56,40 +56,62 @@ namespace Server
                 // Messages are sent as binary from Unity (the WebGL wrapper only sends binary for some reason)
                 var message = Encoding.UTF8.GetString(binary);
 
-                Message.IsType<ClientMessage.GiveName>(message, (data) =>
+                Message.IsType<ClientMessage.GiveClientInfo>(message, (data) =>
                 {
-                    if (data.Name.Length >= SettingsLoader.Values.Server.NameMinChars && data.Name.Length <= SettingsLoader.Values.Server.NameMaxChars)
+                    if (data.ProtocolVersion != ProtocolInfo.Version)
                     {
-                        // Assign the requested name and send the final Server copy of the player data
-                        player.Data.SetName(data.Name);
-
-                        Logger.Log(this, "Player {0} connected.", player.Data.Name);
-
-                        // Inform the player that the connection was successful
-                        player.NotifyConnectionSuccess();
-
-                        // Send the player the latest version of their server-side data (they need to know their GUID)
-                        player.UpdatePlayerInfo(player.Data);
-
-                        // Send the latest player state to all clients.
-                        SendUpdateToAllClients();
-
-                        // Send Player Joined message.
-                        NotifyPlayerEvent(player, PlayerAction.Connected);
-
-                        // Trigger event.
-                        if (PlayerConnected != null)
-                            PlayerConnected(this, player);
-
-                        // Assign callback
-                        player.OnMessage += OnPlayerMessage;
+                        // Notify protocol mismatch. Client and Server must match!
+                        player.SendConnectionError(ConnectionError.ProtocolMismatch);
+                        return;
                     }
-                    else
+
+                    // Check if name is within character range
+                    bool nameWithinCharLimit = data.Name.Length >= SettingsLoader.Values.Server.NameMinChars && data.Name.Length <= SettingsLoader.Values.Server.NameMaxChars;
+
+                    // Check if an existing connection already has that name
+                    bool nameisUnique = !ConnectedPlayers.Any(x => x.Data.Name.ToLower() == data.Name.ToLower());
+
+                    if (nameWithinCharLimit && nameisUnique)
+                    {
+                        OnConnectionSuccessful(player, data);
+                    }
+                    else if (!nameWithinCharLimit)
                     {
                         player.SendConnectionError(ConnectionError.InvalidNameLength);
                     }
+                    else
+                    {
+                        player.SendConnectionError(ConnectionError.MatchesExistingName);
+                    }
                 });
             };
+        }
+
+        void OnConnectionSuccessful(Player player, ClientMessage.GiveClientInfo data)
+        {
+            // Assign the requested name and send the final Server copy of the player data
+            player.Data.SetName(data.Name);
+
+            Logger.Log(this, "Player {0} connected.", player.Data.Name);
+
+            // Inform the player that the connection was successful
+            player.NotifyConnectionSuccess();
+
+            // Send the player the latest version of their server-side data (they need to know their GUID)
+            player.UpdatePlayerInfo(player.Data);
+
+            // Send the latest player state to all clients.
+            SendUpdateToAllClients();
+
+            // Send Player Joined message.
+            NotifyPlayerEvent(player, PlayerAction.Connected);
+
+            // Trigger event.
+            if (PlayerConnected != null)
+                PlayerConnected(this, player);
+
+            // Assign callback
+            player.OnMessage += OnPlayerMessage;
         }
 
         /// <summary>

@@ -84,9 +84,9 @@ public class Connection : MonoBehaviour
 
     void OnMessage(string json)
     {
-        Message.IsType<ServerMessage.RequestClientName>(json, (data) =>
+        Message.IsType<ServerMessage.RequestClientInfo>(json, (data) =>
         {
-            SendMessage(new ClientMessage.GiveName(PlayerName));
+            SendMessage(new ClientMessage.GiveClientInfo(PlayerName, ProtocolInfo.Version));
         });
 
         Message.IsType<ServerMessage.UpdatePlayerInfo>(json, (data) =>

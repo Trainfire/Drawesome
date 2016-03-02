@@ -12,10 +12,13 @@ public class UiInfoBox : UiBase
         switch(error)
         {
             case ConnectionError.InvalidNameLength:
-                Label.text = Strings.NameCharacterLimit;
+                Label.text = Strings.Login.NameCharacterLimit;
                 break;
             case ConnectionError.MatchesExistingName:
-                Label.text = Strings.NameMatchesExisting;
+                Label.text = Strings.Login.NameMatchesExisting;
+                break;
+            case ConnectionError.ProtocolMismatch:
+                Label.text = Strings.Login.ProtocolMismatch;
                 break;
         }
     }

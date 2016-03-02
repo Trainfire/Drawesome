@@ -11,8 +11,6 @@ public static class Strings
     public const string WaitingForPlayers = "Waiting for {0} more players...";
     public const string WaitingForRoomOwner = "Waiting for room owner: {0}...";
     public const string StartGame = "You're the room owner. Click Start to begin";
-    public const string NameCharacterLimit = "Name invalid. Character limit is 3 - 24 characters";
-    public const string NameMatchesExisting = "Someone already has that name";
     public const string DrawingSubmitted = "Drawing submitted! Waiting for other players...";
     public const string TimesUp = "time's up!";
     public const string AllPlayersDone = "everyone's finished";
@@ -23,6 +21,13 @@ public static class Strings
     public const string CountdownStart = "{0} has started the game";
     public const string CountdownCancel = "{0} has cancelled the countdown";
     public const string Winner = "winner!";
+
+    public static class Login
+    {
+        public const string NameCharacterLimit = "Name invalid. Character limit is 3 - 24 characters";
+        public const string NameMatchesExisting = "Someone already has that name";
+        public const string ProtocolMismatch = "Client out-of-date.\nTry a hard refresh (CTRL + F5).";
+    }
 
     public static class Popups
     {
