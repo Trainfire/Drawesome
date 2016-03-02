@@ -6,8 +6,6 @@ using System.Collections.Generic;
 
 public class UiGameStateScores : UiBase
 {
-    public UiAnimationController AnimController;
-
     public GameObject Title;
     public GameObject Divider;
     public UiResultRow RowPrototype;
@@ -21,6 +19,7 @@ public class UiGameStateScores : UiBase
     public float TimeShowScores;
     public float TimeBetweenShowPointsAndUpdateList;
     public float TimeBeforeRearrangeList;
+    public float TimeBeforeLikes;
 
     Dictionary<PlayerData, UiResultRow> Views = new Dictionary<PlayerData, UiResultRow>();
 
@@ -102,7 +101,7 @@ public class UiGameStateScores : UiBase
         });
 
         // Show likes
-        AnimController.AddDelay(2f);
+        AnimController.AddDelay(TimeBeforeLikes);
 
         foreach (var score in newScores)
         {

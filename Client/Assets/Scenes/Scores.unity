@@ -478,7 +478,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 124eb48c296ce594d8d5307328d14c38, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  RearrangeTime: 0.5
+  RearrangeTime: 1
   RearrangeCurve:
     serializedVersion: 2
     m_Curve:
@@ -703,7 +703,6 @@ Prefab:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: e207ff85dbfb4604482d682ac164bb4f, type: 2}
-  m_RootGameObject: {fileID: 1921326243}
   m_IsPrefabParent: 0
 --- !u!1 &557341081
 GameObject:
@@ -2540,7 +2539,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 89f2a8626d037b543bcd2a10d619db4e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  AnimController: {fileID: 1209263996}
   Title: {fileID: 429782188}
   Divider: {fileID: 1921326243}
   RowPrototype: {fileID: 1064505664}
@@ -2550,113 +2548,19 @@ MonoBehaviour:
   TimeBetweenTitleAndDivider: 0.1
   TimeRevealDivider: 0
   TimeBeforeShowScores: 1
-  TimeShowScores: 1
+  TimeShowScores: 2
   TimeBetweenShowPointsAndUpdateList: 2
   TimeBeforeRearrangeList: 2
---- !u!1 &1921326243
+  TimeBeforeLikes: 4
+--- !u!1 &1921326243 stripped
 GameObject:
-  m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 170070, guid: e207ff85dbfb4604482d682ac164bb4f, type: 2}
   m_PrefabInternal: {fileID: 476508449}
-  serializedVersion: 4
-  m_Component:
-  - 224: {fileID: 1921326244}
-  - 114: {fileID: 1921326248}
-  - 222: {fileID: 1921326247}
-  - 114: {fileID: 1921326246}
-  - 114: {fileID: 1921326245}
-  m_Layer: 0
-  m_Name: Divider
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!224 &1921326244
+--- !u!224 &1921326244 stripped
 RectTransform:
-  m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 22472462, guid: e207ff85dbfb4604482d682ac164bb4f,
     type: 2}
   m_PrefabInternal: {fileID: 476508449}
-  m_GameObject: {fileID: 1921326243}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 1044446273}
-  m_RootOrder: 1
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
-  m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &1921326245
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 11453530, guid: e207ff85dbfb4604482d682ac164bb4f,
-    type: 2}
-  m_PrefabInternal: {fileID: 476508449}
-  m_GameObject: {fileID: 1921326243}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b7edda2aa896f3b458030065738da6da, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  ElementData: {fileID: 11400000, guid: 6ae467fc4afdb004a9b390f46ba4efba, type: 2}
---- !u!114 &1921326246
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 11468216, guid: e207ff85dbfb4604482d682ac164bb4f,
-    type: 2}
-  m_PrefabInternal: {fileID: 476508449}
-  m_GameObject: {fileID: 1921326243}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: -765806418, guid: f5f67c52d1564df4a8936ccd202a3bd8, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_Material: {fileID: 0}
-  m_Color: {r: 0.8313726, g: 0.8313726, b: 0.8313726, a: 1}
-  m_RaycastTarget: 1
-  m_OnCullStateChanged:
-    m_PersistentCalls:
-      m_Calls: []
-    m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
-      Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
-  m_Sprite: {fileID: 0}
-  m_Type: 0
-  m_PreserveAspect: 0
-  m_FillCenter: 1
-  m_FillMethod: 4
-  m_FillAmount: 1
-  m_FillClockwise: 1
-  m_FillOrigin: 0
---- !u!222 &1921326247
-CanvasRenderer:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 22276504, guid: e207ff85dbfb4604482d682ac164bb4f,
-    type: 2}
-  m_PrefabInternal: {fileID: 476508449}
-  m_GameObject: {fileID: 1921326243}
---- !u!114 &1921326248
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 11466342, guid: e207ff85dbfb4604482d682ac164bb4f,
-    type: 2}
-  m_PrefabInternal: {fileID: 476508449}
-  m_GameObject: {fileID: 1921326243}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 1679637790, guid: f5f67c52d1564df4a8936ccd202a3bd8, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_IgnoreLayout: 0
-  m_MinWidth: -1
-  m_MinHeight: -1
-  m_PreferredWidth: -1
-  m_PreferredHeight: 1
-  m_FlexibleWidth: 1
-  m_FlexibleHeight: -1
 --- !u!1 &1938368064
 GameObject:
   m_ObjectHideFlags: 0

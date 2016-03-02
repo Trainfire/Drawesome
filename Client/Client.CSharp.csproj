@@ -79,7 +79,6 @@
     <Compile Include="Assets\Console\ConsoleLogView.cs" />
     <Compile Include="Assets\Console\ConsoleView.cs" />
     <Compile Include="Assets\Scripts\App.cs" />
-    <Compile Include="Assets\Scripts\Audio.cs" />
     <Compile Include="Assets\Scripts\Base.cs" />
     <Compile Include="Assets\Scripts\Client.cs" />
     <Compile Include="Assets\Scripts\Connection.cs" />
@@ -185,9 +184,7 @@
     <Compile Include="Assets\Shared\ProtocolHelper.cs" />
     <Compile Include="Assets\Shared\ServerMessage.cs" />
     <Compile Include="Assets\Shared\StringFormatter.cs" />
-    <Compile Include="Assets\TestCanvas.cs" />
     <Compile Include="Assets\TestJson.cs" />
-    <Compile Include="Assets\TestTimer.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\Art\Fonts\LICENSE.txt" />
