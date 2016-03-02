@@ -40,6 +40,12 @@ public class UiBrowser : UiBase
         Join.onClick.AddListener(() => OnJoin());
     }
 
+    protected override void OnShow()
+    {
+        // Auto-refresh on show
+        Client.Messenger.RequestRooms();
+    }
+
     void OnRecieveRoomList(ServerMessage.RoomList message)
     {
         browserItems.ForEach(x => Destroy(x.gameObject));
