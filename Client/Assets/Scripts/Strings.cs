@@ -14,15 +14,15 @@ public static class Strings
     public const string NameCharacterLimit = "Name invalid. Character limit is 3 - 24 characters";
     public const string NameMatchesExisting = "Someone already has that name";
     public const string DrawingSubmitted = "Drawing submitted! Waiting for other players...";
-    public const string TimesUp = "Time's up!";
-    public const string AllPlayersDone = "Everyone's finished";
-    public const string StateEndDrawing = "Let's see what you've drawn...";
-    public const string StateEndAnswering = "The answers are in";
-    public const string StateEndChoosing = "What did everybody pick?";
+    public const string TimesUp = "time's up!";
+    public const string AllPlayersDone = "everyone's finished";
+    public const string StateEndDrawing = "let's see what you've drawn...";
+    public const string StateEndAnswering = "the answers are in";
+    public const string StateEndChoosing = "what did everybody pick?";
     public const string Cancel = "Cancel";
     public const string CountdownStart = "{0} has started the game";
     public const string CountdownCancel = "{0} has cancelled the countdown";
-    public const string Winner = "Winner!";
+    public const string Winner = "winner!";
 
     public static class Popups
     {
