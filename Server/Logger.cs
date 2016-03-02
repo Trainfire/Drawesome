@@ -41,9 +41,7 @@ namespace Server
             var path = AppDomain.CurrentDomain.BaseDirectory + "log";
 
             if (!File.Exists(path))
-            {
-                var newFile = File.CreateText(path);
-            }
+                File.CreateText(path).Close();
 
             _readWriteLock.EnterWriteLock();
             try
