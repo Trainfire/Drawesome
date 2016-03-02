@@ -9,6 +9,18 @@ public class Timer : MonoBehaviour, Game.IGameStateHandler, Game.IGameMessageHan
 
     float Duration { get; set; }
     float CurrentTime { get; set; }
+
+    UiAnimationController animController;
+    UiAnimationController AnimController
+    {
+        get
+        {
+            if (animController == null)
+                animController = gameObject.GetOrAddComponent<UiAnimationController>();
+            return animController;
+        }
+    }
+
     bool shouldLerp = false;
 
     void Awake()
@@ -43,10 +55,14 @@ public class Timer : MonoBehaviour, Game.IGameStateHandler, Game.IGameMessageHan
 
         if (currentTime < 11f)
         {
-            var anim = View.gameObject.GetOrAddComponent<UiAnimationController>();
-            anim.AddAnim(new UiAnimationScale(View.gameObject, Vector3.one, Vector3.one * 1.25f, 0.25f));
-            anim.AddAnim(new UiAnimationScale(View.gameObject, Vector3.one * 1.25f, Vector3.one, 0.25f));
-            anim.PlayAnimations();
+            AnimController.AddAnim(new UiAnimationScale(View.gameObject, Vector3.one, Vector3.one * 1.25f, 0.25f));
+            AnimController.AddAnim(new UiAnimationScale(View.gameObject, Vector3.one * 1.25f, Vector3.one, 0.25f));
+            AnimController.PlayAnimations();
+        }
+        else
+        {
+            AnimController.ClearQueue();
+            View.gameObject.transform.localScale = Vector2.one;
         }
     }
 
