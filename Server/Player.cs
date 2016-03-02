@@ -17,8 +17,8 @@ namespace Server
 
     public struct PlayerConnectionClosed
     {
-        public Player Player { get; private set; }
-        public PlayerCloseReason CloseReason { get; private set; }
+        public Player Player;
+        public PlayerCloseReason CloseReason;
 
         public PlayerConnectionClosed(Player player, PlayerCloseReason reason)
         {
