@@ -37,7 +37,7 @@ namespace Server
 
         public PlayerData Data { get; private set; }
         public IWebSocketConnection Socket { get; private set; }
-        public bool IsAdmin { get; private set; }
+        public bool IsAdmin { get { return Data.IsAdmin; } }
 
         Settings Settings { get; set; }
 
@@ -73,7 +73,7 @@ namespace Server
                 if (data.Password == Settings.Config.AdminPassword)
                 {
                     Logger.Log("Admin granted to {0}", Data.Name);
-                    IsAdmin = true;
+                    MakeAdmin();
                 }
             });
 
@@ -101,6 +101,12 @@ namespace Server
         }
 
         #region Messaging
+
+        public void MakeAdmin()
+        {
+            Data.MakeAdmin();
+            UpdatePlayerInfo(Data);
+        }
 
         public void SendMessage(Message message)
         {

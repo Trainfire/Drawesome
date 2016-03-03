@@ -11,6 +11,7 @@ namespace Protocol
         public uint RoomId;
         public string ID;
         public string Name;
+        public bool IsAdmin;
 
         public PlayerData()
         {
@@ -33,6 +34,16 @@ namespace Protocol
         public void SetName(string name)
         {
             Name = name;
+        }
+
+        public void MakeAdmin()
+        {
+            IsAdmin = true;
+        }
+
+        public void RevokeAdmin()
+        {
+            IsAdmin = false;
         }
     }
 

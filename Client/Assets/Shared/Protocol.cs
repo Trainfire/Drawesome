@@ -5,7 +5,7 @@ namespace Protocol
 {
     public class ProtocolInfo
     {
-        public const uint Version = 1;
+        public const uint Version = 2;
     }
 
     public class Log : Message

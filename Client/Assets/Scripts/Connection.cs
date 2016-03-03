@@ -92,6 +92,9 @@ public class Connection : MonoBehaviour
         Message.IsType<ServerMessage.UpdatePlayerInfo>(json, (data) =>
         {
             Player = data.PlayerData;
+
+            if (Player.IsAdmin)
+                Debug.LogFormat("You now have administrative privilages");
         });
 
         Message.IsType<ServerMessage.AssignRoomId>(json, (data) =>

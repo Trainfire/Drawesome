@@ -13,7 +13,7 @@ public class AppConsole : MonoBehaviour, IClientHandler
     {
         Client = client;
 
-        Controller = new ConsoleController();
+        Controller = new ConsoleController(client.IsAdmin);
         View.SetConsole(Controller);
 
         // General
@@ -27,15 +27,15 @@ public class AppConsole : MonoBehaviour, IClientHandler
         Controller.RegisterCommand(new ConsoleCommand("say", Say, "[Message] (Sends a message to all players in the same room)"));
 
         // Game
-        Controller.RegisterCommand(new ConsoleCommand("start", StartGame, "(Starts the game if you're the room owner)"));
-        Controller.RegisterCommand(new ConsoleCommand("forcestart", ForceStartGame, "(Force starts the game if you're the room owner and have admin permissions)"));
-        Controller.RegisterCommand(new ConsoleCommand("restart", RestartGame, "(Restarts the game if you're the room owner)"));
-        Controller.RegisterCommand(new ConsoleCommand("startnewround", StartNewRound, "(Starts a new round of the game if you're the room owner)"));
-        Controller.RegisterCommand(new ConsoleCommand("sendimage", SendImage));
-        Controller.RegisterCommand(new ConsoleCommand("submitanswer", SubmitAnswer));
-        Controller.RegisterCommand(new ConsoleCommand("submitchoice", SubmitChoice));
-        Controller.RegisterCommand(new ConsoleCommand("like", SubmitLike));
-        Controller.RegisterCommand(new ConsoleCommand("skip", Skip));
+        Controller.RegisterElevatedCommand(new ConsoleCommand("start", StartGame, "(Starts the game if you're the room owner)"));
+        Controller.RegisterElevatedCommand(new ConsoleCommand("forcestart", ForceStartGame, "(Force starts the game if you're the room owner and have admin permissions)"));
+        Controller.RegisterElevatedCommand(new ConsoleCommand("restart", RestartGame, "(Restarts the game if you're the room owner)"));
+        Controller.RegisterElevatedCommand(new ConsoleCommand("startnewround", StartNewRound, "(Starts a new round of the game if you're the room owner)"));
+        Controller.RegisterElevatedCommand(new ConsoleCommand("sendimage", SendImage));
+        Controller.RegisterElevatedCommand(new ConsoleCommand("submitanswer", SubmitAnswer));
+        Controller.RegisterElevatedCommand(new ConsoleCommand("submitchoice", SubmitChoice));
+        Controller.RegisterElevatedCommand(new ConsoleCommand("like", SubmitLike));
+        Controller.RegisterElevatedCommand(new ConsoleCommand("skip", Skip));
     }
 
     #region Commands

@@ -45,6 +45,11 @@ public class Client : MonoBehaviour
         return PlayerData.ID == otherPlayerData.ID;
     }
 
+    public bool IsAdmin()
+    {
+        return PlayerData.IsAdmin;
+    }
+
     public static bool IsWebGL()
     {
         #if UNITY_WEBGL

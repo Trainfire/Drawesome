@@ -8,6 +8,7 @@ public class ConsoleCommand
     public string Command { get; private set; }
     public CommandDelegate Action { get; private set; }
     public string Help { get; private set; }
+    public bool Elevated { get; private set; }
 
     public ConsoleCommand(string command, CommandDelegate action, string help = "")
     {
@@ -15,17 +16,29 @@ public class ConsoleCommand
         Action = action;
         Help = help;
     }
+
+    public ConsoleCommand(string command, CommandDelegate action, bool elevated, string help = "") : this(command, action, help)
+    {
+        Elevated = elevated;
+    }
+
+    public void MakeElevated()
+    {
+        Elevated = true;
+    }
 }
 
 public class ConsoleController
 {
+    System.Func<bool> HasPermission { get; set; }
     List<ConsoleCommand> Commands = new List<ConsoleCommand>();
 
     const string Token = "";
 
-    public ConsoleController()
+    public ConsoleController(System.Func<bool> permissionEvaluator)
     {
         RegisterCommand(new ConsoleCommand("help", Help));
+        HasPermission = permissionEvaluator;
     }
 
     public void SubmitInput(string input)
@@ -36,6 +49,12 @@ public class ConsoleController
 
     public void RegisterCommand(ConsoleCommand action)
     {
+        Commands.Add(action);
+    }
+
+    public void RegisterElevatedCommand(ConsoleCommand action)
+    {
+        action.MakeElevated();
         Commands.Add(action);
     }
 
@@ -74,7 +93,22 @@ public class ConsoleController
         var command = Commands.Find(x => x.Command == parsedCommand);
         if (command != null)
         {
-            Execute(command, parsedArgs.ToArray());
+            bool execute = false;
+
+            if (!command.Elevated)
+            {
+                execute = true;
+            }
+            else if (command.Elevated)
+            {
+                execute = HasPermission();
+
+                if (!execute)
+                    Debug.LogError("You do not have permission to do that.");
+            }
+
+            if (execute)
+                Execute(command, parsedArgs.ToArray());
         }
         else
         {
@@ -93,7 +127,14 @@ public class ConsoleController
 
         foreach (var c in Commands)
         {
-            Debug.LogFormat("\t{0} {1}", c.Command, c.Help);
+            if (c.Elevated)
+            {
+                Debug.LogFormat("\t*{0} {1}", c.Command, c.Help);
+            }
+            else
+            {
+                Debug.LogFormat("\t*{0} {1}", c.Command, c.Help);
+            }
         }
     }
 }
