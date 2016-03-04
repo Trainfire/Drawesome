@@ -31,7 +31,6 @@ namespace Server
     {
         public event EventHandler<PlayerConnectionClosed> OnConnectionClosed;
         public event EventHandler OnLeaveRoom;
-        public event EventHandler<SharedMessage.Chat> OnChat;
         public event EventHandler<ClientMessage.Game.SendAction> OnGameAction;
         public event EventHandler<string> OnMessage;
 
@@ -75,12 +74,6 @@ namespace Server
                     Logger.Log("Admin granted to {0}", Data.Name);
                     MakeAdmin();
                 }
-            });
-
-            Message.IsType<SharedMessage.Chat>(json, (data) =>
-            {
-                if (OnChat != null)
-                    OnChat(this, data);
             });
 
             Message.IsType<ClientMessage.Game.SendAction>(json, (data) =>

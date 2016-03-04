@@ -6,7 +6,6 @@ public class TestJson : MonoBehaviour
     // Use this for initialization
     void Start()
     {
-        var player = TestUtility.GetPlayerData()[0];
         var message = new Message();
         message.DataType = MessageDataType.Binary;
         var json = JsonHelper.ToJson(message);

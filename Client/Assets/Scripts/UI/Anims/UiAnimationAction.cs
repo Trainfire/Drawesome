@@ -5,7 +5,6 @@ using System;
 public class UiAnimationAction : UiAnimationComponent
 {
     Action Action { get; set; }
-    string Name { get; set; }
 
     public UiAnimationAction(string name, Action action)
     {

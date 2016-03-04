@@ -7,13 +7,9 @@ public class TestFinalScores : MonoBehaviour
 {
     public UiGameStateFinalScores View;
 
-    Dictionary<PlayerData, GameScore> scoreCache = new Dictionary<PlayerData, GameScore>();
-    List<PlayerData> players = new List<PlayerData>();
-
     void Awake()
     {
         View = GetComponent<UiGameStateFinalScores>();
-        players = TestUtility.GetPlayerData(3);
     }
 
     void LateUpdate()

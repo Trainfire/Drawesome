@@ -100,9 +100,6 @@ namespace Server
             // Send the player the latest version of their server-side data (they need to know their GUID)
             player.UpdatePlayerInfo(player.Data);
 
-            // Send the latest player state to all clients.
-            SendUpdateToAllClients();
-
             // Send Player Joined message.
             NotifyPlayerEvent(player, PlayerAction.Connected);
 
@@ -167,18 +164,6 @@ namespace Server
         public void NotifyPlayerEvent(Player player, PlayerAction action)
         {
             ConnectedPlayers.ForEach(x => x.SendAction(player.Data, action, PlayerActionContext.Global));
-        }
-
-        /// <summary>
-        /// Sends a Server Update to all Clients.
-        /// </summary>
-        public void SendUpdateToAllClients()
-        {
-            List<PlayerData> protocolPlayers = ConnectedPlayers.Select(x => x.Data).ToList();
-
-            var serverUpdate = new ServerUpdate(protocolPlayers);
-
-            ConnectedPlayers.ForEach(x => x.SendMessage(serverUpdate));
         }
 
         Player GetPlayerFromSocket(IWebSocketConnection socket)

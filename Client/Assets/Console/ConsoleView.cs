@@ -14,7 +14,6 @@ public class ConsoleView : MonoBehaviour
 
     ConsoleController Console { get; set; }
 
-    string log = "";
     const float LogHeight = 250f;
     const float LogToggleTime = 0.2f;
     const float LogTimeToLive = 60f;

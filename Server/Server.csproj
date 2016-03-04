@@ -72,9 +72,6 @@
     <Compile Include="..\Client\Assets\Shared\Protocol.cs">
       <Link>Protocol\Protocol.cs</Link>
     </Compile>
-    <Compile Include="..\Client\Assets\Shared\ProtocolHelper.cs">
-      <Link>Protocol\ProtocolHelper.cs</Link>
-    </Compile>
     <Compile Include="..\Client\Assets\Shared\ServerMessage.cs">
       <Link>Protocol\ServerMessage.cs</Link>
     </Compile>

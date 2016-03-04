@@ -21,12 +21,10 @@ public class TestScores : MonoBehaviour
     }
 
     Dictionary<PlayerData, GameScore> scoreCache = new Dictionary<PlayerData, GameScore>();
-    List<PlayerData> players = new List<PlayerData>();
 
     void Awake()
     {
         View = GetComponent<UiGameStateScores>();
-        players = TestUtility.GetPlayerData();
     }
 
     void LateUpdate()
