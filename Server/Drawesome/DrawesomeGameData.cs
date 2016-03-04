@@ -92,7 +92,7 @@ namespace Server.Drawesome
             }
         }
 
-        public void SubmitChoice(string chosenAnswer, Player player)
+        public void SubmitChoice(Player player, string chosenAnswer)
         {
             var answer = GetAnswer(chosenAnswer);
 

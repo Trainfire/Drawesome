@@ -129,7 +129,7 @@ namespace Server.Drawesome
 
             Message.IsType<ClientMessage.Game.SubmitChoice>(json, (data) =>
             {
-                GameData.SubmitChoice(data.ChosenAnswer, player);
+                GameData.SubmitChoice(player, data.ChosenAnswer);
                 GameData.Players.ForEach(x => x.NotifyPlayerGameAction(player.Data, GamePlayerAction.ChoiceChosen));
                 UpdateState(player);
             });
