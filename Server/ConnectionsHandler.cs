@@ -161,7 +161,7 @@ namespace Server
             return player;
         }
 
-        public void NotifyPlayerEvent(Player player, PlayerAction action)
+        void NotifyPlayerEvent(Player player, PlayerAction action)
         {
             ConnectedPlayers.ForEach(x => x.SendAction(player.Data, action, PlayerActionContext.Global));
         }
