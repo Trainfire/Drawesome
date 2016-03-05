@@ -23,10 +23,14 @@ public class FinalScoresState : State, Game.IGameState
         Message.IsType<ServerMessage.Game.SendScores>(json, (data) =>
         {
             // Make dictionary mapping players to scores.
-            var scores = Enumerable.Range(0, data.Players.Count)
+            var dict = Enumerable.Range(0, data.Players.Count)
             .ToDictionary(i => data.Players[i], i => data.Scores[i]);
 
-            GetView<UiGameStateFinalScores>().Show(scores);
+            // Tier players with identical scores and likes
+            var scores = new GameFinalScores(dict, x => x.Score);
+            var likes = new GameFinalScores(dict, x => x.Likes);
+
+            GetView<UiGameStateFinalScores>().Show(scores, likes);
         });
     }
 

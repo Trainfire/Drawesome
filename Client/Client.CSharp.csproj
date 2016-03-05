@@ -13,11 +13,13 @@
     <TargetFrameworkIdentifier>.NETFramework</TargetFrameworkIdentifier>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <TargetFrameworkProfile>Unity Subset v3.5</TargetFrameworkProfile>
-    <CompilerResponseFile></CompilerResponseFile>
+    <CompilerResponseFile>
+    </CompilerResponseFile>
     <UnityProjectType>Game:1</UnityProjectType>
     <UnityBuildTarget>WebGL:20</UnityBuildTarget>
     <UnityVersion>5.3.2f1</UnityVersion>
-    <RootNamespace></RootNamespace>
+    <RootNamespace>
+    </RootNamespace>
     <LangVersion Condition=" '$(VisualStudioVersion)' != '10.0' ">4</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -85,6 +87,7 @@
     <Compile Include="Assets\Scripts\Console\AppConsole.cs" />
     <Compile Include="Assets\Scripts\DoubleClickHandler.cs" />
     <Compile Include="Assets\Scripts\DrawingCanvas.cs" />
+    <Compile Include="Assets\Scripts\GameFinalScores.cs" />
     <Compile Include="Assets\Scripts\Game\AnsweringState.cs" />
     <Compile Include="Assets\Scripts\Game\ChoosingState.cs" />
     <Compile Include="Assets\Scripts\Game\DrawingState.cs" />

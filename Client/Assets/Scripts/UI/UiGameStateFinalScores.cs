@@ -22,23 +22,24 @@ public class UiGameStateFinalScores : UiBase
         RowProtoype.gameObject.SetActive(false);
     }
 
-    public void Show(Dictionary<PlayerData, ScoreData> scoreData)
+    public void Show(GameFinalScores scores, GameFinalScores likes)
     {
         var animController = gameObject.GetOrAddComponent<UiAnimationController>();
 
         var views = new List<UiFinalScoreRow>();
 
         // Add rows
-        foreach (var score in scoreData.Take(3).ToList())
+        foreach (var score in scores.Values.Take(3).ToList())
         {
             var instance = UiUtility.AddChild(RowContainer, RowProtoype, true);
 
-            instance.PlayerName.text = score.Key.Name;
-            instance.Points.text = score.Value.Score.ToString();
+            instance.PlayerName.text = string.Join(", ", scores.GetPlayerNames(score.Key));
+            instance.Points.text = score.Key.ToString();
 
             views.Add(instance);
         }
 
+        // Reverse order so it plays out from 3rd to 1st
         views.Reverse();
 
         // Show rows
@@ -60,24 +61,16 @@ public class UiGameStateFinalScores : UiBase
             }
         }
 
-        animController.AddDelay(TimeBeforeMostLikes);
-        animController.AddAction("Show Most Likes", () => MostLikes.Show(scoreData));
+        // Show likes if any were made
+        if (likes.Values.Any(x => x.Key != 0))
+        {
+            animController.AddDelay(TimeBeforeMostLikes);
+            animController.AddAction("Show Most Likes", () => MostLikes.Show(likes));
+        }
 
         animController.AddDelay(TimeBeforeShowButton);
         animController.AddAnim(new UiAnimationFade(StartNewGame.gameObject, 0.2f, UiAnimationFade.FadeType.In));
 
         animController.PlayAnimations();
-    }
-
-    public class MockData
-    {
-        public string Name;
-        public uint Points;
-
-        public MockData(string name, uint points)
-        {
-            Name = name;
-            Points = points;
-        }
     }
 }

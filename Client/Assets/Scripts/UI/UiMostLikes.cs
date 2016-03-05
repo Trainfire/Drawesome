@@ -14,13 +14,13 @@ public class UiMostLikes : UiBase
         RowPrototype.gameObject.SetActive(false);
     }
 
-    public void Show(Dictionary<PlayerData, ScoreData> scoreData)
+    public void Show(GameFinalScores likes)
     {
-        var mostLikes = scoreData.Aggregate((current, next) => next.Value.Likes > current.Value.Likes ? next : current);
+        var mostLikes = likes.Values.Aggregate((current, next) => next.Key > current.Key ? next : current);
 
         var view = UiUtility.AddChild(Rows, RowPrototype, true);
-        view.Name.text = mostLikes.Key.Name;
-        view.Points.text = mostLikes.Value.Likes.ToString();
+        view.Name.text = string.Join(", ", likes.GetPlayerNames(mostLikes.Key));
+        view.Points.text = mostLikes.Key.ToString();
 
         var animController = gameObject.GetOrAddComponent<UiAnimationController>();
         gameObject.SetActive(true);
