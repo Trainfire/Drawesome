@@ -115,7 +115,7 @@ public class UiGameStateResults : UiBase
 
         if (result.Type == GameAnswerType.Player)
         {
-            Author.text = string.Format("{0}'s guess!", result.Author.Name);
+            Author.text = string.Format(Strings.Result.PlayerAnswer, result.Author.Name);
             yield return new WaitForSeconds(TimeBeforeScoreReveal);
             Points.gameObject.SetActive(true);
             Points.text = string.Format("+{0}", result.Points.ToString());
@@ -124,12 +124,12 @@ public class UiGameStateResults : UiBase
         }
         else if (result.Type == GameAnswerType.Decoy)
         {
-            Author.text = string.Format("Decoy!");
+            Author.text = Strings.Result.Decoy;
             yield return new WaitForSeconds(TimeBeforeScoreReveal);
         }
         else
         {
-            Author.text = string.Format("The actual answer!");
+            Author.text = string.Format(Strings.Result.ActualAnswer);
             yield return new WaitForSeconds(TimeBeforeScoreReveal);
         }
 

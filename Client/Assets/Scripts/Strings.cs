@@ -22,6 +22,13 @@ public static class Strings
     public const string CountdownCancel = "{0} has cancelled the countdown";
     public const string Winner = "winner!";
 
+    public static class Result
+    {
+        public const string ActualAnswer = "the actual answer!";
+        public const string Decoy = "decoy!";
+        public const string PlayerAnswer = "{0}'s guess!";
+    }
+
     public static class Login
     {
         public const string NameCharacterLimit = "Name invalid. Character limit is 3 - 24 characters";
