@@ -3,6 +3,7 @@ using System.Collections;
 using Protocol;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 public class UiGameStateScores : UiBase
 {
@@ -40,9 +41,10 @@ public class UiGameStateScores : UiBase
         AnimController.AddAnim(new UiAnimationFade(Divider.gameObject, TimeRevealDivider, UiAnimationFade.FadeType.In));
         AnimController.AddDelay(TimeBeforeShowScores);
 
+        // Calculate how long it should take to reveal each player's score based on the number of players
         float revealScores = TimeShowScores / newScores.Count;
 
-        // Reveal current scores
+        // Set the previous scores
         foreach (var score in newScores)
         {
             var view = AddOrGetView(score.Key, score.Value);
@@ -53,12 +55,16 @@ public class UiGameStateScores : UiBase
                 view.PointsEarned.text = "";
                 view.Likes.gameObject.SetActive(false);
             });
-            AnimController.AddAnim(new UiAnimationFade(view.gameObject, revealScores, UiAnimationFade.FadeType.In));
         }
 
+        // Get all the player rows in order from top to bottom
+        var views = List.GetComponentsInChildren<UiResultRow>().ToList();
+
+        // Fade in each row
+        views.ForEach(x => AnimController.AddAnim(new UiAnimationFade(x.gameObject, revealScores, UiAnimationFade.FadeType.In)));
         AnimController.AddDelay(1f);
 
-        // Reveal points earned
+        // Set points earned
         foreach (var score in newScores)
         {
             var view = AddOrGetView(score.Key, score.Value);
@@ -67,9 +73,10 @@ public class UiGameStateScores : UiBase
             {
                 view.PointsEarned.text = string.Format("+{0}", temp.Value.PointsEarned);
             });
-            AnimController.AddAnim(new UiAnimationFade(view.PointsEarned.gameObject, 0f, UiAnimationFade.FadeType.In));
         }
 
+        // Reveal points earned
+        views.ForEach(x => AnimController.AddAnim(new UiAnimationFade(x.PointsEarned.gameObject, 0f, UiAnimationFade.FadeType.In)));
         AnimController.AddDelay(TimeBetweenShowPointsAndUpdateList);
 
         // Update scores
@@ -77,9 +84,6 @@ public class UiGameStateScores : UiBase
         {
             var view = AddOrGetView(score.Key, score.Value);
             var temp = score;
-
-            // Fade in the points earned text displayed on right side as + 1234
-            AnimController.AddAnim(new UiAnimationFade(view.PointsEarned.gameObject, 0.1f, UiAnimationFade.FadeType.Out), false);
 
             // Reveal player's answer underneath if they gave one
             view.Answer.text = temp.Value.CurrentScoreData.AnswerGiven != null ? temp.Value.CurrentScoreData.AnswerGiven.Answer : "";
@@ -91,7 +95,8 @@ public class UiGameStateScores : UiBase
             });
         }
 
-        // Delay
+        // Fade in the points earned text displayed on right side as + 1234
+        views.ForEach(x => AnimController.AddAnim(new UiAnimationFade(x.PointsEarned.gameObject, 0.1f, UiAnimationFade.FadeType.Out), false));
         AnimController.AddDelay(TimeBeforeRearrangeList);
 
         // Reorder list
@@ -100,7 +105,7 @@ public class UiGameStateScores : UiBase
             List.OrderBy<GameScore>((a, b) => a.CurrentScoreData.Score.CompareTo(b.CurrentScoreData.Score));
         });
 
-        // Show likes
+        // Set likes
         AnimController.AddDelay(TimeBeforeLikes);
 
         foreach (var score in newScores)
@@ -114,10 +119,11 @@ public class UiGameStateScores : UiBase
                     view.Likes.gameObject.SetActive(true);
                     view.LikesEarned.text = "+" + temp.Value.CurrentScoreData.AnswerGiven.Likes.ToString();
                 });
-
-                AnimController.AddAnim(new UiAnimationFade(view.Likes, 0.1f, UiAnimationFade.FadeType.In), false);
             }
         }
+
+        // Fade in likes
+        views.ForEach(x => AnimController.AddAnim(new UiAnimationFade(x.Likes, 0.1f, UiAnimationFade.FadeType.In), false));
 
         AnimController.PlayAnimations();
     }
