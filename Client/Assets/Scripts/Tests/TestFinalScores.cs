@@ -22,7 +22,10 @@ public class TestFinalScores : MonoBehaviour
 
     void HandleScores(Dictionary<PlayerData, ScoreData> serverScores)
     {
+        var scores = new GameFinalScores(serverScores, x => x.Score);
+        var likes = new GameFinalScores(serverScores, x => x.Likes);
+
         // Show values on UI
-        View.Show(serverScores);
+        View.Show(scores, likes);
     }
 }
