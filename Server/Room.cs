@@ -115,6 +115,7 @@ namespace Server
 
                 // Add callbacks
                 joiningPlayer.OnConnectionClosed += OnPlayerConnectionClosed;
+                joiningPlayer.OnAwayStatusChanged += OnPlayerAwayStatusChanged;
 
                 // Send message to joining player
                 EchoActionToAll(joiningPlayer.Data, PlayerAction.Joined);
@@ -123,10 +124,17 @@ namespace Server
             }
         }
 
+        void OnPlayerAwayStatusChanged(object sender, bool playerAway)
+        {
+            var player = sender as Player;
+            if (Settings.Values.Server.KickAfkPlayers && playerAway)
+                Leave(player.Data, RoomLeaveReason.KickedForAfk);
+        }
+
         public void Leave(PlayerData leavingPlayer, RoomLeaveReason reason = RoomLeaveReason.Normal)
         {
             var player = Players.Find(x => x.Data.ID == leavingPlayer.ID);
-            player.SendRoomLeaveReason(RoomLeaveReason.Normal);
+            player.SendRoomLeaveReason(reason);
             OnPlayerConnectionClosed(this, new PlayerConnectionClosed(player, PlayerCloseReason.Left));
         }
 
@@ -230,6 +238,7 @@ namespace Server
         {
             // Remove callbacks
             e.Player.OnConnectionClosed -= OnPlayerConnectionClosed;
+            e.Player.OnAwayStatusChanged -= OnPlayerAwayStatusChanged;
 
             // Inform players
             switch (e.CloseReason)

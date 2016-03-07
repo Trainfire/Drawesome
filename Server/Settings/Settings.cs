@@ -47,6 +47,7 @@ namespace Server
         public int MaxRooms = 1;
         public int NameMinChars = 3;
         public int NameMaxChars = 24;
+        public bool KickAfkPlayers = true;
     }
 
     public class DrawesomeSettings
