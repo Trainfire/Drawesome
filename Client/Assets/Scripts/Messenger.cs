@@ -6,6 +6,9 @@ public class Messenger
 {
     Connection Connection { get; set; }
 
+    float SayLastTimeStamp { get; set; }
+    const float SayMinTimeBetweenMessages = 1f;
+
     public event EventHandler OnLeaveRoom;
 
     public Messenger(Connection connection)
@@ -39,7 +42,11 @@ public class Messenger
 
     public void Say(string message)
     {
-        Connection.SendMessage(new ClientMessage.SendChat(message));
+        if (Time.time > SayLastTimeStamp + 1f)
+        {
+            Connection.SendMessage(new ClientMessage.SendChat(message));
+            SayLastTimeStamp = Time.time;
+        }
     }
 
     public void RequestAdmin(string password)
