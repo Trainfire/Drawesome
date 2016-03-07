@@ -10,6 +10,7 @@ public class UiBrowser : UiBase
     public Button Create;
     public Button Refresh;
 
+    public GameObject NoGames;
     public UiBrowserItem BrowserItemPrototype;
     public RectTransform Browser;
 
@@ -81,6 +82,8 @@ public class UiBrowser : UiBase
         // Select first item
         if (browserItems.Count != 0)
             browserItems[0].Toggle.isOn = true;
+
+        NoGames.SetActive(browserItems.Count == 0);
     }
 
     void OnCreate()
