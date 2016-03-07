@@ -8,6 +8,9 @@ public class App : MonoBehaviour
 
     void Awake()
     {
+        // Make sure player prefs are cleared to prevent old data from being used
+        PlayerPrefs.DeleteAll();
+
         Client.Initialise(Interface);
 
         // Inject dependencies here
