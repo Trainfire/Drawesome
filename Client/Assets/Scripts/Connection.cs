@@ -8,28 +8,36 @@ public class Connection : MonoBehaviour
     public delegate void MessageDelegate(string json);
     public event MessageDelegate MessageRecieved;
 
+    public event Action<bool> Away;
     public event EventHandler ConnectionClosed;
 
     public PlayerData Player { get; private set; }
     public RoomData Room { get; private set; }
+    public ServerData Server { get; private set; }
 
+    public bool Connected { get; private set; }
     public bool isRoomOwner;
 
     WebSocket Socket { get; set; }
     string PlayerName { get; set; }
     Queue<string> MessageQueue { get; set; }
+    AFKChecker AfkChecker { get; set; }
 
     void Awake()
     {
         Player = new PlayerData();
         Room = new RoomData();
         MessageQueue = new Queue<string>();
+        AfkChecker = gameObject.GetOrAddComponent<AFKChecker>();
+        AfkChecker.OnStatusChanged += OnAway;
     }
 
     void Update()
     {
         if (Socket != null)
         {
+            Connected = true;
+
             var str = Socket.RecvString();
 
             if (str != null)
@@ -45,6 +53,8 @@ public class Connection : MonoBehaviour
 
                 if (ConnectionClosed != null)
                     ConnectionClosed(this, null);
+
+                Connected = false;
             }
         }
 
@@ -109,7 +119,19 @@ public class Connection : MonoBehaviour
             Room = data.RoomData;
         });
 
+        Message.IsType<ServerMessage.NotifyServerUpdate>(json, (data) =>
+        {
+            Server = data.ServerData;
+            AfkChecker.TimeTillAfk = Server.TimeTillAfk;
+        });
+
         MessageQueue.Enqueue(json);
+    }
+
+    void OnAway()
+    {
+        if (Away != null)
+            Away(AfkChecker.AFK);
     }
 
     void OnApplicationQuit()
@@ -119,8 +141,11 @@ public class Connection : MonoBehaviour
 
     public void SendMessage(Message message)
     {
-        var json = JsonHelper.ToJson(message);
-        Socket.SendString(json);
+        if (Connected)
+        {
+            var json = JsonHelper.ToJson(message);
+            Socket.SendString(json);
+        }
     }
 
     public bool IsRoomOwner()

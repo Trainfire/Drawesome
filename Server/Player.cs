@@ -31,12 +31,14 @@ namespace Server
     {
         public event EventHandler<PlayerConnectionClosed> OnConnectionClosed;
         public event EventHandler OnLeaveRoom;
+        public event EventHandler<bool> OnAwayStatusChanged;
         public event EventHandler<ClientMessage.Game.SendAction> OnGameAction;
         public event EventHandler<string> OnMessage;
 
         public PlayerData Data { get; private set; }
         public IWebSocketConnection Socket { get; private set; }
         public bool IsAdmin { get { return Data.IsAdmin; } }
+        public bool Away { get; set; }
 
         Settings Settings { get; set; }
 
@@ -80,6 +82,23 @@ namespace Server
             {
                 if (OnGameAction != null)
                     OnGameAction(this, data);
+            });
+
+            Message.IsType<ClientMessage.NotifyAwayStatus>(json, (data) =>
+            {
+                Away = data.Away;
+
+                if (Away)
+                {
+                    Logger.Log("{0} is now AFK", Data.Name);
+                }
+                else
+                {
+                    Logger.Log("{0} is no longer AFK", Data.Name);
+                }
+
+                if (OnAwayStatusChanged != null)
+                    OnAwayStatusChanged(this, Away);
             });
 
             var obj = JsonHelper.FromJson<Message>(json);
@@ -126,6 +145,12 @@ namespace Server
         public void UpdatePlayerInfo(PlayerData playerData)
         {
             var message = new ServerMessage.UpdatePlayerInfo(playerData);
+            Socket.Send(message.AsJson());
+        }
+
+        public void UpdateServerInfo(ServerData serverData)
+        {
+            var message = new ServerMessage.NotifyServerUpdate(serverData);
             Socket.Send(message.AsJson());
         }
 

@@ -100,6 +100,9 @@ namespace Server
             // Send the player the latest version of their server-side data (they need to know their GUID)
             player.UpdatePlayerInfo(player.Data);
 
+            // Send server update
+            player.UpdateServerInfo(SettingsLoader.Values.Server);
+
             // Send Player Joined message.
             NotifyPlayerEvent(player, PlayerAction.Connected);
 

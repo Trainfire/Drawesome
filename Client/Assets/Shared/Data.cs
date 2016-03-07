@@ -181,4 +181,11 @@ namespace Protocol
             AnswerGiven = answerGiven;
         }
     }
+
+    [Serializable]
+    public class ServerData
+    {
+        public string HostUrl = "ws://0.0.0.0:8181";
+        public float TimeTillAfk = 120f;
+    }
 }

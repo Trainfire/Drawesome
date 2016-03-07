@@ -78,6 +78,7 @@
     <Compile Include="Assets\Console\ConsoleController.cs" />
     <Compile Include="Assets\Console\ConsoleLogView.cs" />
     <Compile Include="Assets\Console\ConsoleView.cs" />
+    <Compile Include="Assets\Scripts\AFKChecker.cs" />
     <Compile Include="Assets\Scripts\App.cs" />
     <Compile Include="Assets\Scripts\Base.cs" />
     <Compile Include="Assets\Scripts\Client.cs" />

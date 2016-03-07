@@ -14,6 +14,12 @@ public class Messenger
     public Messenger(Connection connection)
     {
         Connection = connection;
+        Connection.Away += OnAway;
+    }
+
+    private void OnAway(bool away)
+    {
+        Connection.SendMessage(new ClientMessage.NotifyAwayStatus(away));
     }
 
     public void CreateRoom(string password = "")

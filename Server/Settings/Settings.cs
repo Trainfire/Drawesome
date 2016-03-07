@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Protocol;
 
@@ -34,13 +35,13 @@ namespace Server
     {
         public string AdminPassword = "1111";
         public string ServerSettingsUrl = "http://drawesome.trainfire.net/server.settings";
+        public string ClientSettingsUrl = "http://drawesome.trainfire.net/client.settings";
         public string PromptsUrl = "http://drawesome.trainfire.net/prompts.settings";
         public string DrawesomeSettingsUrl = "http://drawesome.trainfire.net/drawesome.settings";
     }
 
-    public class ServerSettings
+    public class ServerSettings : ServerData
     {
-        public string HostUrl = "ws://0.0.0.0:8080";
         public int MinPlayers = 3;
         public int MaxPlayers = 8;
         public int MaxRooms = 1;

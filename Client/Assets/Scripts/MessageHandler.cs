@@ -12,7 +12,7 @@ public class MessageHandler
     public event MessageEvent<ServerMessage.NotifyConnectionSuccess> OnServerConnectionSuccess;
     public event MessageEvent<ServerMessage.UpdatePlayerInfo> OnServerUpdatePlayerInfo;
     public event MessageEvent<ServerMessage.RoomList> OnRecieveRoomList;
-    public event MessageEvent<ServerUpdate> OnServerUpdate;
+    public event MessageEvent<ServerMessage.NotifyServerUpdate> OnServerUpdate;
     public event MessageEvent<ServerMessage.NotifyRoomJoin> OnServerNotifyRoomJoin;
     public event MessageEvent<ServerMessage.NotifyRoomLeave> OnServerNotifyRoomLeave;
     public event MessageEvent<ServerMessage.NotifyPlayerAction> OnServerNotifyPlayerAction;
@@ -43,6 +43,7 @@ public class MessageHandler
 
         Message.IsType<ServerMessage.SendConnectionError>(json, (data) => FireEvent(OnConnectionError, data));
         Message.IsType<ServerMessage.NotifyConnectionSuccess>(json, (data) => FireEvent(OnServerConnectionSuccess, data));
+        Message.IsType<ServerMessage.NotifyServerUpdate>(json, (data) => FireEvent(OnServerUpdate, data));
         Message.IsType<ServerMessage.NotifyPlayerAction>(json, (data) => FireEvent(OnServerNotifyPlayerAction, data));
         Message.IsType<ServerMessage.UpdatePlayerInfo>(json, (data) => FireEvent(OnServerUpdatePlayerInfo, data));
         Message.IsType<ServerMessage.RoomUpdate>(json, (data) => FireEvent(OnRoomUpdate, data));

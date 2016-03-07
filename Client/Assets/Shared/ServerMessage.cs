@@ -36,6 +36,16 @@ namespace Protocol
             }
         }
 
+        public class NotifyServerUpdate : Message
+        {
+            public ServerData ServerData;
+
+            public NotifyServerUpdate(ServerData serverData)
+            {
+                ServerData = serverData;
+            }
+        }
+
         public class RequestClientInfo : Message
         {
             public RequestClientInfo()

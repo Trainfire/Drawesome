@@ -75,6 +75,16 @@ namespace Protocol
             }
         }
 
+        public class NotifyAwayStatus : Message
+        {
+            public bool Away;
+
+            public NotifyAwayStatus(bool away)
+            {
+                Away = away;
+            }
+        }
+
         #region Game
 
         public class Game

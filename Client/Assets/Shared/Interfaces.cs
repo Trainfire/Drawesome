@@ -4,8 +4,9 @@ using Protocol;
 
 namespace Protocol
 {
-    public interface IScores
+    public interface IClientSettings
     {
-        Dictionary<PlayerData, uint> PlayerScores { get; }
+        string HostURL { get; set; }
+        float AfkTimer { get; set; }
     }
 }
