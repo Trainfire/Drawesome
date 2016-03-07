@@ -50,6 +50,7 @@ namespace Protocol
     {
         Normal,
         Kicked,
+        KickedForAfk,
     }
 
     public enum GameAction

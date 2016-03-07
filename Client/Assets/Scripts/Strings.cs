@@ -45,5 +45,6 @@ public static class Strings
         public const string GameAlreadyStarted = "The room's game has already started";
         public const string RoomLimitReached = "The maximum number of rooms has been reached";
         public const string ConfirmLeave = "Are you sure you want to leave?";
+        public const string KickedForAfk = "You were removed from the room for being AFK";
     }
 }

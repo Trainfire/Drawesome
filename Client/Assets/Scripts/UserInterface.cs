@@ -41,8 +41,8 @@ public class UserInterface : MonoBehaviour, IClientHandler
     void OnServerNotifyRoomLeave(ServerMessage.NotifyRoomLeave message)
     {
         // TODO: Display popup notice
-        //if (message.Reason == RoomLeaveReason.Kicked)
-        //...
+        if (message.Reason == RoomLeaveReason.KickedForAfk)
+            Popups.MakeMessagePopup(Strings.Popups.KickedForAfk).Show();
 
         ChangeMenu(ViewBrowser);
     }
